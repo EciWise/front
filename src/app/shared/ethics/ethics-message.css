@@ -1,0 +1,29 @@
+.ethics {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: color-mix(in srgb, var(--brand-red) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand-red) 30%, var(--border));
+  border-left: 4px solid var(--brand-red);
+  border-radius: var(--radius-md);
+}
+
+.ethics__icon {
+  color: var(--brand-red);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ethics__title {
+  margin: 0 0 var(--space-1);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.ethics__text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}

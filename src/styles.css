@@ -151,3 +151,50 @@ body {
 .skip-link:focus {
   top: var(--space-4);
 }
+
+/* Botón de icono reutilizable (top-bar, toggles, paneles) */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  position: relative;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-base);
+}
+
+.icon-button:hover {
+  background: var(--surface-3);
+  transform: scale(1.05);
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+/* Insignia de conteo (notificaciones) */
+.icon-button__badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-red);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
