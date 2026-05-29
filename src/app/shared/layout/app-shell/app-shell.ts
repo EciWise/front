@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AuthService } from '../../../core/auth/auth.service';
 import { TopBarComponent } from '../top-bar/top-bar';
 import { SideNavComponent } from '../side-nav/side-nav';
 import { FloatingActionsComponent } from '../floating-actions/floating-actions';
@@ -21,8 +22,11 @@ import { FloatingActionsComponent } from '../floating-actions/floating-actions';
   ],
   templateUrl: './app-shell.html',
   styleUrl: './app-shell.css',
+  host: { '[attr.data-role]': 'role()' },
 })
 export class AppShellComponent {
+  private readonly auth = inject(AuthService);
+  protected readonly role = computed(() => this.auth.role());
   protected readonly navOpen = signal(false);
 
   toggleNav(): void {

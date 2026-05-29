@@ -4,6 +4,17 @@
   background: var(--surface-2);
 }
 
+/* Acento por rol (comunidad): estudiante fucsia, tutor rojo, admin púrpura */
+:host([data-role='STUDENT']) {
+  --accent: var(--accent-student);
+}
+:host([data-role='TUTOR']) {
+  --accent: var(--accent-tutor);
+}
+:host([data-role='ADMIN']) {
+  --accent: var(--accent-admin);
+}
+
 .shell {
   display: grid;
   grid-template-columns: 16rem 1fr;
