@@ -1,0 +1,26 @@
+<nav class="side-nav" [attr.aria-label]="'nav.dashboard' | translate">
+  <ul class="side-nav__list">
+    @for (item of items(); track item.route) {
+      <li>
+        <a
+          class="side-nav__link"
+          [routerLink]="item.route"
+          routerLinkActive="side-nav__link--active"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+        >
+          <eci-icon [name]="item.icon" [size]="20" />
+          <span>{{ item.labelKey | translate }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+
+  <a
+    class="side-nav__link side-nav__help"
+    routerLink="/help"
+    routerLinkActive="side-nav__link--active"
+  >
+    <eci-icon name="help" [size]="20" />
+    <span>{{ 'nav.help' | translate }}</span>
+  </a>
+</nav>

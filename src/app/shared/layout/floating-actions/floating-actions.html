@@ -1,0 +1,51 @@
+@if (active(); as panel) {
+  <section
+    class="dock"
+    role="dialog"
+    [attr.aria-label]="(panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate"
+  >
+    <header class="dock__header">
+      <h2 class="dock__title">
+        {{ (panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate }}
+      </h2>
+      <button
+        type="button"
+        class="icon-button"
+        (click)="close()"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <svg lucideX [size]="18" aria-hidden="true"></svg>
+      </button>
+    </header>
+    <div class="dock__body">
+      @if (panel === 'assistant') {
+        <eci-ai-assistant-panel />
+      } @else {
+        <eci-chat-panel />
+      }
+    </div>
+  </section>
+}
+
+<div class="fab-group">
+  <button
+    type="button"
+    class="fab"
+    [class.fab--active]="active() === 'chat'"
+    (click)="open('chat')"
+    [attr.aria-label]="'floating.chat' | translate"
+    [attr.aria-pressed]="active() === 'chat'"
+  >
+    <svg lucideMessageCircle [size]="24" aria-hidden="true"></svg>
+  </button>
+  <button
+    type="button"
+    class="fab fab--primary"
+    [class.fab--active]="active() === 'assistant'"
+    (click)="open('assistant')"
+    [attr.aria-label]="'floating.assistant' | translate"
+    [attr.aria-pressed]="active() === 'assistant'"
+  >
+    <svg lucideBot [size]="24" aria-hidden="true"></svg>
+  </button>
+</div>
