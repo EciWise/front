@@ -1,0 +1,82 @@
+/** Traducciones en español (idioma por defecto). */
+export const es = {
+  app: {
+    name: 'ECIWISE+',
+    tagline: 'Plataforma estudiantil de la Escuela Colombiana de Ingeniería',
+  },
+  common: {
+    enter: 'Ingresar',
+    register: 'Registrarse',
+    login: 'Iniciar sesión',
+    logout: 'Cerrar sesión',
+    cancel: 'Cancelar',
+    save: 'Guardar',
+    confirm: 'Confirmar',
+    search: 'Buscar',
+    loading: 'Cargando…',
+    back: 'Volver',
+    home: 'Inicio',
+    email: 'Correo',
+    password: 'Contraseña',
+    name: 'Nombre',
+    program: 'Programa',
+  },
+  a11y: {
+    toggle: 'Modo accesibilidad',
+    skipToContent: 'Saltar al contenido principal',
+  },
+  theme: {
+    toggle: 'Cambiar tema',
+    light: 'Tema claro',
+    dark: 'Tema oscuro',
+  },
+  language: {
+    toggle: 'Cambiar idioma',
+    es: 'Español',
+    en: 'Inglés',
+  },
+  notifications: {
+    title: 'Notificaciones',
+    empty: 'No tienes notificaciones nuevas.',
+    markAllRead: 'Marcar todas como leídas',
+  },
+  floating: {
+    assistant: 'Asistente IA',
+    chat: 'Mensajes',
+  },
+  ethics: {
+    title: 'Esfuerzo y ética',
+    message:
+      'En ECIWISE+ creemos en el esfuerzo honesto y la integridad académica. Aprende, comparte y crece con respeto por ti y por los demás.',
+  },
+  nav: {
+    dashboard: 'Inicio',
+    monitorias: 'Monitorías',
+    materials: 'Materiales',
+    games: 'Centro de juegos',
+    study: 'Centro de estudios',
+    profile: 'Perfil',
+    tasks: 'Tareas pendientes',
+    controlCenter: 'Centro de control',
+    schedule: 'Horarios',
+    availability: 'Disponibilidad',
+    requests: 'Tutorías solicitadas',
+    history: 'Historial',
+    users: 'Usuarios',
+    help: 'Ayuda',
+  },
+  auth: {
+    loginTitle: 'Bienvenido de nuevo',
+    registerTitle: 'Crea tu cuenta',
+    withGoogle: 'Continuar con Google',
+    or: 'o',
+    noAccount: '¿No tienes cuenta?',
+    hasAccount: '¿Ya tienes cuenta?',
+    invalid: 'Credenciales inválidas.',
+    disabled: 'Tu cuenta está desactivada. Contacta a un administrador.',
+  },
+  help: {
+    title: 'Centro de ayuda',
+    subtitle: 'Manual de uso de la plataforma',
+  },
+} as const;

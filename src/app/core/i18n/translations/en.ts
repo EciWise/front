@@ -1,0 +1,82 @@
+/** English translations. */
+export const en = {
+  app: {
+    name: 'ECIWISE+',
+    tagline: 'Student platform of Escuela Colombiana de Ingeniería',
+  },
+  common: {
+    enter: 'Enter',
+    register: 'Sign up',
+    login: 'Log in',
+    logout: 'Log out',
+    cancel: 'Cancel',
+    save: 'Save',
+    confirm: 'Confirm',
+    search: 'Search',
+    loading: 'Loading…',
+    back: 'Back',
+    home: 'Home',
+    email: 'Email',
+    password: 'Password',
+    name: 'Name',
+    program: 'Program',
+  },
+  a11y: {
+    toggle: 'Accessibility mode',
+    skipToContent: 'Skip to main content',
+  },
+  theme: {
+    toggle: 'Toggle theme',
+    light: 'Light theme',
+    dark: 'Dark theme',
+  },
+  language: {
+    toggle: 'Change language',
+    es: 'Spanish',
+    en: 'English',
+  },
+  notifications: {
+    title: 'Notifications',
+    empty: 'You have no new notifications.',
+    markAllRead: 'Mark all as read',
+  },
+  floating: {
+    assistant: 'AI Assistant',
+    chat: 'Messages',
+  },
+  ethics: {
+    title: 'Effort and ethics',
+    message:
+      'At ECIWISE+ we believe in honest effort and academic integrity. Learn, share and grow with respect for yourself and others.',
+  },
+  nav: {
+    dashboard: 'Home',
+    monitorias: 'Tutoring',
+    materials: 'Materials',
+    games: 'Game center',
+    study: 'Study center',
+    profile: 'Profile',
+    tasks: 'Pending tasks',
+    controlCenter: 'Control center',
+    schedule: 'Schedule',
+    availability: 'Availability',
+    requests: 'Tutoring requests',
+    history: 'History',
+    users: 'Users',
+    help: 'Help',
+  },
+  auth: {
+    loginTitle: 'Welcome back',
+    registerTitle: 'Create your account',
+    withGoogle: 'Continue with Google',
+    or: 'or',
+    noAccount: "Don't have an account?",
+    hasAccount: 'Already have an account?',
+    invalid: 'Invalid credentials.',
+    disabled: 'Your account is disabled. Please contact an administrator.',
+  },
+  help: {
+    title: 'Help center',
+    subtitle: 'Platform user manual',
+  },
+} as const;
