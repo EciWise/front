@@ -1,41 +1,33 @@
 import { Routes } from '@angular/router';
-import { SectionPlaceholderComponent } from '../../shared/ui/section-placeholder/section-placeholder';
 
-/** Rutas del área de estudiante. Las secciones se completan en la Fase 2. */
+/** Rutas del área de estudiante. */
 export const STUDENT_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./student-dashboard').then((m) => m.StudentDashboardComponent),
+    loadComponent: () => import('./student-dashboard').then((m) => m.StudentDashboardComponent),
   },
   {
     path: 'monitorias',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.monitorias', icon: 'monitorias' },
+    loadComponent: () => import('./monitorias/monitorias').then((m) => m.MonitoriasComponent),
   },
   {
     path: 'materials',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.materials', icon: 'materials' },
+    loadComponent: () => import('./materials/materials').then((m) => m.MaterialsComponent),
   },
   {
     path: 'games',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.games', icon: 'games' },
+    loadComponent: () => import('./games/games').then((m) => m.GamesComponent),
   },
   {
     path: 'study',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.study', icon: 'study' },
+    loadComponent: () => import('./study/study').then((m) => m.StudyComponent),
   },
   {
     path: 'tasks',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.tasks', icon: 'tasks' },
+    loadComponent: () => import('./tasks/tasks').then((m) => m.TasksComponent),
   },
   {
     path: 'profile',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.profile', icon: 'profile' },
+    loadComponent: () => import('./profile/profile').then((m) => m.ProfileComponent),
   },
 ];

@@ -86,6 +86,19 @@ export class AuthService {
     }
   }
 
+  /** Actualiza los datos editables del usuario en sesión. */
+  updateProfile(changes: Pick<Partial<User>, 'name' | 'program' | 'avatarUrl'>): void {
+    const current = this._user();
+    if (!current) {
+      return;
+    }
+    const updated: User = { ...current, ...changes };
+    this._user.set(updated);
+    if (this.isBrowser) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+    }
+  }
+
   private persistAndEmit(source: User | MockAccount): Observable<User> {
     const user = this.toUser(source);
     this._user.set(user);

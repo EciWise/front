@@ -1,0 +1,33 @@
+<eci-page-header titleKey="profile.title" icon="profile" />
+
+@if (user(); as currentUser) {
+  <eci-card>
+    <form class="profile" [formGroup]="form" (ngSubmit)="save()">
+      <label class="profile__field">
+        <span>{{ 'common.name' | translate }}</span>
+        <input type="text" formControlName="name" autocomplete="name" />
+      </label>
+
+      <label class="profile__field">
+        <span>{{ 'common.email' | translate }}</span>
+        <input type="email" [value]="currentUser.email" disabled />
+      </label>
+
+      <label class="profile__field">
+        <span>{{ 'common.program' | translate }}</span>
+        <input type="text" formControlName="program" autocomplete="off" />
+      </label>
+
+      <label class="profile__field">
+        <span>{{ 'profile.role' | translate }}</span>
+        <input type="text" [value]="currentUser.role" disabled />
+      </label>
+
+      @if (saved()) {
+        <p class="profile__saved" role="status">{{ 'profile.saved' | translate }}</p>
+      }
+
+      <eci-button type="submit">{{ 'profile.save' | translate }}</eci-button>
+    </form>
+  </eci-card>
+}

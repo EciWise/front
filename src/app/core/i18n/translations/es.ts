@@ -135,4 +135,47 @@ export const es = {
     saved: 'Cambios guardados.',
     role: 'Rol',
   },
+  tutor: {
+    control: {
+      upcoming: 'Próximas tutorías',
+      pending: 'Solicitudes pendientes',
+      slots: 'Bloques disponibles',
+    },
+    schedule: {
+      title: 'Crear horarios',
+      create: 'Crear tutoría',
+      empty: 'No has creado horarios de tutoría.',
+      cancel: 'Cancelar',
+      seats: 'Cupos',
+    },
+    availability: {
+      title: 'Disponibilidad',
+      hint: 'Selecciona los bloques en los que puedes atender tutorías.',
+      save: 'Guardar disponibilidad',
+      saved: 'Disponibilidad actualizada.',
+    },
+    requests: {
+      title: 'Tutorías solicitadas',
+      student: 'Estudiante',
+      accept: 'Aceptar',
+      reject: 'Rechazar',
+      pending: 'Pendiente',
+      accepted: 'Aceptada',
+      rejected: 'Rechazada',
+      empty: 'No tienes solicitudes por revisar.',
+    },
+    history: {
+      title: 'Historial de tutorías',
+      completed: 'Completada',
+      cancelled: 'Cancelada',
+      empty: 'Aún no tienes tutorías en el historial.',
+    },
+  },
+  days: {
+    mon: 'Lunes',
+    tue: 'Martes',
+    wed: 'Miércoles',
+    thu: 'Jueves',
+    fri: 'Viernes',
+  },
 } as const;

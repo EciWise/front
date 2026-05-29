@@ -1,0 +1,35 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 28rem;
+}
+
+.profile__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.profile__field input {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.profile__field input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.profile__saved {
+  margin: 0;
+  color: var(--success);
+  font-size: 0.875rem;
+}

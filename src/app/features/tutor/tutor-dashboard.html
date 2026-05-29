@@ -1,0 +1,15 @@
+<eci-page-header titleKey="nav.controlCenter" icon="dashboard" />
+
+<ul class="stats">
+  @for (stat of stats; track stat.labelKey) {
+    <li>
+      <a class="stat" [routerLink]="stat.route">
+        <span class="stat__icon"><eci-icon [name]="stat.icon" [size]="24" /></span>
+        <span class="stat__value">{{ stat.value() }}</span>
+        <span class="stat__label">{{ stat.labelKey | translate }}</span>
+      </a>
+    </li>
+  }
+</ul>
+
+<eci-dashboard-grid [items]="items" />

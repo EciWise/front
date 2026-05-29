@@ -135,4 +135,47 @@ export const en = {
     saved: 'Changes saved.',
     role: 'Role',
   },
+  tutor: {
+    control: {
+      upcoming: 'Upcoming sessions',
+      pending: 'Pending requests',
+      slots: 'Available blocks',
+    },
+    schedule: {
+      title: 'Create schedule',
+      create: 'Create session',
+      empty: 'You have not created any tutoring slots.',
+      cancel: 'Cancel',
+      seats: 'Seats',
+    },
+    availability: {
+      title: 'Availability',
+      hint: 'Select the time blocks when you can hold tutoring sessions.',
+      save: 'Save availability',
+      saved: 'Availability updated.',
+    },
+    requests: {
+      title: 'Tutoring requests',
+      student: 'Student',
+      accept: 'Accept',
+      reject: 'Reject',
+      pending: 'Pending',
+      accepted: 'Accepted',
+      rejected: 'Rejected',
+      empty: 'You have no requests to review.',
+    },
+    history: {
+      title: 'Tutoring history',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+      empty: 'You have no tutoring sessions in your history yet.',
+    },
+  },
+  days: {
+    mon: 'Monday',
+    tue: 'Tuesday',
+    wed: 'Wednesday',
+    thu: 'Thursday',
+    fri: 'Friday',
+  },
 } as const;
