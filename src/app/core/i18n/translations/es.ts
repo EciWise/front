@@ -178,4 +178,30 @@ export const es = {
     thu: 'Jueves',
     fri: 'Viernes',
   },
+  roles: {
+    STUDENT: 'Estudiante',
+    TUTOR: 'Tutor',
+    ADMIN: 'Administrador',
+  },
+  admin: {
+    users: {
+      title: 'Administración de usuarios',
+      active: 'Activo',
+      inactive: 'Inactivo',
+      activate: 'Activar',
+      deactivate: 'Desactivar',
+      changeRole: 'Cambiar rol',
+      createTitle: 'Crear usuario',
+      create: 'Crear',
+      empty: 'No hay usuarios registrados.',
+      count: '{{count}} usuarios',
+    },
+    csv: {
+      title: 'Carga masiva (CSV)',
+      hint: 'Sube un archivo CSV con columnas: nombre, correo, rol (STUDENT, TUTOR o ADMIN).',
+      choose: 'Seleccionar CSV',
+      imported: 'Se importaron {{count}} usuarios.',
+      invalid: 'El archivo no tiene el formato esperado.',
+    },
+  },
 } as const;

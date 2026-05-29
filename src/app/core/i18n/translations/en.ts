@@ -178,4 +178,30 @@ export const en = {
     thu: 'Thursday',
     fri: 'Friday',
   },
+  roles: {
+    STUDENT: 'Student',
+    TUTOR: 'Tutor',
+    ADMIN: 'Administrator',
+  },
+  admin: {
+    users: {
+      title: 'User management',
+      active: 'Active',
+      inactive: 'Inactive',
+      activate: 'Activate',
+      deactivate: 'Deactivate',
+      changeRole: 'Change role',
+      createTitle: 'Create user',
+      create: 'Create',
+      empty: 'No users registered.',
+      count: '{{count}} users',
+    },
+    csv: {
+      title: 'Bulk upload (CSV)',
+      hint: 'Upload a CSV file with columns: name, email, role (STUDENT, TUTOR or ADMIN).',
+      choose: 'Choose CSV',
+      imported: '{{count}} users imported.',
+      invalid: 'The file does not have the expected format.',
+    },
+  },
 } as const;

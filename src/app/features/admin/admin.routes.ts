@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { SectionPlaceholderComponent } from '../../shared/ui/section-placeholder/section-placeholder';
 
-/** Rutas del área de administración. Gestión de usuarios en la Fase 4. */
+/** Rutas del área de administración. */
 export const ADMIN_ROUTES: Routes = [
   {
     path: '',
@@ -9,7 +8,6 @@ export const ADMIN_ROUTES: Routes = [
   },
   {
     path: 'users',
-    component: SectionPlaceholderComponent,
-    data: { titleKey: 'nav.users', icon: 'users' },
+    loadComponent: () => import('./users/users').then((m) => m.AdminUsersComponent),
   },
 ];
