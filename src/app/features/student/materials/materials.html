@@ -1,0 +1,35 @@
+<eci-page-header titleKey="materials.title" icon="materials" />
+
+<div class="materials-search">
+  <eci-icon name="search" [size]="18" />
+  <input
+    type="search"
+    [value]="query()"
+    (input)="onSearch($any($event.target).value)"
+    [placeholder]="'materials.searchPlaceholder' | translate"
+    [attr.aria-label]="'common.search' | translate"
+  />
+</div>
+
+@if (filtered().length === 0) {
+  <eci-card><p class="empty">{{ 'materials.empty' | translate }}</p></eci-card>
+} @else {
+  <ul class="material-list">
+    @for (item of filtered(); track item.id) {
+      <li>
+        <eci-card>
+          <div class="material">
+            <span class="material__type"><eci-icon name="file" [size]="22" /></span>
+            <div class="material__info">
+              <h2 class="material__title">{{ item.title }}</h2>
+              <p class="material__meta">{{ item.subject }} · {{ item.type }}</p>
+            </div>
+            <a class="material__download" [href]="item.url">
+              {{ 'materials.download' | translate }}
+            </a>
+          </div>
+        </eci-card>
+      </li>
+    }
+  </ul>
+}

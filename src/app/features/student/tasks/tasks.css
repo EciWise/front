@@ -1,0 +1,98 @@
+.task-add {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.task-add__input {
+  flex: 1;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+}
+
+.task-summary {
+  margin: var(--space-6) 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.task-empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.task--done .task__title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.task__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.task__title {
+  font-weight: 500;
+}
+
+.task__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.task__subject {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.task__status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  color: var(--text-muted);
+}
+
+.task__status[data-status='pending'] {
+  background: color-mix(in srgb, var(--warning) 18%, transparent);
+  color: var(--warning);
+}
+
+.task__status[data-status='in-progress'] {
+  background: color-mix(in srgb, var(--info) 18%, transparent);
+  color: var(--info);
+}
+
+.task__status[data-status='done'] {
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success);
+}
