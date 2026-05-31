@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Role } from '../../../core/models/role.enum';
 import { User } from '../../../core/models/user.model';
@@ -9,35 +8,30 @@ import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
 import { UserAdminService } from '../user-admin.service';
 
-/** Administración de usuarios: tabla, alta individual y carga CSV masiva. */
+/** Administración de usuarios: tabla con datos reales y carga masiva por CSV. */
 @Component({
   selector: 'eci-admin-users',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    PageHeaderComponent,
-    CardComponent,
-    ButtonComponent,
-    IconComponent,
-  ],
+  imports: [TranslatePipe, PageHeaderComponent, CardComponent, ButtonComponent, IconComponent],
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class AdminUsersComponent {
-  private readonly fb = inject(FormBuilder);
+export class AdminUsersComponent implements OnInit {
   private readonly service = inject(UserAdminService);
 
   protected readonly users = this.service.users;
   protected readonly roles = Object.values(Role);
+
+  /** Estado de la carga CSV: mensaje a mostrar, si es error y resultado. */
+  protected readonly uploading = signal(false);
   protected readonly importMessage = signal<string | null>(null);
   protected readonly importError = signal(false);
+  protected readonly importCreated = signal(0);
+  protected readonly importErrors = signal(0);
 
-  protected readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    role: [Role.Student, [Validators.required]],
-  });
+  ngOnInit(): void {
+    this.service.load();
+  }
 
   toggleActive(user: User): void {
     this.service.toggleActive(user.id);
@@ -47,30 +41,29 @@ export class AdminUsersComponent {
     this.service.changeRole(user.id, value as Role);
   }
 
-  create(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    const { name, email, role } = this.form.getRawValue();
-    if (this.service.create(name, email, role)) {
-      this.form.reset({ name: '', email: '', role: Role.Student });
-    }
-  }
-
-  async onCsv(event: Event): Promise<void> {
+  onCsv(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) {
       return;
     }
-    const text = await file.text();
-    const count = this.service.importCsv(text);
-    this.importError.set(count === 0);
-    this.importMessage.set(count === 0 ? 'admin.csv.invalid' : 'admin.csv.imported');
-    this.importCount.set(count);
+    this.uploading.set(true);
+    this.importMessage.set('admin.csv.uploading');
+    this.importError.set(false);
+    this.service.bulkUploadCsv(file).subscribe({
+      next: (res) => {
+        this.uploading.set(false);
+        this.importCreated.set(res.creados);
+        this.importErrors.set(res.errores.length);
+        this.importError.set(res.creados === 0);
+        this.importMessage.set('admin.csv.result');
+      },
+      error: () => {
+        this.uploading.set(false);
+        this.importError.set(true);
+        this.importMessage.set('admin.csv.error');
+      },
+    });
     input.value = '';
   }
-
-  protected readonly importCount = signal(0);
 }

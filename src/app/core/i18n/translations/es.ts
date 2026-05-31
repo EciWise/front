@@ -287,10 +287,11 @@ export const es = {
     },
     csv: {
       title: 'Carga masiva (CSV)',
-      hint: 'Sube un archivo CSV con columnas: nombre, correo, rol (STUDENT, TUTOR o ADMIN).',
+      hint: 'Sube un CSV con columnas: nombre, apellido, email, rol (estudiante, tutor o admin). Se genera una contraseña temporal por usuario.',
       choose: 'Seleccionar CSV',
-      imported: 'Se importaron {{count}} usuarios.',
-      invalid: 'El archivo no tiene el formato esperado.',
+      uploading: 'Subiendo archivo…',
+      result: 'Se crearon {{creados}} usuarios ({{errores}} con error).',
+      error: 'No se pudo procesar el archivo.',
     },
   },
 } as const;

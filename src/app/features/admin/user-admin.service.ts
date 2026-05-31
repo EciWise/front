@@ -1,63 +1,113 @@
-import { Injectable, signal } from '@angular/core';
-import { Role } from '../../core/models/role.enum';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { AUTH_CONFIG } from '../../core/auth/auth.config';
+import { Role, roleFromApi } from '../../core/models/role.enum';
 import { User } from '../../core/models/user.model';
-import { CsvUserRow, parseUsersCsv } from './parse-users-csv';
-
-const SEED: readonly User[] = [
-  { id: 'u-student', name: 'Ana Estudiante', email: 'estudiante@escuelaing.edu.co', role: Role.Student, active: true, program: 'Ingeniería de Sistemas' },
-  { id: 'u-tutor', name: 'Carlos Tutor', email: 'tutor@escuelaing.edu.co', role: Role.Tutor, active: true, program: 'Matemáticas' },
-  { id: 'u-admin', name: 'Admin General', email: 'admin@escuelaing.edu.co', role: Role.Admin, active: true },
-  { id: 'u-4', name: 'Diego Ruiz', email: 'diego.ruiz@escuelaing.edu.co', role: Role.Student, active: false },
-];
 
 /**
- * Administración de usuarios (mock). Activar/desactivar, cambiar rol, alta
- * individual y carga masiva por CSV. Reemplazable por API real sin tocar la UI.
+ * IDs de rol y estado tal como los siembra Prisma en el backend (wise_auth).
+ * Coinciden con el orden de inserción de las tablas `Rol` y `EstadoUsuario`.
+ */
+const ROLE_ID: Record<Role, number> = {
+  [Role.Student]: 1,
+  [Role.Tutor]: 2,
+  [Role.Admin]: 3,
+};
+const ESTADO_ACTIVO = 1;
+const ESTADO_INACTIVO = 2;
+
+/** Usuario tal como lo devuelve `GET /gestion-usuarios`. */
+interface ApiUsuario {
+  readonly id: string;
+  readonly nombre: string;
+  readonly apellido: string;
+  readonly email: string;
+  readonly rol: { readonly id: number; readonly nombre: string };
+  readonly estado: { readonly id: number; readonly nombre: string };
+  readonly avatar_url?: string | null;
+}
+
+interface PaginatedUsuarios {
+  readonly data?: readonly ApiUsuario[];
+  readonly meta: { readonly total: number };
+}
+
+/** Resultado de la carga masiva por CSV (`POST /gestion-usuarios/carga-masiva`). */
+export interface BulkUploadResult {
+  readonly total: number;
+  readonly creados: number;
+  readonly errores: readonly { fila: number; email: string; motivo: string }[];
+  readonly usuarios: readonly {
+    email: string;
+    nombre: string;
+    apellido: string;
+    rol: string;
+    passwordTemporal: string;
+  }[];
+}
+
+/**
+ * Administración de usuarios contra el backend wise_auth. Lista, carga masiva
+ * por CSV, cambio de rol y activación/desactivación. El JWT lo añade el
+ * `authInterceptor`; los errores los normaliza el `errorInterceptor`.
  */
 @Injectable({ providedIn: 'root' })
 export class UserAdminService {
-  private readonly _users = signal<User[]>([...SEED]);
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(AUTH_CONFIG);
+
+  private readonly _users = signal<User[]>([]);
   readonly users = this._users.asReadonly();
 
-  toggleActive(id: string): void {
-    this._users.update((list) =>
-      list.map((u) => (u.id === id ? { ...u, active: !u.active } : u)),
-    );
+  private get base(): string {
+    return this.config.apiBaseUrl.replace(/\/+$/, '');
+  }
+
+  /** Carga la lista de usuarios desde el backend y la guarda en el signal. */
+  load(): void {
+    this.http
+      .get<PaginatedUsuarios>(`${this.base}/gestion-usuarios?page=1&limit=100`)
+      .subscribe({
+        next: (res) => this._users.set((res.data ?? []).map((u) => this.toUser(u))),
+        error: () => this._users.set([]),
+      });
+  }
+
+  /** Sube un CSV de usuarios al backend. Refresca la tabla tras la respuesta. */
+  bulkUploadCsv(file: File): Observable<BulkUploadResult> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http
+      .post<BulkUploadResult>(`${this.base}/gestion-usuarios/carga-masiva`, form)
+      .pipe(tap(() => this.load()));
   }
 
   changeRole(id: string, role: Role): void {
-    this._users.update((list) => list.map((u) => (u.id === id ? { ...u, role } : u)));
+    this.http
+      .patch(`${this.base}/gestion-usuarios/${id}/rol`, { rolId: ROLE_ID[role] })
+      .subscribe({ next: () => this.load() });
   }
 
-  create(name: string, email: string, role: Role): boolean {
-    if (!name.trim() || !email.includes('@') || this.emailExists(email)) {
-      return false;
+  toggleActive(id: string): void {
+    const user = this._users().find((u) => u.id === id);
+    if (!user) {
+      return;
     }
-    this._users.update((list) => [...list, this.toUser({ name: name.trim(), email, role })]);
-    return true;
+    const estadoId = user.active ? ESTADO_INACTIVO : ESTADO_ACTIVO;
+    this.http
+      .patch(`${this.base}/gestion-usuarios/${id}/estado`, { estadoId })
+      .subscribe({ next: () => this.load() });
   }
 
-  /** Importa usuarios desde el contenido de un CSV. Devuelve cuántos se crearon. */
-  importCsv(text: string): number {
-    const rows = parseUsersCsv(text).filter((r) => !this.emailExists(r.email));
-    if (rows.length === 0) {
-      return 0;
-    }
-    this._users.update((list) => [...list, ...rows.map((r) => this.toUser(r))]);
-    return rows.length;
-  }
-
-  private emailExists(email: string): boolean {
-    return this._users().some((u) => u.email.toLowerCase() === email.toLowerCase());
-  }
-
-  private toUser(row: CsvUserRow): User {
+  private toUser(u: ApiUsuario): User {
     return {
-      id: `u-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      name: row.name,
-      email: row.email,
-      role: row.role,
-      active: true,
+      id: u.id,
+      name: `${u.nombre} ${u.apellido}`.trim(),
+      email: u.email,
+      role: roleFromApi(u.rol?.nombre ?? ''),
+      active: u.estado?.nombre === 'activo',
+      avatarUrl: u.avatar_url ?? undefined,
     };
   }
 }

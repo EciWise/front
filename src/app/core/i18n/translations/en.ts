@@ -287,10 +287,11 @@ export const en = {
     },
     csv: {
       title: 'Bulk upload (CSV)',
-      hint: 'Upload a CSV file with columns: name, email, role (STUDENT, TUTOR or ADMIN).',
+      hint: 'Upload a CSV with columns: nombre, apellido, email, rol (estudiante, tutor or admin). A temporary password is generated per user.',
       choose: 'Choose CSV',
-      imported: '{{count}} users imported.',
-      invalid: 'The file does not have the expected format.',
+      uploading: 'Uploading file…',
+      result: '{{creados}} users created ({{errores}} with errors).',
+      error: 'Could not process the file.',
     },
   },
 } as const;
