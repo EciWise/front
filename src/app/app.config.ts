@@ -16,6 +16,8 @@ import { StaticTranslateLoader } from './core/i18n/static-translate.loader';
 import { I18nService } from './core/i18n/i18n.service';
 import { ThemeService } from './core/theme/theme.service';
 import { A11yService } from './core/a11y/a11y.service';
+import { AUTH_CONFIG } from './core/auth/auth.config';
+import { EnvService } from './core/config/env.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,5 +39,11 @@ export const appConfig: ApplicationConfig = {
       inject(I18nService).init();
       inject(A11yService).init();
     }),
+    provideAppInitializer(() => inject(EnvService).load()),
+    {
+      provide: AUTH_CONFIG,
+      useFactory: (env: EnvService) => ({ apiBaseUrl: env.get('API_BASE_URL', 'http://localhost:3001') }),
+      deps: [EnvService],
+    },
   ],
 };

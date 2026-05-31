@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,
@@ -11,6 +13,12 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+// Expose runtime env for the browser to consume.
+app.get('/assets/env.json', (req, res) => {
+  const apiBaseUrl = process.env['API_BASE_URL'] || process.env['API_BASEURL'] || 'http://localhost:3001';
+  res.json({ apiBaseUrl });
+});
 
 /**
  * Example Express Rest API endpoints can be defined here.

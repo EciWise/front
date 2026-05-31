@@ -10,7 +10,4 @@ export interface AuthConfig {
   readonly apiBaseUrl: string;
 }
 
-export const AUTH_CONFIG = new InjectionToken<AuthConfig>('AUTH_CONFIG', {
-  providedIn: 'root',
-  factory: () => ({ apiBaseUrl: 'http://localhost:3001' }),
-});
+export const AUTH_CONFIG = new InjectionToken<AuthConfig>('AUTH_CONFIG');
