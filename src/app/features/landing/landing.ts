@@ -1,14 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ElementRef,
-  PLATFORM_ID,
-  afterNextRender,
-  inject,
-  viewChild,
-} from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '../../shared/ui/button/button';
@@ -17,17 +7,16 @@ import { IconComponent } from '../../shared/ui/icon/icon';
 import { ThemeToggleComponent } from '../../core/theme/theme-toggle';
 import { LanguageSwitchComponent } from '../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../core/a11y/a11y-toggle';
-import { LandingSceneService } from './landing-scene.service';
+import { SpaceBackgroundComponent } from '../../shared/ui/space-background/space-background';
 
 /**
- * Landing pública con escena espacial 3D interactiva. La escena solo se
- * inicializa en el navegador y se omite si el usuario prefiere movimiento
- * reducido.
+ * Landing pública con escena espacial 3D interactiva. El fondo se delega al
+ * componente reutilizable `eci-space-background`, que también usan el login y
+ * el registro para mantener una estética coherente.
  */
 @Component({
   selector: 'eci-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [LandingSceneService],
   imports: [
     TranslatePipe,
     ButtonComponent,
@@ -36,29 +25,13 @@ import { LandingSceneService } from './landing-scene.service';
     LanguageSwitchComponent,
     A11yToggleComponent,
     IconComponent,
+    SpaceBackgroundComponent,
   ],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
 export class LandingComponent {
-  private readonly scene = inject(LandingSceneService);
   private readonly router = inject(Router);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-
-  private readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
-
-  constructor() {
-    afterNextRender(() => {
-      if (!this.isBrowser || this.prefersReducedMotion()) {
-        return;
-      }
-      const canvas = this.canvas()?.nativeElement;
-      if (canvas) {
-        void this.scene.init(canvas);
-      }
-    });
-    inject(DestroyRef).onDestroy(() => this.scene.dispose());
-  }
 
   goToLogin(): void {
     void this.router.navigate(['/auth/login']);
@@ -66,9 +39,5 @@ export class LandingComponent {
 
   goToRegister(): void {
     void this.router.navigate(['/auth/register']);
-  }
-
-  private prefersReducedMotion(): boolean {
-    return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   }
 }

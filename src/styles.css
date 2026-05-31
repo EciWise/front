@@ -1,4 +1,4 @@
-/* ECIWISE+ — estilos globales, tokens de diseño y temas */
+/* ECIWISE+ — estilos globales, tokens de diseño y temas (segun yo, son esos colores xd)*/
 
 @import 'tailwindcss';
 
@@ -15,7 +15,7 @@
   --brand-red-soft: #e23a52;
 
   /* Acentos por comunidad / rol */
-  --accent-student: #d6007a; /* fucsia */
+  --accent-student: #0b00d6; /* fucsia */
   --accent-tutor: #c8102e; /* rojo institucional */
   --accent-admin: #5a2a82; /* púrpura administrativo */
 

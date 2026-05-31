@@ -1,16 +1,20 @@
 <main class="auth" id="main-content" tabindex="-1">
-  <section class="auth__card">
-    <div class="auth__brand">
-      <eci-logo home="/" />
-    </div>
+  <eci-space-background />
 
-    @if (errorKey(); as err) {
-      <p class="auth__error" role="alert">{{ err | translate }}</p>
-      <p class="auth__switch">
-        <a routerLink="/auth/login">{{ 'common.login' | translate }}</a>
-      </p>
-    } @else {
-      <p class="auth__status" role="status">{{ 'auth.completing' | translate }}</p>
-    }
-  </section>
+  <div class="auth__main">
+    <section class="auth__card">
+      <div class="auth__brand">
+        <eci-logo home="/" />
+      </div>
+
+      @if (errorKey(); as err) {
+        <p class="auth__error" role="alert">{{ err | translate }}</p>
+        <p class="auth__switch">
+          <a routerLink="/auth/login">{{ 'common.login' | translate }}</a>
+        </p>
+      } @else {
+        <p class="auth__status" role="status">{{ 'auth.completing' | translate }}</p>
+      }
+    </section>
+  </div>
 </main>

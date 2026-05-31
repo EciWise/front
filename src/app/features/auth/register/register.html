@@ -1,125 +1,143 @@
 <main class="auth" id="main-content" tabindex="-1">
-  <section class="auth__card auth__card--wide">
-    <div class="auth__brand">
-      <eci-logo home="/" />
+  <eci-space-background />
+
+  <header class="auth__bar">
+    <eci-logo home="/" />
+    <div class="auth__controls">
+      <eci-language-switch />
+      <eci-theme-toggle />
+      <eci-a11y-toggle />
     </div>
-    <h1 class="auth__title">{{ 'auth.registerTitle' | translate }}</h1>
+  </header>
 
-    <ol class="auth__steps" [attr.aria-label]="'register.stepsLabel' | translate">
-      <li
-        class="auth__step"
-        [class.auth__step--active]="step() === 1"
-        [class.auth__step--done]="step() > 1"
-        [attr.aria-current]="step() === 1 ? 'step' : null"
-      >
-        <span class="auth__step-dot">1</span>
-        <span class="auth__step-label">{{ 'register.step1' | translate }}</span>
-      </li>
-      <li
-        class="auth__step"
-        [class.auth__step--active]="step() === 2"
-        [attr.aria-current]="step() === 2 ? 'step' : null"
-      >
-        <span class="auth__step-dot">2</span>
-        <span class="auth__step-label">{{ 'register.step2' | translate }}</span>
-      </li>
-    </ol>
+  <div class="auth__main">
+    <section class="auth__card auth__card--wide">
+      <h1 class="auth__title">{{ 'auth.registerTitle' | translate }}</h1>
 
-    <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()">
-      @if (step() === 1) {
-        <div class="auth__grid">
-          <label class="auth__field">
-            <span>{{ 'common.name' | translate }}</span>
-            <input type="text" formControlName="nombre" autocomplete="given-name" />
-          </label>
-          <label class="auth__field">
-            <span>{{ 'common.lastName' | translate }}</span>
-            <input type="text" formControlName="apellido" autocomplete="family-name" />
-          </label>
-          <label class="auth__field auth__field--full">
-            <span>{{ 'common.email' | translate }}</span>
-            <input type="email" formControlName="email" autocomplete="email" />
-          </label>
-          <label class="auth__field">
-            <span>{{ 'common.phone' | translate }}</span>
-            <input type="tel" formControlName="telefono" autocomplete="tel" />
-          </label>
-          <label class="auth__field">
-            <span>{{ 'common.password' | translate }}</span>
-            <input type="password" formControlName="password" autocomplete="new-password" />
-          </label>
-          <small class="auth__hint auth__field--full">{{ 'auth.passwordHint' | translate }}</small>
-        </div>
+      <ol class="auth__steps" [attr.aria-label]="'register.stepsLabel' | translate">
+        <li
+          class="auth__step"
+          [class.auth__step--active]="step() === 1"
+          [class.auth__step--done]="step() > 1"
+          [attr.aria-current]="step() === 1 ? 'step' : null"
+        >
+          <span class="auth__step-dot">1</span>
+          <span class="auth__step-label">{{ 'register.step1' | translate }}</span>
+        </li>
+        <li
+          class="auth__step"
+          [class.auth__step--active]="step() === 2"
+          [attr.aria-current]="step() === 2 ? 'step' : null"
+        >
+          <span class="auth__step-dot">2</span>
+          <span class="auth__step-label">{{ 'register.step2' | translate }}</span>
+        </li>
+      </ol>
 
-        @if (errorKey(); as err) {
-          <p class="auth__error" role="alert">{{ err | translate }}</p>
-        }
-
-        <eci-button type="button" [block]="true" (click)="next()">
-          {{ 'register.next' | translate }}
-        </eci-button>
-      } @else {
-        <fieldset class="auth__group" formGroupName="datosIa">
-          <legend class="auth__group-title">{{ 'register.iaSectionTitle' | translate }}</legend>
-          <p class="auth__hint">{{ 'register.iaSectionHint' | translate }}</p>
-
+      <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()">
+        @if (step() === 1) {
           <div class="auth__grid">
             <label class="auth__field">
-              <span>{{ 'ia.fields.studyTimeWeekly' | translate }}</span>
-              <input type="number" formControlName="studyTimeWeekly" min="0" max="20" step="0.5" />
+              <span>{{ 'common.name' | translate }}</span>
+              <input type="text" formControlName="nombre" autocomplete="given-name" />
             </label>
             <label class="auth__field">
-              <span>{{ 'ia.fields.absences' | translate }}</span>
-              <input type="number" formControlName="absences" min="0" max="30" />
+              <span>{{ 'common.lastName' | translate }}</span>
+              <input type="text" formControlName="apellido" autocomplete="family-name" />
             </label>
             <label class="auth__field auth__field--full">
-              <span>{{ 'ia.fields.parentalSupport' | translate }}</span>
-              <input type="number" formControlName="parentalSupport" min="0" max="4" />
+              <span>{{ 'common.email' | translate }}</span>
+              <input type="email" formControlName="email" autocomplete="email" />
             </label>
+            <label class="auth__field">
+              <span>{{ 'common.phone' | translate }}</span>
+              <input type="tel" formControlName="telefono" autocomplete="tel" />
+            </label>
+            <label class="auth__field">
+              <span>{{ 'common.password' | translate }}</span>
+              <input type="password" formControlName="password" autocomplete="new-password" />
+            </label>
+            <small class="auth__hint auth__field--full">{{
+              'auth.passwordHint' | translate
+            }}</small>
           </div>
 
-          <div class="auth__checks">
-            <label class="auth__check">
-              <input type="checkbox" formControlName="tutoring" />
-              <span>{{ 'ia.fields.tutoring' | translate }}</span>
-            </label>
-            <label class="auth__check">
-              <input type="checkbox" formControlName="extracurricular" />
-              <span>{{ 'ia.fields.extracurricular' | translate }}</span>
-            </label>
-            <label class="auth__check">
-              <input type="checkbox" formControlName="sports" />
-              <span>{{ 'ia.fields.sports' | translate }}</span>
-            </label>
-            <label class="auth__check">
-              <input type="checkbox" formControlName="music" />
-              <span>{{ 'ia.fields.music' | translate }}</span>
-            </label>
-            <label class="auth__check">
-              <input type="checkbox" formControlName="volunteering" />
-              <span>{{ 'ia.fields.volunteering' | translate }}</span>
-            </label>
-          </div>
-        </fieldset>
+          @if (errorKey(); as err) {
+            <p class="auth__error" role="alert">{{ err | translate }}</p>
+          }
 
-        @if (errorKey(); as err) {
-          <p class="auth__error" role="alert">{{ err | translate }}</p>
+          <eci-button type="button" [block]="true" (click)="next()">
+            {{ 'register.next' | translate }}
+          </eci-button>
+        } @else {
+          <fieldset class="auth__group" formGroupName="datosIa">
+            <legend class="auth__group-title">{{ 'register.iaSectionTitle' | translate }}</legend>
+            <p class="auth__hint">{{ 'register.iaSectionHint' | translate }}</p>
+
+            <div class="auth__grid">
+              <label class="auth__field">
+                <span>{{ 'ia.fields.studyTimeWeekly' | translate }}</span>
+                <input
+                  type="number"
+                  formControlName="studyTimeWeekly"
+                  min="0"
+                  max="20"
+                  step="0.5"
+                />
+              </label>
+              <label class="auth__field">
+                <span>{{ 'ia.fields.absences' | translate }}</span>
+                <input type="number" formControlName="absences" min="0" max="30" />
+              </label>
+              <label class="auth__field auth__field--full">
+                <span>{{ 'ia.fields.parentalSupport' | translate }}</span>
+                <input type="number" formControlName="parentalSupport" min="0" max="4" />
+              </label>
+            </div>
+
+            <div class="auth__checks">
+              <label class="auth__check">
+                <input type="checkbox" formControlName="tutoring" />
+                <span>{{ 'ia.fields.tutoring' | translate }}</span>
+              </label>
+              <label class="auth__check">
+                <input type="checkbox" formControlName="extracurricular" />
+                <span>{{ 'ia.fields.extracurricular' | translate }}</span>
+              </label>
+              <label class="auth__check">
+                <input type="checkbox" formControlName="sports" />
+                <span>{{ 'ia.fields.sports' | translate }}</span>
+              </label>
+              <label class="auth__check">
+                <input type="checkbox" formControlName="music" />
+                <span>{{ 'ia.fields.music' | translate }}</span>
+              </label>
+              <label class="auth__check">
+                <input type="checkbox" formControlName="volunteering" />
+                <span>{{ 'ia.fields.volunteering' | translate }}</span>
+              </label>
+            </div>
+          </fieldset>
+
+          @if (errorKey(); as err) {
+            <p class="auth__error" role="alert">{{ err | translate }}</p>
+          }
+
+          <div class="auth__actions">
+            <eci-button type="button" variant="secondary" (click)="back()">
+              {{ 'common.back' | translate }}
+            </eci-button>
+            <eci-button type="submit" [block]="true" [disabled]="loading()">
+              {{ 'common.register' | translate }}
+            </eci-button>
+          </div>
         }
+      </form>
 
-        <div class="auth__actions">
-          <eci-button type="button" variant="secondary" (click)="back()">
-            {{ 'common.back' | translate }}
-          </eci-button>
-          <eci-button type="submit" [block]="true" [disabled]="loading()">
-            {{ 'common.register' | translate }}
-          </eci-button>
-        </div>
-      }
-    </form>
-
-    <p class="auth__switch">
-      {{ 'auth.hasAccount' | translate }}
-      <a routerLink="/auth/login">{{ 'common.login' | translate }}</a>
-    </p>
-  </section>
+      <p class="auth__switch">
+        {{ 'auth.hasAccount' | translate }}
+        <a routerLink="/auth/login">{{ 'common.login' | translate }}</a>
+      </p>
+    </section>
+  </div>
 </main>

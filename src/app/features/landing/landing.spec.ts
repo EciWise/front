@@ -3,7 +3,8 @@ import { Router, provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { LandingComponent } from './landing';
-import { LandingSceneService } from './landing-scene.service';
+import { SpaceBackgroundComponent } from '../../shared/ui/space-background/space-background';
+import { SpaceSceneService } from '../../shared/ui/space-background/space-scene.service';
 import { StaticTranslateLoader } from '../../core/i18n/static-translate.loader';
 
 /** Stub de la escena para no inicializar WebGL/three.js en jsdom. */
@@ -35,8 +36,8 @@ describe('LandingComponent', () => {
         }),
       ],
     })
-      .overrideComponent(LandingComponent, {
-        set: { providers: [{ provide: LandingSceneService, useClass: SceneStub }] },
+      .overrideComponent(SpaceBackgroundComponent, {
+        set: { providers: [{ provide: SpaceSceneService, useClass: SceneStub }] },
       })
       .compileComponents();
 

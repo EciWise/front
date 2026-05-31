@@ -7,12 +7,26 @@ import { ROLE_HOME } from '../../../core/models/role.enum';
 import { DatosIaRegistro, RegisterRequest, User } from '../../../core/models/user.model';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
+import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
+import { ThemeToggleComponent } from '../../../core/theme/theme-toggle';
+import { LanguageSwitchComponent } from '../../../core/i18n/language-switch';
+import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
 
 /** Registro de un nuevo estudiante (correo + datos básicos para la IA). */
 @Component({
   selector: 'eci-register',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ButtonComponent, LogoComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    ButtonComponent,
+    LogoComponent,
+    SpaceBackgroundComponent,
+    ThemeToggleComponent,
+    LanguageSwitchComponent,
+    A11yToggleComponent,
+  ],
   templateUrl: './register.html',
   styleUrl: '../auth.css',
 })
@@ -36,7 +50,11 @@ export class RegisterComponent {
     telefono: [''],
     password: [
       '',
-      [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)],
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+      ],
     ],
     datosIa: this.fb.nonNullable.group({
       studyTimeWeekly: [null as number | null, [Validators.min(0), Validators.max(20)]],

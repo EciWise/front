@@ -12,7 +12,7 @@ import type {
   WebGLRenderer,
 } from 'three';
 
-/** Símbolos académicos que flotan en el fondo de la landing. */
+/** Símbolos académicos que flotan en el fondo espacial. */
 const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω'];
 const SYMBOL_COLORS = [0xffffff, 0xc8102e, 0xd6007a];
 
@@ -25,12 +25,12 @@ interface FloatingSprite {
 }
 
 /**
- * Escena espacial 3D de la landing: un campo de estrellas con profundidad y
+ * Escena espacial 3D reutilizable: un campo de estrellas con profundidad y
  * símbolos académicos flotando, para un fondo impactante y referente al
  * estudio. Carga three.js de forma diferida; solo debe usarse en el navegador.
  */
 @Injectable()
-export class LandingSceneService {
+export class SpaceSceneService {
   private renderer?: WebGLRenderer;
   private scene?: Scene;
   private camera?: PerspectiveCamera;

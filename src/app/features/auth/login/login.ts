@@ -7,12 +7,26 @@ import { ROLE_HOME } from '../../../core/models/role.enum';
 import { User } from '../../../core/models/user.model';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
+import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
+import { ThemeToggleComponent } from '../../../core/theme/theme-toggle';
+import { LanguageSwitchComponent } from '../../../core/i18n/language-switch';
+import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
 
 /** Pantalla de inicio de sesión (correo + Google vía redirección al backend). */
 @Component({
   selector: 'eci-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ButtonComponent, LogoComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    ButtonComponent,
+    LogoComponent,
+    SpaceBackgroundComponent,
+    ThemeToggleComponent,
+    LanguageSwitchComponent,
+    A11yToggleComponent,
+  ],
   templateUrl: './login.html',
   styleUrl: '../auth.css',
 })
