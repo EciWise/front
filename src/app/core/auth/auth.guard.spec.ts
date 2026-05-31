@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { authGuard, roleGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { AUTH_CONFIG } from './auth.config';
 import { Role } from '../models/role.enum';
 
 function runAuthGuard(url: string): boolean | UrlTree {
@@ -23,7 +24,13 @@ describe('auth guards', () => {
 
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient()] });
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: 'http://localhost:3001' } },
+      ],
+    });
     auth = TestBed.inject(AuthService);
   });
 
