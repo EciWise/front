@@ -13,7 +13,7 @@ import type {
 } from 'three';
 
 
-const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω', '∂', '∇', '∈', '∉', '∪', '∩', '∀', '∃'];
+const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω', '∂', '∇', '∈', '∉', '∪', '∩', '∀', '∃', '9','3'];
 const SYMBOL_COLORS = [0xffffff, 0xc8102e, 0xd6007a];
 
 interface FloatingSprite {

@@ -10,7 +10,6 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
-import { CollapseComponent } from '../../../shared/ui/collapse/collapse';
 import { DATOS_IA_PAGES, markPageTouchedAndValidate } from '../datos-ia-form';
 
 /** Opción de un select codificado (valor numérico que espera el backend + clave i18n). */
@@ -34,7 +33,6 @@ interface SelectOption {
     TranslatePipe,
     ButtonComponent,
     IconComponent,
-    CollapseComponent,
   ],
   templateUrl: './datos-ia-fields.html',
   styleUrl: './datos-ia-fields.css',

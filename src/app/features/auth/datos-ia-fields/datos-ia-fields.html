@@ -35,9 +35,16 @@
             @if (errorKeyFor('gender'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.gender' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-gender'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-gender">
+              {{ 'datosIa.desc.gender' | translate }}
+            </p>
           </div>
 
           <div class="dia__field">
@@ -53,9 +60,16 @@
             @if (errorKeyFor('ethnicity'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.ethnicity' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-ethnicity'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-ethnicity">
+              {{ 'datosIa.desc.ethnicity' | translate }}
+            </p>
           </div>
 
           <div class="dia__field">
@@ -73,9 +87,16 @@
             @if (errorKeyFor('parentalEducation'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.parentalEducation' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-parentalEducation'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-parentalEducation">
+              {{ 'datosIa.desc.parentalEducation' | translate }}
+            </p>
           </div>
 
           <div class="dia__field">
@@ -93,9 +114,16 @@
             @if (errorKeyFor('parentalSupport'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.parentalSupport' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-parentalSupport'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-parentalSupport">
+              {{ 'datosIa.desc.parentalSupport' | translate }}
+            </p>
           </div>
         </div>
       }
@@ -110,9 +138,16 @@
             @if (errorKeyFor('studyTimeWeekly'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.studyTimeWeekly' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-studyTimeWeekly'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-studyTimeWeekly">
+              {{ 'datosIa.desc.studyTimeWeekly' | translate }}
+            </p>
           </div>
 
           <div class="dia__field">
@@ -123,9 +158,16 @@
             @if (errorKeyFor('absences'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-              <p class="dia__explain-text">{{ 'datosIa.desc.absences' | translate }}</p>
-            </eci-collapse>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-absences'"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" id="explain-absences">
+              {{ 'datosIa.desc.absences' | translate }}
+            </p>
           </div>
         </div>
 
@@ -138,9 +180,16 @@
                   <input type="checkbox" [formControlName]="c" />
                   <span>{{ 'datosIa.labels.' + c | translate }}</span>
                 </label>
-                <eci-collapse [summary]="'datosIa.whatIsThis' | translate">
-                  <p class="dia__explain-text">{{ 'datosIa.desc.' + c | translate }}</p>
-                </eci-collapse>
+                <button
+                  type="button"
+                  class="dia__explain-toggle"
+                  [attr.aria-describedby]="'explain-' + c"
+                >
+                  {{ 'datosIa.whatIsThis' | translate }}
+                </button>
+                <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + c">
+                  {{ 'datosIa.desc.' + c | translate }}
+                </p>
               </div>
             }
           </div>
