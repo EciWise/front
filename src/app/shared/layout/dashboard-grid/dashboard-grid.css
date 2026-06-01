@@ -1,3 +1,11 @@
+/* Margen de respiro lateral e inferior: el cuerpo del dashboard recorta su
+   overflow, así que sin esto el zoom (scale) y la sombra de las tarjetas del
+   borde quedan cortados al pasar el cursor. */
+:host {
+  display: block;
+  padding: 0 var(--space-3) var(--space-4);
+}
+
 .grid {
   list-style: none;
   margin: var(--space-6) 0 0;

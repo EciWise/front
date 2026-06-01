@@ -11,12 +11,6 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { SpaceSceneService } from './space-scene.service';
 
-/**
- * Fondo espacial 3D reutilizable (campo de estrellas + símbolos académicos
- * flotando). Renderiza un canvas fijo a pantalla completa, detrás del
- * contenido y sin capturar clics. La escena solo se inicializa en el navegador
- * y se omite si el usuario prefiere movimiento reducido.
- */
 @Component({
   selector: 'eci-space-background',
   changeDetection: ChangeDetectionStrategy.OnPush,

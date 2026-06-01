@@ -22,6 +22,8 @@
   flex-direction: column;
   gap: var(--space-2);
   min-width: 0;
+  /* Contexto de posicionamiento del tooltip de explicación. */
+  position: relative;
 }
 
 .dia__field-label {
@@ -43,6 +45,67 @@
   margin: 0;
   color: var(--text-muted);
   line-height: 1.4;
+}
+
+/* Disparador de la explicación: enlace discreto, no estira el formulario. */
+.dia__explain-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.78rem;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: help;
+  transition: color var(--transition-fast);
+}
+
+.dia__explain-toggle:hover,
+.dia__explain-toggle:focus-visible {
+  color: var(--accent);
+}
+
+/* Explicación como tooltip flotante: se superpone (no empuja el contenido) y
+   aparece con un fade suave al pasar el cursor o enfocar el disparador. */
+.dia__explain-tip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-md);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base),
+    visibility var(--transition-base);
+}
+
+.dia__explain-toggle:hover + .dia__explain-tip,
+.dia__explain-toggle:focus + .dia__explain-tip,
+.dia__explain-tip:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dia__explain-tip {
+    transition: opacity var(--transition-fast);
+    transform: none;
+  }
 }
 
 /* Cada actividad sí/no con su comentario explicativo. */

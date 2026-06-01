@@ -12,9 +12,8 @@ import type {
   WebGLRenderer,
 } from 'three';
 
-/** Símbolos académicos que flotan en el fondo espacial. */
-const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω'];
-/** Colores de los símbolos (mismos en ambos temas: blanco, rojo y fucsia). */
+
+const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω', '∂', '∇', '∈', '∉', '∪', '∩', '∀', '∃'];
 const SYMBOL_COLORS = [0xffffff, 0xc8102e, 0xd6007a];
 
 interface FloatingSprite {
@@ -25,11 +24,6 @@ interface FloatingSprite {
   readonly drift: number;
 }
 
-/**
- * Escena espacial 3D reutilizable: un campo de estrellas con profundidad y
- * símbolos académicos flotando, para un fondo impactante y referente al
- * estudio. Carga three.js de forma diferida; solo debe usarse en el navegador.
- */
 @Injectable()
 export class SpaceSceneService {
   private renderer?: WebGLRenderer;

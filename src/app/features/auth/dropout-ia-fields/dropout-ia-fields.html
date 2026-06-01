@@ -76,10 +76,16 @@
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
 
-            <details class="dia__explain">
-              <summary>{{ 'datosIa.whatIsThis' | translate }}</summary>
-              <p>{{ 'datosIa.dropout.desc.' + f.control | translate }}</p>
-            </details>
+            <button
+              type="button"
+              class="dia__explain-toggle"
+              [attr.aria-describedby]="'explain-' + f.control"
+            >
+              {{ 'datosIa.whatIsThis' | translate }}
+            </button>
+            <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + f.control">
+              {{ 'datosIa.dropout.desc.' + f.control | translate }}
+            </p>
           </div>
         }
       </div>
