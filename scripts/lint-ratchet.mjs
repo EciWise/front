@@ -22,12 +22,27 @@ const BASELINE_FILE = resolve(repoRoot, '.husky/lint-baseline.json');
 // Lintea todo el proyecto según los patrones del flat config (eslint.config.mjs).
 const ESLINT_ARGS = ['.'];
 
+function getEslintCommand() {
+  const localJs = resolve(repoRoot, 'node_modules', 'eslint', 'bin', 'eslint.js');
+  if (existsSync(localJs)) {
+    return {
+      cmd: process.execPath,
+      args: [localJs, ...ESLINT_ARGS, '-f', 'json'],
+    };
+  }
+  return {
+    cmd: process.platform === 'win32' ? 'npx.cmd' : 'npx',
+    args: ['eslint', ...ESLINT_ARGS, '-f', 'json'],
+  };
+}
+
 function runEslint() {
-  const res = spawnSync(
-    process.platform === 'win32' ? 'npx.cmd' : 'npx',
-    ['eslint', ...ESLINT_ARGS, '-f', 'json'],
-    { cwd: repoRoot, encoding: 'utf8', maxBuffer: 1024 * 1024 * 128 },
-  );
+  const { cmd, args } = getEslintCommand();
+  const res = spawnSync(cmd, args, {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024 * 128,
+  });
   if (res.error) {
     console.error('❌ No se pudo ejecutar ESLint:', res.error.message);
     process.exit(2);
