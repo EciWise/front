@@ -1,0 +1,312 @@
+.study-pick {
+  margin-bottom: var(--space-4);
+}
+
+.study-pick__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 24rem;
+  font-size: 0.85rem;
+}
+
+.study-pick__field select {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.study-msg {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.study-count {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ── Tarjeta volteable ── */
+
+.flashcard-stage {
+  display: flex;
+  justify-content: center;
+  perspective: 1200px;
+  touch-action: none;
+}
+
+.flashcard {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  aspect-ratio: 3 / 2;
+  cursor: pointer;
+  user-select: none;
+  transition: transform var(--transition-base);
+}
+
+.flashcard--dragging {
+  transition: none;
+  cursor: grabbing;
+}
+
+.flashcard__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 480ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.flashcard--flipped .flashcard__inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  backface-visibility: hidden;
+  text-align: center;
+}
+
+.flashcard__face--front {
+  background: linear-gradient(160deg, var(--surface), var(--surface-2, var(--surface)));
+}
+
+.flashcard__face--back {
+  transform: rotateY(180deg);
+  border-color: color-mix(in srgb, var(--brand-red) 35%, var(--border));
+}
+
+.flashcard__tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.flashcard__text {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.flashcard__hint {
+  position: absolute;
+  bottom: var(--space-3);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Resaltado del borde según la intención de calificación al arrastrar */
+.flashcard--repetir .flashcard__face {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+.flashcard--aceptable .flashcard__face {
+  border-color: var(--warning);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--warning) 40%, transparent);
+}
+
+.flashcard--aprendido .flashcard__face {
+  border-color: var(--success);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 40%, transparent);
+}
+
+/* Etiquetas de intención (aparecen al arrastrar hacia su dirección) */
+.drag-badge {
+  position: absolute;
+  top: 50%;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.drag-badge--repetir {
+  left: var(--space-3);
+  transform: translateY(-50%);
+  background: var(--danger);
+}
+
+.drag-badge--aprendido {
+  right: var(--space-3);
+  transform: translateY(-50%);
+  background: var(--success);
+}
+
+.drag-badge--aceptable {
+  left: 50%;
+  bottom: var(--space-3);
+  top: auto;
+  transform: translateX(-50%);
+  background: var(--warning);
+}
+
+.flashcard--repetir .drag-badge--repetir,
+.flashcard--aprendido .drag-badge--aprendido,
+.flashcard--aceptable .drag-badge--aceptable {
+  opacity: 1;
+}
+
+/* ── Calificación (botones) ── */
+
+.study-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.study-grades {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  align-items: center;
+}
+
+.study-grades__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.study-grades__btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.grade {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.grade:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.grade:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.grade--repetir {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.grade--aceptable {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.grade--aprendido {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+/* ── Final / felicitación ── */
+
+.study-done {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.study-done--celebrate {
+  position: relative;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-4) var(--space-2);
+  overflow: hidden;
+}
+
+.study-done__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--warning) 18%, transparent);
+  color: var(--warning);
+}
+
+.study-done__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.study-done__sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 30rem) {
+  .flashcard {
+    aspect-ratio: 4 / 3;
+  }
+
+  .flashcard__text {
+    font-size: 1.1rem;
+  }
+
+  .study-grades__btns .grade {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard,
+  .flashcard__inner {
+    transition: none;
+  }
+}

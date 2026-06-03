@@ -1,0 +1,129 @@
+@if (selected(); as col) {
+  <eci-aprendizaje-flashcards
+    [collection]="col"
+    [canModify]="canModify(col)"
+    (back)="selected.set(null)"
+  />
+} @else {
+  <div class="col-head">
+    <div class="col-head__title">
+      <h2>{{ 'aprendizaje.collections.title' | translate }}</h2>
+      <eci-info-tooltip [text]="'aprendizaje.tip.visibility' | translate" />
+    </div>
+    <eci-button variant="primary" (click)="openCreate()">
+      <eci-icon name="plus" [size]="16" /> {{ 'aprendizaje.collections.new' | translate }}
+    </eci-button>
+  </div>
+
+  @if (showForm()) {
+    <eci-card>
+      <form class="col-form" (submit)="$event.preventDefault(); submit()">
+        <label class="col-form__field">
+          <span>{{ 'aprendizaje.collections.name' | translate }}</span>
+          <input
+            type="text"
+            [value]="name()"
+            (input)="onName($any($event.target).value)"
+            [placeholder]="'aprendizaje.collections.name' | translate"
+            required
+          />
+        </label>
+
+        @if (!isStudent()) {
+          <label class="col-form__field">
+            <span>{{ 'aprendizaje.collections.visibility' | translate }}</span>
+            <select [value]="visibility()" (change)="onVisibility($any($event.target).value)">
+              <option value="PRIVATE">{{ 'aprendizaje.collections.private' | translate }}</option>
+              <option value="PUBLIC">{{ 'aprendizaje.collections.public' | translate }}</option>
+            </select>
+          </label>
+        } @else {
+          <p class="col-form__hint">{{ 'aprendizaje.collections.studentHint' | translate }}</p>
+        }
+
+        <div class="col-form__actions">
+          <eci-button variant="ghost" (click)="cancel()">
+            {{ 'aprendizaje.actions.cancel' | translate }}
+          </eci-button>
+          <eci-button variant="primary" type="submit">
+            {{ 'aprendizaje.actions.save' | translate }}
+          </eci-button>
+        </div>
+      </form>
+    </eci-card>
+  }
+
+  @if (loading()) {
+    <p class="col-msg">{{ 'aprendizaje.loading' | translate }}</p>
+  } @else if (collections().length === 0) {
+    <eci-card
+      ><p class="col-msg">{{ 'aprendizaje.collections.empty' | translate }}</p></eci-card
+    >
+  } @else {
+    <div class="col-search">
+      <eci-icon name="search" [size]="18" />
+      <input
+        type="search"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+        [placeholder]="'aprendizaje.collections.search' | translate"
+        [attr.aria-label]="'aprendizaje.collections.search' | translate"
+      />
+    </div>
+
+    @if (filtered().length === 0) {
+      <eci-card
+        ><p class="col-msg">{{ 'aprendizaje.collections.noResults' | translate }}</p></eci-card
+      >
+    } @else {
+      <ul class="col-list">
+        @for (c of filtered(); track c.id) {
+          <li>
+            <eci-card>
+              <div class="col-item">
+                <button type="button" class="col-item__main" (click)="selected.set(c)">
+                  <span class="col-item__name">{{ c.name }}</span>
+                  <span class="col-item__meta">
+                    <span class="badge" [class.badge--public]="c.visibility === 'PUBLIC'">
+                      {{
+                        'aprendizaje.collections.' +
+                          (c.visibility === 'PUBLIC' ? 'public' : 'private') | translate
+                      }}
+                    </span>
+                    {{ 'aprendizaje.collections.cards' | translate: { count: c.flashcardCount } }}
+                  </span>
+                  <span class="col-item__author">
+                    {{ 'aprendizaje.collections.by' | translate: { name: authorName(c) } }}
+                    @if (c.author.email) {
+                      <span class="col-item__email">{{ c.author.email }}</span>
+                    }
+                  </span>
+                </button>
+                @if (canModify(c)) {
+                  <div class="col-item__actions">
+                    <button
+                      type="button"
+                      class="icon-btn"
+                      [attr.aria-label]="'aprendizaje.actions.edit' | translate"
+                      (click)="openEdit(c)"
+                    >
+                      <eci-icon name="edit" [size]="18" />
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-btn icon-btn--danger"
+                      [attr.aria-label]="'aprendizaje.actions.delete' | translate"
+                      (click)="remove(c)"
+                    >
+                      <eci-icon name="trash" [size]="18" />
+                    </button>
+                  </div>
+                }
+              </div>
+            </eci-card>
+          </li>
+        }
+      </ul>
+    }
+  }
+}
