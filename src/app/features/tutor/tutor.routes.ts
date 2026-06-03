@@ -30,4 +30,9 @@ export const TUTOR_ROUTES: Routes = [
     path: 'history',
     loadComponent: () => import('./history/history').then((m) => m.TutorHistoryComponent),
   },
+  {
+    path: 'aprendizaje',
+    loadComponent: () =>
+      import('../aprendizaje/aprendizaje').then((m) => m.AprendizajeComponent),
+  },
 ];

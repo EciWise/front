@@ -1,0 +1,142 @@
+<div class="study-pick">
+  <label class="study-pick__field">
+    <span>{{ 'aprendizaje.study.pick' | translate }}</span>
+    <select [value]="selectedId() ?? ''" (change)="pick($any($event.target).value)">
+      <option value="">{{ 'aprendizaje.study.choose' | translate }}</option>
+      @for (c of collections(); track c.id) {
+        <option [value]="c.id">{{ c.name }}</option>
+      }
+    </select>
+  </label>
+</div>
+
+@if (selectedId() === null) {
+  <eci-card
+    ><p class="study-msg">{{ 'aprendizaje.study.prompt' | translate }}</p></eci-card
+  >
+} @else if (loading()) {
+  <p class="study-msg">{{ 'aprendizaje.loading' | translate }}</p>
+} @else if (current(); as item) {
+  <p class="study-count">
+    {{ 'aprendizaje.study.remaining' | translate: { count: remaining() } }}
+  </p>
+
+  <div class="flashcard-stage">
+    <div
+      class="flashcard"
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="'aprendizaje.study.flipHint' | translate"
+      [class.flashcard--flipped]="revealed()"
+      [class.flashcard--dragging]="dragging()"
+      [class.flashcard--repetir]="intent() === 'REPETIR'"
+      [class.flashcard--aceptable]="intent() === 'ACEPTABLE'"
+      [class.flashcard--aprendido]="intent() === 'APRENDIDO'"
+      [style.transform]="
+        dragging() || dragX() || dragY()
+          ? 'translate(' + dragX() + 'px,' + dragY() + 'px) rotate(' + dragX() / 20 + 'deg)'
+          : null
+      "
+      (click)="reveal()"
+      (keydown.enter)="reveal()"
+      (keydown.space)="$event.preventDefault(); reveal()"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+    >
+      <div class="flashcard__inner">
+        <div class="flashcard__face flashcard__face--front">
+          @if (item.card.title) {
+            <span class="flashcard__tag">{{ item.card.title }}</span>
+          }
+          <p class="flashcard__text">{{ item.card.question }}</p>
+          <span class="flashcard__hint">{{ 'aprendizaje.study.flipHint' | translate }}</span>
+        </div>
+        <div class="flashcard__face flashcard__face--back">
+          <span class="flashcard__tag">{{ 'aprendizaje.flashcards.answer' | translate }}</span>
+          <p class="flashcard__text">{{ item.card.answer }}</p>
+          <span class="flashcard__hint">{{ 'aprendizaje.study.dragHint' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Etiquetas de intención al arrastrar -->
+      <span class="drag-badge drag-badge--repetir">{{
+        'aprendizaje.grade.repetir' | translate
+      }}</span>
+      <span class="drag-badge drag-badge--aprendido">{{
+        'aprendizaje.grade.aprendido' | translate
+      }}</span>
+      <span class="drag-badge drag-badge--aceptable">{{
+        'aprendizaje.grade.aceptable' | translate
+      }}</span>
+    </div>
+  </div>
+
+  @if (revealed()) {
+    <div class="study-grades">
+      <span class="study-grades__label">
+        {{ 'aprendizaje.study.howWasIt' | translate }}
+        <eci-info-tooltip [text]="'aprendizaje.tip.grades' | translate" />
+      </span>
+      <div class="study-grades__btns">
+        <button
+          type="button"
+          class="grade grade--repetir"
+          [disabled]="grading()"
+          (click)="grade('REPETIR')"
+        >
+          ← {{ 'aprendizaje.grade.repetir' | translate }}
+          <eci-info-tooltip [text]="'aprendizaje.tip.repetir' | translate" />
+        </button>
+        <button
+          type="button"
+          class="grade grade--aceptable"
+          [disabled]="grading()"
+          (click)="grade('ACEPTABLE')"
+        >
+          ↓ {{ 'aprendizaje.grade.aceptable' | translate }}
+          <eci-info-tooltip [text]="'aprendizaje.tip.aceptable' | translate" />
+        </button>
+        <button
+          type="button"
+          class="grade grade--aprendido"
+          [disabled]="grading()"
+          (click)="grade('APRENDIDO')"
+        >
+          {{ 'aprendizaje.grade.aprendido' | translate }} →
+          <eci-info-tooltip [text]="'aprendizaje.tip.aprendido' | translate" />
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="study-actions">
+      <eci-button variant="primary" (click)="reveal()">
+        {{ 'aprendizaje.study.show' | translate }}
+      </eci-button>
+    </div>
+  }
+} @else if (finished()) {
+  <eci-card>
+    <div class="study-done study-done--celebrate">
+      <eci-confetti [count]="90" />
+      <span class="study-done__icon"><eci-icon name="trophy" [size]="40" /></span>
+      <p class="study-done__title">{{ 'aprendizaje.study.congrats' | translate }}</p>
+      <p class="study-done__sub">
+        {{ 'aprendizaje.study.reviewedCount' | translate: { count: queue().length } }}
+      </p>
+      <eci-button variant="primary" (click)="restart()">
+        {{ 'aprendizaje.study.another' | translate }}
+      </eci-button>
+    </div>
+  </eci-card>
+} @else {
+  <eci-card>
+    <div class="study-done">
+      <p class="study-done__title">{{ 'aprendizaje.study.done' | translate }}</p>
+      <eci-button variant="secondary" (click)="restart()">
+        {{ 'aprendizaje.study.another' | translate }}
+      </eci-button>
+    </div>
+  </eci-card>
+}

@@ -17,6 +17,7 @@ import { I18nService } from './core/i18n/i18n.service';
 import { ThemeService } from './core/theme/theme.service';
 import { A11yService } from './core/a11y/a11y.service';
 import { AUTH_CONFIG } from './core/auth/auth.config';
+import { STUDY_CONFIG } from './core/study/study.config';
 import { EnvService } from './core/config/env.service';
 
 export const appConfig: ApplicationConfig = {
@@ -43,6 +44,13 @@ export const appConfig: ApplicationConfig = {
     {
       provide: AUTH_CONFIG,
       useFactory: (env: EnvService) => ({ apiBaseUrl: env.get('apiBaseUrl', 'http://localhost:3001') }),
+      deps: [EnvService],
+    },
+    {
+      provide: STUDY_CONFIG,
+      useFactory: (env: EnvService) => ({
+        studyApiUrl: env.get('studyApiUrl', 'http://localhost:8082'),
+      }),
       deps: [EnvService],
     },
   ],

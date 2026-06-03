@@ -1,0 +1,57 @@
+@if (loading()) {
+  <p class="stats-msg">{{ 'aprendizaje.loading' | translate }}</p>
+} @else if (reviews(); as r) {
+  <div class="stats-cards">
+    <eci-card>
+      <p class="stat__value">{{ r.total }}</p>
+      <p class="stat__label">{{ 'aprendizaje.stats.total' | translate }}</p>
+    </eci-card>
+    <eci-card>
+      <p class="stat__value">{{ r.vencidas }}</p>
+      <p class="stat__label">
+        {{ 'aprendizaje.stats.due' | translate }}
+        <eci-info-tooltip [text]="'aprendizaje.tip.due' | translate" />
+      </p>
+    </eci-card>
+    <eci-card>
+      <p class="stat__value">{{ r.aprendido }}</p>
+      <p class="stat__label">{{ 'aprendizaje.state.APRENDIDO' | translate }}</p>
+    </eci-card>
+    <eci-card>
+      <p class="stat__value">{{ usage()?.totalUsed ?? 0 }}</p>
+      <p class="stat__label">{{ 'aprendizaje.stats.totalUsed' | translate }}</p>
+    </eci-card>
+  </div>
+
+  <div class="stats-grid">
+    <eci-card>
+      <h3 class="stats-section">
+        {{ 'aprendizaje.stats.byState' | translate }}
+        <eci-info-tooltip [text]="'aprendizaje.tip.states' | translate" />
+      </h3>
+      <eci-pie-chart [data]="stateData()" [title]="'aprendizaje.stats.byState' | translate">
+        {{ 'aprendizaje.stats.noData' | translate }}
+      </eci-pie-chart>
+    </eci-card>
+
+    <eci-card>
+      <h3 class="stats-section">{{ 'aprendizaje.stats.recent' | translate }}</h3>
+      @if (usage(); as u) {
+        @if (u.history.length === 0) {
+          <p class="stats-msg">{{ 'aprendizaje.stats.noUsage' | translate }}</p>
+        } @else {
+          <ul class="usage-list">
+            @for (item of u.history.slice(0, 8); track $index) {
+              <li class="usage-item">
+                <span class="usage-item__title">{{ item.flashcardTitle }}</span>
+                <span class="usage-item__date">{{ formatDate(item.usedAt) }}</span>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </eci-card>
+  </div>
+} @else {
+  <eci-card><p class="stats-msg">{{ 'aprendizaje.stats.noData' | translate }}</p></eci-card>
+}
