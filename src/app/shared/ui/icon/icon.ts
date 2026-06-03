@@ -5,6 +5,7 @@ import {
   LucideBell,
   LucideBookOpen,
   LucideBot,
+  LucideBrain,
   LucideCalendarCheck,
   LucideCalendarClock,
   LucideCheck,
@@ -14,13 +15,17 @@ import {
   LucideGamepad2,
   LucideGraduationCap,
   LucideHistory,
+  LucideInfo,
   LucideLayoutDashboard,
   LucideLifeBuoy,
   LucideListTodo,
   LucideMessageCircle,
+  LucidePencil,
+  LucidePlus,
   LucideSearch,
   LucideSettings,
   LucideShieldCheck,
+  LucideTrash2,
   LucideTrophy,
   LucideUser,
   LucideUserPlus,
@@ -56,7 +61,12 @@ export type IconName =
   | 'arrow-left'
   | 'arrow-right'
   | 'check'
-  | 'close';
+  | 'close'
+  | 'aprendizaje'
+  | 'info'
+  | 'plus'
+  | 'edit'
+  | 'trash';
 
 /**
  * Envoltorio de iconos. Mapea un nombre semántico a su icono lucide.
@@ -92,6 +102,11 @@ export type IconName =
     LucideArrowRight,
     LucideCheck,
     LucideX,
+    LucideBrain,
+    LucideInfo,
+    LucidePlus,
+    LucidePencil,
+    LucideTrash2,
   ],
   template: `
     @switch (name()) {
@@ -175,6 +190,21 @@ export type IconName =
       }
       @case ('close') {
         <svg lucideX [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('aprendizaje') {
+        <svg lucideBrain [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('info') {
+        <svg lucideInfo [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('plus') {
+        <svg lucidePlus [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('edit') {
+        <svg lucidePencil [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('trash') {
+        <svg lucideTrash2 [size]="size()" aria-hidden="true"></svg>
       }
     }
   `,

@@ -1,0 +1,76 @@
+<div class="fc-head">
+  <button type="button" class="fc-back" (click)="back.emit()">
+    <eci-icon name="arrow-left" [size]="18" />
+    {{ 'aprendizaje.flashcards.back' | translate }}
+  </button>
+  @if (canModify()) {
+    <eci-button variant="primary" (click)="openCreate()">
+      <eci-icon name="plus" [size]="16" /> {{ 'aprendizaje.flashcards.new' | translate }}
+    </eci-button>
+  }
+</div>
+
+<h2 class="fc-title">{{ collection().name }}</h2>
+
+@if (showForm()) {
+  <eci-card>
+    <form class="fc-form" (submit)="$event.preventDefault(); submit()">
+      <label class="fc-form__field">
+        <span>{{ 'aprendizaje.flashcards.fieldTitle' | translate }}</span>
+        <input type="text" [value]="title()" (input)="set('title', $any($event.target).value)" required />
+      </label>
+      <label class="fc-form__field">
+        <span>{{ 'aprendizaje.flashcards.description' | translate }}</span>
+        <input type="text" [value]="description()" (input)="set('description', $any($event.target).value)" />
+      </label>
+      <label class="fc-form__field">
+        <span>{{ 'aprendizaje.flashcards.question' | translate }}</span>
+        <textarea [value]="question()" (input)="set('question', $any($event.target).value)" rows="2" required></textarea>
+      </label>
+      <label class="fc-form__field">
+        <span>{{ 'aprendizaje.flashcards.answer' | translate }}</span>
+        <textarea [value]="answer()" (input)="set('answer', $any($event.target).value)" rows="2" required></textarea>
+      </label>
+      <div class="fc-form__actions">
+        <eci-button variant="ghost" (click)="cancel()">
+          {{ 'aprendizaje.actions.cancel' | translate }}
+        </eci-button>
+        <eci-button variant="primary" type="submit">
+          {{ 'aprendizaje.actions.save' | translate }}
+        </eci-button>
+      </div>
+    </form>
+  </eci-card>
+}
+
+@if (loading()) {
+  <p class="fc-msg">{{ 'aprendizaje.loading' | translate }}</p>
+} @else if (cards().length === 0) {
+  <eci-card><p class="fc-msg">{{ 'aprendizaje.flashcards.empty' | translate }}</p></eci-card>
+} @else {
+  <ul class="fc-list">
+    @for (card of cards(); track card.id) {
+      <li>
+        <eci-card>
+          <div class="fc-item">
+            <div class="fc-item__body">
+              <h3 class="fc-item__title">{{ card.title }}</h3>
+              <p class="fc-item__q"><strong>{{ 'aprendizaje.flashcards.question' | translate }}:</strong> {{ card.question }}</p>
+              <p class="fc-item__a"><strong>{{ 'aprendizaje.flashcards.answer' | translate }}:</strong> {{ card.answer }}</p>
+            </div>
+            @if (canModify()) {
+              <div class="fc-item__actions">
+                <button type="button" class="icon-btn" [attr.aria-label]="'aprendizaje.actions.edit' | translate" (click)="openEdit(card)">
+                  <eci-icon name="edit" [size]="18" />
+                </button>
+                <button type="button" class="icon-btn icon-btn--danger" [attr.aria-label]="'aprendizaje.actions.delete' | translate" (click)="remove(card)">
+                  <eci-icon name="trash" [size]="18" />
+                </button>
+              </div>
+            }
+          </div>
+        </eci-card>
+      </li>
+    }
+  </ul>
+}

@@ -90,6 +90,7 @@ export const es = {
     statistics: 'Estadísticas',
     predictions: 'Predicciones',
     assignments: 'Asignaciones',
+    aprendizaje: 'Aprendizaje',
   },
   auth: {
     loginTitle: 'Bienvenido de nuevo',
@@ -128,8 +129,7 @@ export const es = {
   },
   register: {
     iaSectionTitle: 'Datos del estudiante',
-    iaSectionHint:
-      'Obligatorio. Nos ayuda a conocerte mejor y personalizar tu experiencia.',
+    iaSectionHint: 'Obligatorio. Nos ayuda a conocerte mejor y personalizar tu experiencia.',
     stepsLabel: 'Pasos del registro',
     step1: 'Datos personales',
     step2: 'Sobre ti',
@@ -145,8 +145,7 @@ export const es = {
   },
   completeProfile: {
     popupTitle: 'Completa tu perfil',
-    popupDesc:
-      'Solo tomará un momento: responde estas preguntas en unos pocos pasos cortos.',
+    popupDesc: 'Solo tomará un momento: responde estas preguntas en unos pocos pasos cortos.',
     noticeTitle: 'Completa tu perfil',
     noticeDesc:
       'Termina de configurar tu cuenta respondiendo unas preguntas, organizadas en pasos cortos.',
@@ -165,14 +164,19 @@ export const es = {
       study: 'Tu estudio',
     },
     desc: {
-      gender: 'Usamos esta información solo con fines estadísticos del modelo; no afecta tu trato en la plataforma.',
-      ethnicity: 'Grupo étnico con el que te identificas. Es opcional para los análisis y se trata de forma confidencial.',
-      parentalEducation: 'El nivel de estudios más alto que alcanzó tu padre o tu madre (el mayor de los dos).',
+      gender:
+        'Usamos esta información solo con fines estadísticos del modelo; no afecta tu trato en la plataforma.',
+      ethnicity:
+        'Grupo étnico con el que te identificas. Es opcional para los análisis y se trata de forma confidencial.',
+      parentalEducation:
+        'El nivel de estudios más alto que alcanzó tu padre o tu madre (el mayor de los dos).',
       parentalSupport: 'Qué tanto sientes que tu familia te acompaña y apoya en tus estudios.',
-      studyTimeWeekly: 'Promedio de horas que dedicas a estudiar por tu cuenta cada semana, fuera de clase.',
+      studyTimeWeekly:
+        'Promedio de horas que dedicas a estudiar por tu cuenta cada semana, fuera de clase.',
       absences: 'Número de clases a las que has faltado en lo que va del año académico.',
       tutoring: 'Indica si asistes a monitorías o tutorías de apoyo académico.',
-      extracurricular: 'Actividades fuera del plan de estudios: clubes, semilleros, grupos estudiantiles, etc.',
+      extracurricular:
+        'Actividades fuera del plan de estudios: clubes, semilleros, grupos estudiantiles, etc.',
       sports: 'Si practicas algún deporte de forma regular (en la institución o fuera de ella).',
       music: 'Si tocas un instrumento, cantas o participas en alguna actividad musical.',
       volunteering: 'Si participas en labores de voluntariado o servicio a la comunidad.',
@@ -230,27 +234,36 @@ export const es = {
         firstSemester: 'Primer semestre',
       },
       desc: {
-        maritalStatus: 'Tu situación sentimental o de convivencia actual (soltero/a, casado/a, unión libre, etc.).',
-        applicationMode: 'La vía por la que ingresaste a la institución: admisión regular, transferencia desde otra universidad, cupo especial, etc.',
-        applicationOrder: 'El lugar que ocupaba esta carrera en tu lista de preferencias al postularte. 0 = era tu primera opción, 1 = tu segunda, y así.',
+        maritalStatus:
+          'Tu situación sentimental o de convivencia actual (soltero/a, casado/a, unión libre, etc.).',
+        applicationMode:
+          'La vía por la que ingresaste a la institución: admisión regular, transferencia desde otra universidad, cupo especial, etc.',
+        applicationOrder:
+          'El lugar que ocupaba esta carrera en tu lista de preferencias al postularte. 0 = era tu primera opción, 1 = tu segunda, y así.',
         course: 'El programa o área académica a la que perteneces actualmente.',
-        previousQualification: 'El nivel de estudios más alto que tenías justo antes de entrar a la universidad.',
+        previousQualification:
+          'El nivel de estudios más alto que tenías justo antes de entrar a la universidad.',
         nacionality: 'El país o región de tu nacionalidad.',
         motherQualification: 'El nivel de estudios más alto que alcanzó tu madre.',
         fatherQualification: 'El nivel de estudios más alto que alcanzó tu padre.',
         motherOccupation: 'El tipo de trabajo principal de tu madre.',
         fatherOccupation: 'El tipo de trabajo principal de tu padre.',
         displaced: 'Si tuviste que mudarte de tu ciudad o pueblo de origen para poder estudiar.',
-        educationalSpecialNeeds: 'Si requieres algún apoyo o ajuste por una condición de aprendizaje, física o sensorial.',
+        educationalSpecialNeeds:
+          'Si requieres algún apoyo o ajuste por una condición de aprendizaje, física o sensorial.',
         debtor: 'Si actualmente tienes deudas pendientes de pago con la institución.',
         tuitionFeesUpToDate: 'Si tienes la matrícula y los pagos del periodo al día.',
         scholarshipHolder: 'Si cuentas con una beca o apoyo económico para tus estudios.',
-        ageAtEnrollment: 'La edad que tenías cuando te matriculaste por primera vez en este programa.',
+        ageAtEnrollment:
+          'La edad que tenías cuando te matriculaste por primera vez en este programa.',
         international: 'Si eres estudiante extranjero/a (de otro país).',
-        curricularUnits1stSemEnrolled: 'Cuántas materias (asignaturas) inscribiste en tu primer semestre.',
+        curricularUnits1stSemEnrolled:
+          'Cuántas materias (asignaturas) inscribiste en tu primer semestre.',
         curricularUnits1stSemApproved: 'De esas materias, cuántas aprobaste en tu primer semestre.',
-        curricularUnits1stSemEvaluations: 'Cuántas evaluaciones o exámenes presentaste durante tu primer semestre.',
-        curricularUnits1stSemCredited: 'Materias que te reconocieron u homologaron de estudios anteriores.',
+        curricularUnits1stSemEvaluations:
+          'Cuántas evaluaciones o exámenes presentaste durante tu primer semestre.',
+        curricularUnits1stSemCredited:
+          'Materias que te reconocieron u homologaron de estudios anteriores.',
       },
       labels: {
         maritalStatus: 'Estado civil',
@@ -277,9 +290,11 @@ export const es = {
       },
       hints: {
         maritalStatus: 'Tu situación sentimental o de convivencia actual.',
-        applicationMode: 'La vía por la que ingresaste a la institución (admisión regular, transferencia, cupo especial, etc.).',
+        applicationMode:
+          'La vía por la que ingresaste a la institución (admisión regular, transferencia, cupo especial, etc.).',
         course: 'El área o programa académico al que perteneces.',
-        previousQualification: 'El nivel de estudios más alto que tenías justo antes de entrar a la universidad.',
+        previousQualification:
+          'El nivel de estudios más alto que tenías justo antes de entrar a la universidad.',
         ageAtEnrollment: 'Edad que tenías al inscribirte (17 a 70).',
         applicationOrder:
           'Cuando te postulaste, ¿esta carrera era tu 1ª opción, tu 2ª…? Escribe 0 si fue tu primera opción, 1 si fue la segunda, y así sucesivamente.',
@@ -536,6 +551,13 @@ export const es = {
       withPrediction: 'Con predicción',
       atRisk: 'En riesgo de deserción',
       gradeDistribution: 'Distribución de rendimiento estimado',
+      grades: {
+        A: 'A — Excelente',
+        B: 'B — Bueno',
+        C: 'C — Regular',
+        D: 'D — Bajo',
+        F: 'F — Insuficiente',
+      },
       noPredictions: 'Aún no hay predicciones de rendimiento.',
       noData: 'Sin datos disponibles.',
       platformSection: 'Registro e ingreso de la plataforma',
@@ -628,6 +650,88 @@ export const es = {
         apellido_invalido: 'Apellido vacío o demasiado largo.',
         rol_invalido: 'Rol no reconocido.',
       },
+    },
+  },
+  aprendizaje: {
+    title: 'Aprendizaje',
+    loading: 'Cargando…',
+    tab: {
+      collections: 'Colecciones',
+      study: 'Estudiar',
+      stats: 'Progreso',
+    },
+    actions: {
+      save: 'Guardar',
+      cancel: 'Cancelar',
+      edit: 'Editar',
+      delete: 'Eliminar',
+    },
+    collections: {
+      title: 'Tus colecciones',
+      new: 'Nueva colección',
+      empty: 'Aún no hay colecciones. Crea la primera para empezar a estudiar.',
+      name: 'Nombre',
+      visibility: 'Visibilidad',
+      public: 'Pública',
+      private: 'Privada',
+      studentHint: 'Tus colecciones son privadas: solo tú (y un administrador) pueden verlas.',
+      cards: '{{count}} tarjetas',
+      search: 'Buscar colecciones…',
+      noResults: 'No hay colecciones que coincidan con tu búsqueda.',
+      by: 'Por {{name}}',
+    },
+    flashcards: {
+      back: 'Volver a colecciones',
+      new: 'Nueva tarjeta',
+      empty: 'Esta colección no tiene tarjetas todavía.',
+      fieldTitle: 'Título',
+      description: 'Descripción (opcional)',
+      question: 'Pregunta',
+      answer: 'Respuesta',
+    },
+    study: {
+      pick: 'Colección a estudiar',
+      choose: 'Elige una colección…',
+      prompt: 'Selecciona una colección para empezar a repasar.',
+      remaining: 'Quedan {{count}} por repasar',
+      show: 'Mostrar respuesta',
+      howWasIt: '¿Qué tal lo recordaste?',
+      flipHint: 'Toca la tarjeta para ver la respuesta',
+      dragHint: 'Arrastra: ← Repetir · ↓ Aceptable · Aprendido →',
+      congrats: '¡Felicidades! Terminaste la colección',
+      reviewedCount: 'Repasaste {{count}} tarjetas',
+      done: '¡Todo al día! No hay tarjetas pendientes por ahora.',
+      another: 'Estudiar otra colección',
+    },
+    grade: {
+      repetir: 'Repetir',
+      aceptable: 'Aceptable',
+      aprendido: 'Aprendido',
+    },
+    state: {
+      EN_APRENDIZAJE: 'En aprendizaje',
+      REPETIR: 'Repetir',
+      ACEPTABLE: 'Aceptable',
+      APRENDIDO: 'Aprendido',
+    },
+    stats: {
+      total: 'Tarjetas en estudio',
+      due: 'Pendientes hoy',
+      totalUsed: 'Repasos totales',
+      byState: 'Distribución por estado',
+      recent: 'Actividad reciente',
+      noData: 'Sin datos todavía. Empieza a estudiar para ver tu progreso.',
+      noUsage: 'Aún no has repasado ninguna tarjeta.',
+    },
+    tip: {
+      visibility:
+        'Las colecciones privadas solo las ves tú; las públicas, toda la comunidad. Los estudiantes solo crean colecciones privadas.',
+      grades: 'Tu respuesta ajusta cuándo volverás a ver la tarjeta (repetición espaciada).',
+      repetir: 'No la recordaste: volverá a aparecer en unos minutos.',
+      aceptable: 'La recordaste con esfuerzo: vuelve pronto, con un intervalo corto.',
+      aprendido: 'La recordaste con facilidad: tardará más en volver a aparecer.',
+      due: 'Tarjetas cuyo repaso ya venció y conviene estudiar hoy.',
+      states: 'Cada tarjeta avanza de «En aprendizaje» a «Aprendido» según tus repasos.',
     },
   },
 } as const;

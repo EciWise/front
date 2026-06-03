@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
@@ -89,8 +96,16 @@ export class AdminStatisticsComponent implements OnInit {
     const e = this.stats()?.accesoEstado;
     if (!e) return [];
     return [
-      { label: this.i18n.instant('admin.statistics.loggedIn'), value: e.hanIngresado, color: 'var(--success)' },
-      { label: this.i18n.instant('admin.statistics.neverLoggedIn'), value: e.nuncaIngresado, color: 'var(--text-muted)' },
+      {
+        label: this.i18n.instant('admin.statistics.loggedIn'),
+        value: e.hanIngresado,
+        color: 'var(--success)',
+      },
+      {
+        label: this.i18n.instant('admin.statistics.neverLoggedIn'),
+        value: e.nuncaIngresado,
+        color: 'var(--text-muted)',
+      },
     ];
   });
 
@@ -98,8 +113,18 @@ export class AdminStatisticsComponent implements OnInit {
 
   /** Rendimiento estimado (histograma). */
   protected readonly rendimientoBars = computed<HistogramBar[]>(() =>
-    (this.stats()?.distribucionRendimiento ?? []).map((g) => ({ label: g.grado, value: g.conteo })),
+    (this.stats()?.distribucionRendimiento ?? []).map((g) => ({
+      label: this.gradeLabel(g.grado),
+      value: g.conteo,
+    })),
   );
+
+  /** Etiqueta localizada de la calificación; cae al valor crudo si no hay traducción. */
+  private gradeLabel(grade: string): string {
+    const key = `admin.statistics.grades.${grade}`;
+    const label = this.i18n.instant(key);
+    return label === key ? grade : label;
+  }
 
   /** Predicción de deserción (torta). */
   protected readonly desercionPie = computed<PieSlice[]>(() =>
