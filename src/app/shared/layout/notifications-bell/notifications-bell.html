@@ -13,7 +13,12 @@
   </button>
 
   @if (open()) {
-    <div class="bell__backdrop" (click)="close()"></div>
+    <button
+      type="button"
+      class="bell__backdrop"
+      [attr.aria-label]="'a11y.closeNotifications' | translate"
+      (click)="close()"
+    ></button>
     <section class="bell__panel" role="dialog" [attr.aria-label]="'notifications.title' | translate">
       <header class="bell__header">
         <h2 class="bell__title">{{ 'notifications.title' | translate }}</h2>

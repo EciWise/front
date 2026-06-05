@@ -8,7 +8,12 @@
   </aside>
 
   @if (navOpen()) {
-    <div class="shell__overlay" (click)="closeNav()"></div>
+    <button
+      type="button"
+      class="shell__overlay"
+      [attr.aria-label]="'a11y.closeMenu' | translate"
+      (click)="closeNav()"
+    ></button>
   }
 
   <main id="main-content" class="shell__main" tabindex="-1">

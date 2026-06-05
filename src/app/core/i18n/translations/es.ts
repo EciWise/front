@@ -44,6 +44,8 @@ export const es = {
   a11y: {
     toggle: 'Modo accesibilidad',
     skipToContent: 'Saltar al contenido principal',
+    closeMenu: 'Cerrar menú',
+    closeNotifications: 'Cerrar notificaciones',
   },
   theme: {
     toggle: 'Cambiar tema',

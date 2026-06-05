@@ -36,7 +36,6 @@ import { AppLanguage, I18nService } from './i18n.service';
           class="lang-menu__panel"
           role="listbox"
           [attr.aria-label]="'language.menuLabel' | translate"
-          (click)="$event.stopPropagation()"
         >
           @for (lang of i18n.supportedLanguages; track lang) {
             <button
@@ -46,6 +45,7 @@ import { AppLanguage, I18nService } from './i18n.service';
               [class.lang-menu__option--active]="lang === i18n.lang()"
               [attr.aria-selected]="lang === i18n.lang()"
               (pointerdown)="select(lang, $event)"
+              (click)="select(lang, $event)"
             >
               <span>{{ 'language.' + lang | translate }}</span>
               <span class="lang-menu__code">{{ lang | uppercase }}</span>
@@ -182,7 +182,7 @@ export class LanguageSwitchComponent {
     this.open.update((open) => !open);
   }
 
-  protected select(lang: AppLanguage, event: PointerEvent): void {
+  protected select(lang: AppLanguage, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     this.i18n.use(lang);
