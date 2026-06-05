@@ -1,17 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
+import { SelectComponent, SelectOption } from '../../../shared/ui/select/select';
 import { Asignacion, IaAdminService, UsuarioBasico } from '../../../core/ia/ia-admin.service';
 
 /** Asignación de estudiantes a tutores (solo admin). */
 @Component({
   selector: 'eci-admin-assignments',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslatePipe, PageHeaderComponent, CardComponent, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    PageHeaderComponent,
+    CardComponent,
+    ButtonComponent,
+    SelectComponent,
+  ],
   templateUrl: './assignments.html',
   styleUrl: './assignments.css',
 })
@@ -23,6 +31,18 @@ export class AdminAssignmentsComponent implements OnInit {
   protected readonly tutors = signal<UsuarioBasico[]>([]);
   protected readonly estudiantes = signal<UsuarioBasico[]>([]);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly tutorOptions = computed<readonly SelectOption[]>(() =>
+    this.tutors().map((t) => ({
+      value: t.id,
+      label: `${t.nombre} ${t.apellido} - ${t.email}`,
+    })),
+  );
+  protected readonly estudianteOptions = computed<readonly SelectOption[]>(() =>
+    this.estudiantes().map((e) => ({
+      value: e.id,
+      label: `${e.nombre} ${e.apellido} - ${e.email}`,
+    })),
+  );
 
   protected readonly form = this.fb.nonNullable.group({
     tutorId: ['', [Validators.required]],

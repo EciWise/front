@@ -2,11 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  /* Contiene el deslizamiento horizontal del paso, pero deja un margen de
-     recorte para que el anillo de foco (outline) de los controles del borde
-     nunca quede cortado. */
-  overflow-x: clip;
-  overflow-clip-margin: var(--space-2);
+  /* Los tooltips de ayuda se posicionan respecto al icono y necesitan poder
+     sobresalir del campo sin quedar recortados por el formulario. */
+  overflow: visible;
 }
 
 /* Grilla alineada: dos columnas en pantallas amplias, una en móvil. */
@@ -117,10 +115,28 @@
   position: relative;
 }
 
+.dia__check-wrap--full {
+  grid-column: 1 / -1;
+}
+
 .dia__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text);
+}
+
+.dia__required {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.dia__check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .dia__hint {
@@ -130,11 +146,10 @@
 }
 
 /* El <select> toma su estilo visual del global; aquí solo layout. */
-.dia__field select {
+.dia__field eci-select {
   margin-top: var(--space-1);
   width: 100%;
   box-sizing: border-box;
-  height: 2.75rem;
 }
 
 .dia__field input {
@@ -249,6 +264,15 @@
 }
 
 @media (max-width: 30rem) {
+  .dia__grid,
+  .dia__checks-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dia__checks {
+    padding: var(--space-3);
+  }
+
   .dia__step-label {
     display: none;
   }

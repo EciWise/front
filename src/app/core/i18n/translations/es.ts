@@ -44,6 +44,8 @@ export const es = {
   a11y: {
     toggle: 'Modo accesibilidad',
     skipToContent: 'Saltar al contenido principal',
+    closeMenu: 'Cerrar menú',
+    closeNotifications: 'Cerrar notificaciones',
   },
   theme: {
     toggle: 'Cambiar tema',
@@ -52,8 +54,19 @@ export const es = {
   },
   language: {
     toggle: 'Cambiar idioma',
+    menuLabel: 'Seleccionar idioma',
     es: 'Español',
     en: 'Inglés',
+    de: 'Alemán',
+    pt: 'Portugués',
+    fr: 'Francés',
+  },
+  passwordStrength: {
+    weak: 'Débil',
+    medium: 'Media',
+    secure: 'Segura',
+    show: 'Mostrar contraseña',
+    hide: 'Ocultar contraseña',
   },
   notifications: {
     title: 'Notificaciones',
@@ -158,18 +171,20 @@ export const es = {
   },
   register: {
     iaSectionTitle: 'Datos del estudiante',
-    iaSectionHint: 'Obligatorio. Nos ayuda a conocerte mejor y personalizar tu experiencia.',
+    iaSectionHint: 'Nos ayuda a conocerte mejor y personalizar tu experiencia.',
     stepsLabel: 'Pasos del registro',
     step1: 'Datos personales',
     step2: 'Sobre ti',
     step3: 'Tus estudios',
     next: 'Continuar',
+    confirmPassword: 'Confirmar contraseña',
     errors: {
       required: 'Este campo es obligatorio.',
       email: 'Ingresa un correo electrónico válido.',
       emailDomain:
         'Solo se aceptan correos @gmail.com, @escuelaing.edu.co o @mail.escuelaing.edu.co.',
       password: 'La contraseña debe tener mínimo 8 caracteres e incluir letras y números.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
     },
   },
   completeProfile: {

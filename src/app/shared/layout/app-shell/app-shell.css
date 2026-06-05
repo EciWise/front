@@ -47,6 +47,8 @@
 
 .shell__overlay {
   display: none;
+  border: 0;
+  padding: 0;
 }
 
 @media (max-width: 900px) {
@@ -76,6 +78,7 @@
     inset: 4rem 0 0 0;
     z-index: 40;
     background: var(--overlay);
+    cursor: pointer;
   }
 
   .shell__main {
