@@ -3,18 +3,18 @@
 <eci-card>
   <h2 class="admin__heading">{{ 'admin.assignments.create' | translate }}</h2>
   <form class="admin-form" [formGroup]="form" (ngSubmit)="create()">
-    <select formControlName="tutorId" [attr.aria-label]="'admin.assignments.tutor' | translate">
-      <option value="" disabled>{{ 'admin.assignments.selectTutor' | translate }}</option>
-      @for (t of tutors(); track t.id) {
-        <option [value]="t.id">{{ t.nombre }} {{ t.apellido }} — {{ t.email }}</option>
-      }
-    </select>
-    <select formControlName="estudianteId" [attr.aria-label]="'admin.assignments.student' | translate">
-      <option value="" disabled>{{ 'admin.assignments.selectStudent' | translate }}</option>
-      @for (e of estudiantes(); track e.id) {
-        <option [value]="e.id">{{ e.nombre }} {{ e.apellido }} — {{ e.email }}</option>
-      }
-    </select>
+    <eci-select
+      formControlName="tutorId"
+      [placeholder]="'admin.assignments.selectTutor' | translate"
+      [ariaLabel]="'admin.assignments.tutor' | translate"
+      [options]="tutorOptions()"
+    />
+    <eci-select
+      formControlName="estudianteId"
+      [placeholder]="'admin.assignments.selectStudent' | translate"
+      [ariaLabel]="'admin.assignments.student' | translate"
+      [options]="estudianteOptions()"
+    />
     <eci-button type="submit">{{ 'admin.assignments.assign' | translate }}</eci-button>
   </form>
   @if (errorKey(); as err) {
@@ -22,7 +22,9 @@
   }
 </eci-card>
 
-<p class="admin__count">{{ 'admin.assignments.count' | translate: { count: assignments().length } }}</p>
+<p class="admin__count">
+  {{ 'admin.assignments.count' | translate: { count: assignments().length } }}
+</p>
 
 @if (assignments().length > 0) {
   <div class="admin-table-wrap">

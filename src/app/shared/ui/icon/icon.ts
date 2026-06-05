@@ -19,6 +19,8 @@ import {
   LucideCircleDot,
   LucideClock,
   LucideCloudUpload,
+  LucideEye,
+  LucideEyeOff,
   LucideFileText,
   LucideFlame,
   LucideFolderOpen,
@@ -79,6 +81,8 @@ export type IconName =
   | 'plus'
   | 'edit'
   | 'trash'
+  | 'eye'
+  | 'eye-off'
   | 'repeat'
   | 'flame'
   | 'circle'
@@ -107,6 +111,8 @@ export type IconName =
     LucideFolderOpen,
     LucideListTodo,
     LucideUser,
+    LucideEye,
+    LucideEyeOff,
     LucideCalendarClock,
     LucideCalendarCheck,
     LucideUsers,
@@ -241,6 +247,12 @@ export type IconName =
       }
       @case ('trash') {
         <svg lucideTrash2 [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('eye') {
+        <svg lucideEye [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('eye-off') {
+        <svg lucideEyeOff [size]="size()" aria-hidden="true"></svg>
       }
       @case ('repeat') {
         <svg lucideRepeat [size]="size()" aria-hidden="true"></svg>

@@ -44,6 +44,8 @@ export const en = {
   a11y: {
     toggle: 'Accessibility mode',
     skipToContent: 'Skip to main content',
+    closeMenu: 'Close menu',
+    closeNotifications: 'Close notifications',
   },
   theme: {
     toggle: 'Toggle theme',
@@ -52,8 +54,19 @@ export const en = {
   },
   language: {
     toggle: 'Change language',
+    menuLabel: 'Select language',
     es: 'Spanish',
     en: 'English',
+    de: 'German',
+    pt: 'Portuguese',
+    fr: 'French',
+  },
+  passwordStrength: {
+    weak: 'Weak',
+    medium: 'Medium',
+    secure: 'Secure',
+    show: 'Show password',
+    hide: 'Hide password',
   },
   notifications: {
     title: 'Notifications',
@@ -158,18 +171,20 @@ export const en = {
   },
   register: {
     iaSectionTitle: 'Student details',
-    iaSectionHint: 'Required. It helps us get to know you and personalize your experience.',
+    iaSectionHint: 'It helps us get to know you and personalize your experience.',
     stepsLabel: 'Registration steps',
     step1: 'Personal details',
     step2: 'About you',
     step3: 'Your studies',
     next: 'Continue',
+    confirmPassword: 'Confirm password',
     errors: {
       required: 'This field is required.',
       email: 'Enter a valid email address.',
       emailDomain:
         'Only @gmail.com, @escuelaing.edu.co or @mail.escuelaing.edu.co emails are accepted.',
       password: 'Password must be at least 8 characters and include letters and numbers.',
+      passwordMismatch: 'Passwords do not match.',
     },
   },
   completeProfile: {

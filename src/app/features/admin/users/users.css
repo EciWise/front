@@ -81,10 +81,8 @@
 
 /* `.admin-table*` (envoltorio, tabla, celdas, email) se definen en
    "Primitivas compartidas" (styles.css). Aquí solo el select compacto propio. */
-.admin-table select {
-  /* Versión compacta dentro de la tabla; conserva hueco para el chevron. */
-  padding: var(--space-1) 1.75rem var(--space-1) var(--space-2);
-  background-position: right var(--space-2) center;
+.admin-table eci-select {
+  min-width: 8.5rem;
 }
 
 .admin-status {

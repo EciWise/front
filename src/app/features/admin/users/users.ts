@@ -6,6 +6,7 @@ import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header'
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
 import { SectionTabsComponent, SectionTab } from '../../../shared/ui/section-tabs/section-tabs';
 import { BulkResultDialogComponent } from '../bulk-result-dialog/bulk-result-dialog';
 import { BulkUploadResult, UserAdminService } from '../user-admin.service';
@@ -20,6 +21,7 @@ import { BulkUploadResult, UserAdminService } from '../user-admin.service';
     CardComponent,
     ButtonComponent,
     IconComponent,
+    SelectComponent,
     SectionTabsComponent,
     BulkResultDialogComponent,
   ],
@@ -31,6 +33,10 @@ export class AdminUsersComponent implements OnInit {
 
   protected readonly users = this.service.users;
   protected readonly roles = Object.values(Role);
+  protected readonly roleOptions: readonly SelectOption[] = this.roles.map((role) => ({
+    value: role,
+    labelKey: `roles.${role}`,
+  }));
 
   /** Secciones de la pantalla (caben sin scroll de página). */
   protected readonly sections: readonly SectionTab[] = [
@@ -56,7 +62,7 @@ export class AdminUsersComponent implements OnInit {
     this.service.toggleActive(user.id);
   }
 
-  changeRole(user: User, value: string): void {
+  changeRole(user: User, value: SelectValue): void {
     this.service.changeRole(user.id, value as Role);
   }
 

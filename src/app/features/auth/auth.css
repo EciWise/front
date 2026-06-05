@@ -1,15 +1,48 @@
-/* Login, registro y callback comparten la estética de la landing: el contenedor
-   raíz `.auth` (alto fijo del viewport + fondo espacial) se define junto con
-   `.landing` en "Primitivas compartidas" (styles.css). */
+/* Login, registro y callback comparten la estética de la landing:
+   espacio 3D de fondo y tarjetas de vidrio con texto claro. */
+.auth {
+  --auth-card-bottom-gap: calc(var(--space-2) + var(--space-2) + env(safe-area-inset-bottom));
+  --auth-card-bottom-spacer: var(--space-2);
+  position: relative;
+  /* El viewport completo contiene el scroll: si la tarjeta crece, conserva
+     su espacio superior y no se recorta contra el borde de la pantalla. */
+  height: 100dvh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-padding-block-end: calc(var(--auth-card-bottom-gap));
+  outline: none;
+  /* Mismo fondo espacial que la landing, adaptable al tema. */
+  background:
+    radial-gradient(
+      circle at 25% 15%,
+      color-mix(in srgb, var(--brand-red) 18%, transparent),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      color-mix(in srgb, var(--accent-student) 14%, transparent),
+      transparent 50%
+    ),
+    var(--surface);
+  color: var(--text);
+}
 
 /* Barra superior con marca y controles, igual que la landing. */
 .auth__bar {
   position: relative;
-  z-index: 2;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-6) var(--space-8);
+  padding:
+    calc(var(--space-4) + env(safe-area-inset-top))
+    max(var(--space-4), env(safe-area-inset-right))
+    var(--space-3)
+    max(var(--space-4), env(safe-area-inset-left));
 }
 
 .auth__controls {
@@ -22,18 +55,34 @@
   position: relative;
   z-index: 2;
   flex: 1;
-  min-height: 0;
-  /* La tarjeta se centra cuando cabe; si no, el scroll queda aquí, no en la página. */
-  overflow: auto;
+  min-height: auto;
+  /* La tarjeta se centra cuando cabe; si no, fluye con el scroll de .auth. */
+  overflow: visible;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-6) var(--space-8) var(--space-8);
+  justify-content: flex-start;
+  padding:
+    var(--space-4)
+    max(var(--space-4), env(safe-area-inset-right))
+    var(--auth-card-bottom-gap)
+    max(var(--space-4), env(safe-area-inset-left));
+}
+
+.auth__main::after {
+  content: '';
+  display: block;
+  flex: none;
+  height: var(--auth-card-bottom-spacer);
 }
 
 .auth__card {
+  flex: none;
   width: min(26rem, 100%);
-  padding: var(--space-8);
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-block: auto;
+  padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--surface) 82%, transparent);
@@ -41,6 +90,34 @@
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-lg);
   color: var(--text);
+}
+
+/* Espaciado amplio para tablet y escritorio. */
+@media (min-width: 40rem) {
+  .auth {
+    --auth-card-bottom-gap: calc(var(--space-8) + env(safe-area-inset-bottom));
+    --auth-card-bottom-spacer: 0px;
+  }
+
+  .auth__bar {
+    padding:
+      calc(var(--space-6) + env(safe-area-inset-top))
+      max(var(--space-8), env(safe-area-inset-right))
+      var(--space-6)
+      max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .auth__main {
+    padding:
+      var(--space-6)
+      max(var(--space-8), env(safe-area-inset-right))
+      calc(var(--space-8) + env(safe-area-inset-bottom))
+      max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .auth__card {
+    padding: var(--space-8);
+  }
 }
 
 /* Tarjeta del registro: más ancha para repartir los campos en dos columnas. */
@@ -65,13 +142,14 @@
   text-align: center;
   font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .auth__form {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 /* ---------------- Animación de transición entre pasos ---------------- */
@@ -79,6 +157,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
   animation: auth-slide-in-right 280ms ease;
 }
 
@@ -110,15 +189,41 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-width: 0;
   font-size: 0.875rem;
   font-weight: 600;
 }
 
-/* .auth__field input: caja compartida en "Primitivas compartidas" (styles.css). */
+.auth__field input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+  overflow-x: auto;
+  text-overflow: clip;
+  white-space: nowrap;
+  caret-color: var(--accent);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    background-color var(--transition-base);
+}
 
 .auth__field input:focus-visible {
-  outline: 2px solid var(--accent);
-  border-color: transparent;
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+.auth__field eci-password-strength-input {
+  width: 100%;
+  min-width: 0;
 }
 
 /* ---------------- Indicador de pasos (registro) ---------------- */
@@ -130,18 +235,101 @@
   padding: 0;
 }
 
-/* `.auth__step*` (paso, estado y punto del indicador) se definen junto con sus
-   gemelos `.dia__step*` en "Primitivas compartidas" (styles.css). */
+.auth__step {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 3px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.auth__step--active,
+.auth__step--done {
+  color: var(--text);
+  border-top-color: var(--accent);
+}
+
+.auth__step-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.auth__step-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth__step--active .auth__step-dot,
+.auth__step--done .auth__step-dot {
+  background: var(--brand-red);
+  color: #ffffff;
+}
 
 /* ---------------- Distribución en dos columnas ---------------- */
 .auth__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .auth__field--full {
   grid-column: 1 / -1;
+}
+
+.auth__field--expand-on-focus:focus-within {
+  grid-column: 1 / -1;
+  animation: auth-field-expand 180ms ease;
+}
+
+.auth__field--expand-on-focus:not(:focus-within) {
+  animation: auth-field-collapse 160ms ease;
+}
+
+.auth__required {
+  margin-left: 0.2rem;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+@keyframes auth-field-expand {
+  from {
+    opacity: 0.9;
+    transform: translateY(3px) scaleX(0.97);
+  }
+}
+
+@keyframes auth-field-collapse {
+  from {
+    opacity: 0.94;
+    transform: translateY(-2px) scaleX(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth__field--expand-on-focus,
+  .auth__field--expand-on-focus:focus-within,
+  .auth__field--expand-on-focus:not(:focus-within) {
+    animation: none;
+  }
 }
 
 .auth__hint {
@@ -199,6 +387,7 @@
 .auth__actions {
   display: flex;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .auth__actions > :last-child {
@@ -208,6 +397,14 @@
 @media (max-width: 30rem) {
   .auth__grid {
     grid-template-columns: 1fr;
+  }
+
+  .auth__actions {
+    flex-direction: column;
+  }
+
+  .auth__actions > :last-child {
+    flex: none;
   }
 
   .auth__step-label {

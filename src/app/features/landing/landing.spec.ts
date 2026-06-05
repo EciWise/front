@@ -12,7 +12,7 @@ class SceneStub {
   init(): Promise<void> {
     return Promise.resolve();
   }
-  dispose(): void {}
+  readonly dispose = vi.fn();
 }
 
 @Component({ template: '' })

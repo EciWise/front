@@ -29,15 +29,13 @@
                       <td>{{ user.name }}</td>
                       <td class="admin-table__email">{{ user.email }}</td>
                       <td>
-                        <select
+                        <eci-select
                           [value]="user.role"
-                          (change)="changeRole(user, $any($event.target).value)"
-                          [attr.aria-label]="'admin.users.changeRole' | translate"
-                        >
-                          @for (role of roles; track role) {
-                            <option [value]="role">{{ 'roles.' + role | translate }}</option>
-                          }
-                        </select>
+                          (valueChange)="changeRole(user, $event)"
+                          [ariaLabel]="'admin.users.changeRole' | translate"
+                          [options]="roleOptions"
+                          [compact]="true"
+                        />
                       </td>
                       <td>
                         <span class="admin-status" [class.admin-status--on]="user.active">
