@@ -157,6 +157,10 @@ export class RegisterComponent {
     return this.form.hasError('passwordMismatch') ? 'register.errors.passwordMismatch' : null;
   }
 
+  phoneInput(value: string): void {
+    this.form.controls.telefono.setValue(this.formatPhone(value), { emitEvent: false });
+  }
+
   /** Avanza al siguiente paso validando la página actual. */
   next(): void {
     const current = this.step();
@@ -222,8 +226,18 @@ export class RegisterComponent {
       password: value.password,
       nombre: value.nombre,
       apellido: value.apellido,
-      telefono: value.telefono.trim() || undefined,
+      telefono: this.phoneDigits(value.telefono) || undefined,
       datosIa: buildDatosIaPayload(value.datosIa),
     };
+  }
+
+  private formatPhone(value: string): string {
+    const digits = this.phoneDigits(value).slice(0, 10);
+    const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)].filter(Boolean);
+    return parts.join(' ');
+  }
+
+  private phoneDigits(value: string): string {
+    return value.replace(/\D/g, '');
   }
 }

@@ -130,6 +130,11 @@
   color: var(--text);
 }
 
+.dia__required {
+  color: var(--danger);
+  font-weight: 800;
+}
+
 .dia__check-label {
   display: inline-flex;
   align-items: center;

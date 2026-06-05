@@ -52,8 +52,12 @@ export const es = {
   },
   language: {
     toggle: 'Cambiar idioma',
+    menuLabel: 'Seleccionar idioma',
     es: 'Español',
     en: 'Inglés',
+    de: 'Alemán',
+    pt: 'Portugués',
+    fr: 'Francés',
   },
   passwordStrength: {
     weak: 'Débil',
@@ -136,7 +140,7 @@ export const es = {
   },
   register: {
     iaSectionTitle: 'Datos del estudiante',
-    iaSectionHint: 'Obligatorio. Nos ayuda a conocerte mejor y personalizar tu experiencia.',
+    iaSectionHint: 'Nos ayuda a conocerte mejor y personalizar tu experiencia.',
     stepsLabel: 'Pasos del registro',
     step1: 'Datos personales',
     step2: 'Sobre ti',

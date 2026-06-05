@@ -1,39 +1,191 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  signal,
+} from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LucideLanguages } from '@lucide/angular';
-import { I18nService } from './i18n.service';
+import { AppLanguage, I18nService } from './i18n.service';
 
-/** Botón para alternar el idioma de la interfaz (ES / EN). */
+/** Menu para seleccionar el idioma de la interfaz. */
 @Component({
   selector: 'eci-language-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslatePipe, UpperCasePipe, LucideLanguages],
   template: `
-    <button
-      type="button"
-      class="icon-button"
-      (click)="i18n.toggle()"
-      [attr.aria-label]="'language.toggle' | translate"
-    >
-      <svg lucideLanguages [size]="20" aria-hidden="true"></svg>
-      <span class="lang-code">{{ i18n.lang() | uppercase }}</span>
-    </button>
+    <div class="lang-menu" [class.lang-menu--open]="open()">
+      <button
+        type="button"
+        class="icon-button lang-menu__trigger"
+        [attr.aria-label]="'language.toggle' | translate"
+        [attr.aria-expanded]="open()"
+        aria-haspopup="listbox"
+        (click)="toggleMenu($event)"
+      >
+        <svg lucideLanguages [size]="20" aria-hidden="true"></svg>
+        <span class="lang-code">{{ i18n.lang() | uppercase }}</span>
+        <span class="lang-menu__chevron" aria-hidden="true"></span>
+      </button>
+
+      @if (open()) {
+        <div
+          class="lang-menu__panel"
+          role="listbox"
+          [attr.aria-label]="'language.menuLabel' | translate"
+          (click)="$event.stopPropagation()"
+        >
+          @for (lang of i18n.supportedLanguages; track lang) {
+            <button
+              type="button"
+              class="lang-menu__option"
+              role="option"
+              [class.lang-menu__option--active]="lang === i18n.lang()"
+              [attr.aria-selected]="lang === i18n.lang()"
+              (pointerdown)="select(lang, $event)"
+            >
+              <span>{{ 'language.' + lang | translate }}</span>
+              <span class="lang-menu__code">{{ lang | uppercase }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
   `,
   styles: [
     `
-      .icon-button {
+      :host {
+        position: relative;
+        display: inline-flex;
+      }
+
+      .lang-menu {
+        position: relative;
+      }
+
+      .lang-menu__trigger {
         width: auto;
         gap: var(--space-1);
-        padding: 0 var(--space-2);
+        padding: 0 var(--space-2) 0 var(--space-3);
       }
+
       .lang-code {
         font-size: 0.75rem;
         font-weight: 700;
+      }
+
+      .lang-menu__chevron {
+        width: 0.45rem;
+        height: 0.45rem;
+        margin-left: 0.1rem;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        transform: rotate(45deg) translateY(-0.12rem);
+        opacity: 0.78;
+        transition: transform var(--transition-fast);
+      }
+
+      .lang-menu--open .lang-menu__chevron {
+        transform: rotate(225deg) translateY(-0.12rem);
+      }
+
+      .lang-menu__panel {
+        position: absolute;
+        top: calc(100% + var(--space-2));
+        right: 0;
+        z-index: 120;
+        width: max-content;
+        min-width: 12rem;
+        padding: var(--space-2);
+        border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+        border-radius: var(--radius-lg);
+        background:
+          linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--surface) 72%, var(--surface-2)),
+            var(--surface-2)
+          );
+        color: var(--text);
+        box-shadow: var(--shadow-lg);
+        animation: lang-menu-in 140ms ease;
+      }
+
+      .lang-menu__option {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding: var(--space-2) var(--space-3);
+        border: 0;
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          background-color var(--transition-fast),
+          color var(--transition-fast);
+      }
+
+      .lang-menu__option:hover,
+      .lang-menu__option:focus-visible {
+        outline: none;
+        background: color-mix(in srgb, var(--accent) 12%, var(--surface-3));
+      }
+
+      .lang-menu__option--active {
+        background: color-mix(in srgb, var(--accent) 16%, var(--surface-3));
+      }
+
+      .lang-menu__code {
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+
+      @keyframes lang-menu-in {
+        from {
+          opacity: 0;
+          transform: translateY(-4px);
+        }
       }
     `,
   ],
 })
 export class LanguageSwitchComponent {
+  private readonly host = inject(ElementRef<HTMLElement>);
+
   protected readonly i18n = inject(I18nService);
+  protected readonly open = signal(false);
+
+  @HostListener('document:click', ['$event'])
+  closeOnOutsideClick(event: MouseEvent): void {
+    if (!this.host.nativeElement.contains(event.target as Node)) {
+      this.open.set(false);
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  closeOnEscape(): void {
+    this.open.set(false);
+  }
+
+  protected toggleMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.open.update((open) => !open);
+  }
+
+  protected select(lang: AppLanguage, event: PointerEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.i18n.use(lang);
+    this.open.set(false);
+  }
 }

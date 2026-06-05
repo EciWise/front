@@ -52,8 +52,12 @@ export const en = {
   },
   language: {
     toggle: 'Change language',
+    menuLabel: 'Select language',
     es: 'Spanish',
     en: 'English',
+    de: 'German',
+    pt: 'Portuguese',
+    fr: 'French',
   },
   passwordStrength: {
     weak: 'Weak',
@@ -136,7 +140,7 @@ export const en = {
   },
   register: {
     iaSectionTitle: 'Student details',
-    iaSectionHint: 'Required. It helps us get to know you and personalize your experience.',
+    iaSectionHint: 'It helps us get to know you and personalize your experience.',
     stepsLabel: 'Registration steps',
     step1: 'Personal details',
     step2: 'About you',

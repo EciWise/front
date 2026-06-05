@@ -49,32 +49,55 @@
             @if (s === 1) {
               <div class="auth__grid">
                 <label class="auth__field">
-                  <span>{{ 'common.name' | translate }}</span>
-                  <input type="text" formControlName="nombre" autocomplete="given-name" />
+                  <span>{{ 'common.name' | translate }}<span class="auth__required" aria-hidden="true">*</span></span>
+                  <input
+                    type="text"
+                    formControlName="nombre"
+                    autocomplete="given-name"
+                    aria-required="true"
+                  />
                   @if (errorKeyFor('nombre'); as ek) {
                     <small class="auth__error" role="alert">{{ ek | translate }}</small>
                   }
                 </label>
                 <label class="auth__field">
-                  <span>{{ 'common.lastName' | translate }}</span>
-                  <input type="text" formControlName="apellido" autocomplete="family-name" />
+                  <span>{{ 'common.lastName' | translate }}<span class="auth__required" aria-hidden="true">*</span></span>
+                  <input
+                    type="text"
+                    formControlName="apellido"
+                    autocomplete="family-name"
+                    aria-required="true"
+                  />
                   @if (errorKeyFor('apellido'); as ek) {
                     <small class="auth__error" role="alert">{{ ek | translate }}</small>
                   }
                 </label>
-                <label class="auth__field">
-                  <span>{{ 'common.email' | translate }}</span>
-                  <input type="email" formControlName="email" autocomplete="email" />
+                <label class="auth__field auth__field--expand-on-focus">
+                  <span>{{ 'common.email' | translate }}<span class="auth__required" aria-hidden="true">*</span></span>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    autocomplete="email"
+                    aria-required="true"
+                    [attr.title]="form.controls.email.value || null"
+                  />
                   @if (errorKeyFor('email'); as ek) {
                     <small class="auth__error" role="alert">{{ ek | translate }}</small>
                   }
                 </label>
                 <label class="auth__field">
                   <span>{{ 'common.phone' | translate }}</span>
-                  <input type="tel" formControlName="telefono" autocomplete="tel" />
+                  <input
+                    type="tel"
+                    formControlName="telefono"
+                    autocomplete="tel"
+                    inputmode="numeric"
+                    maxlength="12"
+                    (input)="phoneInput($any($event.target).value)"
+                  />
                 </label>
                 <div class="auth__field">
-                  <span>{{ 'common.password' | translate }}</span>
+                  <span>{{ 'common.password' | translate }}<span class="auth__required" aria-hidden="true">*</span></span>
                   <eci-password-strength-input
                     formControlName="password"
                     autocomplete="new-password"
@@ -85,7 +108,7 @@
                   }
                 </div>
                 <div class="auth__field">
-                  <span>{{ 'register.confirmPassword' | translate }}</span>
+                  <span>{{ 'register.confirmPassword' | translate }}<span class="auth__required" aria-hidden="true">*</span></span>
                   <eci-password-strength-input
                     formControlName="confirmPassword"
                     autocomplete="new-password"

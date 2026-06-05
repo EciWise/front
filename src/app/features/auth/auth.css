@@ -28,7 +28,7 @@
 /* Barra superior con marca y controles, igual que la landing. */
 .auth__bar {
   position: relative;
-  z-index: 2;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -133,11 +133,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-width: 0;
   font-size: 0.875rem;
   font-weight: 600;
 }
 
 .auth__field input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -145,11 +149,20 @@
   color: var(--text);
   font: inherit;
   font-weight: 400;
+  overflow-x: auto;
+  text-overflow: clip;
+  white-space: nowrap;
+  caret-color: var(--accent);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    background-color var(--transition-base);
 }
 
 .auth__field input:focus-visible {
-  outline: 2px solid var(--accent);
-  border-color: transparent;
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 9%, transparent);
 }
 
 /* ---------------- Indicador de pasos (registro) ---------------- */
@@ -206,10 +219,48 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .auth__field--full {
   grid-column: 1 / -1;
+}
+
+.auth__field--expand-on-focus:focus-within {
+  grid-column: 1 / -1;
+  animation: auth-field-expand 180ms ease;
+}
+
+.auth__field--expand-on-focus:not(:focus-within) {
+  animation: auth-field-collapse 160ms ease;
+}
+
+.auth__required {
+  margin-left: 0.2rem;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+@keyframes auth-field-expand {
+  from {
+    opacity: 0.9;
+    transform: translateY(3px) scaleX(0.97);
+  }
+}
+
+@keyframes auth-field-collapse {
+  from {
+    opacity: 0.94;
+    transform: translateY(-2px) scaleX(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth__field--expand-on-focus,
+  .auth__field--expand-on-focus:focus-within,
+  .auth__field--expand-on-focus:not(:focus-within) {
+    animation: none;
+  }
 }
 
 .auth__hint {

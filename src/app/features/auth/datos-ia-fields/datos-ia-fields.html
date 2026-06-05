@@ -26,6 +26,7 @@
             <div class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.gender' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip [text]="'datosIa.desc.gender' | translate" [size]="15" />
               </span>
               <eci-select
@@ -44,6 +45,7 @@
             <div class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.ethnicity' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip [text]="'datosIa.desc.ethnicity' | translate" [size]="15" />
               </span>
               <eci-select
@@ -62,6 +64,7 @@
             <div class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.parentalEducation' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip
                   [text]="'datosIa.desc.parentalEducation' | translate"
                   [size]="15"
@@ -85,6 +88,7 @@
             <div class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.parentalSupport' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip
                   [text]="'datosIa.desc.parentalSupport' | translate"
                   [size]="15"
@@ -110,6 +114,7 @@
             <label class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.studyTimeWeekly' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip
                   [text]="'datosIa.desc.studyTimeWeekly' | translate"
                   [size]="15"
@@ -126,6 +131,7 @@
             <label class="dia__field-label">
               <span class="dia__label">
                 {{ 'datosIa.labels.absences' | translate }}
+                <span class="dia__required" aria-hidden="true">*</span>
                 <eci-info-tooltip [text]="'datosIa.desc.absences' | translate" [size]="15" />
               </span>
               <input type="number" formControlName="absences" min="0" max="30" step="1" />
