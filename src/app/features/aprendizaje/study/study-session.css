@@ -1,28 +1,73 @@
-.study-pick {
+/* ── Selector de colección (solo favoritas) ── */
+
+.study-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--space-3);
   margin-bottom: var(--space-4);
 }
 
-.study-pick__field {
+.study-picker__card {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  max-width: 24rem;
-  font-size: 0.85rem;
-}
-
-.study-pick__field select {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.study-picker__card:hover {
+  border-color: color-mix(in srgb, var(--brand-red) 30%, var(--border));
+  transform: translateY(-1px);
+}
+
+.study-picker__name {
+  font-weight: 600;
+}
+
+.study-picker__count {
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 .study-msg {
   margin: 0;
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+/* ── Volver al selector de colección ── */
+
+.study-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.study-back:hover {
+  border-color: color-mix(in srgb, var(--brand-red) 30%, var(--border));
+  color: var(--brand-red);
 }
 
 .study-count {
@@ -35,6 +80,8 @@
 /* ── Tarjeta volteable ── */
 
 .flashcard-stage {
+  position: relative;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   perspective: 1200px;
@@ -43,12 +90,15 @@
 
 .flashcard {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 30rem;
   aspect-ratio: 3 / 2;
   cursor: pointer;
   user-select: none;
-  transition: transform var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    opacity var(--transition-base);
 }
 
 .flashcard--dragging {
@@ -117,20 +167,55 @@
   color: var(--text-muted);
 }
 
-/* Resaltado del borde según la intención de calificación al arrastrar */
-.flashcard--repetir .flashcard__face {
-  border-color: var(--danger);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 40%, transparent);
+/* ── Zonas de estado tras la tarjeta ──
+   Al sostener la tarjeta el escenario se tiñe suavemente; la zona hacia la que
+   apunta el arrastre se intensifica (p. ej. derecha = verde "aprendida"). */
+.flashcard-zones {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
-.flashcard--aceptable .flashcard__face {
-  border-color: var(--warning);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--warning) 40%, transparent);
+.flashcard-zones--active {
+  opacity: 1;
 }
 
-.flashcard--aprendido .flashcard__face {
-  border-color: var(--success);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 40%, transparent);
+.flashcard-zone {
+  position: absolute;
+  opacity: 0.12;
+  transition: opacity var(--transition-base);
+}
+
+.flashcard-zone--repetir {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: radial-gradient(circle at left center, var(--danger), transparent 70%);
+}
+
+.flashcard-zone--aprendido {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: radial-gradient(circle at right center, var(--success), transparent 70%);
+}
+
+.flashcard-zone--aceptable {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: radial-gradient(circle at center bottom, var(--warning), transparent 70%);
+}
+
+/* La zona hacia la que se arrastra se intensifica. */
+.flashcard-zone--hot {
+  opacity: 0.4;
 }
 
 /* Etiquetas de intención (aparecen al arrastrar hacia su dirección) */
@@ -306,7 +391,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .flashcard,
-  .flashcard__inner {
+  .flashcard__inner,
+  .flashcard-zones,
+  .flashcard-zone {
     transition: none;
   }
 }

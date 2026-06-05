@@ -19,6 +19,7 @@ import { A11yService } from './core/a11y/a11y.service';
 import { AUTH_CONFIG } from './core/auth/auth.config';
 import { STUDY_CONFIG } from './core/study/study.config';
 import { TALK_CONFIG } from './core/talk/talk.config';
+import { TODO_CONFIG } from './core/todo/todo.config';
 import { EnvService } from './core/config/env.service';
 
 export const appConfig: ApplicationConfig = {
@@ -59,6 +60,13 @@ export const appConfig: ApplicationConfig = {
       useFactory: (env: EnvService) => ({
         talkApiUrl: env.get('talkApiUrl', 'http://localhost:3003'),
         talkWsUrl: env.get('talkWsUrl', 'ws://localhost:3003/ws/chat'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: TODO_CONFIG,
+      useFactory: (env: EnvService) => ({
+        todoApiUrl: env.get('todoApiUrl', 'http://localhost:8083'),
       }),
       deps: [EnvService],
     },

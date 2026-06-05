@@ -6,11 +6,21 @@ import {
   LucideBookOpen,
   LucideBot,
   LucideBrain,
+  LucideCalendar,
   LucideCalendarCheck,
   LucideCalendarClock,
+  LucideChartColumn,
   LucideCheck,
+  LucideChevronDown,
+  LucideChevronLeft,
+  LucideChevronRight,
+  LucideCircle,
+  LucideCircleCheck,
+  LucideCircleDot,
+  LucideClock,
   LucideCloudUpload,
   LucideFileText,
+  LucideFlame,
   LucideFolderOpen,
   LucideGamepad2,
   LucideGraduationCap,
@@ -22,9 +32,11 @@ import {
   LucideMessageCircle,
   LucidePencil,
   LucidePlus,
+  LucideRepeat,
   LucideSearch,
   LucideSettings,
   LucideShieldCheck,
+  LucideStar,
   LucideTrash2,
   LucideTrophy,
   LucideUser,
@@ -66,7 +78,19 @@ export type IconName =
   | 'info'
   | 'plus'
   | 'edit'
-  | 'trash';
+  | 'trash'
+  | 'repeat'
+  | 'flame'
+  | 'circle'
+  | 'circle-dot'
+  | 'circle-check'
+  | 'star'
+  | 'clock'
+  | 'chart'
+  | 'calendar'
+  | 'chevron-left'
+  | 'chevron-right'
+  | 'chevron-down';
 
 /**
  * Envoltorio de iconos. Mapea un nombre semántico a su icono lucide.
@@ -107,6 +131,18 @@ export type IconName =
     LucidePlus,
     LucidePencil,
     LucideTrash2,
+    LucideRepeat,
+    LucideFlame,
+    LucideCircle,
+    LucideCircleDot,
+    LucideCircleCheck,
+    LucideStar,
+    LucideClock,
+    LucideChartColumn,
+    LucideCalendar,
+    LucideChevronLeft,
+    LucideChevronRight,
+    LucideChevronDown,
   ],
   template: `
     @switch (name()) {
@@ -205,6 +241,42 @@ export type IconName =
       }
       @case ('trash') {
         <svg lucideTrash2 [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('repeat') {
+        <svg lucideRepeat [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('flame') {
+        <svg lucideFlame [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('circle') {
+        <svg lucideCircle [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('circle-dot') {
+        <svg lucideCircleDot [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('circle-check') {
+        <svg lucideCircleCheck [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('star') {
+        <svg lucideStar [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('clock') {
+        <svg lucideClock [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('chart') {
+        <svg lucideChartColumn [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('calendar') {
+        <svg lucideCalendar [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('chevron-left') {
+        <svg lucideChevronLeft [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('chevron-right') {
+        <svg lucideChevronRight [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('chevron-down') {
+        <svg lucideChevronDown [size]="size()" aria-hidden="true"></svg>
       }
     }
   `,

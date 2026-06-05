@@ -1,57 +1,350 @@
 <div class="eci-fit">
   <eci-page-header titleKey="tasks.title" icon="tasks" />
 
-  <eci-card class="eci-fit__chrome">
-    <form class="task-add" (ngSubmit)="add()">
-    <input
-      class="task-add__input"
-      type="text"
-      [ngModel]="draft()"
-      (ngModelChange)="draft.set($event)"
-      name="draft"
-      [placeholder]="'tasks.placeholder' | translate"
-      [attr.aria-label]="'tasks.addTitle' | translate"
-      autocomplete="off"
-    />
-    <eci-button type="submit" [disabled]="!draft().trim()">
-      {{ 'tasks.add' | translate }}
-    </eci-button>
-  </form>
-  </eci-card>
+  <!-- Felicitación -->
+  @if (lastAchievement(); as ach) {
+    <div class="toast eci-fit__chrome" role="status">
+      <eci-icon class="toast__icon" name="trophy" [size]="20" />
+      <span>{{ achievementKey() | translate: { count: ach.milestone } }}</span>
+      <button class="toast__close" type="button" (click)="dismissAchievement()" aria-label="OK">
+        <eci-icon name="close" [size]="16" />
+      </button>
+    </div>
+  }
 
-  <p class="task-summary eci-fit__chrome">
-    {{ 'tasks.remaining' | translate: { count: pendingCount() } }}
-  </p>
+  <!-- Estadísticas (strip compacta) -->
+  @if (showStats() && stats(); as s) {
+    <div class="stats eci-fit__chrome">
+      <div class="stat">
+        <span class="stat__num">{{ s.done }}</span>
+        <span class="stat__label">{{ 'tasks.done' | translate }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">{{ pendingCount() }}</span>
+        <span class="stat__label">{{ 'tasks.pending' | translate }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">
+          {{ s.currentStreakDays }}<eci-icon class="stat__flame" name="flame" [size]="16" />
+        </span>
+        <span class="stat__label">
+          {{ 'tasks.streak' | translate }}
+          <eci-info-tooltip [text]="'tasks.help.streak' | translate" [size]="14" />
+        </span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">{{ s.overdue }}</span>
+        <span class="stat__label">
+          {{ 'tasks.overdue' | translate }}
+          <eci-info-tooltip [text]="'tasks.help.overdue' | translate" [size]="14" />
+        </span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">{{ (s.completionRate * 100) | number: '1.0-0' }}%</span>
+        <span class="stat__label">
+          {{ 'tasks.completionRate' | translate }}
+          <eci-info-tooltip [text]="'tasks.help.completionRate' | translate" [size]="14" />
+        </span>
+      </div>
+    </div>
+  }
+
+  <!-- Barra de acciones: conmutador de vista + alta en pop-up -->
+  <div class="tasks-bar eci-fit__chrome">
+    <eci-section-tabs class="tasks-bar__tabs" [tabs]="viewTabs" [(active)]="view" />
+    <eci-button
+      type="button"
+      [variant]="showStats() ? 'secondary' : 'ghost'"
+      [attr.aria-pressed]="showStats()"
+      [ariaLabel]="'tasks.toggleStats' | translate"
+      (click)="toggleStats()"
+    >
+      <eci-icon name="chart" [size]="18" />
+    </eci-button>
+    @if (view() === 'agenda') {
+      <eci-button
+        type="button"
+        [variant]="showBacklog() ? 'secondary' : 'ghost'"
+        [attr.aria-pressed]="showBacklog()"
+        (click)="showBacklog.update((v) => !v)"
+      >
+        <span class="tasks-bar__new-inner">
+          <eci-icon name="tasks" [size]="16" />{{ 'tasks.backlog' | translate }} ({{ unscheduled().length }})
+        </span>
+      </eci-button>
+    }
+    <eci-button class="tasks-bar__new" type="button" (click)="showCreate.set(true)">
+      <span class="tasks-bar__new-inner">
+        <eci-icon name="plus" [size]="16" />{{ 'tasks.addTitle' | translate }}
+      </span>
+    </eci-button>
+  </div>
+
+  <!-- Barra de la agenda: chrome fijo (no se desvanece con el scroll del cuerpo) -->
+  @if (view() === 'agenda') {
+    <div class="agenda-toolbar eci-fit__chrome">
+      <eci-button type="button" variant="ghost" ariaLabel="←" (click)="shiftDay(-1)">
+        <eci-icon name="arrow-left" [size]="16" />
+      </eci-button>
+      <eci-date-picker class="agenda-toolbar__date" [value]="selectedDate()" (valueChange)="selectedDate.set($event)" />
+      <eci-button type="button" variant="ghost" ariaLabel="→" (click)="shiftDay(1)">
+        <eci-icon name="arrow-right" [size]="16" />
+      </eci-button>
+      <eci-button type="button" variant="secondary" (click)="goToday()">{{ 'tasks.today' | translate }}</eci-button>
+      <eci-info-tooltip class="agenda-toolbar__help" [text]="'tasks.help.agenda' | translate" />
+      <eci-button class="agenda-toolbar__hours" type="button" variant="ghost" (click)="toggleFullDay()">
+        {{ (expandFullDay() ? 'tasks.showLessHours' : 'tasks.showFullDay') | translate }}
+      </eci-button>
+    </div>
+  }
 
   <div class="eci-fit__body">
-    @if (tasks().length === 0) {
-      <eci-card>
-        <p class="task-empty">{{ 'tasks.empty' | translate }}</p>
-      </eci-card>
-    } @else {
-      <ul class="task-list">
-        @for (task of tasks(); track task.id) {
-          <li class="task" [class.task--done]="task.status === 'done'">
-            <label class="task__main">
-              <input
-                type="checkbox"
-                [checked]="task.status === 'done'"
-                (change)="toggle(task)"
-                [attr.aria-label]="'tasks.markDone' | translate"
-              />
-              <span class="task__title">{{ task.title }}</span>
-            </label>
-            <span class="task__meta">
-              @if (task.subject) {
-                <span class="task__subject">{{ task.subject }}</span>
-              }
-              <span class="task__status" [attr.data-status]="task.status">
-                {{ statusKey(task) | translate }}
-              </span>
-            </span>
-          </li>
+    <!-- ===================== VISTA LISTA ===================== -->
+    @if (view() === 'list') {
+      <div class="eci-section-enter">
+        <eci-card class="search">
+          <input type="text" [ngModel]="searchTitle()" (ngModelChange)="searchTitle.set($event)" [placeholder]="'tasks.searchTitle' | translate" />
+          <eci-date-picker [value]="searchDate()" (valueChange)="searchDate.set($event)" [placeholder]="'tasks.fieldDate' | translate" />
+          <select [ngModel]="searchImportance()" (ngModelChange)="searchImportance.set($event)">
+            <option value="">{{ 'tasks.anyImportance' | translate }}</option>
+            @for (imp of importances; track imp) {
+              <option [value]="imp">{{ importanceKey(imp) | translate }}</option>
+            }
+          </select>
+          <select [ngModel]="searchStatus()" (ngModelChange)="searchStatus.set($event)">
+            <option value="">{{ 'tasks.anyStatus' | translate }}</option>
+            @for (st of statuses; track st) {
+              <option [value]="st">{{ statusKey(st) | translate }}</option>
+            }
+          </select>
+          <eci-button type="button" (click)="runSearch()">{{ 'tasks.search' | translate }}</eci-button>
+          @if (searchResults() !== null) {
+            <eci-button type="button" variant="ghost" (click)="clearSearch()">{{ 'tasks.clear' | translate }}</eci-button>
+          }
+        </eci-card>
+
+        @let items = searchResults() ?? tasks();
+        @if (items.length === 0) {
+          <eci-card><p class="empty">{{ 'tasks.empty' | translate }}</p></eci-card>
+        } @else {
+          <ul class="list">
+            @for (task of items; track task.id) {
+              <li class="row" [class.row--done]="task.status === 'DONE'" [style.border-left-color]="task.color || 'var(--border)'">
+                <input class="row__check" type="checkbox" [checked]="task.status === 'DONE'" (change)="toggleDone(task)" [attr.aria-label]="'tasks.markDone' | translate" />
+                <div class="row__main">
+                  <span class="row__title">{{ task.title }}</span>
+                  <span class="row__meta">
+                    <span class="badge" [attr.data-imp]="task.importance">{{ importanceKey(task.importance) | translate }}</span>
+                    @if (task.scheduledDate) {
+                      <span class="chip">{{ task.scheduledDate }}{{ task.startTime ? ' · ' + task.startTime.slice(0,5) : '' }}</span>
+                    }
+                    @if (task.recurrenceFreq !== 'NONE') {
+                      <span class="chip chip--rec">
+                        <eci-icon name="repeat" [size]="12" />{{ freqKey(task.recurrenceFreq) | translate }}
+                      </span>
+                    }
+                    @for (tag of task.tags; track tag.id) { <span class="chip chip--tag">#{{ tag.name }}</span> }
+                  </span>
+                </div>
+                <div class="row__actions">
+                  <eci-status-switcher [status]="task.status" (statusChange)="changeStatus(task, $event)" />
+                  <button type="button" class="icon-btn" (click)="remove(task)" [attr.aria-label]="'tasks.delete' | translate">
+                    <eci-icon name="trash" [size]="16" />
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
         }
-      </ul>
+      </div>
+    }
+
+    <!-- ===================== VISTA AGENDA ===================== -->
+    @if (view() === 'agenda') {
+      <div class="agenda-wrap eci-section-enter">
+        <div cdkDropListGroup class="agenda-layout" [class.agenda-layout--with-backlog]="showBacklog()">
+          <!-- Bandeja sin agendar (desplegable) -->
+          @if (showBacklog()) {
+            <eci-card class="backlog">
+              <header class="backlog__head">
+                <eci-icon name="tasks" [size]="18" />
+                <span>{{ 'tasks.backlog' | translate }}</span>
+                <eci-info-tooltip [text]="'tasks.help.backlog' | translate" [size]="14" />
+                <button type="button" class="backlog__close" (click)="showBacklog.set(false)" [attr.aria-label]="'common.cancel' | translate">
+                  <eci-icon name="close" [size]="16" />
+                </button>
+              </header>
+              <div
+                class="backlog__drop"
+                cdkDropList
+                [cdkDropListData]="unscheduled()"
+                (cdkDropListDropped)="onDrop($event, -1)"
+              >
+                @for (occ of unscheduled(); track occ.task.id) {
+                  <div
+                    class="card-task"
+                    [class.card-task--done]="occ.task.status === 'DONE'"
+                    cdkDrag
+                    [cdkDragData]="occ.task"
+                    [cdkDragDisabled]="occ.virtual"
+                    [style.border-left-color]="occ.task.color || 'var(--accent)'"
+                  >
+                    <span class="card-task__title">{{ occ.task.title }}</span>
+                    @if (occ.virtual) {
+                      <eci-icon class="card-task__rec" name="repeat" [size]="14" />
+                    }
+                    <eci-status-switcher [status]="occ.task.status" [compact]="true" (statusChange)="changeStatus(occ.task, $event)" />
+                  </div>
+                } @empty {
+                  <p class="backlog__empty">{{ 'tasks.empty' | translate }}</p>
+                }
+              </div>
+            </eci-card>
+          }
+
+          <!-- Timeline del día -->
+          <div class="timeline">
+            <div class="agenda">
+              @for (hour of visibleHours(); track hour) {
+                <div class="slot" [class.slot--now]="isToday() && hour === currentHour()">
+                  <span class="slot__hour">{{ hourLabel(hour) }}</span>
+                  <div
+                    class="slot__drop"
+                    cdkDropList
+                    [cdkDropListData]="hourTasks(hour)"
+                    (cdkDropListDropped)="onDrop($event, hour)"
+                  >
+                    @if (isToday() && hour === currentHour()) {
+                      <span class="now-line" [style.top.%]="currentMinutePct()">
+                        <span class="now-line__label">{{ 'tasks.now' | translate }}</span>
+                      </span>
+                    }
+                    @for (occ of hourTasks(hour); track occ.task.id) {
+                      <div
+                        class="card-task"
+                        [class.card-task--done]="occ.task.status === 'DONE'"
+                        cdkDrag
+                        [cdkDragData]="occ.task"
+                        [cdkDragDisabled]="occ.virtual"
+                        [style.border-left-color]="occ.task.color || 'var(--accent)'"
+                      >
+                        <span class="card-task__title">{{ occ.task.title }}</span>
+                        @if (occ.virtual) {
+                          <eci-icon class="card-task__rec" name="repeat" [size]="14" />
+                        }
+                        <span class="badge badge--imp" [attr.data-imp]="occ.task.importance">{{ importanceKey(occ.task.importance) | translate }}</span>
+                        <eci-status-switcher [status]="occ.task.status" [compact]="true" (statusChange)="changeStatus(occ.task, $event)" />
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
     }
   </div>
+
+  <!-- ===================== MODAL DE ALTA ===================== -->
+  <eci-modal [(open)]="showCreate" titleKey="tasks.addTitle">
+    <form class="creator" (ngSubmit)="add()">
+      <label class="field">
+        <span class="field__label">{{ 'tasks.fieldTitle' | translate }}</span>
+        <input
+          class="creator__input"
+          type="text"
+          [ngModel]="draftTitle()"
+          (ngModelChange)="draftTitle.set($event)"
+          name="title"
+          [placeholder]="'tasks.placeholder' | translate"
+          autocomplete="off"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">
+          {{ 'tasks.fieldImportance' | translate }}
+          <eci-info-tooltip [text]="'tasks.help.importance' | translate" [size]="14" />
+        </span>
+        <select [ngModel]="draftImportance()" (ngModelChange)="draftImportance.set($event)" name="imp">
+          @for (imp of importances; track imp) {
+            <option [value]="imp">{{ importanceKey(imp) | translate }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="creator__grid">
+        <div class="field">
+          <span class="field__label">{{ 'tasks.fieldDate' | translate }}</span>
+          <eci-date-picker [value]="draftDate()" (valueChange)="draftDate.set($event)" [placeholder]="'tasks.fieldDate' | translate" />
+        </div>
+        <div class="field">
+          <span class="field__label">{{ 'tasks.fieldTime' | translate }}</span>
+          <eci-time-picker [value]="draftStart()" (valueChange)="draftStart.set($event)" [placeholder]="'tasks.fieldTime' | translate" />
+        </div>
+      </div>
+
+      <!-- Opciones avanzadas -->
+      <eci-collapse [summary]="'tasks.advancedOptions' | translate">
+        <div class="creator__advanced">
+          <label class="field">
+            <span class="field__label">
+              {{ 'tasks.fieldRecurrence' | translate }}
+              <eci-info-tooltip [text]="'tasks.help.recurrence' | translate" [size]="14" />
+            </span>
+            <select [ngModel]="draftFreq()" (ngModelChange)="draftFreq.set($event)" name="freq">
+              @for (f of freqs; track f) {
+                <option [value]="f">{{ freqKey(f) | translate }}</option>
+              }
+            </select>
+          </label>
+          <label class="field">
+            <span class="field__label">
+              {{ 'tasks.fieldTags' | translate }}
+              <eci-info-tooltip [text]="'tasks.help.tags' | translate" [size]="14" />
+            </span>
+            <input
+              class="creator__tags"
+              type="text"
+              [ngModel]="draftTags()"
+              (ngModelChange)="draftTags.set($event)"
+              name="tags"
+              [placeholder]="'tasks.tagsPlaceholder' | translate"
+              autocomplete="off"
+            />
+          </label>
+          <div class="field">
+            <span class="field__label">
+              {{ 'tasks.fieldColor' | translate }}
+              <eci-info-tooltip [text]="'tasks.help.color' | translate" [size]="14" />
+            </span>
+            <div class="palette">
+              @for (c of colors; track c) {
+                <button
+                  type="button"
+                  class="swatch"
+                  [class.swatch--active]="draftColor() === c"
+                  [style.background]="c"
+                  (click)="draftColor.set(c)"
+                  [attr.aria-label]="c"
+                ></button>
+              }
+            </div>
+          </div>
+        </div>
+      </eci-collapse>
+
+      <div class="creator__actions">
+        <eci-button type="button" variant="ghost" (click)="showCreate.set(false)">
+          {{ 'common.cancel' | translate }}
+        </eci-button>
+        <eci-button type="submit" [disabled]="!draftTitle().trim()">
+          <span class="creator__add">
+            <eci-icon name="plus" [size]="16" />{{ 'tasks.add' | translate }}
+          </span>
+        </eci-button>
+      </div>
+    </form>
+  </eci-modal>
 </div>

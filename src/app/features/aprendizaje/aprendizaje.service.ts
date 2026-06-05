@@ -45,6 +45,15 @@ export class AprendizajeService {
     return this.http.delete<void>(`${this.base}/collections/${id}`);
   }
 
+  /**
+   * Marca/desmarca una colección como favorita del usuario (aparece primero).
+   * Contrato backend (ECIWISE-STUDY): `PUT /collections/{id}/favorite` con
+   * cuerpo `{ favorite }`, devuelve la colección actualizada.
+   */
+  setFavorite(id: number, favorite: boolean): Observable<Collection> {
+    return this.http.put<Collection>(`${this.base}/collections/${id}/favorite`, { favorite });
+  }
+
   // --- Flashcards ---
   flashcards(collectionId: number): Observable<Flashcard[]> {
     return this.http.get<Flashcard[]>(`${this.base}/collections/${collectionId}/flashcards`);

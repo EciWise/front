@@ -392,17 +392,47 @@ input[type='radio'] {
   flex: 1;
   min-height: 0;
   overflow: auto;
+  --eci-fade: var(--space-5);
 }
 
-/* Animación de entrada al cambiar de sección (sutil, hacia arriba). */
+/* Difuminado de los bordes al hacer scroll: dos degradados pegados (sticky) a
+   los bordes superior e inferior del área desplazable que funden el contenido
+   con el fondo, en vez de un corte seco. No ocupan espacio (margen negativo) ni
+   capturan clics, y quedan por debajo de los popovers (z muy alto). */
+.eci-fit__body::before,
+.eci-fit__body::after {
+  content: '';
+  display: block;
+  position: sticky;
+  z-index: 4;
+  height: var(--eci-fade);
+  pointer-events: none;
+}
+.eci-fit__body::before {
+  top: 0;
+  margin-bottom: calc(-1 * var(--eci-fade));
+  background: linear-gradient(to bottom, var(--surface-2), transparent);
+}
+.eci-fit__body::after {
+  bottom: 0;
+  margin-top: calc(-1 * var(--eci-fade));
+  background: linear-gradient(to top, var(--surface-2), transparent);
+}
+
+/* Disolución al cambiar de sección: en vez de un corte seco, el contenido
+   nuevo aparece con un desvanecido suave (como una desintegración limpia). */
 .eci-section-enter {
-  animation: eci-section-in var(--transition-base);
+  animation: eci-section-in var(--transition-base) ease;
 }
 
 @keyframes eci-section-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 

@@ -1,0 +1,58 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+}
+
+.status__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.25rem 0.6rem;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.status__btn:hover:not(.status__btn--active) {
+  color: var(--text);
+  background: var(--surface-3);
+}
+
+.status__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Opción activa: resaltada con el color de su estado. */
+.status__btn--active[data-status='PENDING'] {
+  background: color-mix(in srgb, var(--warning) 20%, transparent);
+  color: var(--warning);
+}
+.status__btn--active[data-status='IN_PROGRESS'] {
+  background: color-mix(in srgb, var(--info) 20%, transparent);
+  color: var(--info);
+}
+.status__btn--active[data-status='DONE'] {
+  background: color-mix(in srgb, var(--success) 20%, transparent);
+  color: var(--success);
+}
+
+/* Variante compacta: solo iconos, para tarjetas de la agenda. */
+.status--compact .status__btn {
+  padding: 0.25rem;
+}

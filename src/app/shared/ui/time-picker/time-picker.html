@@ -1,0 +1,38 @@
+<button
+  #field
+  type="button"
+  class="tp-field"
+  [class.tp-field--empty]="!value()"
+  [attr.aria-expanded]="open()"
+  [attr.aria-haspopup]="'listbox'"
+  (click)="toggle()"
+>
+  <eci-icon class="tp-field__icon" name="clock" [size]="16" />
+  <span class="tp-field__text">{{ value() || placeholder() }}</span>
+  <eci-icon class="tp-field__caret" name="chevron-down" [size]="16" />
+</button>
+
+@if (open()) {
+  <ul
+    class="tp-pop"
+    role="listbox"
+    [style.top.px]="popTop()"
+    [style.left.px]="popLeft()"
+    [style.width.px]="popWidth()"
+  >
+    @for (t of options(); track t) {
+      <li>
+        <button
+          type="button"
+          class="tp-opt"
+          role="option"
+          [class.tp-opt--selected]="isSelected(t)"
+          [attr.aria-selected]="isSelected(t)"
+          (click)="select(t)"
+        >
+          {{ t }}
+        </button>
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,50 @@
+<button
+  #field
+  type="button"
+  class="dp-field"
+  [class.dp-field--empty]="!displayValue()"
+  [attr.aria-expanded]="open()"
+  [attr.aria-haspopup]="'dialog'"
+  (click)="toggle()"
+>
+  <eci-icon class="dp-field__icon" name="calendar" [size]="16" />
+  <span class="dp-field__text">{{ displayValue() || placeholder() }}</span>
+  <eci-icon class="dp-field__caret" name="chevron-down" [size]="16" />
+</button>
+
+@if (open()) {
+  <div class="dp-pop" role="dialog" [style.top.px]="popTop()" [style.left.px]="popLeft()">
+    <header class="dp-pop__head">
+      <button type="button" class="dp-nav" (click)="shiftMonth(-1)" aria-label="←">
+        <eci-icon name="chevron-left" [size]="18" />
+      </button>
+      <span class="dp-pop__month">{{ monthLabel() }}</span>
+      <button type="button" class="dp-nav" (click)="shiftMonth(1)" aria-label="→">
+        <eci-icon name="chevron-right" [size]="18" />
+      </button>
+    </header>
+
+    <div class="dp-grid dp-grid--head" aria-hidden="true">
+      @for (w of weekdays(); track $index) {
+        <span class="dp-weekday">{{ w }}</span>
+      }
+    </div>
+
+    <div class="dp-grid" role="grid">
+      @for (cell of days(); track cell.iso) {
+        <button
+          type="button"
+          class="dp-day"
+          role="gridcell"
+          [class.dp-day--muted]="!cell.inMonth"
+          [class.dp-day--today]="isToday(cell.iso)"
+          [class.dp-day--selected]="isSelected(cell.iso)"
+          [disabled]="cell.disabled"
+          (click)="select(cell)"
+        >
+          {{ cell.label }}
+        </button>
+      }
+    </div>
+  </div>
+}

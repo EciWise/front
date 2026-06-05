@@ -191,6 +191,20 @@ eci-card {
   color: var(--danger);
 }
 
+/* Estrella de favorita: rellena y resaltada cuando está activa. */
+.icon-btn--fav {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
+}
+
+.icon-btn--fav:hover {
+  color: var(--warning);
+}
+
+.icon-btn--fav eci-icon svg {
+  fill: currentColor;
+}
+
 @media (max-width: 30rem) {
   .col-head {
     flex-wrap: wrap;
