@@ -1,10 +1,15 @@
-<div class="dialog__backdrop" #root popover="manual" (click)="onClose()">
+<div class="dialog__backdrop" #root popover="manual">
+  <button
+    type="button"
+    class="dialog__scrim"
+    [attr.aria-label]="'admin.csv.dialog.close' | translate"
+    (click)="onClose()"
+  ></button>
   <div
     class="dialog"
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="'admin.csv.dialog.title' | translate"
-    (click)="$event.stopPropagation()"
   >
     <header class="dialog__header">
       <div class="dialog__heading">

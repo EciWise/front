@@ -44,6 +44,8 @@ export const en = {
   a11y: {
     toggle: 'Accessibility mode',
     skipToContent: 'Skip to main content',
+    closeMenu: 'Close menu',
+    closeNotifications: 'Close notifications',
   },
   theme: {
     toggle: 'Toggle theme',

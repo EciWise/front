@@ -6,6 +6,10 @@
   position: fixed;
   inset: 0;
   z-index: 40;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: default;
 }
 
 .bell__panel {

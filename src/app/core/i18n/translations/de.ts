@@ -48,6 +48,8 @@ export const de = {
   a11y: {
     toggle: 'Barrierefreiheitsmodus',
     skipToContent: 'Zum Hauptinhalt springen',
+    closeMenu: 'Menü schließen',
+    closeNotifications: 'Benachrichtigungen schließen',
   },
   theme: {
     toggle: 'Design wechseln',

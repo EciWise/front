@@ -48,6 +48,8 @@ export const pt = {
   a11y: {
     toggle: 'Modo de acessibilidade',
     skipToContent: 'Ir para o conteúdo principal',
+    closeMenu: 'Fechar menu',
+    closeNotifications: 'Fechar notificações',
   },
   theme: {
     toggle: 'Alterar tema',
