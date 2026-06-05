@@ -5,10 +5,9 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonComponent } from '../../../shared/ui/button/button';
-import { IconComponent } from '../../../shared/ui/icon/icon';
 import { SelectComponent, SelectOption as EciSelectOption } from '../../../shared/ui/select/select';
 import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
+import { WizardChromeComponent } from '../wizard-chrome/wizard-chrome';
 import { WizardFieldsBase } from '../wizard-fields.base';
 
 interface Option {
@@ -16,6 +15,7 @@ interface Option {
   readonly key: string;
 }
 
+/** Ocupaciones de los padres (común a madre y padre, salvo el código "otra"). */
 const OCCUPATIONS: readonly Option[] = [
   { value: 2, key: 'professional' },
   { value: 3, key: 'technician' },
@@ -25,6 +25,7 @@ const OCCUPATIONS: readonly Option[] = [
   { value: 9, key: 'unskilled' },
 ];
 
+/** Descriptor de un campo del formulario, discriminado por tipo de control. */
 type FieldDef =
   | {
       readonly kind: 'select';
@@ -42,19 +43,26 @@ type FieldDef =
     }
   | { readonly kind: 'yesno'; readonly control: string; readonly hint?: boolean };
 
+/** Una página del asistente: título i18n y los controles que agrupa. */
 interface Page {
   readonly titleKey: string;
   readonly controls: readonly string[];
 }
 
+/**
+ * Campos del modelo de deserción con presentación amigable (selects con texto,
+ * sí/no y numéricos con ayuda). Recibe el `FormGroup` de `buildDropoutGroup`.
+ * En modo `paginated` reparte las preguntas en pasos cortos con la navegación
+ * del componente `eci-wizard-chrome`; en modo normal las muestra todas en una
+ * sola grilla.
+ */
 @Component({
   selector: 'eci-dropout-ia-fields',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonComponent,
-    IconComponent,
+    WizardChromeComponent,
     SelectComponent,
     InfoTooltipComponent,
   ],
@@ -67,6 +75,7 @@ export class DropoutIaFieldsComponent extends WizardFieldsBase {
     { value: 0, key: 'no' },
   ];
 
+  /** Catálogo de campos indexado por control (valores = códigos del modelo). */
   private readonly fields: readonly FieldDef[] = [
     {
       kind: 'select',
@@ -178,6 +187,7 @@ export class DropoutIaFieldsComponent extends WizardFieldsBase {
 
   private readonly fieldMap = new Map(this.fields.map((field) => [field.control, field]));
 
+  /** Agrupación de las preguntas en pasos cortos y temáticos. */
   protected override readonly pages: readonly Page[] = [
     {
       titleKey: 'datosIa.dropout.pages.personal',
@@ -216,6 +226,7 @@ export class DropoutIaFieldsComponent extends WizardFieldsBase {
     },
   ];
 
+  /** Campos visibles: los del paso actual si está paginado; todos si no. */
   protected readonly visibleFields = computed<readonly FieldDef[]>(() => {
     const names = this.paginated()
       ? this.pages[this.step()].controls

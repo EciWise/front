@@ -38,7 +38,7 @@ export class SpaceSceneService {
   private readonly textures: Texture[] = [];
   private readonly spriteMaterials: SpriteMaterial[] = [];
   private frameId = 0;
-  private pointer = { x: 0, y: 0 };
+  private readonly pointer = { x: 0, y: 0 };
   private clock = 0;
   private initialized = false;
 
@@ -156,7 +156,7 @@ export class SpaceSceneService {
     return canvas;
   }
 
-  private animate = (): void => {
+  private readonly animate = (): void => {
     this.frameId = requestAnimationFrame(this.animate);
     if (!this.camera || !this.renderer || !this.scene) {
       return;
@@ -181,12 +181,12 @@ export class SpaceSceneService {
     this.renderer.render(this.scene, this.camera);
   };
 
-  private onPointerMove = (event: PointerEvent): void => {
+  private readonly onPointerMove = (event: PointerEvent): void => {
     this.pointer.x = event.clientX / window.innerWidth - 0.5;
     this.pointer.y = event.clientY / window.innerHeight - 0.5;
   };
 
-  private resize = (): void => {
+  private readonly resize = (): void => {
     if (!this.renderer || !this.camera) {
       return;
     }

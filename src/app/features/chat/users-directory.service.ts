@@ -1,4 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { stripTrailingSlashes } from '../../core/config/url.util';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { AUTH_CONFIG } from '../../core/auth/auth.config';
@@ -34,7 +35,7 @@ export class UsersDirectoryService {
     if (term.trim()) {
       params = params.set('search', term.trim());
     }
-    const base = this.config.apiBaseUrl.replace(/\/+$/, '');
+    const base = stripTrailingSlashes(this.config.apiBaseUrl);
     return this.http
       .get<ApiDirectoryResponse>(`${base}/gestion-usuarios`, { params })
       .pipe(

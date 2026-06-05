@@ -27,6 +27,9 @@ interface HelpCategory {
   readonly items: readonly HelpItem[];
 }
 
+/** Par pregunta/respuesta a partir de la base de su clave i18n (`<base>Q`/`<base>A`). */
+const faq = (base: string): HelpItem => ({ q: `${base}Q`, a: `${base}A` });
+
 /**
  * Centro de ayuda: buscador en vivo + preguntas frecuentes agrupadas por
  * categoría en un acordeón animado, atajos de teclado y acceso al asistente.
@@ -55,40 +58,25 @@ export class HelpComponent {
       id: 'start',
       titleKey: 'help.cats.start',
       icon: 'dashboard',
-      items: [
-        { q: 'help.q.homeQ', a: 'help.q.homeA' },
-        { q: 'help.q.navQ', a: 'help.q.navA' },
-        { q: 'help.q.searchQ', a: 'help.q.searchA' },
-      ],
+      items: [faq('help.q.home'), faq('help.q.nav'), faq('help.q.search')],
     },
     {
       id: 'appearance',
       titleKey: 'help.cats.appearance',
       icon: 'settings',
-      items: [
-        { q: 'help.q.themeQ', a: 'help.q.themeA' },
-        { q: 'help.q.a11yQ', a: 'help.q.a11yA' },
-        { q: 'help.q.languageQ', a: 'help.q.languageA' },
-      ],
+      items: [faq('help.q.theme'), faq('help.q.a11y'), faq('help.q.language')],
     },
     {
       id: 'comms',
       titleKey: 'help.cats.comms',
       icon: 'chat',
-      items: [
-        { q: 'help.q.assistantQ', a: 'help.q.assistantA' },
-        { q: 'help.q.messagesQ', a: 'help.q.messagesA' },
-        { q: 'help.q.notificationsQ', a: 'help.q.notificationsA' },
-      ],
+      items: [faq('help.q.assistant'), faq('help.q.messages'), faq('help.q.notifications')],
     },
     {
       id: 'account',
       titleKey: 'help.cats.account',
       icon: 'profile',
-      items: [
-        { q: 'help.q.profileQ', a: 'help.q.profileA' },
-        { q: 'help.q.logoutQ', a: 'help.q.logoutA' },
-      ],
+      items: [faq('help.q.profile'), faq('help.q.logout')],
     },
   ];
 

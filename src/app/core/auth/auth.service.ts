@@ -1,4 +1,5 @@
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { stripTrailingSlashes } from '../config/url.util';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -113,7 +114,7 @@ export class AuthService {
   }
 
   private get base(): string {
-    return this.config.apiBaseUrl.replace(/\/+$/, '');
+    return stripTrailingSlashes(this.config.apiBaseUrl);
   }
 
   private persist(token: string, apiUser: ApiUser): User {

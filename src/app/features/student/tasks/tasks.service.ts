@@ -1,4 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { stripTrailingSlashes } from '../../../core/config/url.util';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { TODO_CONFIG } from '../../../core/todo/todo.config';
@@ -27,7 +28,7 @@ export class TasksService {
   private readonly config = inject(TODO_CONFIG);
 
   private get base(): string {
-    return `${this.config.todoApiUrl.replace(/\/+$/, '')}/api`;
+    return `${stripTrailingSlashes(this.config.todoApiUrl)}/api`;
   }
 
   private readonly _tasks = signal<Task[]>([]);
