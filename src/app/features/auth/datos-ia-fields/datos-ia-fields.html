@@ -1,20 +1,16 @@
 <div class="dia" [formGroup]="group()">
-  @if (chrome()) {
-    <ol class="dia__steps" [attr.aria-label]="'register.stepsLabel' | translate">
-      @for (p of pages; track p.titleKey; let i = $index) {
-        <li
-          class="dia__step"
-          [class.dia__step--active]="step() === i"
-          [class.dia__step--done]="step() > i"
-          [attr.aria-current]="step() === i ? 'step' : null"
-        >
-          <span class="dia__step-dot">{{ i + 1 }}</span>
-          <span class="dia__step-label">{{ p.titleKey | translate }}</span>
-        </li>
-      }
-    </ol>
-  }
-
+  <eci-wizard-chrome
+    [pages]="pages"
+    [step]="step()"
+    [showChrome]="chrome()"
+    [isFirst]="isFirst()"
+    [isLast]="isLast()"
+    [pending]="pending()"
+    [error]="error()"
+    (back)="back()"
+    (next)="next()"
+    (finished)="finishStep()"
+  >
   @for (s of [activePage()]; track s) {
     <div
       [class.dia__page]="chrome()"
@@ -197,31 +193,5 @@
       }
     </div>
   }
-
-  @if (chrome()) {
-    @if (error(); as err) {
-      <p class="dia__error" role="alert">{{ err | translate }}</p>
-    }
-
-    <div class="dia__nav">
-      @if (!isFirst()) {
-        <eci-button variant="secondary" [ariaLabel]="'common.back' | translate" (click)="back()">
-          <eci-icon name="arrow-left" [size]="18" />
-        </eci-button>
-      }
-      @if (!isLast()) {
-        <eci-button [ariaLabel]="'common.next' | translate" (click)="next()">
-          <eci-icon name="arrow-right" [size]="18" />
-        </eci-button>
-      } @else {
-        <eci-button
-          [ariaLabel]="'completeProfile.save' | translate"
-          [disabled]="pending()"
-          (click)="finishStep()"
-        >
-          <eci-icon name="check" [size]="18" />
-        </eci-button>
-      }
-    </div>
-  }
+  </eci-wizard-chrome>
 </div>

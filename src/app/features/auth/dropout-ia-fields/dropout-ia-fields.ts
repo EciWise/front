@@ -5,8 +5,7 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonComponent } from '../../../shared/ui/button/button';
-import { IconComponent } from '../../../shared/ui/icon/icon';
+import { WizardChromeComponent } from '../wizard-chrome/wizard-chrome';
 import { WizardFieldsBase } from '../wizard-fields.base';
 
 interface Option {
@@ -58,7 +57,7 @@ interface Page {
 @Component({
   selector: 'eci-dropout-ia-fields',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonComponent, IconComponent],
+  imports: [ReactiveFormsModule, TranslatePipe, WizardChromeComponent],
   templateUrl: './dropout-ia-fields.html',
   styleUrl: '../datos-ia-fields/datos-ia-fields.css',
 })

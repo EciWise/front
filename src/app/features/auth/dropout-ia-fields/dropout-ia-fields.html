@@ -1,121 +1,91 @@
 <div class="dia" [formGroup]="group()">
-  @if (paginated()) {
-    <ol class="dia__steps" [attr.aria-label]="'register.stepsLabel' | translate">
-      @for (p of pages; track p.titleKey; let i = $index) {
-        <li
-          class="dia__step"
-          [class.dia__step--active]="step() === i"
-          [class.dia__step--done]="step() > i"
-          [attr.aria-current]="step() === i ? 'step' : null"
-        >
-          <span class="dia__step-dot">{{ i + 1 }}</span>
-          <span class="dia__step-label">{{ p.titleKey | translate }}</span>
-        </li>
-      }
-    </ol>
-  }
-
-  @for (s of [step()]; track s) {
-    <div
-      [class.dia__page]="paginated()"
-      [class.dia__page--back]="direction() === 'back'"
-    >
-      <div class="dia__grid">
-        @for (f of visibleFields(); track f.control) {
-          <div class="dia__field">
-            @switch (f.kind) {
-              @case ('select') {
-                <label class="dia__field-label">
-                  <span class="dia__label">
-                    {{ 'datosIa.dropout.labels.' + f.control | translate }}
-                  </span>
-                  <select [formControlName]="f.control">
-                    <option [ngValue]="null" disabled>
-                      {{ 'datosIa.selectPlaceholder' | translate }}
-                    </option>
-                    @for (o of f.options; track o.value) {
-                      <option [ngValue]="o.value">
-                        {{ 'datosIa.dropout.options.' + f.control + '.' + o.key | translate }}
+  <eci-wizard-chrome
+    [pages]="pages"
+    [step]="step()"
+    [showChrome]="paginated()"
+    [isFirst]="isFirst()"
+    [isLast]="isLast()"
+    [pending]="pending()"
+    [error]="error()"
+    (back)="back()"
+    (next)="next()"
+    (finished)="finishStep()"
+  >
+    @for (s of [step()]; track s) {
+      <div
+        [class.dia__page]="paginated()"
+        [class.dia__page--back]="direction() === 'back'"
+      >
+        <div class="dia__grid">
+          @for (f of visibleFields(); track f.control) {
+            <div class="dia__field">
+              @switch (f.kind) {
+                @case ('select') {
+                  <label class="dia__field-label">
+                    <span class="dia__label">
+                      {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    </span>
+                    <select [formControlName]="f.control">
+                      <option [ngValue]="null" disabled>
+                        {{ 'datosIa.selectPlaceholder' | translate }}
                       </option>
-                    }
-                  </select>
-                </label>
+                      @for (o of f.options; track o.value) {
+                        <option [ngValue]="o.value">
+                          {{ 'datosIa.dropout.options.' + f.control + '.' + o.key | translate }}
+                        </option>
+                      }
+                    </select>
+                  </label>
+                }
+                @case ('number') {
+                  <label class="dia__field-label">
+                    <span class="dia__label">
+                      {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    </span>
+                    <input
+                      type="number"
+                      [formControlName]="f.control"
+                      [min]="f.min"
+                      [max]="f.max"
+                      [step]="f.step"
+                    />
+                  </label>
+                }
+                @case ('yesno') {
+                  <label class="dia__field-label">
+                    <span class="dia__label">
+                      {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    </span>
+                    <select [formControlName]="f.control">
+                      <option [ngValue]="null" disabled>
+                        {{ 'datosIa.selectPlaceholder' | translate }}
+                      </option>
+                      @for (o of yesNo; track o.value) {
+                        <option [ngValue]="o.value">{{ 'datosIa.yesNo.' + o.key | translate }}</option>
+                      }
+                    </select>
+                  </label>
+                }
               }
-              @case ('number') {
-                <label class="dia__field-label">
-                  <span class="dia__label">
-                    {{ 'datosIa.dropout.labels.' + f.control | translate }}
-                  </span>
-                  <input
-                    type="number"
-                    [formControlName]="f.control"
-                    [min]="f.min"
-                    [max]="f.max"
-                    [step]="f.step"
-                  />
-                </label>
-              }
-              @case ('yesno') {
-                <label class="dia__field-label">
-                  <span class="dia__label">
-                    {{ 'datosIa.dropout.labels.' + f.control | translate }}
-                  </span>
-                  <select [formControlName]="f.control">
-                    <option [ngValue]="null" disabled>
-                      {{ 'datosIa.selectPlaceholder' | translate }}
-                    </option>
-                    @for (o of yesNo; track o.value) {
-                      <option [ngValue]="o.value">{{ 'datosIa.yesNo.' + o.key | translate }}</option>
-                    }
-                  </select>
-                </label>
-              }
-            }
 
-            @if (errorKeyFor(f.control); as ek) {
-              <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
-            }
+              @if (errorKeyFor(f.control); as ek) {
+                <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
+              }
 
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-' + f.control"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + f.control">
-              {{ 'datosIa.dropout.desc.' + f.control | translate }}
-            </p>
-          </div>
-        }
+              <button
+                type="button"
+                class="dia__explain-toggle"
+                [attr.aria-describedby]="'explain-' + f.control"
+              >
+                {{ 'datosIa.whatIsThis' | translate }}
+              </button>
+              <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + f.control">
+                {{ 'datosIa.dropout.desc.' + f.control | translate }}
+              </p>
+            </div>
+          }
+        </div>
       </div>
-    </div>
-  }
-
-  @if (paginated()) {
-    @if (error(); as err) {
-      <p class="dia__error" role="alert">{{ err | translate }}</p>
     }
-
-    <div class="dia__nav">
-      @if (!isFirst()) {
-        <eci-button variant="secondary" [ariaLabel]="'common.back' | translate" (click)="back()">
-          <eci-icon name="arrow-left" [size]="18" />
-        </eci-button>
-      }
-      @if (!isLast()) {
-        <eci-button [ariaLabel]="'common.next' | translate" (click)="next()">
-          <eci-icon name="arrow-right" [size]="18" />
-        </eci-button>
-      } @else {
-        <eci-button
-          [ariaLabel]="'completeProfile.save' | translate"
-          [disabled]="pending()"
-          (click)="finishStep()"
-        >
-          <eci-icon name="check" [size]="18" />
-        </eci-button>
-      }
-    </div>
-  }
+  </eci-wizard-chrome>
 </div>

@@ -5,8 +5,8 @@ import { es } from './translations/es';
 import { en } from './translations/en';
 
 const DICTIONARIES: Record<string, TranslationObject> = {
-  es: es as unknown as TranslationObject,
-  en: en as unknown as TranslationObject,
+  es,
+  en,
 };
 
 /**
