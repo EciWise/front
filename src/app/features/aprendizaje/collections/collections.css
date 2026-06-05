@@ -30,8 +30,7 @@
   font-size: 0.85rem;
 }
 
-.col-form__field input,
-.col-form__field select {
+.col-form__field input {
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);

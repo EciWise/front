@@ -118,9 +118,18 @@
 }
 
 .dia__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text);
+}
+
+.dia__check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .dia__hint {
@@ -130,11 +139,10 @@
 }
 
 /* El <select> toma su estilo visual del global; aquí solo layout. */
-.dia__field select {
+.dia__field eci-select {
   margin-top: var(--space-1);
   width: 100%;
   box-sizing: border-box;
-  height: 2.75rem;
 }
 
 .dia__field input {

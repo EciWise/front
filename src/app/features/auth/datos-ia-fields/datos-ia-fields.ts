@@ -10,6 +10,8 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { SelectComponent, SelectOption as EciSelectOption } from '../../../shared/ui/select/select';
+import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 import { DATOS_IA_PAGES, markPageTouchedAndValidate } from '../datos-ia-form';
 
 /** Opción de un select codificado (valor numérico que espera el backend + clave i18n). */
@@ -33,6 +35,8 @@ interface SelectOption {
     TranslatePipe,
     ButtonComponent,
     IconComponent,
+    SelectComponent,
+    InfoTooltipComponent,
   ],
   templateUrl: './datos-ia-fields.html',
   styleUrl: './datos-ia-fields.css',
@@ -49,6 +53,7 @@ export class DatosIaFieldsComponent {
   readonly page = input<number | null>(null);
   /** Deshabilita el botón final mientras el contenedor guarda. */
   readonly pending = input(false);
+  readonly showErrors = input(false);
   /** Clave i18n de error a mostrar sobre los botones de navegación. */
   readonly error = input<string | null>(null);
   /** Se emite al confirmar el último paso (tras validar la página). */
@@ -95,6 +100,7 @@ export class DatosIaFieldsComponent {
   protected readonly step = signal(0);
   /** Dirección del último cambio de paso (para la animación de slide). */
   protected readonly direction = signal<'forward' | 'back'>('forward');
+  private readonly attemptedPages = signal<ReadonlySet<number>>(new Set());
 
   /** Muestra el indicador de pasos y la navegación propios del componente. */
   protected readonly chrome = computed(() => this.paginated() && this.page() === null);
@@ -133,8 +139,11 @@ export class DatosIaFieldsComponent {
 
   /** Clave i18n del error a mostrar bajo un campo (o null si es válido/intacto). */
   errorKeyFor(name: string): string | null {
+    if (!this.showErrors() && !this.pageAttemptedFor(name)) {
+      return null;
+    }
     const control = this.group().get(name);
-    if (!control || control.valid || !control.touched) {
+    if (!control || control.valid) {
       return null;
     }
     return control.hasError('required')
@@ -144,6 +153,23 @@ export class DatosIaFieldsComponent {
 
   /** Marca como tocados los controles del paso actual y reporta si son válidos. */
   private validateCurrentPage(): boolean {
+    this.attemptedPages.update((pages) => new Set(pages).add(this.step()));
     return markPageTouchedAndValidate(this.group(), this.pages[this.step()].controls);
+  }
+
+  selectOptions(prefix: string, options: readonly SelectOption[]): readonly EciSelectOption[] {
+    return options.map((option) => ({
+      value: option.value,
+      labelKey: `${prefix}.${option.key}`,
+    }));
+  }
+
+  private pageAttemptedFor(name: string): boolean {
+    const page = this.page();
+    if (page !== null) {
+      return this.showErrors();
+    }
+    const pageIndex = this.pages.findIndex((p) => p.controls.includes(name));
+    return pageIndex >= 0 && this.attemptedPages().has(pageIndex);
   }
 }

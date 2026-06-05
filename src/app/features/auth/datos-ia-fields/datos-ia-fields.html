@@ -23,107 +23,83 @@
       @if (singleView() || s === 0) {
         <div class="dia__grid">
           <div class="dia__field">
-            <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.gender' | translate }}</span>
-              <select formControlName="gender">
-                <option [ngValue]="null" disabled>{{ 'datosIa.selectPlaceholder' | translate }}</option>
-                @for (o of genderOptions; track o.value) {
-                  <option [ngValue]="o.value">{{ 'datosIa.options.gender.' + o.key | translate }}</option>
-                }
-              </select>
-            </label>
+            <div class="dia__field-label">
+              <span class="dia__label">
+                {{ 'datosIa.labels.gender' | translate }}
+                <eci-info-tooltip [text]="'datosIa.desc.gender' | translate" [size]="15" />
+              </span>
+              <eci-select
+                formControlName="gender"
+                [placeholder]="'datosIa.selectPlaceholder' | translate"
+                [ariaLabel]="'datosIa.labels.gender' | translate"
+                [options]="selectOptions('datosIa.options.gender', genderOptions)"
+              />
+            </div>
             @if (errorKeyFor('gender'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-gender'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-gender">
-              {{ 'datosIa.desc.gender' | translate }}
-            </p>
           </div>
 
           <div class="dia__field">
-            <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.ethnicity' | translate }}</span>
-              <select formControlName="ethnicity">
-                <option [ngValue]="null" disabled>{{ 'datosIa.selectPlaceholder' | translate }}</option>
-                @for (o of ethnicityOptions; track o.value) {
-                  <option [ngValue]="o.value">{{ 'datosIa.options.ethnicity.' + o.key | translate }}</option>
-                }
-              </select>
-            </label>
+            <div class="dia__field-label">
+              <span class="dia__label">
+                {{ 'datosIa.labels.ethnicity' | translate }}
+                <eci-info-tooltip [text]="'datosIa.desc.ethnicity' | translate" [size]="15" />
+              </span>
+              <eci-select
+                formControlName="ethnicity"
+                [placeholder]="'datosIa.selectPlaceholder' | translate"
+                [ariaLabel]="'datosIa.labels.ethnicity' | translate"
+                [options]="selectOptions('datosIa.options.ethnicity', ethnicityOptions)"
+              />
+            </div>
             @if (errorKeyFor('ethnicity'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-ethnicity'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-ethnicity">
-              {{ 'datosIa.desc.ethnicity' | translate }}
-            </p>
           </div>
 
           <div class="dia__field">
-            <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.parentalEducation' | translate }}</span>
-              <select formControlName="parentalEducation">
-                <option [ngValue]="null" disabled>{{ 'datosIa.selectPlaceholder' | translate }}</option>
-                @for (o of parentalEducationOptions; track o.value) {
-                  <option [ngValue]="o.value">
-                    {{ 'datosIa.options.parentalEducation.' + o.key | translate }}
-                  </option>
-                }
-              </select>
-            </label>
+            <div class="dia__field-label">
+              <span class="dia__label">
+                {{ 'datosIa.labels.parentalEducation' | translate }}
+                <eci-info-tooltip
+                  [text]="'datosIa.desc.parentalEducation' | translate"
+                  [size]="15"
+                />
+              </span>
+              <eci-select
+                formControlName="parentalEducation"
+                [placeholder]="'datosIa.selectPlaceholder' | translate"
+                [ariaLabel]="'datosIa.labels.parentalEducation' | translate"
+                [options]="
+                  selectOptions('datosIa.options.parentalEducation', parentalEducationOptions)
+                "
+              />
+            </div>
             @if (errorKeyFor('parentalEducation'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-parentalEducation'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-parentalEducation">
-              {{ 'datosIa.desc.parentalEducation' | translate }}
-            </p>
           </div>
 
           <div class="dia__field">
-            <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.parentalSupport' | translate }}</span>
-              <select formControlName="parentalSupport">
-                <option [ngValue]="null" disabled>{{ 'datosIa.selectPlaceholder' | translate }}</option>
-                @for (o of parentalSupportOptions; track o.value) {
-                  <option [ngValue]="o.value">
-                    {{ 'datosIa.options.parentalSupport.' + o.key | translate }}
-                  </option>
-                }
-              </select>
-            </label>
+            <div class="dia__field-label">
+              <span class="dia__label">
+                {{ 'datosIa.labels.parentalSupport' | translate }}
+                <eci-info-tooltip
+                  [text]="'datosIa.desc.parentalSupport' | translate"
+                  [size]="15"
+                />
+              </span>
+              <eci-select
+                formControlName="parentalSupport"
+                [placeholder]="'datosIa.selectPlaceholder' | translate"
+                [ariaLabel]="'datosIa.labels.parentalSupport' | translate"
+                [options]="selectOptions('datosIa.options.parentalSupport', parentalSupportOptions)"
+              />
+            </div>
             @if (errorKeyFor('parentalSupport'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-parentalSupport'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-parentalSupport">
-              {{ 'datosIa.desc.parentalSupport' | translate }}
-            </p>
           </div>
         </div>
       }
@@ -132,42 +108,31 @@
         <div class="dia__grid">
           <div class="dia__field">
             <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.studyTimeWeekly' | translate }}</span>
+              <span class="dia__label">
+                {{ 'datosIa.labels.studyTimeWeekly' | translate }}
+                <eci-info-tooltip
+                  [text]="'datosIa.desc.studyTimeWeekly' | translate"
+                  [size]="15"
+                />
+              </span>
               <input type="number" formControlName="studyTimeWeekly" min="0" max="20" step="0.5" />
             </label>
             @if (errorKeyFor('studyTimeWeekly'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-studyTimeWeekly'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-studyTimeWeekly">
-              {{ 'datosIa.desc.studyTimeWeekly' | translate }}
-            </p>
           </div>
 
           <div class="dia__field">
             <label class="dia__field-label">
-              <span class="dia__label">{{ 'datosIa.labels.absences' | translate }}</span>
+              <span class="dia__label">
+                {{ 'datosIa.labels.absences' | translate }}
+                <eci-info-tooltip [text]="'datosIa.desc.absences' | translate" [size]="15" />
+              </span>
               <input type="number" formControlName="absences" min="0" max="30" step="1" />
             </label>
             @if (errorKeyFor('absences'); as ek) {
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-absences'"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" id="explain-absences">
-              {{ 'datosIa.desc.absences' | translate }}
-            </p>
           </div>
         </div>
 
@@ -178,18 +143,11 @@
               <div class="dia__check-wrap">
                 <label class="dia__check">
                   <input type="checkbox" [formControlName]="c" />
-                  <span>{{ 'datosIa.labels.' + c | translate }}</span>
+                  <span class="dia__check-label">
+                    {{ 'datosIa.labels.' + c | translate }}
+                    <eci-info-tooltip [text]="'datosIa.desc.' + c | translate" [size]="15" />
+                  </span>
                 </label>
-                <button
-                  type="button"
-                  class="dia__explain-toggle"
-                  [attr.aria-describedby]="'explain-' + c"
-                >
-                  {{ 'datosIa.whatIsThis' | translate }}
-                </button>
-                <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + c">
-                  {{ 'datosIa.desc.' + c | translate }}
-                </p>
               </div>
             }
           </div>

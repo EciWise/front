@@ -30,13 +30,15 @@
         </label>
 
         @if (!isStudent()) {
-          <label class="col-form__field">
+          <div class="col-form__field">
             <span>{{ 'aprendizaje.collections.visibility' | translate }}</span>
-            <select [value]="visibility()" (change)="onVisibility($any($event.target).value)">
-              <option value="PRIVATE">{{ 'aprendizaje.collections.private' | translate }}</option>
-              <option value="PUBLIC">{{ 'aprendizaje.collections.public' | translate }}</option>
-            </select>
-          </label>
+            <eci-select
+              [value]="visibility()"
+              (valueChange)="onVisibility($event)"
+              [ariaLabel]="'aprendizaje.collections.visibility' | translate"
+              [options]="visibilityOptions"
+            />
+          </div>
         } @else {
           <p class="col-form__hint">{{ 'aprendizaje.collections.studentHint' | translate }}</p>
         }

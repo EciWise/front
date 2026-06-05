@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AuthError, AuthService } from '../../../core/auth/auth.service';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { PasswordStrengthInputComponent } from '../../../shared/ui/password-strength-input/password-strength-input';
 
 /** Valida que `newPassword` y `confirm` coincidan. */
 const passwordsMatch: ValidatorFn = (group) => {
@@ -23,7 +24,13 @@ const passwordsMatch: ValidatorFn = (group) => {
 @Component({
   selector: 'eci-force-password-change',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonComponent, IconComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonComponent,
+    IconComponent,
+    PasswordStrengthInputComponent,
+  ],
   templateUrl: './force-password-change.html',
   styleUrl: './force-password-change.css',
 })

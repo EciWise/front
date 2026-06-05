@@ -15,6 +15,8 @@ import {
   LucideGamepad2,
   LucideGraduationCap,
   LucideHistory,
+  LucideEye,
+  LucideEyeOff,
   LucideInfo,
   LucideLayoutDashboard,
   LucideLifeBuoy,
@@ -66,7 +68,9 @@ export type IconName =
   | 'info'
   | 'plus'
   | 'edit'
-  | 'trash';
+  | 'trash'
+  | 'eye'
+  | 'eye-off';
 
 /**
  * Envoltorio de iconos. Mapea un nombre semántico a su icono lucide.
@@ -83,6 +87,8 @@ export type IconName =
     LucideFolderOpen,
     LucideListTodo,
     LucideUser,
+    LucideEye,
+    LucideEyeOff,
     LucideCalendarClock,
     LucideCalendarCheck,
     LucideUsers,
@@ -205,6 +211,12 @@ export type IconName =
       }
       @case ('trash') {
         <svg lucideTrash2 [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('eye') {
+        <svg lucideEye [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('eye-off') {
+        <svg lucideEyeOff [size]="size()" aria-hidden="true"></svg>
       }
     }
   `,

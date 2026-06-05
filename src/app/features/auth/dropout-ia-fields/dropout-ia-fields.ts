@@ -10,6 +10,8 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { SelectComponent, SelectOption } from '../../../shared/ui/select/select';
+import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 
 interface Option {
   readonly value: number;
@@ -50,7 +52,14 @@ interface Page {
 @Component({
   selector: 'eci-dropout-ia-fields',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonComponent, IconComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonComponent,
+    IconComponent,
+    SelectComponent,
+    InfoTooltipComponent,
+  ],
   templateUrl: './dropout-ia-fields.html',
   styleUrl: '../datos-ia-fields/datos-ia-fields.css',
 })
@@ -241,6 +250,7 @@ export class DropoutIaFieldsComponent {
   protected readonly step = signal(0);
   /** Dirección del último cambio de paso (para la animación de slide). */
   protected readonly direction = signal<'forward' | 'back'>('forward');
+  private readonly attemptedPages = signal<ReadonlySet<number>>(new Set());
   protected readonly isFirst = computed(() => this.step() === 0);
   protected readonly isLast = computed(() => this.step() === this.pages.length - 1);
 
@@ -277,8 +287,11 @@ export class DropoutIaFieldsComponent {
 
   /** Clave i18n del error a mostrar bajo un campo (o null si es válido/intacto). */
   errorKeyFor(name: string): string | null {
+    if (!this.pageAttemptedFor(name)) {
+      return null;
+    }
     const control = this.group().get(name);
-    if (!control || control.valid || !control.touched) {
+    if (!control || control.valid) {
       return null;
     }
     return control.hasError('required')
@@ -288,6 +301,7 @@ export class DropoutIaFieldsComponent {
 
   /** Marca como tocados los controles del paso actual y reporta si son válidos. */
   private validateCurrentPage(): boolean {
+    this.attemptedPages.update((pages) => new Set(pages).add(this.step()));
     const formGroup = this.group();
     let valid = true;
     for (const name of this.pages[this.step()].controls) {
@@ -298,5 +312,27 @@ export class DropoutIaFieldsComponent {
       }
     }
     return valid;
+  }
+
+  selectOptions(field: Extract<FieldDef, { kind: 'select' }>): readonly SelectOption[] {
+    return field.options.map((option) => ({
+      value: option.value,
+      labelKey: `datosIa.dropout.options.${field.control}.${option.key}`,
+    }));
+  }
+
+  yesNoOptions(): readonly SelectOption[] {
+    return this.yesNo.map((option) => ({
+      value: option.value,
+      labelKey: `datosIa.yesNo.${option.key}`,
+    }));
+  }
+
+  private pageAttemptedFor(name: string): boolean {
+    if (!this.paginated()) {
+      return this.attemptedPages().size > 0;
+    }
+    const pageIndex = this.pages.findIndex((p) => p.controls.includes(name));
+    return pageIndex >= 0 && this.attemptedPages().has(pageIndex);
   }
 }

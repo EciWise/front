@@ -10,7 +10,7 @@
   align-items: center;
 }
 
-.admin-form select {
+.admin-form eci-select {
   /* Estilo visual heredado del global; aquí solo el ancho mínimo. */
   min-width: 16rem;
 }

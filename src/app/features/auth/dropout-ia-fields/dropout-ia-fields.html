@@ -25,26 +25,30 @@
           <div class="dia__field">
             @switch (f.kind) {
               @case ('select') {
-                <label class="dia__field-label">
+                <div class="dia__field-label">
                   <span class="dia__label">
                     {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    <eci-info-tooltip
+                      [text]="'datosIa.dropout.desc.' + f.control | translate"
+                      [size]="15"
+                    />
                   </span>
-                  <select [formControlName]="f.control">
-                    <option [ngValue]="null" disabled>
-                      {{ 'datosIa.selectPlaceholder' | translate }}
-                    </option>
-                    @for (o of f.options; track o.value) {
-                      <option [ngValue]="o.value">
-                        {{ 'datosIa.dropout.options.' + f.control + '.' + o.key | translate }}
-                      </option>
-                    }
-                  </select>
-                </label>
+                  <eci-select
+                    [formControlName]="f.control"
+                    [placeholder]="'datosIa.selectPlaceholder' | translate"
+                    [ariaLabel]="'datosIa.dropout.labels.' + f.control | translate"
+                    [options]="selectOptions(f)"
+                  />
+                </div>
               }
               @case ('number') {
                 <label class="dia__field-label">
                   <span class="dia__label">
                     {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    <eci-info-tooltip
+                      [text]="'datosIa.dropout.desc.' + f.control | translate"
+                      [size]="15"
+                    />
                   </span>
                   <input
                     type="number"
@@ -56,19 +60,21 @@
                 </label>
               }
               @case ('yesno') {
-                <label class="dia__field-label">
+                <div class="dia__field-label">
                   <span class="dia__label">
                     {{ 'datosIa.dropout.labels.' + f.control | translate }}
+                    <eci-info-tooltip
+                      [text]="'datosIa.dropout.desc.' + f.control | translate"
+                      [size]="15"
+                    />
                   </span>
-                  <select [formControlName]="f.control">
-                    <option [ngValue]="null" disabled>
-                      {{ 'datosIa.selectPlaceholder' | translate }}
-                    </option>
-                    @for (o of yesNo; track o.value) {
-                      <option [ngValue]="o.value">{{ 'datosIa.yesNo.' + o.key | translate }}</option>
-                    }
-                  </select>
-                </label>
+                  <eci-select
+                    [formControlName]="f.control"
+                    [placeholder]="'datosIa.selectPlaceholder' | translate"
+                    [ariaLabel]="'datosIa.dropout.labels.' + f.control | translate"
+                    [options]="yesNoOptions()"
+                  />
+                </div>
               }
             }
 
@@ -76,16 +82,6 @@
               <span class="dia__field-error" role="alert">{{ ek | translate }}</span>
             }
 
-            <button
-              type="button"
-              class="dia__explain-toggle"
-              [attr.aria-describedby]="'explain-' + f.control"
-            >
-              {{ 'datosIa.whatIsThis' | translate }}
-            </button>
-            <p class="dia__explain-tip" role="tooltip" [id]="'explain-' + f.control">
-              {{ 'datosIa.dropout.desc.' + f.control | translate }}
-            </p>
           </div>
         }
       </div>

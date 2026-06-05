@@ -20,6 +20,7 @@ import {
 } from '../datos-ia-form';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { PasswordStrengthInputComponent } from '../../../shared/ui/password-strength-input/password-strength-input';
 import { DatosIaFieldsComponent } from '../datos-ia-fields/datos-ia-fields';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
 import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
@@ -40,6 +41,15 @@ function allowedEmailDomainValidator(control: AbstractControl): ValidationErrors
   return ALLOWED_EMAIL_DOMAINS.includes(domain) ? null : { emailDomain: true };
 }
 
+/** Valida que la contraseÃ±a y su confirmaciÃ³n coincidan. */
+function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
+  const password = group.get('password')?.value as string | null;
+  const confirmPassword = group.get('confirmPassword')?.value as string | null;
+  return password && confirmPassword && password !== confirmPassword
+    ? { passwordMismatch: true }
+    : null;
+}
+
 /** Registro de un nuevo estudiante (correo + datos básicos para la IA). */
 @Component({
   selector: 'eci-register',
@@ -50,6 +60,7 @@ function allowedEmailDomainValidator(control: AbstractControl): ValidationErrors
     TranslatePipe,
     ButtonComponent,
     IconComponent,
+    PasswordStrengthInputComponent,
     DatosIaFieldsComponent,
     LogoComponent,
     SpaceBackgroundComponent,
@@ -67,6 +78,8 @@ export class RegisterComponent {
 
   protected readonly loading = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly step1Submitted = signal(false);
+  protected readonly datosIaSubmitted = signal(false);
   /**
    * Paso actual del asistente: 1 datos personales, 2 y 3 las dos páginas de
    * "Cuéntanos sobre ti" (datos del modelo de IA).
@@ -76,23 +89,34 @@ export class RegisterComponent {
   protected readonly direction = signal<'forward' | 'back'>('forward');
 
   /** Campos que se validan antes de avanzar al segundo paso. */
-  private readonly step1Controls = ['nombre', 'apellido', 'email', 'telefono', 'password'] as const;
+  private readonly step1Controls = [
+    'nombre',
+    'apellido',
+    'email',
+    'telefono',
+    'password',
+    'confirmPassword',
+  ] as const;
 
-  protected readonly form = this.fb.nonNullable.group({
-    nombre: ['', [Validators.required]],
-    apellido: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email, allowedEmailDomainValidator]],
-    telefono: [''],
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+  protected readonly form = this.fb.nonNullable.group(
+    {
+      nombre: ['', [Validators.required]],
+      apellido: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email, allowedEmailDomainValidator]],
+      telefono: [''],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+        ],
       ],
-    ],
-    datosIa: buildDatosIaGroup(this.fb),
-  });
+      confirmPassword: ['', [Validators.required]],
+      datosIa: buildDatosIaGroup(this.fb),
+    },
+    { validators: passwordsMatchValidator },
+  );
 
   /** Grupo de datos de IA para el componente compartido de campos. */
   protected get datosIaGroup(): FormGroup {
@@ -102,7 +126,7 @@ export class RegisterComponent {
   /** Clave i18n del error a mostrar bajo un campo del paso 1 (o null si es válido). */
   errorKeyFor(name: string): string | null {
     const control = this.form.get(name);
-    if (!control || control.valid || !control.touched) {
+    if (!this.step1Submitted() || !control || control.valid) {
       return null;
     }
     if (control.hasError('email')) {
@@ -114,23 +138,45 @@ export class RegisterComponent {
     if (name === 'password') {
       return 'register.errors.password';
     }
+    if (name === 'confirmPassword') {
+      return control.hasError('required')
+        ? 'register.errors.required'
+        : 'register.errors.passwordMismatch';
+    }
     return 'register.errors.required';
+  }
+
+  confirmPasswordErrorKey(): string | null {
+    const control = this.form.controls.confirmPassword;
+    if (!this.step1Submitted()) {
+      return null;
+    }
+    if (control.hasError('required')) {
+      return 'register.errors.required';
+    }
+    return this.form.hasError('passwordMismatch') ? 'register.errors.passwordMismatch' : null;
   }
 
   /** Avanza al siguiente paso validando la página actual. */
   next(): void {
     const current = this.step();
     if (current === 1) {
-      const ok = this.step1Controls.every((name) => this.form.controls[name].valid);
+      this.step1Submitted.set(true);
+      const ok =
+        this.step1Controls.every((name) => this.form.controls[name].valid) &&
+        !this.form.hasError('passwordMismatch');
       if (!ok) {
         this.step1Controls.forEach((name) => this.form.controls[name].markAsTouched());
         return;
       }
+      this.step1Submitted.set(false);
     } else if (current === 2) {
       // La primera página de "Sobre ti" debe ser válida antes de avanzar.
+      this.datosIaSubmitted.set(true);
       if (!markPageTouchedAndValidate(this.datosIaGroup, DATOS_IA_PAGES[0].controls)) {
         return;
       }
+      this.datosIaSubmitted.set(false);
     }
     this.errorKey.set(null);
     this.direction.set('forward');
@@ -145,6 +191,8 @@ export class RegisterComponent {
 
   submit(): void {
     if (this.form.invalid || this.loading()) {
+      this.step1Submitted.set(this.step() === 1);
+      this.datosIaSubmitted.set(this.step() !== 1);
       this.form.markAllAsTouched();
       return;
     }

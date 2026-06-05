@@ -10,15 +10,6 @@
   font-size: 0.85rem;
 }
 
-.study-pick__field select {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-}
-
 .study-msg {
   margin: 0;
   color: var(--text-muted);

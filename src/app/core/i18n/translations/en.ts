@@ -55,6 +55,13 @@ export const en = {
     es: 'Spanish',
     en: 'English',
   },
+  passwordStrength: {
+    weak: 'Weak',
+    medium: 'Medium',
+    secure: 'Secure',
+    show: 'Show password',
+    hide: 'Hide password',
+  },
   notifications: {
     title: 'Notifications',
     empty: 'You have no new notifications.',
@@ -135,12 +142,14 @@ export const en = {
     step2: 'About you',
     step3: 'Your studies',
     next: 'Continue',
+    confirmPassword: 'Confirm password',
     errors: {
       required: 'This field is required.',
       email: 'Enter a valid email address.',
       emailDomain:
         'Only @gmail.com, @escuelaing.edu.co or @mail.escuelaing.edu.co emails are accepted.',
       password: 'Password must be at least 8 characters and include letters and numbers.',
+      passwordMismatch: 'Passwords do not match.',
     },
   },
   completeProfile: {

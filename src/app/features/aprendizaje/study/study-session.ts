@@ -3,6 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
 import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 import { ConfettiComponent } from '../../../shared/ui/confetti/confetti';
 import { AprendizajeService } from '../aprendizaje.service';
@@ -23,6 +24,7 @@ type DragIntent = ReviewGrade | null;
     CardComponent,
     ButtonComponent,
     IconComponent,
+    SelectComponent,
     InfoTooltipComponent,
     ConfettiComponent,
   ],
@@ -49,6 +51,12 @@ export class StudySessionComponent {
   private startY = 0;
 
   protected readonly current = computed(() => this.queue()[this.index()] ?? null);
+  protected readonly collectionOptions = computed<readonly SelectOption[]>(() =>
+    this.collections().map((collection) => ({
+      value: collection.id,
+      label: collection.name,
+    })),
+  );
   protected readonly remaining = computed(() => this.queue().length - this.index());
   /** Se completó la cola (había tarjetas y ya se repasaron todas). */
   protected readonly finished = computed(
@@ -67,7 +75,7 @@ export class StudySessionComponent {
     this.service.collections().subscribe((cols) => this.collections.set(cols));
   }
 
-  protected pick(value: string): void {
+  protected pick(value: SelectValue): void {
     const id = Number(value);
     if (!id) {
       this.selectedId.set(null);

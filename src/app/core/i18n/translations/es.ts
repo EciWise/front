@@ -55,6 +55,13 @@ export const es = {
     es: 'Español',
     en: 'Inglés',
   },
+  passwordStrength: {
+    weak: 'Débil',
+    medium: 'Media',
+    secure: 'Segura',
+    show: 'Mostrar contraseña',
+    hide: 'Ocultar contraseña',
+  },
   notifications: {
     title: 'Notificaciones',
     empty: 'No tienes notificaciones nuevas.',
@@ -135,12 +142,14 @@ export const es = {
     step2: 'Sobre ti',
     step3: 'Tus estudios',
     next: 'Continuar',
+    confirmPassword: 'Confirmar contraseña',
     errors: {
       required: 'Este campo es obligatorio.',
       email: 'Ingresa un correo electrónico válido.',
       emailDomain:
         'Solo se aceptan correos @gmail.com, @escuelaing.edu.co o @mail.escuelaing.edu.co.',
       password: 'La contraseña debe tener mínimo 8 caracteres e incluir letras y números.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
     },
   },
   completeProfile: {

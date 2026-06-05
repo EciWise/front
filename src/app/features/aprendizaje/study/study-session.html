@@ -1,13 +1,14 @@
 <div class="study-pick">
-  <label class="study-pick__field">
+  <div class="study-pick__field">
     <span>{{ 'aprendizaje.study.pick' | translate }}</span>
-    <select [value]="selectedId() ?? ''" (change)="pick($any($event.target).value)">
-      <option value="">{{ 'aprendizaje.study.choose' | translate }}</option>
-      @for (c of collections(); track c.id) {
-        <option [value]="c.id">{{ c.name }}</option>
-      }
-    </select>
-  </label>
+    <eci-select
+      [value]="selectedId()"
+      (valueChange)="pick($event)"
+      [placeholder]="'aprendizaje.study.choose' | translate"
+      [ariaLabel]="'aprendizaje.study.pick' | translate"
+      [options]="collectionOptions()"
+    />
+  </div>
 </div>
 
 @if (selectedId() === null) {

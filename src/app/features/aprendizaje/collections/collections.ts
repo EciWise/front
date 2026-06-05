@@ -5,6 +5,7 @@ import { Role } from '../../../core/models/role.enum';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
 import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 import { AprendizajeService } from '../aprendizaje.service';
 import { Collection, CollectionRequest, Visibility } from '../study.models';
@@ -19,6 +20,7 @@ import { FlashcardsComponent } from './flashcards';
     CardComponent,
     ButtonComponent,
     IconComponent,
+    SelectComponent,
     InfoTooltipComponent,
     FlashcardsComponent,
   ],
@@ -38,6 +40,10 @@ export class CollectionsComponent {
   protected readonly name = signal('');
   protected readonly visibility = signal<Visibility>('PRIVATE');
   protected readonly query = signal('');
+  protected readonly visibilityOptions: readonly SelectOption[] = [
+    { value: 'PRIVATE', labelKey: 'aprendizaje.collections.private' },
+    { value: 'PUBLIC', labelKey: 'aprendizaje.collections.public' },
+  ];
 
   protected readonly isStudent = computed(() => this.auth.role() === Role.Student);
 
@@ -112,7 +118,7 @@ export class CollectionsComponent {
     this.name.set(value);
   }
 
-  protected onVisibility(value: string): void {
+  protected onVisibility(value: SelectValue): void {
     this.visibility.set(value === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE');
   }
 
