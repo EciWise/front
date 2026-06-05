@@ -27,14 +27,13 @@
   outline-offset: 2px;
 }
 
+/* La burbuja se ancla a la ventana (fixed) y la coloca el componente, así
+   ningún contenedor con overflow puede recortarla. */
 .tip__bubble {
-  position: absolute;
-  bottom: calc(100% + var(--space-2));
-  left: 50%;
-  transform: translateX(-50%) scale(0.96);
-  z-index: 30;
+  position: fixed;
+  z-index: 1000;
   width: max-content;
-  max-width: 16rem;
+  max-width: min(16rem, calc(100vw - 1rem));
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   background: var(--surface-3);
@@ -42,8 +41,13 @@
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   font-size: 0.8rem;
+  font-weight: 400;
   line-height: 1.35;
   text-align: left;
+  white-space: normal;
+  /* Por defecto se ancla por su borde inferior (aparece encima del icono). */
+  transform: translateY(-100%) scale(0.96);
+  transform-origin: bottom center;
   opacity: 0;
   pointer-events: none;
   transition:
@@ -51,14 +55,26 @@
     transform var(--transition-fast);
 }
 
-.tip:hover .tip__bubble,
-.tip__trigger:focus-visible + .tip__bubble {
+/* Variante "debajo": se ancla por su borde superior. */
+.tip__bubble--below {
+  transform: translateY(0) scale(0.96);
+  transform-origin: top center;
+}
+
+.tip__bubble--open {
   opacity: 1;
-  transform: translateX(-50%) scale(1);
+}
+
+.tip__bubble--open:not(.tip__bubble--below) {
+  transform: translateY(-100%) scale(1);
+}
+
+.tip__bubble--open.tip__bubble--below {
+  transform: translateY(0) scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tip__bubble {
-    transition: none;
+    transition: opacity var(--transition-fast);
   }
 }

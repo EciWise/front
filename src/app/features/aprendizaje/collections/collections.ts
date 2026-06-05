@@ -41,13 +41,16 @@ export class CollectionsComponent {
 
   protected readonly isStudent = computed(() => this.auth.role() === Role.Student);
 
-  /** Colecciones filtradas por coincidencia parcial, sin distinguir mayúsculas. */
+  /**
+   * Colecciones filtradas por coincidencia parcial (sin distinguir mayúsculas)
+   * y ordenadas con las favoritas primero (orden estable para el resto).
+   */
   protected readonly filtered = computed(() => {
     const q = this.query().trim().toLocaleLowerCase();
-    if (!q) {
-      return this.collections();
-    }
-    return this.collections().filter((c) => c.name.toLocaleLowerCase().includes(q));
+    const base = q
+      ? this.collections().filter((c) => c.name.toLocaleLowerCase().includes(q))
+      : this.collections();
+    return [...base].sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite));
   });
 
   constructor() {
@@ -106,6 +109,21 @@ export class CollectionsComponent {
 
   protected remove(c: Collection): void {
     this.service.deleteCollection(c.id).subscribe(() => this.load());
+  }
+
+  /** Fija/desfija la colección con actualización optimista (revierte si falla). */
+  protected toggleFavorite(c: Collection): void {
+    const next = !c.favorite;
+    this.patchFavorite(c.id, next);
+    this.service.setFavorite(c.id, next).subscribe({
+      error: () => this.patchFavorite(c.id, !next),
+    });
+  }
+
+  private patchFavorite(id: number, favorite: boolean): void {
+    this.collections.update((list) =>
+      list.map((c) => (c.id === id ? { ...c, favorite } : c)),
+    );
   }
 
   protected onName(value: string): void {

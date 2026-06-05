@@ -1,0 +1,113 @@
+/* Fondo semitransparente que cubre toda la pantalla y captura el clic-cierre. */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--overlay);
+  animation: modal-fade var(--transition-base) ease;
+}
+
+/* Capa de centrado: ocupa la pantalla y centra el diálogo SIN usar transform
+   (un ancestro con transform rompería el position:fixed de los popovers
+   internos —calendario/hora—, que se posicionan respecto al viewport). */
+.modal-anchor {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  /* Deja pasar el clic al fondo (cierre); solo el diálogo captura eventos. */
+  pointer-events: none;
+}
+
+/* Tarjeta del diálogo, por encima de todo (FAB/dock). */
+.modal {
+  pointer-events: auto;
+  width: min(34rem, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  outline: none;
+  overflow: hidden;
+  animation: modal-in var(--transition-base) ease;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: var(--space-1);
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.modal__close:hover {
+  color: var(--text);
+}
+
+.modal__body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-5);
+  overflow: auto;
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Móvil: el diálogo ocupa casi todo el ancho disponible. */
+@media (max-width: 640px) {
+  .modal__body {
+    padding: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal {
+    animation: none;
+  }
+}

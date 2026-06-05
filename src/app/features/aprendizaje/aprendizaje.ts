@@ -25,13 +25,13 @@ import { StatsComponent } from './stats/stats';
       <div class="eci-fit__body">
         @switch (active()) {
           @case ('collections') {
-            <eci-aprendizaje-collections />
+            <eci-aprendizaje-collections class="eci-section-enter" />
           }
           @case ('study') {
-            <eci-aprendizaje-study />
+            <eci-aprendizaje-study class="eci-section-enter" />
           }
           @case ('stats') {
-            <eci-aprendizaje-stats />
+            <eci-aprendizaje-stats class="eci-section-enter" />
           }
         }
       </div>

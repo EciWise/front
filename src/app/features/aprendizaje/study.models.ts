@@ -25,6 +25,8 @@ export interface Collection {
   readonly visibility: Visibility;
   readonly author: Author;
   readonly flashcardCount: number;
+  /** Marcada por el usuario para que aparezca primero (persistida en backend). */
+  readonly favorite: boolean;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

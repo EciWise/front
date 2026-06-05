@@ -99,8 +99,23 @@
                     }
                   </span>
                 </button>
-                @if (canModify(c)) {
-                  <div class="col-item__actions">
+                <div class="col-item__actions">
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [class.icon-btn--fav]="c.favorite"
+                    [attr.aria-pressed]="c.favorite"
+                    [attr.aria-label]="
+                      (c.favorite
+                        ? 'aprendizaje.collections.unfavorite'
+                        : 'aprendizaje.collections.favorite'
+                      ) | translate
+                    "
+                    (click)="toggleFavorite(c)"
+                  >
+                    <eci-icon name="star" [size]="18" />
+                  </button>
+                  @if (canModify(c)) {
                     <button
                       type="button"
                       class="icon-btn"
@@ -117,8 +132,8 @@
                     >
                       <eci-icon name="trash" [size]="18" />
                     </button>
-                  </div>
-                }
+                  }
+                </div>
               </div>
             </eci-card>
           </li>

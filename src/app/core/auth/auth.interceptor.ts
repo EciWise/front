@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AUTH_CONFIG } from './auth.config';
 import { IA_CONFIG } from '../ia/ia.config';
 import { STUDY_CONFIG } from '../study/study.config';
+import { TODO_CONFIG } from '../todo/todo.config';
 
 const TOKEN_KEY = 'eciwise.token';
 
@@ -20,11 +21,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authConfig = inject(AUTH_CONFIG);
   const iaConfig = inject(IA_CONFIG);
   const studyConfig = inject(STUDY_CONFIG);
+  const todoConfig = inject(TODO_CONFIG);
   const allowedHosts = [
     authConfig.apiBaseUrl,
     iaConfig.performanceApiUrl,
     iaConfig.dropoutApiUrl,
     studyConfig.studyApiUrl,
+    todoConfig.todoApiUrl,
   ];
 
   const isOwnApi = allowedHosts.some((base) => base && req.url.startsWith(base));

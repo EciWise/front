@@ -1,20 +1,34 @@
-<div class="study-pick">
-  <label class="study-pick__field">
-    <span>{{ 'aprendizaje.study.pick' | translate }}</span>
-    <select [value]="selectedId() ?? ''" (change)="pick($any($event.target).value)">
-      <option value="">{{ 'aprendizaje.study.choose' | translate }}</option>
-      @for (c of collections(); track c.id) {
-        <option [value]="c.id">{{ c.name }}</option>
-      }
-    </select>
-  </label>
-</div>
+@if (!hasFavorites()) {
+  <eci-card
+    ><p class="study-msg">{{ 'aprendizaje.study.noFavorites' | translate }}</p></eci-card
+  >
+} @else if (selectedId() === null) {
+  <div class="study-picker" role="list">
+    @for (c of favorites(); track c.id) {
+      <button
+        type="button"
+        role="listitem"
+        class="study-picker__card"
+        (click)="select(c.id)"
+      >
+        <span class="study-picker__name">{{ c.name }}</span>
+        <span class="study-picker__count">
+          {{ 'aprendizaje.collections.cards' | translate: { count: c.flashcardCount } }}
+        </span>
+      </button>
+    }
+  </div>
 
-@if (selectedId() === null) {
   <eci-card
     ><p class="study-msg">{{ 'aprendizaje.study.prompt' | translate }}</p></eci-card
   >
-} @else if (loading()) {
+} @else {
+  <button type="button" class="study-back" (click)="restart()">
+    <eci-icon name="arrow-left" [size]="18" />
+    {{ 'aprendizaje.study.back' | translate }}
+  </button>
+
+  @if (loading()) {
   <p class="study-msg">{{ 'aprendizaje.loading' | translate }}</p>
 } @else if (current(); as item) {
   <p class="study-count">
@@ -22,6 +36,22 @@
   </p>
 
   <div class="flashcard-stage">
+    <!-- Zonas de color tras la tarjeta: se tiñen al sostenerla e indican el estado al que apunta el arrastre. -->
+    <div class="flashcard-zones" [class.flashcard-zones--active]="dragging()" aria-hidden="true">
+      <span
+        class="flashcard-zone flashcard-zone--repetir"
+        [class.flashcard-zone--hot]="intent() === 'REPETIR'"
+      ></span>
+      <span
+        class="flashcard-zone flashcard-zone--aprendido"
+        [class.flashcard-zone--hot]="intent() === 'APRENDIDO'"
+      ></span>
+      <span
+        class="flashcard-zone flashcard-zone--aceptable"
+        [class.flashcard-zone--hot]="intent() === 'ACEPTABLE'"
+      ></span>
+    </div>
+
     <div
       class="flashcard"
       role="button"
@@ -32,11 +62,8 @@
       [class.flashcard--repetir]="intent() === 'REPETIR'"
       [class.flashcard--aceptable]="intent() === 'ACEPTABLE'"
       [class.flashcard--aprendido]="intent() === 'APRENDIDO'"
-      [style.transform]="
-        dragging() || dragX() || dragY()
-          ? 'translate(' + dragX() + 'px,' + dragY() + 'px) rotate(' + dragX() / 20 + 'deg)'
-          : null
-      "
+      [style.transform]="cardTransform()"
+      [style.opacity]="cardOpacity()"
       (click)="reveal()"
       (keydown.enter)="reveal()"
       (keydown.space)="$event.preventDefault(); reveal()"
@@ -77,7 +104,7 @@
     <div class="study-grades">
       <span class="study-grades__label">
         {{ 'aprendizaje.study.howWasIt' | translate }}
-        <eci-info-tooltip [text]="'aprendizaje.tip.grades' | translate" />
+        <eci-info-tooltip [text]="'aprendizaje.tip.grades' | translate" placement="below" />
       </span>
       <div class="study-grades__btns">
         <button
@@ -87,7 +114,7 @@
           (click)="grade('REPETIR')"
         >
           ← {{ 'aprendizaje.grade.repetir' | translate }}
-          <eci-info-tooltip [text]="'aprendizaje.tip.repetir' | translate" />
+          <eci-info-tooltip [text]="'aprendizaje.tip.repetir' | translate" placement="below" />
         </button>
         <button
           type="button"
@@ -96,7 +123,7 @@
           (click)="grade('ACEPTABLE')"
         >
           ↓ {{ 'aprendizaje.grade.aceptable' | translate }}
-          <eci-info-tooltip [text]="'aprendizaje.tip.aceptable' | translate" />
+          <eci-info-tooltip [text]="'aprendizaje.tip.aceptable' | translate" placement="below" />
         </button>
         <button
           type="button"
@@ -105,7 +132,7 @@
           (click)="grade('APRENDIDO')"
         >
           {{ 'aprendizaje.grade.aprendido' | translate }} →
-          <eci-info-tooltip [text]="'aprendizaje.tip.aprendido' | translate" />
+          <eci-info-tooltip [text]="'aprendizaje.tip.aprendido' | translate" placement="below" />
         </button>
       </div>
     </div>
@@ -139,4 +166,5 @@
       </eci-button>
     </div>
   </eci-card>
+  }
 }

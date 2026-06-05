@@ -18,6 +18,7 @@ import { ThemeService } from './core/theme/theme.service';
 import { A11yService } from './core/a11y/a11y.service';
 import { AUTH_CONFIG } from './core/auth/auth.config';
 import { STUDY_CONFIG } from './core/study/study.config';
+import { TODO_CONFIG } from './core/todo/todo.config';
 import { EnvService } from './core/config/env.service';
 
 export const appConfig: ApplicationConfig = {
@@ -50,6 +51,13 @@ export const appConfig: ApplicationConfig = {
       provide: STUDY_CONFIG,
       useFactory: (env: EnvService) => ({
         studyApiUrl: env.get('studyApiUrl', 'http://localhost:8082'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: TODO_CONFIG,
+      useFactory: (env: EnvService) => ({
+        todoApiUrl: env.get('todoApiUrl', 'http://localhost:8083'),
       }),
       deps: [EnvService],
     },

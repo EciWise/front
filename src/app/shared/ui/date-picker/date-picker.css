@@ -1,0 +1,171 @@
+:host {
+  position: relative;
+  display: inline-block;
+}
+
+/* Campo desplegable */
+.dp-field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dp-field:focus-visible,
+.dp-field[aria-expanded='true'] {
+  border-color: var(--brand-red);
+  outline: none;
+}
+
+.dp-field__icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.dp-field__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dp-field--empty .dp-field__text {
+  color: var(--text-muted);
+}
+
+.dp-field__caret {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Popover del calendario: posición fija calculada al abrir, así no lo recorta
+   ningún contenedor con overflow (modal, cuerpo de sección, etc.). */
+.dp-pop {
+  position: fixed;
+  z-index: 1100;
+  width: 18rem;
+  max-width: calc(100vw - var(--space-6));
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: dp-in var(--transition-fast) ease;
+}
+
+.dp-pop__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.dp-pop__month {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.dp-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.dp-nav:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.dp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dp-grid--head {
+  margin-bottom: 4px;
+}
+
+.dp-weekday {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dp-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.dp-day:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.dp-day--muted {
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+.dp-day--today {
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--brand-red);
+}
+
+.dp-day--selected {
+  background: var(--brand-red);
+  color: #fff;
+}
+
+.dp-day--selected:hover:not(:disabled) {
+  background: var(--brand-red);
+}
+
+.dp-day:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+@keyframes dp-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp-pop {
+    animation: none;
+  }
+}
