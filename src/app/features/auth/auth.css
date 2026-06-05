@@ -1,6 +1,8 @@
 /* Login, registro y callback comparten la estética de la landing:
    espacio 3D de fondo y tarjetas de vidrio con texto claro. */
 .auth {
+  --auth-card-bottom-gap: calc(var(--space-2) + var(--space-2) + env(safe-area-inset-bottom));
+  --auth-card-bottom-spacer: var(--space-2);
   position: relative;
   /* El viewport completo contiene el scroll: si la tarjeta crece, conserva
      su espacio superior y no se recorta contra el borde de la pantalla. */
@@ -11,6 +13,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  scroll-padding-block-end: calc(var(--auth-card-bottom-gap));
   outline: none;
   /* Mismo fondo espacial que la landing, adaptable al tema. */
   background:
@@ -62,8 +65,15 @@
   padding:
     var(--space-4)
     max(var(--space-4), env(safe-area-inset-right))
-    calc(var(--space-6) + env(safe-area-inset-bottom))
+    var(--auth-card-bottom-gap)
     max(var(--space-4), env(safe-area-inset-left));
+}
+
+.auth__main::after {
+  content: '';
+  display: block;
+  flex: none;
+  height: var(--auth-card-bottom-spacer);
 }
 
 .auth__card {
@@ -84,6 +94,11 @@
 
 /* Espaciado amplio para tablet y escritorio. */
 @media (min-width: 40rem) {
+  .auth {
+    --auth-card-bottom-gap: calc(var(--space-8) + env(safe-area-inset-bottom));
+    --auth-card-bottom-spacer: 0px;
+  }
+
   .auth__bar {
     padding:
       calc(var(--space-6) + env(safe-area-inset-top))
