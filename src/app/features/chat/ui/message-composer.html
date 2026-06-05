@@ -1,0 +1,44 @@
+@if (chat.replyingTo(); as reply) {
+  <div class="composer__reply">
+    <span class="composer__reply-text">
+      {{ 'chat.replyingTo' | translate }} {{ reply.senderName }}: {{ reply.contentDisplay }}
+    </span>
+    <button
+      type="button"
+      class="icon-button"
+      (click)="chat.cancelReply()"
+      [attr.aria-label]="'common.cancel' | translate"
+    >
+      <svg lucideX [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+}
+<form class="composer" (ngSubmit)="submit()">
+  <label class="composer__attach icon-button" [attr.aria-label]="'chat.attach' | translate">
+    <svg lucidePaperclip [size]="18" aria-hidden="true"></svg>
+    <input
+      class="composer__file"
+      type="file"
+      accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+      (change)="onFile($event)"
+    />
+  </label>
+  <input
+    class="composer__input"
+    type="text"
+    [ngModel]="draft()"
+    (ngModelChange)="onInput($event)"
+    name="draft"
+    autocomplete="off"
+    [placeholder]="'chat.placeholder' | translate"
+    [attr.aria-label]="'chat.placeholder' | translate"
+  />
+  <button
+    type="submit"
+    class="icon-button composer__send"
+    [disabled]="!draft().trim()"
+    [attr.aria-label]="'common.confirm' | translate"
+  >
+    <svg lucideSend [size]="18" aria-hidden="true"></svg>
+  </button>
+</form>

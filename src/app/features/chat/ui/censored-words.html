@@ -1,0 +1,52 @@
+<div class="cwords">
+  <header class="cwords__header">
+    <button
+      type="button"
+      class="icon-button"
+      (click)="chat.showList()"
+      [attr.aria-label]="'common.back' | translate"
+    >
+      <svg lucideArrowLeft [size]="18" aria-hidden="true"></svg>
+    </button>
+    <h2 class="cwords__title">{{ 'chat.moderation' | translate }}</h2>
+  </header>
+
+  <form class="cwords__add" (ngSubmit)="add()">
+    <input
+      class="cwords__input"
+      type="text"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      name="word"
+      [placeholder]="'chat.addWord' | translate"
+      [attr.aria-label]="'chat.addWord' | translate"
+    />
+    <button type="submit" class="icon-button" [disabled]="!draft().trim()" [attr.aria-label]="'chat.addWord' | translate">
+      <svg lucidePlus [size]="18" aria-hidden="true"></svg>
+    </button>
+  </form>
+
+  @if (chat.error(); as err) {
+    <p class="cwords__error">{{ err | translate }}</p>
+  }
+
+  <ul class="cwords__list">
+    @for (w of chat.censoredWords(); track w.id) {
+      @if (w.active) {
+        <li class="cwords__item">
+          <span class="cwords__word">{{ w.word }}</span>
+          <button
+            type="button"
+            class="icon-button"
+            (click)="chat.removeCensoredWord(w.id)"
+            [attr.aria-label]="'chat.delete' | translate"
+          >
+            <svg lucideTrash [size]="16" aria-hidden="true"></svg>
+          </button>
+        </li>
+      }
+    } @empty {
+      <li class="cwords__empty">{{ 'chat.noWords' | translate }}</li>
+    }
+  </ul>
+</div>

@@ -1,0 +1,100 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="help.title" icon="help" />
+  <p class="help__subtitle eci-fit__chrome">{{ 'help.subtitle' | translate }}</p>
+
+  <div class="help__search eci-fit__chrome">
+    <eci-icon name="search" [size]="18" class="help__search-icon" />
+    <input
+      type="search"
+      class="help__search-input"
+      [value]="query()"
+      (input)="onSearch($event)"
+      [attr.aria-label]="'help.searchLabel' | translate"
+      [attr.placeholder]="'help.searchPlaceholder' | translate"
+    />
+    @if (query()) {
+      <button
+        type="button"
+        class="help__search-clear"
+        (click)="clearSearch()"
+        [attr.aria-label]="'help.clearSearch' | translate"
+      >
+        <eci-icon name="close" [size]="16" />
+      </button>
+    }
+  </div>
+
+  @if (query()) {
+    <p class="help__count eci-fit__chrome" aria-live="polite">
+      {{ 'help.resultsCount' | translate: { count: resultCount() } }}
+    </p>
+  }
+
+  <div class="eci-fit__body">
+    @if (visibleCategories().length === 0) {
+      <div class="help__empty">
+        <eci-icon name="search" [size]="40" />
+        <h2 class="help__empty-title">{{ 'help.noResultsTitle' | translate }}</h2>
+        <p class="help__empty-text">{{ 'help.noResults' | translate: { query: query() } }}</p>
+        <p class="help__empty-hint">{{ 'help.noResultsHint' | translate }}</p>
+      </div>
+    } @else {
+      <div class="help__grid">
+        @for (cat of visibleCategories(); track cat.id; let i = $index) {
+          <eci-card class="help__cat eci-section-enter" [style.animation-delay.ms]="i * 60">
+            <div class="help__cat-head">
+              <span class="help__cat-icon"><eci-icon [name]="cat.icon" [size]="20" /></span>
+              <h2 class="help__cat-title">{{ cat.titleKey | translate }}</h2>
+            </div>
+            <ul class="help__faq">
+              @for (item of cat.items; track item.q) {
+                <li class="help__faq-item" [class.is-open]="isOpen(cat.id, item.q)">
+                  <button
+                    type="button"
+                    class="help__q"
+                    (click)="toggle(cat.id, item.q)"
+                    [attr.aria-expanded]="isOpen(cat.id, item.q)"
+                  >
+                    <span class="help__q-text">{{ item.q | translate }}</span>
+                    <svg lucideChevronDown [size]="18" class="help__chev" aria-hidden="true"></svg>
+                  </button>
+                  <div class="help__a-region">
+                    <div class="help__a-content">
+                      <p class="help__a">{{ item.a | translate }}</p>
+                    </div>
+                  </div>
+                </li>
+              }
+            </ul>
+          </eci-card>
+        }
+      </div>
+
+      <div class="help__aux">
+        <eci-card class="help__shortcuts">
+          <h2 class="help__cat-title help__aux-title">{{ 'help.shortcutsTitle' | translate }}</h2>
+          <ul class="help__sc-list">
+            @for (sc of shortcuts; track sc.labelKey) {
+              <li class="help__sc-row">
+                <span class="help__sc-keys">
+                  @for (k of sc.keys; track k) {
+                    <kbd class="help__kbd">{{ k }}</kbd>
+                  }
+                </span>
+                <span class="help__sc-label">{{ sc.labelKey | translate }}</span>
+              </li>
+            }
+          </ul>
+        </eci-card>
+
+        <eci-card class="help__contact">
+          <span class="help__cat-icon help__contact-icon"><eci-icon name="assistant" [size]="20" /></span>
+          <div>
+            <h2 class="help__cat-title help__aux-title">{{ 'help.contactTitle' | translate }}</h2>
+            <p class="help__contact-body">{{ 'help.contactBody' | translate }}</p>
+          </div>
+        </eci-card>
+      </div>
+    }
+  </div>
+</div>

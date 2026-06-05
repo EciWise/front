@@ -1,0 +1,99 @@
+<div class="new-conv">
+  <header class="new-conv__header">
+    <button
+      type="button"
+      class="icon-button"
+      (click)="chat.showList()"
+      [attr.aria-label]="'common.back' | translate"
+    >
+      <svg lucideArrowLeft [size]="18" aria-hidden="true"></svg>
+    </button>
+    <h2 class="new-conv__title">{{ 'chat.new' | translate }}</h2>
+  </header>
+
+  <div class="new-conv__body">
+    <div class="new-conv__types" role="tablist">
+      <button
+        type="button"
+        class="new-conv__type"
+        [class.new-conv__type--on]="type() === 'INDIVIDUAL'"
+        (click)="setType('INDIVIDUAL')"
+      >
+        {{ 'chat.individual' | translate }}
+      </button>
+      <button
+        type="button"
+        class="new-conv__type"
+        [class.new-conv__type--on]="type() === 'GROUP'"
+        (click)="setType('GROUP')"
+      >
+        {{ 'chat.group' | translate }}
+      </button>
+    </div>
+
+    @if (type() === 'GROUP') {
+      <input
+        class="new-conv__field"
+        type="text"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+        [placeholder]="'chat.groupName' | translate"
+        [attr.aria-label]="'chat.groupName' | translate"
+      />
+      <label class="new-conv__check">
+        <input type="checkbox" [ngModel]="anonymous()" (ngModelChange)="anonymous.set($event)" />
+        {{ 'chat.anonymous' | translate }}
+      </label>
+    }
+
+    @if (selected().length) {
+      <ul class="new-conv__chips">
+        @for (u of selected(); track u.id) {
+          <li class="new-conv__chip">
+            {{ u.name }}
+            <button type="button" (click)="toggle(u)" [attr.aria-label]="'common.cancel' | translate">
+              <svg lucideX [size]="12" aria-hidden="true"></svg>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="new-conv__search">
+      <svg lucideSearch [size]="16" aria-hidden="true"></svg>
+      <input
+        type="text"
+        [ngModel]="term()"
+        (ngModelChange)="onSearch($event)"
+        [placeholder]="'chat.searchUsers' | translate"
+        [attr.aria-label]="'chat.searchUsers' | translate"
+      />
+    </div>
+
+    <ul class="new-conv__results">
+      @for (u of results(); track u.id) {
+        <li>
+          <button type="button" class="new-conv__result" (click)="toggle(u)">
+            <span class="new-conv__result-body">
+              <span class="new-conv__result-name">{{ u.name }}</span>
+              <span class="new-conv__result-rol">{{ u.rol }}</span>
+            </span>
+            @if (isSelected(u)) {
+              <svg lucideCheck [size]="16" aria-hidden="true"></svg>
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+
+  @if (chat.error(); as err) {
+    <p class="new-conv__error">{{ err | translate }}</p>
+  }
+
+  <footer class="new-conv__footer">
+    <button type="button" class="new-conv__create" [disabled]="!canCreate()" (click)="create()">
+      {{ 'chat.create' | translate }}
+    </button>
+  </footer>
+</div>

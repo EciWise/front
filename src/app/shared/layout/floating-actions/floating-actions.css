@@ -1,7 +1,8 @@
 .fab-group {
   position: fixed;
-  right: var(--space-6);
-  bottom: var(--space-6);
+  /* Respeta las zonas seguras (notch / barra de gestos) en móviles. */
+  right: calc(var(--space-6) + env(safe-area-inset-right));
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
   z-index: 60;
   display: flex;
   flex-direction: column;
@@ -98,6 +99,9 @@
   border-left: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  /* Mantiene el encabezado bajo el notch y el pie sobre la barra de gestos. */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
   animation: dock-in var(--transition-base) ease;
 }
 

@@ -1,0 +1,51 @@
+<div class="thread">
+  <header class="thread__header">
+    <button
+      type="button"
+      class="icon-button"
+      (click)="chat.closeThread()"
+      [attr.aria-label]="'common.back' | translate"
+    >
+      <svg lucideArrowLeft [size]="18" aria-hidden="true"></svg>
+    </button>
+    <div class="thread__heading">
+      <span class="thread__title">{{ title() }}</span>
+      @if (isGroup()) {
+        <span class="thread__meta">
+          {{ chat.activeConversation()?.participants?.length }} {{ 'chat.members' | translate }}
+        </span>
+      }
+    </div>
+  </header>
+
+  @if (pinned().length) {
+    <div class="thread__pinned">
+      @for (p of pinned(); track p.id) {
+        <span class="thread__pin">📌 {{ p.contentDisplay }}</span>
+      }
+    </div>
+  }
+
+  <div class="thread__messages">
+    @if (chat.loading()) {
+      <p class="thread__hint">{{ 'common.loading' | translate }}</p>
+    }
+    @for (m of chat.messages(); track m.id) {
+      <eci-message-item [message]="m" [anonymous]="anonymous()" [viewerIsCreator]="viewerIsCreator()" />
+    } @empty {
+      @if (!chat.loading()) {
+        <p class="thread__hint">{{ 'chat.noMessages' | translate }}</p>
+      }
+    }
+  </div>
+
+  @if (chat.typingNames().length) {
+    <p class="thread__typing">{{ chat.typingNames().join(', ') }} {{ 'chat.typing' | translate }}</p>
+  }
+
+  @if (chat.error(); as err) {
+    <p class="thread__error">{{ err | translate }}</p>
+  }
+
+  <eci-message-composer />
+</div>

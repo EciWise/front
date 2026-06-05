@@ -1,0 +1,49 @@
+<div class="conv-list">
+  <header class="conv-list__bar">
+    <button type="button" class="conv-list__new" (click)="chat.showNew()">
+      <svg lucidePlus [size]="16" aria-hidden="true"></svg>
+      <span>{{ 'chat.new' | translate }}</span>
+    </button>
+    @if (chat.isAdmin()) {
+      <button
+        type="button"
+        class="icon-button"
+        (click)="chat.showModeration()"
+        [attr.aria-label]="'chat.moderation' | translate"
+        [title]="'chat.moderation' | translate"
+      >
+        <svg lucideShieldCheck [size]="18" aria-hidden="true"></svg>
+      </button>
+    }
+  </header>
+
+  @if (chat.error(); as err) {
+    <p class="conv-list__error">{{ err | translate }}</p>
+  }
+
+  <ul class="conv-list__items">
+    @for (conv of chat.conversations(); track conv.id) {
+      <li>
+        <button type="button" class="conv-item" (click)="chat.openConversation(conv.id)">
+          <span class="conv-item__icon" aria-hidden="true">
+            @if (conv.type === 'GROUP') {
+              <svg lucideUsers [size]="18"></svg>
+            } @else {
+              <svg lucideUser [size]="18"></svg>
+            }
+          </span>
+          <span class="conv-item__body">
+            <span class="conv-item__title">{{ title(conv) }}</span>
+            @if (conv.type === 'GROUP') {
+              <span class="conv-item__meta">
+                {{ conv.participants.length }} {{ 'chat.members' | translate }}
+              </span>
+            }
+          </span>
+        </button>
+      </li>
+    } @empty {
+      <li class="conv-list__empty">{{ 'chat.empty' | translate }}</li>
+    }
+  </ul>
+</div>

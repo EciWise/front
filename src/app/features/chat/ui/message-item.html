@@ -1,0 +1,126 @@
+<article class="msg" [class.msg--mine]="mine()">
+  @if (!mine()) {
+    <span class="msg__author">
+      {{ maskName() ? ('chat.anonymousUser' | translate) : message().senderName }}
+    </span>
+  }
+
+  <div class="msg__bubble" [class.msg__bubble--censored]="message().manuallyCensored || message().deleted">
+    @if (message().replyTo; as reply) {
+      <span class="msg__reply">{{ reply.senderName }}: {{ reply.snippet }}</span>
+    }
+
+    @if (editing()) {
+      <div class="msg__edit">
+        <input
+          class="msg__edit-input"
+          type="text"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+          [attr.aria-label]="'chat.edit' | translate"
+        />
+        <button type="button" class="icon-button" (click)="saveEdit()" [attr.aria-label]="'common.confirm' | translate">
+          <svg lucideCheck [size]="16" aria-hidden="true"></svg>
+        </button>
+        <button type="button" class="icon-button" (click)="editing.set(false)" [attr.aria-label]="'common.cancel' | translate">
+          <svg lucideX [size]="16" aria-hidden="true"></svg>
+        </button>
+      </div>
+    } @else {
+      <p class="msg__text">{{ message().contentDisplay }}</p>
+    }
+
+    @if (message().attachment; as att) {
+      @if (att.isImage) {
+        <a [href]="att.downloadUrl" target="_blank" rel="noopener">
+          <img class="msg__image" [src]="att.downloadUrl" [alt]="att.fileName" />
+        </a>
+      } @else {
+        <a class="msg__file" [href]="att.downloadUrl" target="_blank" rel="noopener">{{ att.fileName }}</a>
+      }
+    }
+
+    @if (message().manuallyCensored && message().censoredByName) {
+      <span class="msg__flag">{{ 'chat.censoredBy' | translate }} {{ message().censoredByName }}</span>
+    }
+
+    <footer class="msg__footer">
+      <span class="msg__time">{{ time(message().createdAt) }}</span>
+      @if (message().edited) {
+        <span class="msg__edited">· {{ 'chat.edited' | translate }}</span>
+      }
+      @if (mine() && readCount() > 0) {
+        <span class="msg__read">· {{ 'chat.readBy' | translate }} {{ readCount() }}</span>
+      }
+    </footer>
+  </div>
+
+  @if (!message().deleted) {
+    @if (message().reactions.length) {
+      <div class="msg__reactions">
+        @for (g of message().reactions; track g.emoji) {
+          <button
+            type="button"
+            class="msg__reaction"
+            [class.msg__reaction--on]="reacted(g.emoji)"
+            (click)="chat.toggleReaction(message().id, g.emoji)"
+          >
+            {{ g.emoji }} {{ g.count }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="msg__actions">
+      <div class="msg__react">
+        <button
+          type="button"
+          class="icon-button"
+          (click)="reactMenuOpen.set(!reactMenuOpen())"
+          [attr.aria-expanded]="reactMenuOpen()"
+          [attr.aria-label]="'chat.react' | translate"
+        >
+          <svg lucideSmilePlus [size]="14" aria-hidden="true"></svg>
+        </button>
+        @if (reactMenuOpen()) {
+          <div class="msg__emoji-menu" role="menu">
+            @for (e of reactionPalette; track e) {
+              <button type="button" class="msg__emoji" role="menuitem" (click)="react(e)" [attr.aria-label]="e">
+                {{ e }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+      <button type="button" class="icon-button" (click)="chat.startReply(message())" [attr.aria-label]="'chat.reply' | translate">
+        <svg lucideReply [size]="14" aria-hidden="true"></svg>
+      </button>
+      @if (canEdit()) {
+        <button type="button" class="icon-button" (click)="startEdit()" [attr.aria-label]="'chat.edit' | translate">
+          <svg lucidePencil [size]="14" aria-hidden="true"></svg>
+        </button>
+      }
+      @if (chat.canModerate()) {
+        <button
+          type="button"
+          class="icon-button"
+          [class.is-on]="message().pinned"
+          (click)="chat.togglePin(message().id)"
+          [attr.aria-label]="'chat.pin' | translate"
+        >
+          <svg lucidePin [size]="14" aria-hidden="true"></svg>
+        </button>
+      }
+      @if (canCensor()) {
+        <button type="button" class="icon-button" (click)="chat.censorMessage(message().id)" [attr.aria-label]="'chat.censor' | translate">
+          <svg lucideEyeOff [size]="14" aria-hidden="true"></svg>
+        </button>
+      }
+      @if (canDelete()) {
+        <button type="button" class="icon-button" (click)="chat.deleteMessage(message().id)" [attr.aria-label]="'chat.delete' | translate">
+          <svg lucideTrash [size]="14" aria-hidden="true"></svg>
+        </button>
+      }
+    </div>
+  }
+</article>

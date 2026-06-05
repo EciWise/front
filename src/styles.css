@@ -464,6 +464,32 @@ input[type='radio'] {
   }
 }
 
+/* La barra de la app reúne muchos controles (menú, idioma, tema, accesibilidad,
+   notificaciones, avatar, salir). En celular se compactan los botones para que
+   la fila nunca se desborde y ningún control quede cortado. Va en el CSS global
+   porque los botones de idioma/tema/a11y/campana viven en componentes propios
+   (estilos encapsulados que el CSS de la barra no alcanza). */
+@media (max-width: 30rem) {
+  .top-bar .icon-button {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  /* El selector de idioma usa ancho automático: solo ajustamos su padding. */
+  .top-bar .icon-button:has(.lang-code) {
+    width: auto;
+    padding: 0 var(--space-1);
+  }
+}
+
+/* Pantallas muy estrechas (≈320px): el avatar es decorativo (el nombre ya se
+   oculta y el botón de salir sigue visible), así que se esconde para garantizar
+   que los controles funcionales quepan sin recortarse. */
+@media (max-width: 22rem) {
+  .top-bar__profile eci-avatar {
+    display: none;
+  }
+}
+
 /* Enlace para saltar al contenido principal (a11y) */
 .skip-link {
   position: absolute;

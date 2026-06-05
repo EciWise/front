@@ -1,0 +1,82 @@
+.thread {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.thread__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.thread__heading {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.thread__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread__meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.thread__pinned {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+
+.thread__pin {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread__messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3);
+}
+
+.thread__hint,
+.thread__typing,
+.thread__error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.thread__typing {
+  padding: 0 var(--space-3) var(--space-1);
+  font-style: italic;
+}
+
+.thread__error {
+  padding: 0 var(--space-3) var(--space-1);
+  color: var(--danger);
+}
+
+.thread__hint {
+  text-align: center;
+  padding: var(--space-4);
+}
