@@ -19,7 +19,7 @@ function extractBackendCode(err: HttpErrorResponse): string | null {
     return body;
   }
   if (body && typeof body === 'object' && 'message' in body) {
-    const message = (body as { message: unknown }).message;
+    const message = body.message;
     if (typeof message === 'string') {
       return message;
     }

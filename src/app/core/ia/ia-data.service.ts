@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { stripTrailingSlashes } from '../config/url.util';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AUTH_CONFIG } from '../auth/auth.config';
@@ -14,7 +15,7 @@ export class IaDataService {
   private readonly config = inject(AUTH_CONFIG);
 
   private get base(): string {
-    return this.config.apiBaseUrl.replace(/\/+$/, '');
+    return stripTrailingSlashes(this.config.apiBaseUrl);
   }
 
   getMyData(): Observable<DatosIa | null> {

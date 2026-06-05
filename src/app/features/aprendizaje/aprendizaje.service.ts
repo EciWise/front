@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { stripTrailingSlashes } from '../../core/config/url.util';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { STUDY_CONFIG } from '../../core/study/study.config';
@@ -25,7 +26,7 @@ export class AprendizajeService {
   private readonly config = inject(STUDY_CONFIG);
 
   private get base(): string {
-    return `${this.config.studyApiUrl.replace(/\/+$/, '')}/api`;
+    return `${stripTrailingSlashes(this.config.studyApiUrl)}/api`;
   }
 
   // --- Colecciones ---

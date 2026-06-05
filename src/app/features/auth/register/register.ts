@@ -42,7 +42,10 @@ function allowedEmailDomainValidator(control: AbstractControl): ValidationErrors
   return ALLOWED_EMAIL_DOMAINS.includes(domain) ? null : { emailDomain: true };
 }
 
-/** Valida que la contraseÃ±a y su confirmaciÃ³n coincidan. */
+/** Paso del asistente de registro: 1 datos personales, 2-3 datos del modelo de IA. */
+type WizardStep = 1 | 2 | 3;
+
+/** Valida que la contraseña y su confirmación coincidan. */
 function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value as string | null;
   const confirmPassword = group.get('confirmPassword')?.value as string | null;
@@ -83,7 +86,7 @@ export class RegisterComponent extends AuthFormBase {
    * Paso actual del asistente: 1 datos personales, 2 y 3 las dos páginas de
    * "Cuéntanos sobre ti" (datos del modelo de IA).
    */
-  protected readonly step = signal<1 | 2 | 3>(1);
+  protected readonly step = signal<WizardStep>(1);
   /** Dirección del último cambio de paso (para la animación de slide). */
   protected readonly direction = signal<'forward' | 'back'>('forward');
 
@@ -183,13 +186,13 @@ export class RegisterComponent extends AuthFormBase {
     }
     this.errorKey.set(null);
     this.direction.set('forward');
-    this.step.update((s) => Math.min(3, s + 1) as 1 | 2 | 3);
+    this.step.update((s) => Math.min(3, s + 1) as WizardStep);
   }
 
   /** Regresa al paso anterior. */
   back(): void {
     this.direction.set('back');
-    this.step.update((s) => Math.max(1, s - 1) as 1 | 2 | 3);
+    this.step.update((s) => Math.max(1, s - 1) as WizardStep);
   }
 
   submit(): void {
