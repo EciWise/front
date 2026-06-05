@@ -16,7 +16,7 @@ import { TutoringRequestsService } from './requests.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, TranslatePipe, PageHeaderComponent, DashboardGridComponent, IconComponent],
   templateUrl: './tutor-dashboard.html',
-  styleUrl: './tutor-dashboard.css',
+  styleUrls: ['./tutor-dashboard.css', '../../shared/styles/card-surface.css'],
 })
 export class TutorDashboardComponent {
   private readonly schedule = inject(TutorScheduleService);

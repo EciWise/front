@@ -1,0 +1,26 @@
+/*
+ * Botón de icono perfilado (acciones de colecciones y flashcards). Se referencia
+ * vía `styleUrls` desde ambos componentes y no globalmente porque `.icon-btn`
+ * también existe, con otro estilo, en el módulo de tareas: la encapsulación de
+ * Angular evita que se pisen.
+ */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+}
+
+.icon-btn--danger:hover {
+  color: var(--danger);
+}

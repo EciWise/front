@@ -1,30 +1,35 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { DatosIaInputs } from '../../core/ia/ia.model';
 
-/** Campos del modelo de deserción (sin `gender`, que ya se captura en rendimiento). */
-export interface DropoutFormValue {
-  maritalStatus: number | null;
-  applicationMode: number | null;
-  applicationOrder: number | null;
-  course: number | null;
-  previousQualification: number | null;
-  nacionality: number | null;
-  motherQualification: number | null;
-  fatherQualification: number | null;
-  motherOccupation: number | null;
-  fatherOccupation: number | null;
-  displaced: number | null;
-  educationalSpecialNeeds: number | null;
-  debtor: number | null;
-  tuitionFeesUpToDate: number | null;
-  scholarshipHolder: number | null;
-  ageAtEnrollment: number | null;
-  international: number | null;
-  curricularUnits1stSemCredited: number | null;
-  curricularUnits1stSemEnrolled: number | null;
-  curricularUnits1stSemEvaluations: number | null;
-  curricularUnits1stSemApproved: number | null;
-}
+/**
+ * Campos del modelo de deserción (sin `gender`, que ya se captura en
+ * rendimiento). Es un subconjunto de {@link DatosIaInputs}, así que se deriva con
+ * `Pick` para no repetir la lista de variables ni desincronizar sus tipos.
+ */
+export type DropoutFormValue = Pick<
+  DatosIaInputs,
+  | 'maritalStatus'
+  | 'applicationMode'
+  | 'applicationOrder'
+  | 'course'
+  | 'previousQualification'
+  | 'nacionality'
+  | 'motherQualification'
+  | 'fatherQualification'
+  | 'motherOccupation'
+  | 'fatherOccupation'
+  | 'displaced'
+  | 'educationalSpecialNeeds'
+  | 'debtor'
+  | 'tuitionFeesUpToDate'
+  | 'scholarshipHolder'
+  | 'ageAtEnrollment'
+  | 'international'
+  | 'curricularUnits1stSemCredited'
+  | 'curricularUnits1stSemEnrolled'
+  | 'curricularUnits1stSemEvaluations'
+  | 'curricularUnits1stSemApproved'
+>;
 
 /**
  * Construye el `FormGroup` con los 21 campos del modelo de deserción, todos

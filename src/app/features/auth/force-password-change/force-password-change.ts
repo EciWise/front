@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AuthError, AuthService } from '../../../core/auth/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { AuthFormBase } from '../auth-form.base';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
 
@@ -27,12 +28,9 @@ const passwordsMatch: ValidatorFn = (group) => {
   templateUrl: './force-password-change.html',
   styleUrl: './force-password-change.css',
 })
-export class ForcePasswordChangeComponent {
+export class ForcePasswordChangeComponent extends AuthFormBase {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
-
-  protected readonly loading = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group(
     {
@@ -50,21 +48,14 @@ export class ForcePasswordChangeComponent {
   );
 
   submit(): void {
-    if (this.form.invalid || this.loading()) {
-      this.form.markAllAsTouched();
+    if (!this.beginSubmit(this.form)) {
       return;
     }
-    this.loading.set(true);
-    this.errorKey.set(null);
-
     const newPassword = this.form.controls.newPassword.value;
 
     this.auth.changePassword(newPassword).subscribe({
       // Al éxito, el flag se limpia en el estado y el AppShell oculta el diálogo.
-      error: (err: unknown) => {
-        this.loading.set(false);
-        this.errorKey.set(err instanceof AuthError ? err.messageKey : 'errors.unknown');
-      },
+      error: (err: unknown) => this.failWith(err),
     });
   }
 }

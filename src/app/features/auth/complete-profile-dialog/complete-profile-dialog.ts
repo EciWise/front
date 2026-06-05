@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IaDataService } from '../../../core/ia/ia-data.service';
@@ -6,6 +6,7 @@ import { IaProfileStatusService } from '../../../core/ia/ia-profile-status.servi
 import { IconComponent } from '../../../shared/ui/icon/icon';
 import { DatosIaFieldsComponent } from '../datos-ia-fields/datos-ia-fields';
 import { buildDatosIaGroup, buildDatosIaPayload } from '../datos-ia-form';
+import { AuthFormBase } from '../auth-form.base';
 
 /**
  * Pop-up no descartable que pide los datos del modelo de rendimiento. Se muestra
@@ -19,13 +20,11 @@ import { buildDatosIaGroup, buildDatosIaPayload } from '../datos-ia-form';
   templateUrl: './complete-profile-dialog.html',
   styleUrl: '../force-password-change/force-password-change.css',
 })
-export class CompleteProfileDialogComponent {
+export class CompleteProfileDialogComponent extends AuthFormBase {
   private readonly fb = inject(FormBuilder);
   private readonly dataService = inject(IaDataService);
   private readonly status = inject(IaProfileStatusService);
 
-  protected readonly loading = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
   protected readonly form = this.fb.nonNullable.group({
     datosIa: buildDatosIaGroup(this.fb),
   });
@@ -35,12 +34,9 @@ export class CompleteProfileDialogComponent {
   }
 
   submit(): void {
-    if (this.form.invalid || this.loading()) {
-      this.form.markAllAsTouched();
+    if (!this.beginSubmit(this.form)) {
       return;
     }
-    this.loading.set(true);
-    this.errorKey.set(null);
     const payload = buildDatosIaPayload(this.form.controls.datosIa.getRawValue());
     this.dataService.saveMyData(payload).subscribe({
       next: () => {
@@ -48,10 +44,7 @@ export class CompleteProfileDialogComponent {
         // deja de mostrar este diálogo.
         this.status.load();
       },
-      error: () => {
-        this.loading.set(false);
-        this.errorKey.set('errors.unknown');
-      },
+      error: (err: unknown) => this.failWith(err),
     });
   }
 }

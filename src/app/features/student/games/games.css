@@ -19,16 +19,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.game__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
-}
+/* .game__icon: chip de icono compartido en "Primitivas compartidas". */
 
 .game__name {
   margin: 0;

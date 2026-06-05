@@ -45,14 +45,7 @@
 }
 
 .material__type {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
+  /* Chip de icono base compartido en "Primitivas compartidas" (styles.css). */
   flex-shrink: 0;
 }
 

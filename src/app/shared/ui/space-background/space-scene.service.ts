@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { randomRange } from '../../util/random';
 import type {
   BufferGeometry,
   Group,
@@ -90,7 +91,7 @@ export class SpaceSceneService {
     const count = 2600;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < positions.length; i++) {
-      positions[i] = (Math.random() - 0.5) * 12;
+      positions[i] = randomRange(-6, 6);
     }
     this.geometry = new THREE.BufferGeometry();
     this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -201,6 +202,6 @@ export class SpaceSceneService {
   }
 
   private rand(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
+    return randomRange(min, max);
   }
 }

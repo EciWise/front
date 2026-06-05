@@ -135,17 +135,7 @@
   color: var(--text-muted);
 }
 
-.creator input,
-.creator select,
-.search input,
-.search select {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  color: var(--text);
-  font: inherit;
-}
+/* Campos del creador/buscador: caja base en "Primitivas compartidas" (styles.css). */
 
 /* ---- Paleta de colores ---- */
 .palette {
