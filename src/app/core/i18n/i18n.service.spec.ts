@@ -4,6 +4,17 @@ import { firstValueFrom } from 'rxjs';
 import { I18nService } from './i18n.service';
 import { StaticTranslateLoader } from './static-translate.loader';
 
+interface CommonLoginTranslation {
+  common?: {
+    login?: unknown;
+  };
+}
+
+function commonLogin(translations: unknown): string | undefined {
+  const login = (translations as CommonLoginTranslation).common?.login;
+  return typeof login === 'string' ? login : undefined;
+}
+
 describe('I18nService', () => {
   let service: I18nService;
 
@@ -42,9 +53,9 @@ describe('I18nService', () => {
     const pt = await firstValueFrom(loader.getTranslation('pt'));
     const fr = await firstValueFrom(loader.getTranslation('fr'));
 
-    expect(de['common']['login']).toBe('Anmelden');
-    expect(pt['common']['login']).toBe('Entrar');
-    expect(fr['common']['login']).toBe('Se connecter');
+    expect(commonLogin(de)).toBe('Anmelden');
+    expect(commonLogin(pt)).toBe('Entrar');
+    expect(commonLogin(fr)).toBe('Se connecter');
   });
 
   it('aplica los idiomas nuevos en TranslateService', () => {
