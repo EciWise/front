@@ -1,58 +1,197 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom, of, throwError } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { AppError } from '../../core/errors/app-error';
 import { TALK_CONFIG } from '../../core/talk/talk.config';
+import { ParticipantInput } from './chat.models';
 import { TalkApiService } from './talk-api.service';
+
+const BASE = 'http://talk.test/api/v1';
 
 describe('TalkApiService', () => {
   let service: TalkApiService;
-  let http: { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn> };
-  const base = 'http://talk.test';
+  let http: HttpTestingController;
 
   beforeEach(() => {
-    http = { get: vi.fn(), post: vi.fn(), patch: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
-        { provide: HttpClient, useValue: http },
-        { provide: TALK_CONFIG, useValue: { talkApiUrl: base, talkWsUrl: 'ws://talk.test/ws/chat' } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: TALK_CONFIG, useValue: { talkApiUrl: 'http://talk.test/', talkWsUrl: 'ws://talk.test/ws/chat' } },
       ],
     });
     service = TestBed.inject(TalkApiService);
+    http = TestBed.inject(HttpTestingController);
   });
 
-  it('lista conversaciones contra el endpoint v1', async () => {
-    http.get.mockReturnValue(of([{ id: 'c1' }]));
+  afterEach(() => http.verify());
 
-    const result = await firstValueFrom(service.listConversations());
+  it('cubre operaciones REST de conversaciones', () => {
+    const participant: ParticipantInput = {
+      userId: 'u2',
+      userName: 'Tutor',
+      userRol: 'tutor',
+    };
+    const createBody = {
+      type: 'INDIVIDUAL' as const,
+      participants: [participant],
+      anonymous: false,
+    };
 
-    expect(http.get).toHaveBeenCalledWith(`${base}/api/v1/conversations`);
-    expect(result).toEqual([{ id: 'c1' }]);
+    service.listConversations().subscribe();
+    let req = http.expectOne(`${BASE}/conversations`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+
+    service.getConversation('c1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 'c1' });
+
+    service.createConversation(createBody).subscribe();
+    req = http.expectOne(`${BASE}/conversations`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(createBody);
+    req.flush({ id: 'c1' });
+
+    service.updateConversation('c1', { name: 'Grupo', description: 'Proyecto' }).subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ name: 'Grupo', description: 'Proyecto' });
+    req.flush({ id: 'c1', name: 'Grupo' });
+
+    service.addParticipant('c1', participant).subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/participants`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(participant);
+    req.flush({ id: 'c1' });
+
+    service.removeParticipant('c1', 'u2').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/participants/u2`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+
+    service.deleteConversation('c1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
   });
 
-  it('censura un mensaje con PATCH en la ruta correcta', async () => {
-    http.patch.mockReturnValue(of({ id: 'm1', manuallyCensored: true }));
+  it('cubre consultas y mutaciones de mensajes', () => {
+    service.listMessages('c1').subscribe();
+    let req = http.expectOne(`${BASE}/conversations/c1/messages?page=0&size=50`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ content: [], totalElements: 0, number: 0, totalPages: 0, last: true });
 
-    const msg = await firstValueFrom(service.censorMessage('c1', 'm1'));
+    service.listMessages('c1', 2, 20).subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages?page=2&size=20`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ content: [], totalElements: 0, number: 2, totalPages: 0, last: true });
 
-    expect(http.patch).toHaveBeenCalledWith(
-      `${base}/api/v1/conversations/c1/messages/m1/censor`,
-      {},
-    );
-    expect(msg.manuallyCensored).toBe(true);
+    service.sendMessage('c1', { content: 'hola', replyToMessageId: 'm0' }).subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ content: 'hola', replyToMessageId: 'm0' });
+    req.flush({ id: 'm1', contentDisplay: 'hola' });
+
+    service.editMessage('c1', 'm1', 'editado').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ content: 'editado' });
+    req.flush({ id: 'm1', contentDisplay: 'editado' });
+
+    service.deleteMessage('c1', 'm1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+
+    service.censorMessage('c1', 'm1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1/censor`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({});
+    req.flush({ id: 'm1', manuallyCensored: true });
+
+    service.togglePin('c1', 'm1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1/pin`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({});
+    req.flush({ id: 'm1', pinned: true });
+
+    service.getPinned('c1').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/pinned`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
   });
 
-  it('normaliza errores HTTP a AppError con clave de traducción', async () => {
-    http.post.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
+  it('envia adjuntos como FormData con JSON y archivo', () => {
+    const file = new File(['contenido'], 'nota.txt', { type: 'text/plain' });
 
-    let error: unknown;
-    try {
-      await firstValueFrom(service.sendMessage('c1', { content: 'hola' }));
-    } catch (e) {
-      error = e;
-    }
+    service.sendMessageWithAttachment('c1', { content: 'ver adjunto' }, file).subscribe();
 
-    expect(error).toBeInstanceOf(AppError);
-    expect((error as AppError).messageKey).toBe('errors.server');
+    const req = http.expectOne(`${BASE}/conversations/c1/messages/with-attachment`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toBeInstanceOf(FormData);
+    const form = req.request.body as FormData;
+    expect(form.get('data')).toBeInstanceOf(Blob);
+    expect(form.get('file')).toBe(file);
+    req.flush({ id: 'm1', attachment: { fileName: 'nota.txt' } });
+  });
+
+  it('cubre lecturas y reacciones, incluyendo encoding de emoji', () => {
+    service.markAsRead('c1', ['m1', 'm2']).subscribe();
+    let req = http.expectOne(`${BASE}/conversations/c1/messages/read`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ messageIds: ['m1', 'm2'] });
+    req.flush(null);
+
+    service.addReaction('c1', 'm1', '👍').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1/reactions`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ emoji: '👍' });
+    req.flush(null);
+
+    service.removeReaction('c1', 'm1', '👍').subscribe();
+    req = http.expectOne(`${BASE}/conversations/c1/messages/m1/reactions/%F0%9F%91%8D`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
+
+  it('cubre la lista negra de censura', () => {
+    service.listCensoredWords().subscribe();
+    let req = http.expectOne(`${BASE}/censorship/words`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+
+    service.addCensoredWord('spam').subscribe();
+    req = http.expectOne(`${BASE}/censorship/words`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ word: 'spam' });
+    req.flush({ id: 'w1', word: 'spam', active: true });
+
+    service.deactivateCensoredWord('w1').subscribe();
+    req = http.expectOne(`${BASE}/censorship/words/w1`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
+
+  it('normaliza errores HTTP a AppError con clave de traduccion', async () => {
+    const result = firstValueFrom(service.sendMessage('c1', { content: 'hola' }));
+    http
+      .expectOne(`${BASE}/conversations/c1/messages`)
+      .flush('boom', { status: 500, statusText: 'Server Error' });
+
+    await expect(result).rejects.toMatchObject({ messageKey: 'errors.server' });
+    await expect(result).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('normaliza errores no HTTP como desconocidos', async () => {
+    const result = firstValueFrom(service.sendMessage('c1', { content: 'hola' }));
+    http
+      .expectOne(`${BASE}/conversations/c1/messages`)
+      .error(new ProgressEvent('network'));
+
+    await expect(result).rejects.toMatchObject({ messageKey: 'errors.network' });
+    expect(new HttpErrorResponse({ status: 0 })).toBeInstanceOf(HttpErrorResponse);
   });
 });
