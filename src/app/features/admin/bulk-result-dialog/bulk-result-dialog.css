@@ -1,14 +1,6 @@
+/* Caja base del fondo (posición, overlay, blur) en "Primitivas compartidas". */
 .dialog__backdrop {
-  position: fixed;
-  inset: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Margen generoso para que el diálogo nunca toque los bordes de la pantalla. */
-  padding: clamp(var(--space-4), 5vh, var(--space-8));
-  background: var(--overlay);
-  backdrop-filter: blur(4px);
   animation: dialog-fade 0.15s ease-out;
   /* Se promueve al top layer como popover: anulamos los estilos por defecto del
      agente de usuario (fit-content, margin auto, borde) para seguir cubriendo
@@ -71,17 +63,7 @@
   letter-spacing: -0.01em;
 }
 
-.dialog__title-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  flex: none;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent);
-}
+/* .dialog__title-icon: icono de encabezado compartido en "Primitivas compartidas". */
 
 /* Botón de cierre circular. */
 .dialog__close {

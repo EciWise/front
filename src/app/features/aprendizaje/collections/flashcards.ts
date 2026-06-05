@@ -12,7 +12,7 @@ import { Collection, Flashcard, FlashcardRequest } from '../study.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslatePipe, CardComponent, ButtonComponent, IconComponent],
   templateUrl: './flashcards.html',
-  styleUrl: './flashcards.css',
+  styleUrls: ['./flashcards.css', '../../../shared/styles/icon-btn.css'],
 })
 export class FlashcardsComponent implements OnInit {
   private readonly service = inject(AprendizajeService);

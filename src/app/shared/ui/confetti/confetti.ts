@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { randomBool, randomInt, randomItem, randomRange } from '../../util/random';
 
 /** Una pieza de confeti con sus valores aleatorios precalculados. */
 interface ConfettiPiece {
@@ -47,15 +48,15 @@ export class ConfettiComponent {
 
   protected readonly pieces = computed<ConfettiPiece[]>(() =>
     Array.from({ length: this.count() }, (): ConfettiPiece => {
-      const round = Math.random() > 0.5;
+      const round = randomBool();
       return {
-        left: Math.random() * 100,
-        delay: Math.random() * 0.6,
-        duration: 2.4 + Math.random() * 1.8,
-        drift: (Math.random() - 0.5) * 200,
-        rotate: 180 + Math.random() * 540,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: 7 + Math.round(Math.random() * 6),
+        left: randomRange(0, 100),
+        delay: randomRange(0, 0.6),
+        duration: randomRange(2.4, 4.2),
+        drift: randomRange(-100, 100),
+        rotate: randomRange(180, 720),
+        color: randomItem(COLORS),
+        size: 7 + randomInt(7),
         round,
       };
     }),

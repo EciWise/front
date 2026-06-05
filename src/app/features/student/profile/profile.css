@@ -39,15 +39,7 @@
   font-weight: 600;
 }
 
-.profile__field input {
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  color: var(--text);
-  font: inherit;
-  font-weight: 400;
-}
+/* .profile__field input: caja compartida en "Primitivas compartidas". */
 
 .profile__field input:disabled {
   opacity: 0.7;

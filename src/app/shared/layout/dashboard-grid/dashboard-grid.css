@@ -15,6 +15,7 @@
   gap: var(--space-4);
 }
 
+/* Superficie base (fondo, borde, sombra) en card-surface.css; aquí el layout. */
 .grid__card {
   display: flex;
   flex-direction: column;
@@ -22,12 +23,6 @@
   gap: var(--space-4);
   padding: var(--space-6);
   height: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  text-decoration: none;
-  color: var(--text);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-base),
@@ -40,16 +35,7 @@
   border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
 }
 
-.grid__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
-}
+/* .grid__icon: chip de icono compartido en "Primitivas compartidas". */
 
 .grid__label {
   font-weight: 600;

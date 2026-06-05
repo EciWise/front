@@ -23,7 +23,7 @@ import { FlashcardsComponent } from './flashcards';
     FlashcardsComponent,
   ],
   templateUrl: './collections.html',
-  styleUrl: './collections.css',
+  styleUrls: ['./collections.css', '../../../shared/styles/icon-btn.css'],
 })
 export class CollectionsComponent {
   private readonly service = inject(AprendizajeService);

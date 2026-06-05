@@ -52,13 +52,8 @@
 
 .new-conv__field,
 .new-conv__search input {
+  /* Caja base compartida (ver "Primitivas compartidas" en styles.css). */
   width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
-  background: var(--surface-2);
-  color: var(--text);
-  font-size: 0.88rem;
 }
 
 .new-conv__check {

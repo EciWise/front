@@ -1,0 +1,16 @@
+/*
+ * Superficie base compartida por las tarjetas del panel: la grilla de accesos
+ * (`.grid__card`) y las tarjetas de estadística del tutor (`.stat`). Se referencia
+ * vía `styleUrls` desde ambos componentes (en vez de globalmente) porque `.stat`
+ * también existe, con otro estilo, en otras vistas: la encapsulación evita choques.
+ * Cada componente conserva su layout y su `:hover` propios.
+ */
+.grid__card,
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text);
+}

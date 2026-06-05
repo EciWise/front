@@ -2,19 +2,27 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  input,
-  output,
-  signal,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
+import { WizardFieldsBase } from '../wizard-fields.base';
 
 interface Option {
   readonly value: number;
   readonly key: string;
 }
+
+/** Ocupaciones de los padres (común a madre y padre, salvo el código "otra"). */
+const OCCUPATIONS: readonly Option[] = [
+  { value: 2, key: 'professional' },
+  { value: 3, key: 'technician' },
+  { value: 4, key: 'administrative' },
+  { value: 5, key: 'services' },
+  { value: 7, key: 'skilled' },
+  { value: 9, key: 'unskilled' },
+];
 
 /** Descriptor de un campo del formulario, discriminado por tipo de control. */
 type FieldDef =
@@ -54,17 +62,7 @@ interface Page {
   templateUrl: './dropout-ia-fields.html',
   styleUrl: '../datos-ia-fields/datos-ia-fields.css',
 })
-export class DropoutIaFieldsComponent {
-  readonly group = input.required<FormGroup>();
-  /** Activa la navegación por pasos (Anterior/Siguiente + botón final). */
-  readonly paginated = input(false);
-  /** Deshabilita el botón final mientras el contenedor guarda. */
-  readonly pending = input(false);
-  /** Clave i18n de error a mostrar sobre los botones de navegación. */
-  readonly error = input<string | null>(null);
-  /** Se emite al confirmar el último paso (tras validar la página). */
-  readonly completed = output<void>();
-
+export class DropoutIaFieldsComponent extends WizardFieldsBase {
   protected readonly yesNo: readonly Option[] = [
     { value: 1, key: 'yes' },
     { value: 0, key: 'no' },
@@ -159,28 +157,12 @@ export class DropoutIaFieldsComponent {
     {
       kind: 'select',
       control: 'motherOccupation',
-      options: [
-        { value: 2, key: 'professional' },
-        { value: 3, key: 'technician' },
-        { value: 4, key: 'administrative' },
-        { value: 5, key: 'services' },
-        { value: 7, key: 'skilled' },
-        { value: 9, key: 'unskilled' },
-        { value: 32, key: 'other' },
-      ],
+      options: [...OCCUPATIONS, { value: 32, key: 'other' }],
     },
     {
       kind: 'select',
       control: 'fatherOccupation',
-      options: [
-        { value: 2, key: 'professional' },
-        { value: 3, key: 'technician' },
-        { value: 4, key: 'administrative' },
-        { value: 5, key: 'services' },
-        { value: 7, key: 'skilled' },
-        { value: 9, key: 'unskilled' },
-        { value: 46, key: 'other' },
-      ],
+      options: [...OCCUPATIONS, { value: 46, key: 'other' }],
     },
     { kind: 'number', control: 'ageAtEnrollment', min: 17, max: 70, step: 1, hint: true },
     { kind: 'number', control: 'applicationOrder', min: 0, max: 9, step: 1, hint: true },
@@ -237,13 +219,6 @@ export class DropoutIaFieldsComponent {
     },
   ];
 
-  /** Paso actual (0-based). */
-  protected readonly step = signal(0);
-  /** Dirección del último cambio de paso (para la animación de slide). */
-  protected readonly direction = signal<'forward' | 'back'>('forward');
-  protected readonly isFirst = computed(() => this.step() === 0);
-  protected readonly isLast = computed(() => this.step() === this.pages.length - 1);
-
   /** Campos visibles: los del paso actual si está paginado; todos si no. */
   protected readonly visibleFields = computed<readonly FieldDef[]>(() => {
     const names = this.paginated()
@@ -251,52 +226,4 @@ export class DropoutIaFieldsComponent {
       : this.fields.map((f) => f.control);
     return names.map((name) => this.fieldMap.get(name)!);
   });
-
-  /** Avanza al siguiente paso si la página actual es válida. */
-  next(): void {
-    if (this.validateCurrentPage() && !this.isLast()) {
-      this.direction.set('forward');
-      this.step.update((s) => s + 1);
-    }
-  }
-
-  /** Retrocede al paso anterior. */
-  back(): void {
-    if (!this.isFirst()) {
-      this.direction.set('back');
-      this.step.update((s) => s - 1);
-    }
-  }
-
-  /** Confirma el último paso: valida y emite `finish` para que el padre guarde. */
-  finishStep(): void {
-    if (this.validateCurrentPage()) {
-      this.completed.emit();
-    }
-  }
-
-  /** Clave i18n del error a mostrar bajo un campo (o null si es válido/intacto). */
-  errorKeyFor(name: string): string | null {
-    const control = this.group().get(name);
-    if (!control || control.valid || !control.touched) {
-      return null;
-    }
-    return control.hasError('required')
-      ? 'datosIa.errors.required'
-      : 'datosIa.errors.range';
-  }
-
-  /** Marca como tocados los controles del paso actual y reporta si son válidos. */
-  private validateCurrentPage(): boolean {
-    const formGroup = this.group();
-    let valid = true;
-    for (const name of this.pages[this.step()].controls) {
-      const control = formGroup.get(name);
-      if (control) {
-        control.markAsTouched();
-        valid = valid && control.valid;
-      }
-    }
-    return valid;
-  }
 }

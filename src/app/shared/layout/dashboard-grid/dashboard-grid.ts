@@ -26,7 +26,7 @@ import { NavItem } from '../nav-items';
       }
     </ul>
   `,
-  styleUrl: './dashboard-grid.css',
+  styleUrls: ['./dashboard-grid.css', '../../styles/card-surface.css'],
 })
 export class DashboardGridComponent {
   readonly items = input.required<readonly NavItem[]>();

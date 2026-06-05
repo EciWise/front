@@ -1,25 +1,5 @@
-.landing {
-  position: relative;
-  /* Alto fijo del viewport y dividida en secciones: la página no hace scroll. */
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  outline: none;
-  background:
-    radial-gradient(
-      circle at 25% 15%,
-      color-mix(in srgb, var(--brand-red) 18%, transparent),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 80% 70%,
-      color-mix(in srgb, var(--accent-student) 14%, transparent),
-      transparent 50%
-    ),
-    var(--surface);
-  color: var(--text);
-}
+/* El contenedor raíz `.landing` (alto fijo del viewport + fondo espacial) se
+   define junto con `.auth` en "Primitivas compartidas" (styles.css). */
 
 .landing__bar {
   position: relative;

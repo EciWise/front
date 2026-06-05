@@ -9,9 +9,10 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AuthError, AuthService } from '../../../core/auth/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ROLE_HOME } from '../../../core/models/role.enum';
 import { RegisterRequest, User } from '../../../core/models/user.model';
+import { AuthFormBase } from '../auth-form.base';
 import {
   DATOS_IA_PAGES,
   buildDatosIaGroup,
@@ -60,13 +61,11 @@ function allowedEmailDomainValidator(control: AbstractControl): ValidationErrors
   templateUrl: './register.html',
   styleUrl: '../auth.css',
 })
-export class RegisterComponent {
+export class RegisterComponent extends AuthFormBase {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  protected readonly loading = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
   /**
    * Paso actual del asistente: 1 datos personales, 2 y 3 las dos páginas de
    * "Cuéntanos sobre ti" (datos del modelo de IA).
@@ -144,12 +143,9 @@ export class RegisterComponent {
   }
 
   submit(): void {
-    if (this.form.invalid || this.loading()) {
-      this.form.markAllAsTouched();
+    if (!this.beginSubmit(this.form)) {
       return;
     }
-    this.loading.set(true);
-    this.errorKey.set(null);
     this.auth.register(this.buildRequest()).subscribe({
       next: (user: User) => void this.router.navigateByUrl(ROLE_HOME[user.role]),
       error: (err: unknown) => this.fail(err),
@@ -157,9 +153,7 @@ export class RegisterComponent {
   }
 
   private fail(err: unknown): void {
-    this.loading.set(false);
-    const key = err instanceof AuthError ? err.messageKey : 'errors.unknown';
-    this.errorKey.set(key);
+    const key = this.failWith(err);
     // El correo se edita en el primer paso: si está en uso o su dominio no se
     // permite, regresamos allí para que el usuario pueda corregirlo.
     if (key === 'auth.emailTaken' || key === 'auth.emailDomainNotAllowed') {
