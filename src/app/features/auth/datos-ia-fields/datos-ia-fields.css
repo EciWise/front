@@ -303,6 +303,15 @@
 }
 
 @media (max-width: 30rem) {
+  .dia__grid,
+  .dia__checks-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dia__checks {
+    padding: var(--space-3);
+  }
+
   .dia__step-label {
     display: none;
   }

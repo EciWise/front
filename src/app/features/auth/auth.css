@@ -2,12 +2,15 @@
    espacio 3D de fondo y tarjetas de vidrio con texto claro. */
 .auth {
   position: relative;
-  /* Alto fijo del viewport: la página no hace scroll; si una tarjeta no cupiera
-     (p. ej. registro en pantallas bajas) el scroll queda contenido en .auth__main. */
+  /* El viewport completo contiene el scroll: si la tarjeta crece, conserva
+     su espacio superior y no se recorta contra el borde de la pantalla. */
   height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   outline: none;
   /* Mismo fondo espacial que la landing, adaptable al tema. */
   background:
@@ -32,7 +35,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-6) var(--space-8);
+  padding:
+    calc(var(--space-4) + env(safe-area-inset-top))
+    max(var(--space-4), env(safe-area-inset-right))
+    var(--space-3)
+    max(var(--space-4), env(safe-area-inset-left));
 }
 
 .auth__controls {
@@ -45,18 +52,27 @@
   position: relative;
   z-index: 2;
   flex: 1;
-  min-height: 0;
-  /* La tarjeta se centra cuando cabe; si no, el scroll queda aquí, no en la página. */
-  overflow: auto;
+  min-height: auto;
+  /* La tarjeta se centra cuando cabe; si no, fluye con el scroll de .auth. */
+  overflow: visible;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-6) var(--space-8) var(--space-8);
+  justify-content: flex-start;
+  padding:
+    var(--space-4)
+    max(var(--space-4), env(safe-area-inset-right))
+    calc(var(--space-6) + env(safe-area-inset-bottom))
+    max(var(--space-4), env(safe-area-inset-left));
 }
 
 .auth__card {
+  flex: none;
   width: min(26rem, 100%);
-  padding: var(--space-8);
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-block: auto;
+  padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--surface) 82%, transparent);
@@ -64,6 +80,29 @@
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-lg);
   color: var(--text);
+}
+
+/* Espaciado amplio para tablet y escritorio. */
+@media (min-width: 40rem) {
+  .auth__bar {
+    padding:
+      calc(var(--space-6) + env(safe-area-inset-top))
+      max(var(--space-8), env(safe-area-inset-right))
+      var(--space-6)
+      max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .auth__main {
+    padding:
+      var(--space-6)
+      max(var(--space-8), env(safe-area-inset-right))
+      calc(var(--space-8) + env(safe-area-inset-bottom))
+      max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .auth__card {
+    padding: var(--space-8);
+  }
 }
 
 /* Tarjeta del registro: más ancha para repartir los campos en dos columnas. */
@@ -88,13 +127,14 @@
   text-align: center;
   font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .auth__form {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 /* ---------------- Animación de transición entre pasos ---------------- */
@@ -102,6 +142,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
   animation: auth-slide-in-right 280ms ease;
 }
 
@@ -165,6 +206,11 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 9%, transparent);
 }
 
+.auth__field eci-password-strength-input {
+  width: 100%;
+  min-width: 0;
+}
+
 /* ---------------- Indicador de pasos (registro) ---------------- */
 .auth__steps {
   display: flex;
@@ -176,6 +222,7 @@
 
 .auth__step {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -206,6 +253,13 @@
   background: var(--surface-3);
   color: var(--text-muted);
   font-size: 0.8rem;
+}
+
+.auth__step-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .auth__step--active .auth__step-dot,
@@ -318,6 +372,7 @@
 .auth__actions {
   display: flex;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .auth__actions > :last-child {
@@ -327,6 +382,14 @@
 @media (max-width: 30rem) {
   .auth__grid {
     grid-template-columns: 1fr;
+  }
+
+  .auth__actions {
+    flex-direction: column;
+  }
+
+  .auth__actions > :last-child {
+    flex: none;
   }
 
   .auth__step-label {
