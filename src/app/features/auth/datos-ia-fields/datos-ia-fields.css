@@ -206,16 +206,9 @@
 }
 
 /* ---------------- Asistente por pasos (modo paginado) ---------------- */
-.dia__steps {
-  display: flex;
-  gap: var(--space-3);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* `.dia__step*` (paso, estado y punto del indicador) se definen junto con sus
-   gemelos `.auth__step*` en "Primitivas compartidas" (styles.css). */
+/* El indicador de pasos (`.dia__steps`) y la navegación (`.dia__nav`, `.dia__error`)
+   viven en el componente compartido `eci-wizard-chrome`. `.dia__step*` es global
+   (styles.css, "Primitivas compartidas"). */
 
 /* Animación de slide al cambiar de paso (sentido según avance/retroceso). */
 .dia__page {
@@ -246,23 +239,9 @@
   }
 }
 
-.dia__nav {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: space-between;
-}
-
-/* El botón principal (Siguiente/Guardar) ocupa el espacio sobrante. */
-.dia__nav > :last-child {
-  margin-left: auto;
-}
-
-.dia__error {
-  margin: 0;
-  color: var(--danger);
-  font-size: 0.875rem;
-}
-
+/* `.dia__nav`, `.dia__error` y el ocultado responsive de `.dia__step-label`
+   viven en el componente compartido `eci-wizard-chrome`. Aquí solo el layout
+   responsive propio de este formulario. */
 @media (max-width: 30rem) {
   .dia__grid,
   .dia__checks-grid {
@@ -271,9 +250,5 @@
 
   .dia__checks {
     padding: var(--space-3);
-  }
-
-  .dia__step-label {
-    display: none;
   }
 }

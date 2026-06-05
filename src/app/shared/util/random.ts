@@ -7,7 +7,7 @@
  * donde `crypto` está siempre disponible.
  */
 
-const MAX_UINT32 = 0x1_0000_0000;
+const MAX_UINT32 = 2 ** 32;
 
 /** Número en coma flotante en el rango [0, 1). */
 export function randomFloat(): number {

@@ -49,7 +49,7 @@ export class AvatarComponent {
       return '?';
     }
     const first = parts[0][0];
-    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    const last = parts.length > 1 ? parts.at(-1)![0] : '';
     return (first + last).toUpperCase();
   });
 
@@ -58,7 +58,7 @@ export class AvatarComponent {
     const name = this.name();
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
-      hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+      hash = (hash * 31 + (name.codePointAt(i) ?? 0)) >>> 0;
     }
     return `hsl(${hash % 360}, 55%, 42%)`;
   });

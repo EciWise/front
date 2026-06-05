@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { stripTrailingSlashes } from '../../core/config/url.util';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AppError, httpErrorToKey } from '../../core/errors/app-error';
@@ -24,7 +25,7 @@ export class TalkApiService {
   private readonly config = inject(TALK_CONFIG);
 
   private get base(): string {
-    return `${this.config.talkApiUrl.replace(/\/+$/, '')}/api/v1`;
+    return `${stripTrailingSlashes(this.config.talkApiUrl)}/api/v1`;
   }
 
   // ─── Conversaciones ─────────────────────────────────────────────────────────
