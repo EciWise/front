@@ -3,13 +3,13 @@
 
   <!-- Felicitación -->
   @if (lastAchievement(); as ach) {
-    <div class="toast eci-fit__chrome" role="status">
+    <output class="toast eci-fit__chrome" aria-live="polite">
       <eci-icon class="toast__icon" name="trophy" [size]="20" />
       <span>{{ achievementKey() | translate: { count: ach.milestone } }}</span>
       <button class="toast__close" type="button" (click)="dismissAchievement()" aria-label="OK">
         <eci-icon name="close" [size]="16" />
       </button>
-    </div>
+    </output>
   }
 
   <!-- Estadísticas (strip compacta) -->
@@ -57,7 +57,7 @@
       [variant]="showStats() ? 'secondary' : 'ghost'"
       [attr.aria-pressed]="showStats()"
       [ariaLabel]="'tasks.toggleStats' | translate"
-      (click)="toggleStats()"
+      (buttonClick)="toggleStats()"
     >
       <eci-icon name="chart" [size]="18" />
     </eci-button>
@@ -66,14 +66,14 @@
         type="button"
         [variant]="showBacklog() ? 'secondary' : 'ghost'"
         [attr.aria-pressed]="showBacklog()"
-        (click)="showBacklog.update((v) => !v)"
+        (buttonClick)="showBacklog.update((v) => !v)"
       >
         <span class="tasks-bar__new-inner">
           <eci-icon name="tasks" [size]="16" />{{ 'tasks.backlog' | translate }} ({{ unscheduled().length }})
         </span>
       </eci-button>
     }
-    <eci-button class="tasks-bar__new" type="button" (click)="showCreate.set(true)">
+    <eci-button class="tasks-bar__new" type="button" (buttonClick)="showCreate.set(true)">
       <span class="tasks-bar__new-inner">
         <eci-icon name="plus" [size]="16" />{{ 'tasks.addTitle' | translate }}
       </span>
@@ -83,16 +83,16 @@
   <!-- Barra de la agenda: chrome fijo (no se desvanece con el scroll del cuerpo) -->
   @if (view() === 'agenda') {
     <div class="agenda-toolbar eci-fit__chrome">
-      <eci-button type="button" variant="ghost" ariaLabel="←" (click)="shiftDay(-1)">
+      <eci-button type="button" variant="ghost" ariaLabel="←" (buttonClick)="shiftDay(-1)">
         <eci-icon name="arrow-left" [size]="16" />
       </eci-button>
       <eci-date-picker class="agenda-toolbar__date" [value]="selectedDate()" (valueChange)="selectedDate.set($event)" />
-      <eci-button type="button" variant="ghost" ariaLabel="→" (click)="shiftDay(1)">
+      <eci-button type="button" variant="ghost" ariaLabel="→" (buttonClick)="shiftDay(1)">
         <eci-icon name="arrow-right" [size]="16" />
       </eci-button>
-      <eci-button type="button" variant="secondary" (click)="goToday()">{{ 'tasks.today' | translate }}</eci-button>
+      <eci-button type="button" variant="secondary" (buttonClick)="goToday()">{{ 'tasks.today' | translate }}</eci-button>
       <eci-info-tooltip class="agenda-toolbar__help" [text]="'tasks.help.agenda' | translate" />
-      <eci-button class="agenda-toolbar__hours" type="button" variant="ghost" (click)="toggleFullDay()">
+      <eci-button class="agenda-toolbar__hours" type="button" variant="ghost" (buttonClick)="toggleFullDay()">
         {{ (expandFullDay() ? 'tasks.showLessHours' : 'tasks.showFullDay') | translate }}
       </eci-button>
     </div>
@@ -117,9 +117,9 @@
               <option [value]="st">{{ statusKey(st) | translate }}</option>
             }
           </select>
-          <eci-button type="button" (click)="runSearch()">{{ 'tasks.search' | translate }}</eci-button>
+          <eci-button type="button" (buttonClick)="runSearch()">{{ 'tasks.search' | translate }}</eci-button>
           @if (searchResults() !== null) {
-            <eci-button type="button" variant="ghost" (click)="clearSearch()">{{ 'tasks.clear' | translate }}</eci-button>
+            <eci-button type="button" variant="ghost" (buttonClick)="clearSearch()">{{ 'tasks.clear' | translate }}</eci-button>
           }
         </eci-card>
 
@@ -336,7 +336,7 @@
       </eci-collapse>
 
       <div class="creator__actions">
-        <eci-button type="button" variant="ghost" (click)="showCreate.set(false)">
+        <eci-button type="button" variant="ghost" (buttonClick)="showCreate.set(false)">
           {{ 'common.cancel' | translate }}
         </eci-button>
         <eci-button type="submit" [disabled]="!draftTitle().trim()">

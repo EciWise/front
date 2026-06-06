@@ -4,7 +4,7 @@ const port = Number(process.env['PLAYWRIGHT_PORT'] ?? 4300);
 const baseURL = `http://127.0.0.1:${port}`;
 const ngServe =
   process.platform === 'win32'
-    ? `node_modules\\.bin\\ng.cmd serve --port ${port} --host 127.0.0.1`
+    ? String.raw`node_modules\.bin\ng.cmd serve --port ${port} --host 127.0.0.1`
     : `node_modules/.bin/ng serve --port ${port} --host 127.0.0.1`;
 
 export default defineConfig({

@@ -13,7 +13,7 @@
           <a routerLink="/auth/login">{{ 'common.login' | translate }}</a>
         </p>
       } @else {
-        <p class="auth__status" role="status">{{ 'auth.completing' | translate }}</p>
+        <output class="auth__status" aria-live="polite">{{ 'auth.completing' | translate }}</output>
       }
     </section>
   </div>

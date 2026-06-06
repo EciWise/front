@@ -8,7 +8,6 @@ import { injectSpeedInsights } from '@vercel/speed-insights';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
 })
 export class App {
   private readonly platformId = inject(PLATFORM_ID);

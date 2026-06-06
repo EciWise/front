@@ -5,7 +5,7 @@
 <eci-card>
   <p class="avail__hint">{{ 'tutor.availability.hint' | translate }}</p>
 
-  <div class="avail__grid" role="group" [attr.aria-label]="'tutor.availability.title' | translate">
+  <fieldset class="avail__grid" [attr.aria-label]="'tutor.availability.title' | translate">
     <div class="avail__corner" aria-hidden="true"></div>
     @for (day of days; track day) {
       <div class="avail__day">{{ 'days.' + day | translate }}</div>
@@ -24,11 +24,11 @@
         ></button>
       }
     }
-  </div>
+  </fieldset>
 
   <div class="avail__actions">
     @if (saved()) {
-      <span class="avail__saved" role="status">{{ 'tutor.availability.saved' | translate }}</span>
+      <output class="avail__saved" aria-live="polite">{{ 'tutor.availability.saved' | translate }}</output>
     }
     <eci-button (click)="save()">{{ 'tutor.availability.save' | translate }}</eci-button>
   </div>

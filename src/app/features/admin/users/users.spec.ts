@@ -62,7 +62,9 @@ describe('AdminUsersComponent', () => {
     const input = document.createElement('input');
     input.type = 'file';
     Object.defineProperty(input, 'files', { configurable: true, value: [file] });
-    return { target: input } as unknown as Event;
+    const event = new Event('change');
+    Object.defineProperty(event, 'target', { configurable: true, value: input });
+    return event;
   };
 
   beforeEach(async () => {
@@ -108,7 +110,7 @@ describe('AdminUsersComponent', () => {
   });
 
   it('renderiza tabla y estado vacio desde la pestana de usuarios', () => {
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
 
     expect(root.querySelector('.admin-table')).not.toBeNull();
     expect(root.textContent).toContain('Ana Diaz');
@@ -123,6 +125,7 @@ describe('AdminUsersComponent', () => {
   });
 
   it('sube CSV, resume el resultado y abre el dialogo de detalle', () => {
+    const root: HTMLElement = fixture.nativeElement;
     const file = new File(['nombre,apellido,email,rol\n'], 'users.csv', { type: 'text/csv' });
 
     cmp().onCsv(csvEvent(file));
@@ -135,11 +138,11 @@ describe('AdminUsersComponent', () => {
     expect(cmp().importError()).toBe(false);
     expect(cmp().importMessage()).toBe('admin.csv.result');
     expect(cmp().uploadResult()).toBe(result);
-    expect((fixture.nativeElement as HTMLElement).querySelector('eci-bulk-result-dialog')).not.toBeNull();
+    expect(root.querySelector('eci-bulk-result-dialog')).not.toBeNull();
   });
 
   it('sube CSV desde la pestana de importacion y permite cerrar el resultado', () => {
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
     const file = new File(['nombre,apellido,email,rol\n'], 'users.csv', { type: 'text/csv' });
     cmp().section.set('import');
     fixture.detectChanges();
@@ -151,7 +154,7 @@ describe('AdminUsersComponent', () => {
     fixture.detectChanges();
 
     expect(bulkUploadCsv).toHaveBeenCalledWith(file);
-    expect(root.querySelector('.admin__import')?.getAttribute('role')).toBe('status');
+    expect(root.querySelector('output.admin__import')?.getAttribute('aria-live')).toBe('polite');
     expect(root.querySelector('.admin__import-link')).not.toBeNull();
     expect(root.querySelector('eci-bulk-result-dialog')).not.toBeNull();
 

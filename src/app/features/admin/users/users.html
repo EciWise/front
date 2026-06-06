@@ -73,7 +73,7 @@
               />
             </label>
             @if (importMessage(); as msg) {
-              <p class="admin__import" [class.admin__import--error]="importError()" role="status">
+              <output class="admin__import" [class.admin__import--error]="importError()" aria-live="polite">
                 {{ msg | translate: { creados: importCreated(), errores: importErrors() } }}
                 @if (uploadResult(); as res) {
                   @if (res.usuarios.length > 0) {
@@ -82,7 +82,7 @@
                     </button>
                   }
                 }
-              </p>
+              </output>
             }
           </eci-card>
         </div>

@@ -53,7 +53,9 @@ export class CallbackComponent implements OnInit {
     }
 
     const user = this.auth.completeSession(token, apiUser);
-    void this.router.navigateByUrl(ROLE_HOME[user.role]);
+    this.router.navigateByUrl(ROLE_HOME[user.role]).catch(() => {
+      this.errorKey.set('auth.googleFailed');
+    });
   }
 
   /** Parsea y valida la forma del usuario antes de confiar en él. */

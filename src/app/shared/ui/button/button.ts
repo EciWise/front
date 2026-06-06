@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -19,6 +19,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
       [type]="type()"
       [disabled]="disabled()"
       [attr.aria-label]="ariaLabel() || null"
+      (click)="buttonClick.emit()"
     >
       <ng-content />
     </button>
@@ -32,4 +33,6 @@ export class ButtonComponent {
   readonly block = input(false);
   /** Etiqueta accesible; útil para botones que solo muestran un icono. */
   readonly ariaLabel = input<string>();
+  /** Evento semántico emitido desde el `<button>` nativo interno. */
+  readonly buttonClick = output<void>();
 }

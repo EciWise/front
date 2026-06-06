@@ -47,6 +47,7 @@
 }
 
 .profile__saved {
+  display: block;
   margin: 0;
   color: var(--success);
   font-size: 0.875rem;

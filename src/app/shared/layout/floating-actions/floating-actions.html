@@ -1,19 +1,18 @@
 @if (active(); as panel) {
   <!-- Captura clics fuera del panel para cerrarlo, sin oscurecer la pantalla. -->
   <div class="dock-backdrop" (click)="close()" aria-hidden="true"></div>
-  <aside
+  <dialog
     class="dock"
-    role="complementary"
+    open
     [style.width.px]="width()"
     [attr.aria-label]="(panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate"
   >
-    <div
+    <button
+      type="button"
       class="dock__resize"
       (pointerdown)="startResize($event)"
-      role="separator"
-      aria-orientation="vertical"
       [attr.aria-label]="'common.resize' | translate"
-    ></div>
+    ></button>
     <header class="dock__header">
       <h2 class="dock__title">
         {{ (panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate }}
@@ -34,7 +33,7 @@
         <eci-chat-panel />
       }
     </div>
-  </aside>
+  </dialog>
 } @else {
   <div class="fab-group" [class.fab-group--expanded]="expanded()">
     <button

@@ -59,6 +59,8 @@ export class LoginComponent extends AuthFormBase {
 
   private redirect(user: User): void {
     const redirect = this.route.snapshot.queryParamMap.get('redirect');
-    void this.router.navigateByUrl(redirect ?? ROLE_HOME[user.role]);
+    this.router.navigateByUrl(redirect ?? ROLE_HOME[user.role]).catch((err: unknown) => {
+      this.failWith(err);
+    });
   }
 }

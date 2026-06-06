@@ -28,7 +28,9 @@
   position: relative;
   z-index: 1;
   width: min(52rem, 100%);
+  max-width: none;
   max-height: 90vh;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
@@ -36,6 +38,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-lg);
   animation: dialog-pop 0.18s ease-out;
 }

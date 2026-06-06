@@ -48,6 +48,7 @@
 }
 
 .admin__import {
+  display: block;
   margin: var(--space-3) 0 0;
   color: var(--success);
   font-size: 0.875rem;

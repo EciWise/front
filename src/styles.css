@@ -113,8 +113,8 @@ html[data-theme='light'] .landing .eci-logo__plus-word {
 }
 
 html[data-theme='light'] .landing .landing__eci {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(122, 15, 32, 0.82);
   color: #ffffff;
 }
 
@@ -157,9 +157,9 @@ html[data-theme='light'] .landing .eci-button--primary:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.9);
 }
 html[data-theme='light'] .landing .eci-button--secondary {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(122, 15, 32, 0.86);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.45);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 /* ============================================================
@@ -207,6 +207,7 @@ html[data-theme='light'] .auth .auth__card {
   --text-muted: #1a1a1a;
   --border: #000000;
   --shadow-sm: 0 0 0 2px #000000;
+  font-size: 1.0625rem;
 }
 
 .a11y-mode[data-theme='dark'] {
@@ -218,10 +219,6 @@ html[data-theme='light'] .auth .auth__card {
 .a11y-mode :focus-visible {
   outline: 3px solid var(--accent) !important;
   outline-offset: 2px !important;
-}
-
-.a11y-mode {
-  font-size: 1.0625rem;
 }
 
 /* ============================================================

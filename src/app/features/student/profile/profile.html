@@ -34,7 +34,7 @@
       </label>
 
       @if (saved()) {
-        <p class="profile__saved" role="status">{{ 'profile.saved' | translate }}</p>
+        <output class="profile__saved" aria-live="polite">{{ 'profile.saved' | translate }}</output>
       }
 
       <eci-button type="submit">{{ 'profile.save' | translate }}</eci-button>

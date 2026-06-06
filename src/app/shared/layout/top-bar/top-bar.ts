@@ -43,6 +43,6 @@ export class TopBarComponent {
 
   logout(): void {
     this.auth.logout();
-    void this.router.navigate(['/']);
+    this.router.navigate(['/']).catch(() => undefined);
   }
 }

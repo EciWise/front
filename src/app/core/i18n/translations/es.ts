@@ -35,7 +35,7 @@ export const es = {
     next: 'Siguiente',
     home: 'Inicio',
     email: 'Correo',
-    password: 'Contraseña',
+    password: 'Contraseña', // NOSONAR - etiqueta de interfaz, no credencial.
     name: 'Nombre',
     lastName: 'Apellido',
     phone: 'Teléfono',

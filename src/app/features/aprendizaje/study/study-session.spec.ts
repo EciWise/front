@@ -89,7 +89,7 @@ describe('StudySessionComponent', () => {
   let review: ReturnType<typeof vi.fn>;
 
   const cmp = (): StudyHarness => fixture.componentInstance as unknown as StudyHarness;
-  const el = (): HTMLElement => fixture.nativeElement as HTMLElement;
+  const el = (): HTMLElement => fixture.nativeElement;
 
   beforeEach(async () => {
     studyQueue = vi.fn(() => of(queue));
@@ -134,7 +134,7 @@ describe('StudySessionComponent', () => {
     expect(el().textContent).toContain('Calculo');
     expect(el().textContent).not.toContain('Sin fijar');
 
-    (el().querySelector('.study-picker__card') as HTMLButtonElement).click();
+    el().querySelector<HTMLButtonElement>('.study-picker__card')!.click();
     fixture.detectChanges();
 
     expect(studyQueue).toHaveBeenCalledWith(1);

@@ -126,8 +126,9 @@ export class TasksService {
   // --- Estado local ---
   private onMutation(mutation: TaskMutation): void {
     this.replaceLocal(mutation.task);
-    if (mutation.achievements.length > 0) {
-      this._lastAchievement.set(mutation.achievements[mutation.achievements.length - 1]);
+    const lastAchievement = mutation.achievements.at(-1);
+    if (lastAchievement) {
+      this._lastAchievement.set(lastAchievement);
     }
   }
 

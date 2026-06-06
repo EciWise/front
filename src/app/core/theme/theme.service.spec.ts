@@ -2,24 +2,24 @@ import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ThemeService } from './theme.service';
 
+function setup(platformId = 'browser'): ThemeService {
+  TestBed.configureTestingModule({
+    providers: [{ provide: PLATFORM_ID, useValue: platformId }],
+  });
+  return TestBed.inject(ThemeService);
+}
+
+function mockMatchMedia(matches: boolean): void {
+  Object.defineProperty(globalThis, 'matchMedia', {
+    configurable: true,
+    value: vi.fn().mockReturnValue({ matches }),
+  });
+}
+
 describe('ThemeService', () => {
-  function setup(platformId = 'browser'): ThemeService {
-    TestBed.configureTestingModule({
-      providers: [{ provide: PLATFORM_ID, useValue: platformId }],
-    });
-    return TestBed.inject(ThemeService);
-  }
-
-  function mockMatchMedia(matches: boolean): void {
-    Object.defineProperty(window, 'matchMedia', {
-      configurable: true,
-      value: vi.fn().mockReturnValue({ matches }),
-    });
-  }
-
   beforeEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute('data-theme');
+    delete document.documentElement.dataset['theme'];
     TestBed.resetTestingModule();
     mockMatchMedia(false);
   });
@@ -29,7 +29,7 @@ describe('ThemeService', () => {
 
     service.setTheme('dark');
 
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(document.documentElement.dataset['theme']).toBe('dark');
     expect(service.isDark()).toBe(true);
     expect(localStorage.getItem('eciwise.theme')).toBe('dark');
   });
@@ -52,7 +52,7 @@ describe('ThemeService', () => {
     service.init();
 
     expect(service.theme()).toBe('light');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(document.documentElement.dataset['theme']).toBe('light');
   });
 
   it('usa prefers-color-scheme cuando no hay preferencia guardada', () => {
@@ -70,7 +70,7 @@ describe('ThemeService', () => {
 
     service.init();
 
-    expect(document.documentElement.getAttribute('data-theme')).toBeNull();
+    expect(document.documentElement.dataset['theme']).toBeUndefined();
     expect(localStorage.getItem('eciwise.theme')).toBeNull();
   });
 });

@@ -8,6 +8,10 @@
   grid-template-columns: 4rem repeat(5, 1fr);
   gap: var(--space-2);
   max-width: 40rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .avail__corner {
@@ -56,6 +60,7 @@
 }
 
 .avail__saved {
+  display: inline-block;
   color: var(--success);
   font-size: 0.875rem;
 }

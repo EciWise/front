@@ -32,7 +32,7 @@ export class TutoringRequestsService {
 
   private resolve(id: string, status: Exclude<RequestStatus, 'pending'>): void {
     const request = this._requests().find((r) => r.id === id);
-    if (!request || request.status !== 'pending') {
+    if (request?.status !== 'pending') {
       return;
     }
     this._requests.update((list) =>

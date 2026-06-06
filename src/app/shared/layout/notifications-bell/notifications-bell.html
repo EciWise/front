@@ -19,7 +19,7 @@
       [attr.aria-label]="'a11y.closeNotifications' | translate"
       (click)="close()"
     ></button>
-    <section class="bell__panel" role="dialog" [attr.aria-label]="'notifications.title' | translate">
+    <dialog class="bell__panel" open [attr.aria-label]="'notifications.title' | translate">
       <header class="bell__header">
         <h2 class="bell__title">{{ 'notifications.title' | translate }}</h2>
         <button type="button" class="bell__link" (click)="markAllRead()">
@@ -39,6 +39,6 @@
           }
         </ul>
       }
-    </section>
+    </dialog>
   }
 </div>

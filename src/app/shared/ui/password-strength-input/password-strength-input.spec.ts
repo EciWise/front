@@ -54,17 +54,17 @@ describe('PasswordStrengthInputComponent', () => {
 
     expect(changed).toEqual(['abc']);
     expect(touched).toBe(1);
-    expect(el().querySelector('.psi__meter')?.getAttribute('data-strength')).toBe('weak');
+    expect(el().querySelector<HTMLElement>('.psi__meter')?.dataset['strength']).toBe('weak');
     expect(el().querySelectorAll('.psi__bar--active')).toHaveLength(1);
   });
 
   it('calcula fortaleza media y segura y permite revelar/ocultar la contrasena', () => {
     setInputValue('Abcdef12');
-    expect(el().querySelector('.psi__meter')?.getAttribute('data-strength')).toBe('medium');
+    expect(el().querySelector<HTMLElement>('.psi__meter')?.dataset['strength']).toBe('medium');
     expect(el().querySelectorAll('.psi__bar--active')).toHaveLength(2);
 
     setInputValue('Abcdef12!!');
-    expect(el().querySelector('.psi__meter')?.getAttribute('data-strength')).toBe('secure');
+    expect(el().querySelector<HTMLElement>('.psi__meter')?.dataset['strength']).toBe('secure');
     expect(el().querySelectorAll('.psi__bar--active')).toHaveLength(3);
 
     expect(input().type).toBe('password');

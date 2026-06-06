@@ -4,7 +4,7 @@
     {{ 'aprendizaje.flashcards.back' | translate }}
   </button>
   @if (canModify()) {
-    <eci-button variant="primary" (click)="openCreate()">
+    <eci-button variant="primary" (buttonClick)="openCreate()">
       <eci-icon name="plus" [size]="16" /> {{ 'aprendizaje.flashcards.new' | translate }}
     </eci-button>
   }
@@ -32,7 +32,7 @@
         <textarea [value]="answer()" (input)="set('answer', $any($event.target).value)" rows="2" required></textarea>
       </label>
       <div class="fc-form__actions">
-        <eci-button variant="ghost" (click)="cancel()">
+        <eci-button variant="ghost" (buttonClick)="cancel()">
           {{ 'aprendizaje.actions.cancel' | translate }}
         </eci-button>
         <eci-button variant="primary" type="submit">

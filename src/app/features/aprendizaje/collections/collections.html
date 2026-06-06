@@ -10,7 +10,7 @@
       <h2>{{ 'aprendizaje.collections.title' | translate }}</h2>
       <eci-info-tooltip [text]="'aprendizaje.tip.visibility' | translate" />
     </div>
-    <eci-button variant="primary" (click)="openCreate()">
+    <eci-button variant="primary" (buttonClick)="openCreate()">
       <eci-icon name="plus" [size]="16" /> {{ 'aprendizaje.collections.new' | translate }}
     </eci-button>
   </div>
@@ -44,7 +44,7 @@
         }
 
         <div class="col-form__actions">
-          <eci-button variant="ghost" (click)="cancel()">
+          <eci-button variant="ghost" (buttonClick)="cancel()">
             {{ 'aprendizaje.actions.cancel' | translate }}
           </eci-button>
           <eci-button variant="primary" type="submit">

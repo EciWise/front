@@ -5,9 +5,9 @@
     [attr.aria-label]="'admin.csv.dialog.close' | translate"
     (click)="onClose()"
   ></button>
-  <div
+  <dialog
     class="dialog"
-    role="dialog"
+    open
     aria-modal="true"
     [attr.aria-label]="'admin.csv.dialog.title' | translate"
   >
@@ -164,5 +164,5 @@
 
       <eci-button (click)="onClose()">{{ 'admin.csv.dialog.close' | translate }}</eci-button>
     </footer>
-  </div>
+  </dialog>
 </div>

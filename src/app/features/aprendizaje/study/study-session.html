@@ -3,21 +3,18 @@
     ><p class="study-msg">{{ 'aprendizaje.study.noFavorites' | translate }}</p></eci-card
   >
 } @else if (selectedId() === null) {
-  <div class="study-picker" role="list">
+  <ul class="study-picker">
     @for (c of favorites(); track c.id) {
-      <button
-        type="button"
-        role="listitem"
-        class="study-picker__card"
-        (click)="select(c.id)"
-      >
-        <span class="study-picker__name">{{ c.name }}</span>
-        <span class="study-picker__count">
-          {{ 'aprendizaje.collections.cards' | translate: { count: c.flashcardCount } }}
-        </span>
-      </button>
+      <li class="study-picker__item">
+        <button type="button" class="study-picker__card" (click)="select(c.id)">
+          <span class="study-picker__name">{{ c.name }}</span>
+          <span class="study-picker__count">
+            {{ 'aprendizaje.collections.cards' | translate: { count: c.flashcardCount } }}
+          </span>
+        </button>
+      </li>
     }
-  </div>
+  </ul>
 
   <eci-card
     ><p class="study-msg">{{ 'aprendizaje.study.prompt' | translate }}</p></eci-card
@@ -52,10 +49,9 @@
       ></span>
     </div>
 
-    <div
+    <button
+      type="button"
       class="flashcard"
-      role="button"
-      tabindex="0"
       [attr.aria-label]="'aprendizaje.study.flipHint' | translate"
       [class.flashcard--flipped]="revealed()"
       [class.flashcard--dragging]="dragging()"
@@ -72,20 +68,20 @@
       (pointerup)="onPointerUp($event)"
       (pointercancel)="onPointerUp($event)"
     >
-      <div class="flashcard__inner">
-        <div class="flashcard__face flashcard__face--front">
+      <span class="flashcard__inner">
+        <span class="flashcard__face flashcard__face--front">
           @if (item.card.title) {
             <span class="flashcard__tag">{{ item.card.title }}</span>
           }
-          <p class="flashcard__text">{{ item.card.question }}</p>
+          <span class="flashcard__text">{{ item.card.question }}</span>
           <span class="flashcard__hint">{{ 'aprendizaje.study.flipHint' | translate }}</span>
-        </div>
-        <div class="flashcard__face flashcard__face--back">
+        </span>
+        <span class="flashcard__face flashcard__face--back">
           <span class="flashcard__tag">{{ 'aprendizaje.flashcards.answer' | translate }}</span>
-          <p class="flashcard__text">{{ item.card.answer }}</p>
+          <span class="flashcard__text">{{ item.card.answer }}</span>
           <span class="flashcard__hint">{{ 'aprendizaje.study.dragHint' | translate }}</span>
-        </div>
-      </div>
+        </span>
+      </span>
 
       <!-- Etiquetas de intención al arrastrar -->
       <span class="drag-badge drag-badge--repetir">{{
@@ -97,7 +93,7 @@
       <span class="drag-badge drag-badge--aceptable">{{
         'aprendizaje.grade.aceptable' | translate
       }}</span>
-    </div>
+    </button>
   </div>
 
   @if (revealed()) {
@@ -138,7 +134,7 @@
     </div>
   } @else {
     <div class="study-actions">
-      <eci-button variant="primary" (click)="reveal()">
+      <eci-button variant="primary" (buttonClick)="reveal()">
         {{ 'aprendizaje.study.show' | translate }}
       </eci-button>
     </div>
@@ -152,7 +148,7 @@
       <p class="study-done__sub">
         {{ 'aprendizaje.study.reviewedCount' | translate: { count: queue().length } }}
       </p>
-      <eci-button variant="primary" (click)="restart()">
+      <eci-button variant="primary" (buttonClick)="restart()">
         {{ 'aprendizaje.study.another' | translate }}
       </eci-button>
     </div>
@@ -161,7 +157,7 @@
   <eci-card>
     <div class="study-done">
       <p class="study-done__title">{{ 'aprendizaje.study.done' | translate }}</p>
-      <eci-button variant="secondary" (click)="restart()">
+      <eci-button variant="secondary" (buttonClick)="restart()">
         {{ 'aprendizaje.study.another' | translate }}
       </eci-button>
     </div>

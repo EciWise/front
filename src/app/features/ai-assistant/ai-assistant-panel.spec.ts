@@ -26,7 +26,7 @@ describe('AiAssistantPanelComponent', () => {
   let assistant: AssistantStub;
 
   const cmp = (): AssistantHarness => fixture.componentInstance as unknown as AssistantHarness;
-  const el = (): HTMLElement => fixture.nativeElement as HTMLElement;
+  const el = (): HTMLElement => fixture.nativeElement;
 
   beforeEach(async () => {
     assistant = {

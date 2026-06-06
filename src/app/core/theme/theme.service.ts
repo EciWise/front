@@ -36,7 +36,7 @@ export class ThemeService {
 
   setTheme(mode: ThemeMode): void {
     this._theme.set(mode);
-    this.document.documentElement.setAttribute('data-theme', mode);
+    this.document.documentElement.dataset['theme'] = mode;
     if (this.isBrowser) {
       localStorage.setItem(STORAGE_KEY, mode);
     }

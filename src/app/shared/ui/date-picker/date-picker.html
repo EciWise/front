@@ -13,7 +13,7 @@
 </button>
 
 @if (open()) {
-  <div class="dp-pop" role="dialog" [style.top.px]="popTop()" [style.left.px]="popLeft()">
+  <dialog class="dp-pop" open [style.top.px]="popTop()" [style.left.px]="popLeft()">
     <header class="dp-pop__head">
       <button type="button" class="dp-nav" (click)="shiftMonth(-1)" aria-label="←">
         <eci-icon name="chevron-left" [size]="18" />
@@ -30,15 +30,17 @@
       }
     </div>
 
-    <div class="dp-grid" role="grid">
+    <div class="dp-grid">
       @for (cell of days(); track cell.iso) {
         <button
           type="button"
           class="dp-day"
-          role="gridcell"
           [class.dp-day--muted]="!cell.inMonth"
           [class.dp-day--today]="isToday(cell.iso)"
           [class.dp-day--selected]="isSelected(cell.iso)"
+          [attr.aria-current]="isToday(cell.iso) ? 'date' : null"
+          [attr.aria-pressed]="isSelected(cell.iso)"
+          [attr.aria-label]="cell.iso"
           [disabled]="cell.disabled"
           (click)="select(cell)"
         >
@@ -46,5 +48,5 @@
         </button>
       }
     </div>
-  </div>
+  </dialog>
 }

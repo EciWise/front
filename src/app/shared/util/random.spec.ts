@@ -1,6 +1,6 @@
 import { randomBool, randomFloat, randomInt, randomItem, randomRange } from './random';
 
-const MAX_UINT32 = 0x1_0000_0000;
+const MAX_UINT32 = 2 ** 32;
 
 describe('random util', () => {
   let values: number[];

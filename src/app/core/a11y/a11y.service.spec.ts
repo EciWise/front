@@ -6,14 +6,14 @@ interface A11yInternals {
   readonly handleShortcut: (event: KeyboardEvent) => void;
 }
 
-describe('A11yService', () => {
-  function setup(platformId = 'browser'): A11yService {
-    TestBed.configureTestingModule({
-      providers: [{ provide: PLATFORM_ID, useValue: platformId }],
-    });
-    return TestBed.inject(A11yService);
-  }
+function setup(platformId = 'browser'): A11yService {
+  TestBed.configureTestingModule({
+    providers: [{ provide: PLATFORM_ID, useValue: platformId }],
+  });
+  return TestBed.inject(A11yService);
+}
 
+describe('A11yService', () => {
   beforeEach(() => {
     localStorage.clear();
     document.documentElement.classList.remove('a11y-mode');
@@ -42,7 +42,7 @@ describe('A11yService', () => {
   });
 
   it('inicializa desde localStorage y registra el atajo global', () => {
-    const addEventListener = vi.spyOn(window, 'addEventListener');
+    const addEventListener = vi.spyOn(globalThis, 'addEventListener');
     localStorage.setItem('eciwise.a11y', 'true');
     const service = setup();
 

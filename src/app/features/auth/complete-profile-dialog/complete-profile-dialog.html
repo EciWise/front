@@ -1,7 +1,7 @@
 <div class="fpc__backdrop">
-  <div
+  <dialog
     class="fpc"
-    role="dialog"
+    open
     aria-modal="true"
     [attr.aria-label]="'completeProfile.popupTitle' | translate"
   >
@@ -20,5 +20,5 @@
         (completed)="submit()"
       />
     </div>
-  </div>
+  </dialog>
 </div>

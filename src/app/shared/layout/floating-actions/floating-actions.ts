@@ -47,9 +47,11 @@ const DOCK_WIDTH_KEY = 'eci.chat.dockWidth';
   styleUrl: './floating-actions.css',
 })
 export class FloatingActionsComponent {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
   private readonly renderer = inject(Renderer2);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   protected readonly active = signal<DockPanel>(null);
   /** Indica si el menú de acciones está desplegado (IA + chats visibles). */
   protected readonly expanded = signal(false);
@@ -64,7 +66,7 @@ export class FloatingActionsComponent {
     this.router.events
       .pipe(
         filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(inject(DestroyRef)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.expanded.set(false));
 
@@ -78,7 +80,7 @@ export class FloatingActionsComponent {
   }
 
   private readStoredWidth(): number {
-    if (!isPlatformBrowser(inject(PLATFORM_ID))) {
+    if (!this.isBrowser) {
       return DEFAULT_DOCK_WIDTH;
     }
     const stored = Number(localStorage.getItem(DOCK_WIDTH_KEY));
@@ -91,9 +93,9 @@ export class FloatingActionsComponent {
       return;
     }
     event.preventDefault();
-    const max = window.innerWidth * 0.9;
+    const max = globalThis.innerWidth * 0.9;
     this.stopMove = this.renderer.listen('document', 'pointermove', (e: PointerEvent) => {
-      const next = window.innerWidth - e.clientX;
+      const next = globalThis.innerWidth - e.clientX;
       this.width.set(Math.min(Math.max(next, MIN_DOCK_WIDTH), max));
     });
     this.stopUp = this.renderer.listen('document', 'pointerup', () => this.endResize());
