@@ -1,0 +1,6 @@
+projectKey=eciwise-front
+serverUrl=http://localhost:9100
+serverVersion=26.6.0.123539
+dashboardUrl=http://localhost:9100/dashboard?id=eciwise-front
+ceTaskId=ee5f5ede-24e0-4f27-8296-3d062ba82053
+ceTaskUrl=http://localhost:9100/api/ce/task?id=ee5f5ede-24e0-4f27-8296-3d062ba82053

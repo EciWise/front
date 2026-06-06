@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { stripTrailingSlashes } from '../../core/config/url.util';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { AUTH_CONFIG } from '../../core/auth/auth.config';
@@ -61,7 +62,7 @@ export class UserAdminService {
   readonly users = this._users.asReadonly();
 
   private get base(): string {
-    return this.config.apiBaseUrl.replace(/\/+$/, '');
+    return stripTrailingSlashes(this.config.apiBaseUrl);
   }
 
   /** Carga la lista de usuarios desde el backend y la guarda en el signal. */

@@ -6,26 +6,32 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonComponent } from '../../../shared/ui/button/button';
-import { IconComponent } from '../../../shared/ui/icon/icon';
 import { SelectComponent, SelectOption as EciSelectOption } from '../../../shared/ui/select/select';
 import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 import { DATOS_IA_PAGES } from '../datos-ia-form';
+import { WizardChromeComponent } from '../wizard-chrome/wizard-chrome';
 import { WizardFieldsBase } from '../wizard-fields.base';
 
+/** Opción de un select codificado (valor numérico que espera el backend + clave i18n). */
 interface SelectOption {
   readonly value: number;
   readonly key: string;
 }
 
+/**
+ * Campos de datos de IA del estudiante con presentación amigable: selects con
+ * texto (no códigos), ayudas descriptivas y alineación en grilla. Recibe el
+ * `FormGroup` construido con `buildDatosIaGroup` y lo comparten el registro y el
+ * pop-up de cambio de contraseña. En modo `paginated` reparte las preguntas en
+ * pasos cortos con la navegación del componente `eci-wizard-chrome`.
+ */
 @Component({
   selector: 'eci-datos-ia-fields',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonComponent,
-    IconComponent,
+    WizardChromeComponent,
     SelectComponent,
     InfoTooltipComponent,
   ],

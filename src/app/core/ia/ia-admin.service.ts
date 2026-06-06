@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { stripTrailingSlashes } from '../config/url.util';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { AUTH_CONFIG } from '../auth/auth.config';
@@ -85,7 +86,7 @@ export class IaAdminService {
   private readonly config = inject(AUTH_CONFIG);
 
   private get base(): string {
-    return this.config.apiBaseUrl.replace(/\/+$/, '');
+    return stripTrailingSlashes(this.config.apiBaseUrl);
   }
 
   /** Estudiantes con predicción (admin: todos; tutor: solo asignados). */
