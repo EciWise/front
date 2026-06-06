@@ -42,7 +42,9 @@ export class SpaceBackgroundComponent {
       }
       const canvas = this.canvas()?.nativeElement;
       if (canvas) {
-        void this.scene.init(canvas);
+        this.scene.init(canvas).catch(() => {
+          this.scene.dispose();
+        });
       }
     });
     inject(DestroyRef).onDestroy(() => this.scene.dispose());

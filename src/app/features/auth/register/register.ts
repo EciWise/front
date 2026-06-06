@@ -202,7 +202,11 @@ export class RegisterComponent extends AuthFormBase {
       return;
     }
     this.auth.register(this.buildRequest()).subscribe({
-      next: (user: User) => void this.router.navigateByUrl(ROLE_HOME[user.role]),
+      next: (user: User) => {
+        this.router.navigateByUrl(ROLE_HOME[user.role]).catch((err: unknown) => {
+          this.failWith(err);
+        });
+      },
       error: (err: unknown) => this.fail(err),
     });
   }

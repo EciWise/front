@@ -43,10 +43,10 @@ export class LandingComponent {
   protected readonly section = signal('home');
 
   goToLogin(): void {
-    void this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth/login']).catch(() => undefined);
   }
 
   goToRegister(): void {
-    void this.router.navigate(['/auth/register']);
+    this.router.navigate(['/auth/register']).catch(() => undefined);
   }
 }
