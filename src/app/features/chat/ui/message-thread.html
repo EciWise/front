@@ -26,7 +26,7 @@
     </div>
   }
 
-  <div class="thread__messages">
+  <div class="thread__messages" #scroller (scroll)="onScroll()">
     @if (chat.loading()) {
       <p class="thread__hint">{{ 'common.loading' | translate }}</p>
     }
@@ -38,6 +38,20 @@
       }
     }
   </div>
+
+  @if (!atBottom()) {
+    <button
+      type="button"
+      class="thread__scroll-down"
+      (click)="scrollToBottom()"
+      [attr.aria-label]="'chat.scrollToBottom' | translate"
+    >
+      <svg lucideChevronDown [size]="20" aria-hidden="true"></svg>
+      @if (newCount(); as n) {
+        <span class="thread__scroll-badge">{{ n }}</span>
+      }
+    </button>
+  }
 
   @if (chat.typingNames().length) {
     <p class="thread__typing">{{ chat.typingNames().join(', ') }} {{ 'chat.typing' | translate }}</p>

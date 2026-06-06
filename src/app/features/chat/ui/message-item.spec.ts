@@ -109,7 +109,10 @@ describe('MessageItemComponent', () => {
     el.querySelector<HTMLButtonElement>('.msg__reaction')?.click();
     expect(chat.toggleReaction).toHaveBeenCalledWith('m1', '👍');
 
-    el.querySelectorAll<HTMLButtonElement>('.msg__actions button').item(1).click();
+    // Abre el menú de 3 puntos y pulsa "Responder" (primer ítem del menú).
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
+    fixture.detectChanges();
+    el.querySelectorAll<HTMLButtonElement>('.msg__menu-item').item(0).click();
     expect(chat.startReply).toHaveBeenCalledWith(expect.objectContaining({ id: 'm1' }));
   });
 
@@ -130,8 +133,12 @@ describe('MessageItemComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     expect(el.querySelector('.msg--mine')).not.toBeNull();
+    expect(el.querySelector('.msg__author--mine')?.textContent).toContain('Tú');
     expect(el.querySelector('.msg__read')?.textContent).toContain('1');
-    el.querySelectorAll<HTMLButtonElement>('.msg__actions button').item(2).click();
+    // Abre el menú y pulsa "Editar" (2º ítem: Responder, Editar, …).
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
+    fixture.detectChanges();
+    el.querySelectorAll<HTMLButtonElement>('.msg__menu-item').item(1).click();
     fixture.detectChanges();
 
     const input = el.querySelector<HTMLInputElement>('.msg__edit-input');
@@ -162,13 +169,23 @@ describe('MessageItemComponent', () => {
 
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    const buttons = el.querySelectorAll<HTMLButtonElement>('.msg__actions button');
 
     expect(el.querySelector('.msg__author')?.textContent).toContain('An');
     expect(el.querySelector('.msg__image')?.getAttribute('alt')).toBe('foto.png');
-    buttons.item(2).click();
-    buttons.item(3).click();
-    buttons.item(4).click();
+
+    // Mensaje ajeno con moderación: el menú tiene Responder, Fijar, Censurar, Eliminar.
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
+    fixture.detectChanges();
+    const items = el.querySelectorAll<HTMLButtonElement>('.msg__menu-item');
+    items.item(1).click(); // Fijar
+    fixture.detectChanges();
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
+    fixture.detectChanges();
+    el.querySelectorAll<HTMLButtonElement>('.msg__menu-item').item(2).click(); // Censurar
+    fixture.detectChanges();
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
+    fixture.detectChanges();
+    el.querySelectorAll<HTMLButtonElement>('.msg__menu-item').item(3).click(); // Eliminar
 
     expect(chat.togglePin).toHaveBeenCalledWith('m1');
     expect(chat.censorMessage).toHaveBeenCalledWith('m1');
@@ -195,14 +212,14 @@ describe('MessageItemComponent', () => {
     expect(el.querySelector('.msg__reactions')).toBeNull();
   });
 
-  it('abre el menu de emojis y reacciona desde la paleta', () => {
+  it('abre el menu de 3 puntos y reacciona desde la paleta', () => {
     fixture.componentRef.setInput('message', message());
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    el.querySelector<HTMLButtonElement>('.msg__react .icon-button')?.click();
+    el.querySelector<HTMLButtonElement>('.msg__actions button[aria-haspopup]')?.click();
     fixture.detectChanges();
-    el.querySelector<HTMLButtonElement>('.msg__emoji')?.click();
+    el.querySelector<HTMLButtonElement>('.msg__menu-emojis .msg__emoji')?.click();
 
     expect(chat.toggleReaction).toHaveBeenCalledWith('m1', expect.any(String));
   });

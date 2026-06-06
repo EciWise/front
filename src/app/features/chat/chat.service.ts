@@ -1,4 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { AuthService } from '../../core/auth/auth.service';
 import { Role } from '../../core/models/role.enum';
@@ -27,6 +28,7 @@ export class ChatService {
   private readonly api = inject(TalkApiService);
   private readonly realtime = inject(TalkRealtimeService);
   private readonly auth = inject(AuthService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly _conversations = signal<Conversation[]>([]);
   private readonly _activeId = signal<string | null>(null);
@@ -41,6 +43,14 @@ export class ChatService {
   /** Mensaje al que se está respondiendo (null = no hay respuesta en curso). */
   readonly replyingTo = this._replyingTo.asReadonly();
 
+  /** Conversaciones ocultas localmente por el usuario (persistido en localStorage). */
+  private readonly _hiddenIds = signal<ReadonlySet<string>>(new Set());
+  private readonly _showHidden = signal(false);
+  /** Mostrar también las conversaciones ocultas en la lista. */
+  readonly showHidden = this._showHidden.asReadonly();
+  /** Última vez que el usuario abrió cada conversación (ISO), para "no leídos". */
+  private readonly _lastSeen = signal<Record<string, string>>({});
+
   readonly conversations = this._conversations.asReadonly();
   readonly activeId = this._activeId.asReadonly();
   readonly messages = this._messages.asReadonly();
@@ -52,6 +62,19 @@ export class ChatService {
     () => this._conversations().find((c) => c.id === this._activeId()) ?? null,
   );
   readonly typingNames = computed(() => Object.values(this._typingUsers()));
+
+  /** Conversaciones visibles (oculta las marcadas, salvo que se pidan ver). */
+  private readonly _visible = computed(() => {
+    const hidden = this._hiddenIds();
+    const showHidden = this._showHidden();
+    return this._conversations().filter((c) => showHidden || !hidden.has(c.id));
+  });
+  /** Chats individuales visibles, separados de los grupos. */
+  readonly directChats = computed(() => this._visible().filter((c) => c.type === 'INDIVIDUAL'));
+  /** Grupos visibles. */
+  readonly groupChats = computed(() => this._visible().filter((c) => c.type === 'GROUP'));
+  /** Hay al menos una conversación oculta (para mostrar el toggle). */
+  readonly hasHidden = computed(() => this._hiddenIds().size > 0);
 
   /** Solo tutores y admin pueden censurar / fijar / borrar mensajes ajenos. */
   readonly canModerate = computed(
@@ -137,6 +160,7 @@ export class ChatService {
   // ─── Conversaciones ─────────────────────────────────────────────────────────
 
   loadConversations(): void {
+    this.hydrateLocalState();
     this.realtime.connect();
     this.api.listConversations().subscribe({
       next: (list) => this._conversations.set(list),
@@ -145,6 +169,7 @@ export class ChatService {
   }
 
   openConversation(id: string): void {
+    this.markSeen(id);
     this._activeId.set(id);
     this._view.set('thread');
     this._messages.set([]);
@@ -166,11 +191,110 @@ export class ChatService {
   }
 
   closeThread(): void {
+    const id = this._activeId();
+    if (id) {
+      // Al salir, sella la conversación como vista para que no quede "no leída".
+      this.markSeen(id);
+    }
     this.realtime.closeConversation();
     this._activeId.set(null);
     this._messages.set([]);
     this._replyingTo.set(null);
     this._view.set('list');
+  }
+
+  // ─── Ocultar / eliminar / no leídos (gestión de la lista) ──────────────────────
+
+  /** Oculta localmente una conversación (no afecta a los demás participantes). */
+  hideConversation(id: string): void {
+    this._hiddenIds.update((s) => new Set(s).add(id));
+    this.persistHidden();
+  }
+
+  /** Vuelve a mostrar una conversación oculta. */
+  unhideConversation(id: string): void {
+    this._hiddenIds.update((s) => {
+      const next = new Set(s);
+      next.delete(id);
+      return next;
+    });
+    this.persistHidden();
+  }
+
+  toggleShowHidden(): void {
+    this._showHidden.update((v) => !v);
+  }
+
+  /** ¿Está oculta esta conversación? */
+  isHidden(id: string): boolean {
+    return this._hiddenIds().has(id);
+  }
+
+  /** Solo el creador puede borrar definitivamente (hard delete) la conversación. */
+  isCreator(conv: Conversation): boolean {
+    return conv.createdBy === this.currentUserId();
+  }
+
+  /** Hay actividad posterior a la última vez que el usuario la abrió. */
+  hasUnread(conv: Conversation): boolean {
+    if (conv.id === this._activeId()) {
+      return false;
+    }
+    const seen = this._lastSeen()[conv.id];
+    return !seen || conv.updatedAt > seen;
+  }
+
+  /** Hard delete: solo el creador; el backend revalida el permiso. */
+  deleteConversation(id: string): void {
+    const conv = this._conversations().find((c) => c.id === id);
+    if (!conv || !this.isCreator(conv)) {
+      return;
+    }
+    this.api.deleteConversation(id).subscribe({
+      next: () => {
+        this._conversations.update((list) => list.filter((c) => c.id !== id));
+        this.unhideConversation(id);
+        if (this._activeId() === id) {
+          this.closeThread();
+        }
+      },
+      error: (err) => this._error.set(err.messageKey),
+    });
+  }
+
+  private markSeen(id: string): void {
+    this._lastSeen.update((m) => ({ ...m, [id]: new Date().toISOString() }));
+    this.persistLastSeen();
+  }
+
+  private storageKey(prefix: string): string {
+    return `eci.chat.${prefix}.${this.currentUserId() ?? 'anon'}`;
+  }
+
+  private hydrateLocalState(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    try {
+      const hidden = localStorage.getItem(this.storageKey('hidden'));
+      this._hiddenIds.set(new Set(hidden ? (JSON.parse(hidden) as string[]) : []));
+      const seen = localStorage.getItem(this.storageKey('seen'));
+      this._lastSeen.set(seen ? (JSON.parse(seen) as Record<string, string>) : {});
+    } catch {
+      /* almacenamiento corrupto: se parte de estado vacío */
+    }
+  }
+
+  private persistHidden(): void {
+    if (this.isBrowser) {
+      localStorage.setItem(this.storageKey('hidden'), JSON.stringify([...this._hiddenIds()]));
+    }
+  }
+
+  private persistLastSeen(): void {
+    if (this.isBrowser) {
+      localStorage.setItem(this.storageKey('seen'), JSON.stringify(this._lastSeen()));
+    }
   }
 
   /** Marca un mensaje para responderlo (lo muestra el composer). */

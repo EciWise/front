@@ -76,22 +76,24 @@
   transition-delay: 60ms;
 }
 
-/* Fondo semitransparente bajo el panel lateral */
+/* Capa transparente que cierra el panel al pulsar fuera, SIN oscurecer la
+   pantalla (a diferencia del backdrop modal original). */
 .dock-backdrop {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: var(--overlay);
+  background: transparent;
 }
 
-/* Panel lateral derecho de alto completo (IA / chats) */
+/* Panel lateral derecho de alto completo (IA / chats). El ancho lo controla el
+   usuario arrastrando el asa izquierda (signal width). */
 .dock {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   z-index: 61;
-  width: min(24rem, 100vw);
+  max-width: 100vw;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -105,13 +107,34 @@
   animation: dock-in var(--transition-base) ease;
 }
 
+/* Apertura suave: solo un leve desplazamiento + fundido, sin el slide completo. */
 @keyframes dock-in {
   from {
-    transform: translateX(100%);
+    opacity: 0;
+    transform: translateX(12px);
   }
   to {
+    opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* Asa de redimensionado en el borde izquierdo del panel. */
+.dock__resize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  z-index: 1;
+  touch-action: none;
+}
+
+.dock__resize:hover,
+.dock__resize:active {
+  background: var(--brand-red);
+  opacity: 0.4;
 }
 
 .dock__header {

@@ -1,10 +1,13 @@
 <article class="msg" [class.msg--mine]="mine()">
-  @if (!mine()) {
+  @if (mine()) {
+    <span class="msg__author msg__author--mine">{{ 'chat.you' | translate }}</span>
+  } @else {
     <span class="msg__author">
       {{ maskName() ? ('chat.anonymousUser' | translate) : message().senderName }}
     </span>
   }
 
+  <div class="msg__row">
   <div class="msg__bubble" [class.msg__bubble--censored]="message().manuallyCensored || message().deleted">
     @if (message().replyTo; as reply) {
       <span class="msg__reply">{{ reply.senderName }}: {{ reply.snippet }}</span>
@@ -56,69 +59,76 @@
   </div>
 
   @if (!message().deleted) {
-    @if (message().reactions.length) {
-      <div class="msg__reactions">
-        @for (g of message().reactions; track g.emoji) {
-          <button
-            type="button"
-            class="msg__reaction"
-            [class.msg__reaction--on]="reacted(g.emoji)"
-            (click)="chat.toggleReaction(message().id, g.emoji)"
-          >
-            {{ g.emoji }} {{ g.count }}
-          </button>
-        }
-      </div>
-    }
-
     <div class="msg__actions">
-      <div class="msg__react">
-        <button
-          type="button"
-          class="icon-button"
-          (click)="reactMenuOpen.set(!reactMenuOpen())"
-          [attr.aria-expanded]="reactMenuOpen()"
-          [attr.aria-label]="'chat.react' | translate"
-        >
-          <svg lucideSmilePlus [size]="14" aria-hidden="true"></svg>
-        </button>
-        @if (reactMenuOpen()) {
-          <div class="msg__emoji-menu" role="menu">
+      <button
+        type="button"
+        class="icon-button msg__kebab"
+        (click)="toggleMenu($event)"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-haspopup]="true"
+        [attr.aria-label]="'chat.options' | translate"
+      >
+        <svg lucideMoreVertical [size]="16" aria-hidden="true"></svg>
+      </button>
+      @if (menuOpen()) {
+        <div class="msg__menu" role="menu" [ngStyle]="menuStyle()">
+          <div class="msg__menu-emojis">
             @for (e of reactionPalette; track e) {
               <button type="button" class="msg__emoji" role="menuitem" (click)="react(e)" [attr.aria-label]="e">
                 {{ e }}
               </button>
             }
           </div>
-        }
-      </div>
-      <button type="button" class="icon-button" (click)="chat.startReply(message())" [attr.aria-label]="'chat.reply' | translate">
-        <svg lucideReply [size]="14" aria-hidden="true"></svg>
-      </button>
-      @if (canEdit()) {
-        <button type="button" class="icon-button" (click)="startEdit()" [attr.aria-label]="'chat.edit' | translate">
-          <svg lucidePencil [size]="14" aria-hidden="true"></svg>
-        </button>
+          <button type="button" class="msg__menu-item" role="menuitem" (click)="run(chat.startReply.bind(chat, message()))">
+            <svg lucideReply [size]="16" aria-hidden="true"></svg>
+            <span>{{ 'chat.reply' | translate }}</span>
+          </button>
+          @if (canEdit()) {
+            <button type="button" class="msg__menu-item" role="menuitem" (click)="startEdit()">
+              <svg lucidePencil [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.edit' | translate }}</span>
+            </button>
+          }
+          @if (chat.canModerate()) {
+            <button
+              type="button"
+              class="msg__menu-item"
+              role="menuitem"
+              [class.is-on]="message().pinned"
+              (click)="run(chat.togglePin.bind(chat, message().id))"
+            >
+              <svg lucidePin [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.pin' | translate }}</span>
+            </button>
+          }
+          @if (canCensor()) {
+            <button type="button" class="msg__menu-item" role="menuitem" (click)="run(chat.censorMessage.bind(chat, message().id))">
+              <svg lucideEyeOff [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.censor' | translate }}</span>
+            </button>
+          }
+          @if (canDelete()) {
+            <button type="button" class="msg__menu-item msg__menu-item--danger" role="menuitem" (click)="run(chat.deleteMessage.bind(chat, message().id))">
+              <svg lucideTrash [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.delete' | translate }}</span>
+            </button>
+          }
+        </div>
       }
-      @if (chat.canModerate()) {
+    </div>
+  }
+  </div>
+
+  @if (!message().deleted && message().reactions.length) {
+    <div class="msg__reactions">
+      @for (g of message().reactions; track g.emoji) {
         <button
           type="button"
-          class="icon-button"
-          [class.is-on]="message().pinned"
-          (click)="chat.togglePin(message().id)"
-          [attr.aria-label]="'chat.pin' | translate"
+          class="msg__reaction"
+          [class.msg__reaction--on]="reacted(g.emoji)"
+          (click)="chat.toggleReaction(message().id, g.emoji)"
         >
-          <svg lucidePin [size]="14" aria-hidden="true"></svg>
-        </button>
-      }
-      @if (canCensor()) {
-        <button type="button" class="icon-button" (click)="chat.censorMessage(message().id)" [attr.aria-label]="'chat.censor' | translate">
-          <svg lucideEyeOff [size]="14" aria-hidden="true"></svg>
-        </button>
-      }
-      @if (canDelete()) {
-        <button type="button" class="icon-button" (click)="chat.deleteMessage(message().id)" [attr.aria-label]="'chat.delete' | translate">
-          <svg lucideTrash [size]="14" aria-hidden="true"></svg>
+          {{ g.emoji }} {{ g.count }}
         </button>
       }
     </div>
