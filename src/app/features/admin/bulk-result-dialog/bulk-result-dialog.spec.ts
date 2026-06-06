@@ -138,4 +138,30 @@ describe('BulkResultDialogComponent', () => {
     expect(el.querySelector('.dialog__errs')).not.toBeNull();
     expect(el.querySelector('.dialog__errs')?.textContent).toContain('dup@test.com');
   });
+
+  it('opera tabs, paginador, copiado y cierre desde la plantilla', async () => {
+    const fixture = setup(
+      makeResult(7, [{ fila: 9, email: 'bad@test.com', motivo: 'rol_invalido' }]),
+    );
+    const el = fixture.nativeElement as HTMLElement;
+    let closed = false;
+    fixture.componentInstance.closed.subscribe(() => (closed = true));
+
+    el.querySelector<HTMLButtonElement>('.dialog__copy')!.click();
+    await Promise.resolve();
+    fixture.detectChanges();
+    expect(written).toEqual(['pass1']);
+
+    el.querySelectorAll<HTMLButtonElement>('.dialog__nav')[1].click();
+    fixture.detectChanges();
+    expect(el.querySelector('.dialog__page')?.textContent).toContain('2 / 2');
+    expect(rows(fixture).length).toBe(1);
+
+    el.querySelectorAll<HTMLButtonElement>('.dialog__tab')[1].click();
+    fixture.detectChanges();
+    expect(el.querySelector('.dialog__errs')?.textContent).toContain('bad@test.com');
+
+    el.querySelector<HTMLButtonElement>('.dialog__scrim')!.click();
+    expect(closed).toBe(true);
+  });
 });

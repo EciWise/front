@@ -9,6 +9,7 @@ import { BulkUploadResult, UserAdminService } from '../user-admin.service';
 import { AdminUsersComponent } from './users';
 
 interface AdminHarness {
+  readonly section: SignalLike<string>;
   readonly uploading: SignalLike<boolean>;
   readonly importMessage: SignalLike<string | null>;
   readonly importError: SignalLike<boolean>;
@@ -18,6 +19,7 @@ interface AdminHarness {
   onCsv(event: Event): void;
   toggleActive(user: User): void;
   changeRole(user: User, value: Role): void;
+  closeResult(): void;
 }
 
 interface SignalLike<T> {
@@ -46,6 +48,7 @@ describe('AdminUsersComponent', () => {
   let toggleActive: ReturnType<typeof vi.fn>;
   let changeRole: ReturnType<typeof vi.fn>;
   let bulkUploadCsv: ReturnType<typeof vi.fn>;
+  let users: ReturnType<typeof signal<User[]>>;
 
   const user: User = {
     id: 'u1',
@@ -67,7 +70,7 @@ describe('AdminUsersComponent', () => {
     toggleActive = vi.fn();
     changeRole = vi.fn();
     bulkUploadCsv = vi.fn(() => of(result));
-    const users = signal<User[]>([user]);
+    users = signal<User[]>([user]);
 
     await TestBed.configureTestingModule({
       imports: [AdminUsersComponent],
@@ -104,6 +107,21 @@ describe('AdminUsersComponent', () => {
     expect(toggleActive).toHaveBeenCalledWith('u1');
   });
 
+  it('renderiza tabla y estado vacio desde la pestana de usuarios', () => {
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('.admin-table')).not.toBeNull();
+    expect(root.textContent).toContain('Ana Diaz');
+    expect(root.textContent).toContain('ana@test.com');
+    expect(root.querySelector('.admin-status--on')).not.toBeNull();
+
+    users.set([]);
+    fixture.detectChanges();
+
+    expect(root.querySelector('.admin-table')).toBeNull();
+    expect(root.querySelector('.admin__empty')).not.toBeNull();
+  });
+
   it('sube CSV, resume el resultado y abre el dialogo de detalle', () => {
     const file = new File(['nombre,apellido,email,rol\n'], 'users.csv', { type: 'text/csv' });
 
@@ -118,6 +136,29 @@ describe('AdminUsersComponent', () => {
     expect(cmp().importMessage()).toBe('admin.csv.result');
     expect(cmp().uploadResult()).toBe(result);
     expect((fixture.nativeElement as HTMLElement).querySelector('eci-bulk-result-dialog')).not.toBeNull();
+  });
+
+  it('sube CSV desde la pestana de importacion y permite cerrar el resultado', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const file = new File(['nombre,apellido,email,rol\n'], 'users.csv', { type: 'text/csv' });
+    cmp().section.set('import');
+    fixture.detectChanges();
+
+    expect(root.querySelector('.admin__upload')).not.toBeNull();
+    const input = root.querySelector<HTMLInputElement>('input[type="file"]')!;
+    Object.defineProperty(input, 'files', { configurable: true, value: [file] });
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(bulkUploadCsv).toHaveBeenCalledWith(file);
+    expect(root.querySelector('.admin__import')?.getAttribute('role')).toBe('status');
+    expect(root.querySelector('.admin__import-link')).not.toBeNull();
+    expect(root.querySelector('eci-bulk-result-dialog')).not.toBeNull();
+
+    cmp().closeResult();
+    fixture.detectChanges();
+    expect(cmp().uploadResult()).toBeNull();
+    expect(root.querySelector('eci-bulk-result-dialog')).toBeNull();
   });
 
   it('marca la importacion como error cuando el CSV no crea usuarios', () => {

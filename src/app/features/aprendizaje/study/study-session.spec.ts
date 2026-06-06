@@ -7,14 +7,32 @@ import { Collection, ReviewGrade, StudyCard } from '../study.models';
 import { StudySessionComponent } from './study-session';
 
 interface StudyHarness {
-  readonly index: () => number;
+  readonly collections: SignalLike<Collection[]>;
+  readonly selectedId: SignalLike<number | null>;
+  readonly queue: SignalLike<StudyCard[]>;
+  readonly index: SignalLike<number>;
   readonly revealed: () => boolean;
-  readonly grading: () => boolean;
+  readonly loading: SignalLike<boolean>;
+  readonly grading: SignalLike<boolean>;
+  readonly dragging: () => boolean;
+  readonly dragX: SignalLike<number>;
+  readonly dragY: SignalLike<number>;
+  readonly intent: () => ReviewGrade | null;
+  readonly cardTransform: () => string | null;
+  readonly cardOpacity: () => number | null;
   readonly finished: () => boolean;
   select(id: number): void;
   reveal(): void;
   grade(grade: ReviewGrade): void;
+  onPointerDown(event: PointerEvent): void;
+  onPointerMove(event: PointerEvent): void;
+  onPointerUp(event: PointerEvent): void;
   restart(): void;
+}
+
+interface SignalLike<T> {
+  (): T;
+  set(value: T): void;
 }
 
 const author = {
@@ -123,22 +141,49 @@ describe('StudySessionComponent', () => {
     expect(el().textContent).toContain('d/dx x^2');
   });
 
+  it('muestra estado sin favoritas, loading y cola vacia seleccionada', () => {
+    cmp().collections.set([collections[1]!]);
+    fixture.detectChanges();
+
+    expect(el().querySelector('.study-picker__card')).toBeNull();
+    expect(el().querySelector('.study-msg')).not.toBeNull();
+
+    cmp().collections.set(collections);
+    cmp().selectedId.set(1);
+    cmp().loading.set(true);
+    fixture.detectChanges();
+
+    expect(el().querySelector('.study-back')).not.toBeNull();
+    expect(el().querySelector('.study-msg')?.textContent).not.toBe('');
+
+    cmp().loading.set(false);
+    cmp().queue.set([]);
+    fixture.detectChanges();
+
+    expect(el().querySelector('.study-done')).not.toBeNull();
+    expect(el().querySelector('.study-done--celebrate')).toBeNull();
+  });
+
   it('revela la respuesta, califica y avanza hasta completar la cola', () => {
     cmp().select(1);
     fixture.detectChanges();
 
-    cmp().reveal();
+    el().querySelector<HTMLButtonElement>('.study-actions button')!.click();
     fixture.detectChanges();
 
     expect(cmp().revealed()).toBe(true);
     expect(el().textContent).toContain('2x');
+    expect(el().querySelectorAll<HTMLButtonElement>('.grade')).toHaveLength(3);
 
-    cmp().grade('APRENDIDO');
+    el().querySelector<HTMLButtonElement>('.grade--aprendido')!.click();
+    fixture.detectChanges();
 
     expect(review).toHaveBeenCalledWith(7, 'APRENDIDO');
     expect(cmp().index()).toBe(1);
     expect(cmp().grading()).toBe(false);
     expect(cmp().finished()).toBe(true);
+    expect(el().querySelector('.study-done--celebrate')).not.toBeNull();
+    expect(el().querySelectorAll('.confetti__piece')).toHaveLength(90);
   });
 
   it('si falla la calificacion conserva la tarjeta actual y limpia el estado de guardado', () => {
@@ -152,6 +197,75 @@ describe('StudySessionComponent', () => {
     expect(cmp().index()).toBe(0);
     expect(cmp().grading()).toBe(false);
     expect(cmp().revealed()).toBe(true);
+  });
+
+  it('ignora calificaciones sin tarjeta o durante guardado', () => {
+    review.mockClear();
+    cmp().queue.set([]);
+
+    cmp().grade('APRENDIDO');
+    expect(review).not.toHaveBeenCalled();
+
+    cmp().queue.set(queue);
+    cmp().grading.set(true);
+    cmp().grade('APRENDIDO');
+    expect(review).not.toHaveBeenCalled();
+  });
+
+  it('resuelve gestos de arrastre para repetir, aceptable y arrastres cortos', () => {
+    const target = document.createElement('div');
+    Object.defineProperty(target, 'setPointerCapture', { configurable: true, value: vi.fn() });
+    const pointer = (event: Partial<PointerEvent>) =>
+      ({
+        pointerId: 1,
+        clientX: 100,
+        clientY: 100,
+        target,
+        ...event,
+      }) as PointerEvent;
+
+    cmp().select(1);
+    fixture.detectChanges();
+
+    cmp().onPointerDown(pointer({ clientX: 10, clientY: 10 }));
+    expect(cmp().dragging()).toBe(false);
+
+    cmp().reveal();
+    cmp().onPointerDown(pointer({ clientX: 100, clientY: 100 }));
+    cmp().onPointerMove(pointer({ pointerId: 99, clientX: 0, clientY: 0 }));
+    expect(cmp().dragX()).toBe(0);
+
+    cmp().onPointerMove(pointer({ clientX: -20, clientY: 120 }));
+    fixture.detectChanges();
+
+    expect(cmp().intent()).toBe('REPETIR');
+    expect(cmp().cardTransform()).toContain('translate');
+    expect(cmp().cardOpacity()).toBeLessThan(1);
+    expect(el().querySelector('.flashcard--repetir')).not.toBeNull();
+
+    cmp().onPointerUp(pointer({ clientX: -20, clientY: 120 }));
+    expect(review).toHaveBeenCalledWith(7, 'REPETIR');
+
+    review.mockClear();
+    cmp().queue.set(queue);
+    cmp().index.set(0);
+    cmp().reveal();
+    cmp().onPointerDown(pointer({ clientX: 100, clientY: 100 }));
+    cmp().onPointerMove(pointer({ clientX: 120, clientY: 230 }));
+    expect(cmp().intent()).toBe('ACEPTABLE');
+    cmp().onPointerUp(pointer({ clientX: 120, clientY: 230 }));
+    expect(review).toHaveBeenCalledWith(7, 'ACEPTABLE');
+
+    review.mockClear();
+    cmp().queue.set(queue);
+    cmp().index.set(0);
+    cmp().reveal();
+    cmp().onPointerDown(pointer({ clientX: 100, clientY: 100 }));
+    cmp().onPointerMove(pointer({ clientX: 130, clientY: 120 }));
+    expect(cmp().intent()).toBeNull();
+    cmp().onPointerUp(pointer({ clientX: 130, clientY: 120 }));
+    expect(review).not.toHaveBeenCalled();
+    expect(cmp().dragging()).toBe(false);
   });
 
   it('restart vuelve al selector de colecciones', () => {
