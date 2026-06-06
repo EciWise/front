@@ -4,46 +4,137 @@
       <svg lucidePlus [size]="16" aria-hidden="true"></svg>
       <span>{{ 'chat.new' | translate }}</span>
     </button>
-    @if (chat.isAdmin()) {
-      <button
-        type="button"
-        class="icon-button"
-        (click)="chat.showModeration()"
-        [attr.aria-label]="'chat.moderation' | translate"
-        [title]="'chat.moderation' | translate"
-      >
-        <svg lucideShieldCheck [size]="18" aria-hidden="true"></svg>
-      </button>
-    }
+    <div class="conv-list__bar-actions">
+      @if (chat.hasHidden()) {
+        <button
+          type="button"
+          class="icon-button"
+          [class.is-on]="chat.showHidden()"
+          (click)="chat.toggleShowHidden()"
+          [attr.aria-pressed]="chat.showHidden()"
+          [attr.aria-label]="(chat.showHidden() ? 'chat.hideHidden' : 'chat.showHidden') | translate"
+          [title]="(chat.showHidden() ? 'chat.hideHidden' : 'chat.showHidden') | translate"
+        >
+          @if (chat.showHidden()) {
+            <svg lucideEyeOff [size]="18" aria-hidden="true"></svg>
+          } @else {
+            <svg lucideEye [size]="18" aria-hidden="true"></svg>
+          }
+        </button>
+      }
+      @if (chat.isAdmin()) {
+        <button
+          type="button"
+          class="icon-button"
+          (click)="chat.showModeration()"
+          [attr.aria-label]="'chat.moderation' | translate"
+          [title]="'chat.moderation' | translate"
+        >
+          <svg lucideShieldCheck [size]="18" aria-hidden="true"></svg>
+        </button>
+      }
+    </div>
   </header>
 
   @if (chat.error(); as err) {
     <p class="conv-list__error">{{ err | translate }}</p>
   }
 
-  <ul class="conv-list__items">
-    @for (conv of chat.conversations(); track conv.id) {
-      <li>
-        <button type="button" class="conv-item" (click)="chat.openConversation(conv.id)">
-          <span class="conv-item__icon" aria-hidden="true">
-            @if (conv.type === 'GROUP') {
-              <svg lucideUsers [size]="18"></svg>
-            } @else {
-              <svg lucideUser [size]="18"></svg>
-            }
-          </span>
-          <span class="conv-item__body">
-            <span class="conv-item__title">{{ title(conv) }}</span>
-            @if (conv.type === 'GROUP') {
-              <span class="conv-item__meta">
-                {{ conv.participants.length }} {{ 'chat.members' | translate }}
-              </span>
-            }
-          </span>
-        </button>
-      </li>
-    } @empty {
-      <li class="conv-list__empty">{{ 'chat.empty' | translate }}</li>
-    }
-  </ul>
+  @if (chat.directChats().length || chat.groupChats().length) {
+    <div class="conv-list__scroll">
+      @if (chat.directChats().length) {
+        <h3 class="conv-list__section">{{ 'chat.directChats' | translate }}</h3>
+        <ul class="conv-list__items">
+          @for (conv of chat.directChats(); track conv.id) {
+            <li>
+              <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{ $implicit: conv }" />
+            </li>
+          }
+        </ul>
+      }
+      @if (chat.groupChats().length) {
+        <h3 class="conv-list__section">{{ 'chat.groupChats' | translate }}</h3>
+        <ul class="conv-list__items">
+          @for (conv of chat.groupChats(); track conv.id) {
+            <li>
+              <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{ $implicit: conv }" />
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  } @else {
+    <p class="conv-list__empty">{{ 'chat.empty' | translate }}</p>
+  }
 </div>
+
+<ng-template #item let-conv>
+  <div class="conv-item" [class.conv-item--hidden]="chat.isHidden(conv.id)">
+    <button type="button" class="conv-item__open" (click)="chat.openConversation(conv.id)">
+      <span class="conv-item__icon" aria-hidden="true">
+        @if (conv.type === 'GROUP') {
+          <svg lucideUsers [size]="18"></svg>
+        } @else {
+          <svg lucideUser [size]="18"></svg>
+        }
+      </span>
+      <span class="conv-item__body">
+        <span class="conv-item__title">{{ title(conv) }}</span>
+        @if (conv.type === 'GROUP') {
+          <span class="conv-item__meta">
+            {{ conv.participants.length }} {{ 'chat.members' | translate }}
+          </span>
+        }
+      </span>
+      @if (chat.hasUnread(conv)) {
+        <span class="conv-item__unread" aria-hidden="true"></span>
+      }
+    </button>
+
+    <div class="conv-item__menu-wrap">
+      <button
+        type="button"
+        class="icon-button"
+        (click)="toggleMenu(conv.id, $event)"
+        [attr.aria-expanded]="openMenuId() === conv.id"
+        [attr.aria-haspopup]="true"
+        [attr.aria-label]="'chat.options' | translate"
+      >
+        <svg lucideMoreVertical [size]="16" aria-hidden="true"></svg>
+      </button>
+      @if (openMenuId() === conv.id) {
+        <div class="conv-item__menu" role="menu">
+          @if (chat.isHidden(conv.id)) {
+            <button type="button" class="conv-item__menu-item" role="menuitem" (click)="unhide(conv.id)">
+              <svg lucideEye [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.unhide' | translate }}</span>
+            </button>
+          } @else {
+            <button type="button" class="conv-item__menu-item" role="menuitem" (click)="hide(conv.id)">
+              <svg lucideEyeOff [size]="16" aria-hidden="true"></svg>
+              <span>{{ 'chat.hide' | translate }}</span>
+            </button>
+          }
+          @if (chat.isCreator(conv)) {
+            @if (confirmId() === conv.id) {
+              <div class="conv-item__confirm">
+                <span>{{ 'chat.confirmDelete' | translate }}</span>
+                <button type="button" class="conv-item__confirm-yes" (click)="confirmDelete(conv.id)">
+                  {{ 'chat.yes' | translate }}
+                </button>
+                <button type="button" class="conv-item__confirm-no" (click)="confirmId.set(null)">
+                  {{ 'chat.no' | translate }}
+                </button>
+              </div>
+            } @else {
+              <button type="button" class="conv-item__menu-item conv-item__menu-item--danger" role="menuitem" (click)="askDelete(conv.id)">
+                <svg lucideTrash [size]="16" aria-hidden="true"></svg>
+                <span>{{ 'chat.deleteChat' | translate }}</span>
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+  </div>
+</ng-template>

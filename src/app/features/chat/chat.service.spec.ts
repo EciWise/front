@@ -23,6 +23,7 @@ type ApiMethod =
   | 'sendMessageWithAttachment'
   | 'editMessage'
   | 'deleteMessage'
+  | 'deleteConversation'
   | 'censorMessage'
   | 'togglePin'
   | 'addReaction'
@@ -138,6 +139,7 @@ describe('ChatService', () => {
       sendMessageWithAttachment: vi.fn(() => of(makeMessage('m10', { attachment: null }))),
       editMessage: vi.fn(() => of(makeMessage('m1', { contentDisplay: 'editado' }))),
       deleteMessage: vi.fn(() => of(undefined)),
+      deleteConversation: vi.fn(() => of(undefined)),
       censorMessage: vi.fn(() => of(makeMessage('m1', { manuallyCensored: true }))),
       togglePin: vi.fn(() => of(makeMessage('m1', { pinned: true }))),
       addReaction: vi.fn(() => of(undefined)),
@@ -502,6 +504,54 @@ describe('ChatService', () => {
 
     events$.next(makeEvent({ conversationId: 'other', message: makeMessage('m4') }));
     expect(api.listConversations).toHaveBeenCalled();
+  });
+
+  it('separa chats por tipo, oculta/muestra y marca no leidos por actividad', () => {
+    const direct = makeConversation('d1', { type: 'INDIVIDUAL', name: null });
+    const group = makeConversation('g1', { type: 'GROUP', updatedAt: '2026-01-01T00:00:00' });
+    api.listConversations.mockReturnValue(of([direct, group]));
+    service.loadConversations();
+
+    expect(service.directChats().map((c) => c.id)).toEqual(['d1']);
+    expect(service.groupChats().map((c) => c.id)).toEqual(['g1']);
+
+    // Sin "última vez visto" registrada, hay actividad → no leído.
+    expect(service.hasUnread(group)).toBe(true);
+
+    // Ocultar lo saca de la lista hasta que se piden ver los ocultos.
+    service.hideConversation('d1');
+    expect(service.directChats()).toEqual([]);
+    expect(service.hasHidden()).toBe(true);
+    service.toggleShowHidden();
+    expect(service.directChats().map((c) => c.id)).toEqual(['d1']);
+    expect(service.isHidden('d1')).toBe(true);
+    service.unhideConversation('d1');
+    expect(service.isHidden('d1')).toBe(false);
+
+    // Al abrir, queda como vista (la activa nunca muestra no leído).
+    service.openConversation('g1');
+    expect(service.hasUnread(group)).toBe(false);
+    service.closeThread();
+    expect(service.hasUnread(group)).toBe(false);
+  });
+
+  it('hard delete solo para el creador de la conversacion', () => {
+    const mine = makeConversation('g1', { createdBy: 'me' });
+    const other = makeConversation('g2', { createdBy: 'alguien' });
+    api.listConversations.mockReturnValue(of([mine, other]));
+    service.loadConversations();
+
+    expect(service.isCreator(mine)).toBe(true);
+    expect(service.isCreator(other)).toBe(false);
+
+    // No creador: no llama al backend.
+    service.deleteConversation('g2');
+    expect(api.deleteConversation).not.toHaveBeenCalled();
+
+    // Creador: borra y desaparece de la lista.
+    service.deleteConversation('g1');
+    expect(api.deleteConversation).toHaveBeenCalledWith('g1');
+    expect(service.conversations().map((c) => c.id)).toEqual(['g2']);
   });
 
   it('maneja typing remoto, timers y notificaciones de escritura propias', async () => {

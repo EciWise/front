@@ -1,10 +1,18 @@
 @if (active(); as panel) {
+  <!-- Captura clics fuera del panel para cerrarlo, sin oscurecer la pantalla. -->
   <div class="dock-backdrop" (click)="close()" aria-hidden="true"></div>
   <dialog
     class="dock"
     open
+    [style.width.px]="width()"
     [attr.aria-label]="(panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate"
   >
+    <button
+      type="button"
+      class="dock__resize"
+      (pointerdown)="startResize($event)"
+      [attr.aria-label]="'common.resize' | translate"
+    ></button>
     <header class="dock__header">
       <h2 class="dock__title">
         {{ (panel === 'assistant' ? 'floating.assistant' : 'floating.chat') | translate }}
