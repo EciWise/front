@@ -118,6 +118,10 @@ describe('TasksComponent', () => {
 
   const cmp = (): TasksHarness => fixture.componentInstance as unknown as TasksHarness;
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   const setup = async (
     initialTasks: Task[] = [],
     options: { achievement?: Achievement | null } = {},
@@ -424,6 +428,10 @@ describe('TasksComponent', () => {
   });
 
   it('renderiza agenda, backlog, linea actual y reagenda con drag drop', async () => {
+    // Fija el reloj para que el día seleccionado sea "hoy" y se dibuje la línea "Ahora".
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-06-05T09:30:00'));
+
     const timed = makeTask({
       id: 31,
       title: 'Clase',
