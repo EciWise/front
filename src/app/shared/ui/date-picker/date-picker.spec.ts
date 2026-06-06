@@ -72,8 +72,8 @@ describe('DatePickerComponent', () => {
   });
 
   it('abre el calendario posicionado dentro del viewport y selecciona una fecha habilitada', () => {
-    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 600 });
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 700 });
+    Object.defineProperty(globalThis, 'innerWidth', { configurable: true, value: 600 });
+    Object.defineProperty(globalThis, 'innerHeight', { configurable: true, value: 700 });
     const field = el().querySelector<HTMLButtonElement>('.dp-field')!;
     mockRect(field, { top: 12, bottom: 44, left: 500, width: 180 });
 
@@ -106,8 +106,8 @@ describe('DatePickerComponent', () => {
   });
 
   it('posiciona arriba cuando no hay espacio debajo y cierra con click externo', () => {
-    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 900 });
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 600 });
+    Object.defineProperty(globalThis, 'innerWidth', { configurable: true, value: 900 });
+    Object.defineProperty(globalThis, 'innerHeight', { configurable: true, value: 600 });
     const field = el().querySelector<HTMLButtonElement>('.dp-field')!;
     mockRect(field, { top: 520, bottom: 552, left: 120, width: 180 });
 

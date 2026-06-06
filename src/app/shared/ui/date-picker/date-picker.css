@@ -34,8 +34,10 @@
   z-index: 1100;
   width: 18rem;
   max-width: calc(100vw - var(--space-6));
+  margin: 0;
   padding: var(--space-3);
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);

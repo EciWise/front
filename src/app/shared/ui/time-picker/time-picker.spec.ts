@@ -61,7 +61,7 @@ describe('TimePickerComponent', () => {
   });
 
   it('abre la lista con granularidad configurada, centra la seleccion y emite el nuevo horario', async () => {
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 700 });
+    Object.defineProperty(globalThis, 'innerHeight', { configurable: true, value: 700 });
     const field = el().querySelector<HTMLButtonElement>('.tp-field')!;
     mockRect(field, { top: 40, bottom: 72, left: 64, width: 220 });
 
@@ -87,7 +87,7 @@ describe('TimePickerComponent', () => {
   });
 
   it('posiciona arriba cuando no hay espacio y cierra con click externo', () => {
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 300 });
+    Object.defineProperty(globalThis, 'innerHeight', { configurable: true, value: 300 });
     const field = el().querySelector<HTMLButtonElement>('.tp-field')!;
     mockRect(field, { top: 250, bottom: 282, left: 24, width: 160 });
 

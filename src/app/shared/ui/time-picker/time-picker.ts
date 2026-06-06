@@ -95,20 +95,22 @@ export class TimePickerComponent {
   }
 
   protected onDocClick(event: MouseEvent): void {
-    if (this.open() && !this.host.nativeElement.contains(event.target as Node)) {
+    const target = event.target;
+    if (this.open() && (!(target instanceof Node) || !this.host.nativeElement.contains(target))) {
       this.close();
     }
   }
 
   /** Ancla el desplegable (fixed) bajo el campo, o encima si no hay sitio. */
   private position(): void {
-    if (typeof window === 'undefined') {
+    if (typeof globalThis.window === 'undefined') {
       return;
     }
     const rect = this.field().nativeElement.getBoundingClientRect();
     const height = 224;
     const margin = 8;
-    const below = rect.bottom + height + margin <= window.innerHeight || rect.top < height + margin;
+    const below =
+      rect.bottom + height + margin <= globalThis.window.innerHeight || rect.top < height + margin;
     this.popTop.set(below ? rect.bottom + 4 : rect.top - height - 4);
     this.popLeft.set(rect.left);
     this.popWidth.set(rect.width);

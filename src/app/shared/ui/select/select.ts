@@ -119,7 +119,8 @@ export class SelectComponent implements ControlValueAccessor {
 
   @HostListener('document:click', ['$event'])
   closeFromOutside(event: MouseEvent): void {
-    if (!this.host.nativeElement.contains(event.target as Node)) {
+    const target = event.target;
+    if (!(target instanceof Node) || !this.host.nativeElement.contains(target)) {
       this.close();
     }
   }

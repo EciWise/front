@@ -12,7 +12,6 @@ import {
   Task,
   TaskMutation,
   TaskRequest,
-  TaskSearchParams,
   TaskStatus,
 } from './task.model';
 import { TasksComponent } from './tasks';
@@ -127,13 +126,13 @@ describe('TasksComponent', () => {
     tasksSignal = signal<Task[]>(initialTasks);
     const lastAchievement = signal<Achievement | null>(options.achievement ?? null);
     create = vi.fn((body: TaskRequest) =>
-      of({ task: makeTask({ title: body.title }), achievements: [] } as TaskMutation),
+      of<TaskMutation>({ task: makeTask({ title: body.title }), achievements: [] }),
     );
     setStatus = vi.fn((id: number, status: TaskStatus) =>
-      of({ task: makeTask({ id, status }), achievements: [] } as TaskMutation),
+      of<TaskMutation>({ task: makeTask({ id, status }), achievements: [] }),
     );
     update = vi.fn((id: number, body: TaskRequest) =>
-      of({
+      of<TaskMutation>({
         task: makeTask({
           id,
           title: body.title,
@@ -141,7 +140,7 @@ describe('TasksComponent', () => {
           importance: body.importance ?? 'MEDIUM',
         }),
         achievements: [],
-      } as TaskMutation),
+      }),
     );
     remove = vi.fn(() => of(undefined));
     reschedule = vi.fn((id: number, body: ReorderRequest) =>
@@ -291,7 +290,7 @@ describe('TasksComponent', () => {
       color: '#ef4444',
     });
     await setup([task]);
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
 
     expect(root.querySelector('.row--done')).not.toBeNull();
     expect(root.textContent).toContain('Entrega final');
@@ -321,7 +320,7 @@ describe('TasksComponent', () => {
   it('crea tareas con titulo, hora y tags normalizados', async () => {
     await setup();
     const task = makeTask({ id: 10, title: 'Proyecto final' });
-    create.mockReturnValue(of({ task, achievements: [] } as TaskMutation));
+    create.mockReturnValue(of<TaskMutation>({ task, achievements: [] }));
 
     cmp().showCreate.set(true);
     cmp().draftTitle.set('  Proyecto final  ');
@@ -351,7 +350,7 @@ describe('TasksComponent', () => {
 
   it('ignora alta sin titulo y cubre el modal de creacion con opciones avanzadas', async () => {
     await setup();
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
 
     cmp().draftTitle.set('   ');
     cmp().add();
@@ -402,9 +401,9 @@ describe('TasksComponent', () => {
         awardedAt: '2026-06-01T00:00:00Z',
       },
     });
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
 
-    expect(root.querySelector('[role="status"]')).not.toBeNull();
+    expect(root.querySelector('output.toast')).not.toBeNull();
     expect(cmp().achievementKey()).toBe('tasks.congratsPlanned');
     root.querySelector<HTMLButtonElement>('.toast__close')!.click();
     expect(clearAchievement).toHaveBeenCalledTimes(1);
@@ -440,7 +439,7 @@ describe('TasksComponent', () => {
       dayOrder: 1,
     });
     await setup([timed, backlog]);
-    const root = fixture.nativeElement as HTMLElement;
+    const root: HTMLElement = fixture.nativeElement;
 
     cmp().view.set('agenda');
     cmp().showBacklog.set(true);
@@ -497,7 +496,7 @@ describe('TasksComponent', () => {
       importance: 'URGENT',
       status: 'IN_PROGRESS',
       date: '2026-06-09',
-    } satisfies TaskSearchParams);
+    });
     expect(cmp().searchResults()?.[0]?.title).toBe('Quiz');
 
     cmp().clearSearch();

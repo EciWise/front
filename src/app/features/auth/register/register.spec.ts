@@ -39,7 +39,13 @@ describe('RegisterComponent', () => {
   let registerUser: ReturnType<typeof vi.fn>;
   let router: Router;
 
-  const user = { id: 'u1', name: 'Ana Diaz', email: 'ana@gmail.com', role: Role.Student } as User;
+  const user: User = {
+    id: 'u1',
+    name: 'Ana Diaz',
+    email: 'ana@gmail.com',
+    role: Role.Student,
+    active: true,
+  };
   const cmp = (): RegisterHarness => fixture.componentInstance as unknown as RegisterHarness;
 
   const fillStep1 = (): void => {

@@ -3,13 +3,13 @@
 
   <!-- Felicitación -->
   @if (lastAchievement(); as ach) {
-    <div class="toast eci-fit__chrome" role="status">
+    <output class="toast eci-fit__chrome" aria-live="polite">
       <eci-icon class="toast__icon" name="trophy" [size]="20" />
       <span>{{ achievementKey() | translate: { count: ach.milestone } }}</span>
       <button class="toast__close" type="button" (click)="dismissAchievement()" aria-label="OK">
         <eci-icon name="close" [size]="16" />
       </button>
-    </div>
+    </output>
   }
 
   <!-- Estadísticas (strip compacta) -->

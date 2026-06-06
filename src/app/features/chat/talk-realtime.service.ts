@@ -6,6 +6,8 @@ import { AuthService } from '../../core/auth/auth.service';
 import { TALK_CONFIG } from '../../core/talk/talk.config';
 import { SendMessageRequest, WsMessageEvent, WsTypingEvent } from './chat.models';
 
+type WsConversationFrame = WsMessageEvent | WsTypingEvent;
+
 /**
  * Capa de tiempo real sobre STOMP/WebSocket contra el servicio talk. Mantiene
  * una sola conexión y una suscripción por conversación abierta. El JWT viaja en
@@ -93,7 +95,9 @@ export class TalkRealtimeService {
     this.convSub = null;
     this.notifSub = null;
     this.openConvId = null;
-    void this.client?.deactivate();
+    this.client?.deactivate().catch(() => {
+      this.connected.set(false);
+    });
     this.client = null;
     this.connected.set(false);
   }
@@ -116,15 +120,24 @@ export class TalkRealtimeService {
 
   /** El topic de la conversación transporta tanto eventos de mensaje como typing. */
   private routeConversationFrame(msg: IMessage): void {
-    const payload = this.parse(msg) as { type?: string };
-    if (!payload || typeof payload.type !== 'string') {
+    const payload = this.parse(msg);
+    if (!this.isConversationFrame(payload)) {
       return;
     }
     if (payload.type === 'TYPING') {
-      this.typing$.next(payload as WsTypingEvent);
+      this.typing$.next(payload);
     } else {
-      this.events$.next(payload as WsMessageEvent);
+      this.events$.next(payload);
     }
+  }
+
+  private isConversationFrame(payload: unknown): payload is WsConversationFrame {
+    return (
+      payload !== null &&
+      typeof payload === 'object' &&
+      'type' in payload &&
+      typeof payload.type === 'string'
+    );
   }
 
   private publish(destination: string, body: string): void {

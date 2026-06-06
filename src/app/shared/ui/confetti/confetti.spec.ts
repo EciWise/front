@@ -45,10 +45,10 @@ describe('ConfettiComponent', () => {
     );
 
     expect(pieces).toHaveLength(3);
-    expect(parseFloat(pieces[0].style.left)).toBeGreaterThanOrEqual(0);
-    expect(parseFloat(pieces[0].style.left)).toBeLessThan(100);
-    expect(parseInt(pieces[0].style.width, 10)).toBeGreaterThanOrEqual(7);
-    expect(parseInt(pieces[0].style.width, 10)).toBeLessThanOrEqual(13);
+    expect(Number.parseFloat(pieces[0].style.left)).toBeGreaterThanOrEqual(0);
+    expect(Number.parseFloat(pieces[0].style.left)).toBeLessThan(100);
+    expect(Number.parseInt(pieces[0].style.width, 10)).toBeGreaterThanOrEqual(7);
+    expect(Number.parseInt(pieces[0].style.width, 10)).toBeLessThanOrEqual(13);
     expect(pieces[0].style.getPropertyValue('--drift')).not.toBe('');
     expect(pieces.some((piece) => piece.classList.contains('confetti__piece--round'))).toBe(true);
   });

@@ -369,67 +369,70 @@ export class TasksComponent implements OnInit {
       return false;
     }
 
-    const start = this.parseLocal(task.scheduledDate);
+    const occurrenceIndex = this.recurrenceOccurrenceIndex(task, task.scheduledDate, iso);
+    return occurrenceIndex !== null && !this.isRecurrenceEnded(task, iso, occurrenceIndex);
+  }
+
+  private recurrenceOccurrenceIndex(task: Task, scheduledDate: string, iso: string): number | null {
+    const start = this.parseLocal(scheduledDate);
     const target = this.parseLocal(iso);
     if (target <= start) {
-      return false;
+      return null;
     }
 
     const interval = Math.max(1, task.recurrenceInterval || 1);
-    let occurrenceIndex: number;
 
     switch (task.recurrenceFreq) {
-      case 'DAILY': {
-        const days = this.diffDays(start, target);
-        if (days % interval !== 0) {
-          return false;
-        }
-        occurrenceIndex = days / interval;
-        break;
-      }
-      case 'WEEKLY': {
-        if (start.getDay() !== target.getDay()) {
-          return false;
-        }
-        const weeks = this.diffDays(start, target) / 7;
-        if (!Number.isInteger(weeks) || weeks % interval !== 0) {
-          return false;
-        }
-        occurrenceIndex = weeks / interval;
-        break;
-      }
-      case 'MONTHLY': {
-        if (start.getDate() !== target.getDate()) {
-          return false;
-        }
-        const months =
-          (target.getFullYear() - start.getFullYear()) * 12 +
-          (target.getMonth() - start.getMonth());
-        if (months % interval !== 0) {
-          return false;
-        }
-        occurrenceIndex = months / interval;
-        break;
-      }
+      case 'DAILY':
+        return this.dailyOccurrenceIndex(start, target, interval);
+      case 'WEEKLY':
+        return this.weeklyOccurrenceIndex(start, target, interval);
+      case 'MONTHLY':
+        return this.monthlyOccurrenceIndex(start, target, interval);
       default:
-        return false;
+        return null;
     }
+  }
 
+  private dailyOccurrenceIndex(start: Date, target: Date, interval: number): number | null {
+    const days = this.diffDays(start, target);
+    return days % interval === 0 ? days / interval : null;
+  }
+
+  private weeklyOccurrenceIndex(start: Date, target: Date, interval: number): number | null {
+    if (start.getDay() !== target.getDay()) {
+      return null;
+    }
+    const weeks = this.diffDays(start, target) / 7;
+    return Number.isInteger(weeks) && weeks % interval === 0 ? weeks / interval : null;
+  }
+
+  private monthlyOccurrenceIndex(start: Date, target: Date, interval: number): number | null {
+    if (start.getDate() !== target.getDate()) {
+      return null;
+    }
+    const months =
+      (target.getFullYear() - start.getFullYear()) * 12 +
+      (target.getMonth() - start.getMonth());
+    return months % interval === 0 ? months / interval : null;
+  }
+
+  private isRecurrenceEnded(task: Task, iso: string, occurrenceIndex: number): boolean {
     if (
       task.recurrenceEndType === 'ON_DATE' &&
       task.recurrenceEndDate &&
       iso > task.recurrenceEndDate
     ) {
-      return false;
+      return true;
     }
     if (
       task.recurrenceEndType === 'AFTER_COUNT' &&
       task.recurrenceCount != null &&
       occurrenceIndex >= task.recurrenceCount
     ) {
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   /** Días enteros entre dos fechas locales (target - start). */

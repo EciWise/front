@@ -26,33 +26,33 @@ interface MockSubscription {
   readonly unsubscribe: ReturnType<typeof vi.fn>;
 }
 
+function setup(token: string | null, platformId = 'browser'): TalkRealtimeService {
+  TestBed.configureTestingModule({
+    providers: [
+      TalkRealtimeService,
+      {
+        provide: TALK_CONFIG,
+        useValue: { talkApiUrl: 'http://talk.test', talkWsUrl: 'ws://talk.test/ws/chat' },
+      },
+      { provide: AuthService, useValue: { token } },
+      { provide: PLATFORM_ID, useValue: platformId },
+    ],
+  });
+  return TestBed.inject(TalkRealtimeService);
+}
+
+function clientOf(service: TalkRealtimeService): ClientInternals {
+  const client = (service as unknown as RealtimeInternals).client;
+  if (!client) {
+    throw new Error('Expected STOMP client to be created');
+  }
+  return client;
+}
+
 describe('TalkRealtimeService', () => {
   let callbacks: Map<string, (message: IMessage) => void>;
   let subscriptions: MockSubscription[];
   let published: PublishParams[];
-
-  function setup(token: string | null, platformId = 'browser'): TalkRealtimeService {
-    TestBed.configureTestingModule({
-      providers: [
-        TalkRealtimeService,
-        {
-          provide: TALK_CONFIG,
-          useValue: { talkApiUrl: 'http://talk.test', talkWsUrl: 'ws://talk.test/ws/chat' },
-        },
-        { provide: AuthService, useValue: { token } },
-        { provide: PLATFORM_ID, useValue: platformId },
-      ],
-    });
-    return TestBed.inject(TalkRealtimeService);
-  }
-
-  function clientOf(service: TalkRealtimeService): ClientInternals {
-    const client = (service as unknown as RealtimeInternals).client;
-    if (!client) {
-      throw new Error('Expected STOMP client to be created');
-    }
-    return client;
-  }
 
   beforeEach(() => {
     callbacks = new Map();

@@ -16,32 +16,19 @@ class TooltipHostComponent {
   placement: 'auto' | 'above' | 'below' = 'auto';
 }
 
-const rect = (
-  left: number,
-  top: number,
-  width: number,
-  height: number,
-): DOMRect => ({
-  left,
-  top,
-  width,
-  height,
-  right: left + width,
-  bottom: top + height,
-  x: left,
-  y: top,
-  toJSON: () => undefined,
-} as DOMRect);
+const rect = (left: number, top: number, width: number, height: number): DOMRect =>
+  new DOMRect(left, top, width, height);
 
 describe('InfoTooltipComponent', () => {
   let fixture: ComponentFixture<TooltipHostComponent>;
 
+  const root = (): HTMLElement => fixture.nativeElement;
   const host = (): HTMLElement =>
-    (fixture.nativeElement as HTMLElement).querySelector('eci-info-tooltip') as HTMLElement;
+    root().querySelector<HTMLElement>('eci-info-tooltip')!;
   const trigger = (): HTMLButtonElement =>
-    (fixture.nativeElement as HTMLElement).querySelector('.tip__trigger') as HTMLButtonElement;
+    root().querySelector<HTMLButtonElement>('.tip__trigger')!;
   const bubble = (): HTMLElement =>
-    (fixture.nativeElement as HTMLElement).querySelector('.tip__bubble') as HTMLElement;
+    root().querySelector<HTMLElement>('.tip__bubble')!;
 
   beforeEach(async () => {
     Object.defineProperty(globalThis, 'innerWidth', {
