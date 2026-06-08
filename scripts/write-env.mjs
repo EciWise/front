@@ -8,7 +8,7 @@ const outputPath = join(process.cwd(), 'public', 'assets', 'env.json');
 mkdirSync(dirname(outputPath), { recursive: true });
 
 const payload = {
-  apiBaseUrl: process.env.AUTH_SERVICE,
+  apiBaseUrl: "https://" + process.env.AUTH_SERVICE,
   studyApiUrl: process.env.STUDY_SERVICE,
   talkApiUrl: process.env.TALK_SERVICE,
   talkWsUrl: process.env.TALK_WS,
