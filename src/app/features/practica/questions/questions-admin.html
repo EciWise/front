@@ -1,0 +1,116 @@
+<div class="pr-head">
+  <div class="pr-head__title">
+    <h2>{{ 'practica.questions.title' | translate }}</h2>
+  </div>
+  <eci-button variant="primary" [disabled]="subjectId() === null" (buttonClick)="openCreate()">
+    <eci-icon name="plus" [size]="16" /> {{ 'practica.questions.new' | translate }}
+  </eci-button>
+</div>
+
+@if (subjects().length === 0) {
+  <eci-card><p class="pr-msg">{{ 'practica.questions.noSubjects' | translate }}</p></eci-card>
+} @else {
+  <div class="pr-toolbar">
+    <div class="pr-toolbar__field">
+      <span>{{ 'practica.questions.subject' | translate }}</span>
+      <eci-select
+        [value]="subjectId()"
+        (valueChange)="onSubject($event)"
+        [options]="subjectOptions()"
+        [ariaLabel]="'practica.questions.subject' | translate"
+      />
+    </div>
+    <div class="pr-toolbar__field">
+      <span>{{ 'practica.questions.corte' | translate }}</span>
+      <eci-select
+        [value]="corte() ?? ''"
+        (valueChange)="onCorte($event)"
+        [options]="corteOptions"
+        [ariaLabel]="'practica.questions.corte' | translate"
+      />
+    </div>
+  </div>
+
+  @if (showForm()) {
+    <eci-practica-question-form
+      [subjectId]="subjectId()!"
+      [corte]="formCorte()"
+      [editing]="editing()"
+      (save)="onSave($event)"
+      (cancelForm)="closeForm()"
+    />
+  }
+
+  @if (loading()) {
+    <p class="pr-msg">{{ 'practica.loading' | translate }}</p>
+  } @else if (questions().length === 0) {
+    <eci-card><p class="pr-msg">{{ 'practica.questions.empty' | translate }}</p></eci-card>
+  } @else {
+    <ul class="pr-list">
+      @for (q of questions(); track q.id) {
+        <li>
+          <eci-card>
+            <div class="pr-item">
+              <div class="pr-item__main">
+                <span class="pr-item__name">{{ q.statement }}</span>
+                <span class="pr-item__meta">
+                  <span class="pr-badge">{{ 'practica.questions.type.' + q.type | translate }}</span>
+                  <span class="pr-badge">{{ 'practica.questions.corteN' | translate: { n: q.corte } }}</span>
+                  @if (q.availableForSurvival) {
+                    <span class="pr-badge pr-badge--ok">{{ 'practica.questions.inSurvival' | translate }}</span>
+                  }
+                </span>
+              </div>
+              <div class="pr-item__actions">
+                <button
+                  type="button"
+                  class="icon-btn"
+                  [attr.aria-label]="'practica.questions.stats' | translate"
+                  (click)="toggleStats(q)"
+                >
+                  <eci-icon name="chart" [size]="18" />
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  [attr.aria-label]="'practica.actions.edit' | translate"
+                  (click)="openEdit(q)"
+                >
+                  <eci-icon name="edit" [size]="18" />
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn icon-btn--danger"
+                  [attr.aria-label]="'practica.actions.delete' | translate"
+                  (click)="remove(q)"
+                >
+                  <eci-icon name="trash" [size]="18" />
+                </button>
+              </div>
+            </div>
+            @if (statsFor() === q.id) {
+              <div class="pr-feedback">
+                @if (stats(); as st) {
+                  <span class="pr-feedback__title">{{ 'practica.questions.stats' | translate }}</span>
+                  <span class="pr-msg">
+                    {{
+                      'practica.questions.statsLine'
+                        | translate
+                          : {
+                              answered: st.timesAnswered,
+                              correct: st.correct,
+                              rate: accuracy(st),
+                            }
+                    }}
+                  </span>
+                } @else {
+                  <span class="pr-msg">{{ 'practica.loading' | translate }}</span>
+                }
+              </div>
+            }
+          </eci-card>
+        </li>
+      }
+    </ul>
+  }
+}

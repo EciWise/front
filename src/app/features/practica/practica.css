@@ -1,0 +1,429 @@
+/* Estilos compartidos de la sección Práctica (quiz). Clases con prefijo `pr-`. */
+
+.pr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.pr-head__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pr-head__title h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.pr-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.pr-toolbar__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.8rem;
+  min-width: 12rem;
+}
+
+/* ── Formularios ── */
+.pr-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.pr-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+}
+
+.pr-field input,
+.pr-field textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Los selects e inputs ocupan el ancho del campo (clave en móvil). */
+.pr-field eci-select,
+.pr-toolbar__field eci-select {
+  display: block;
+  width: 100%;
+}
+
+.pr-field textarea {
+  min-height: 4rem;
+  resize: vertical;
+}
+
+.pr-field--check {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pr-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.pr-form__row > * {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.pr-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.pr-hint,
+.pr-msg {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Listas ── */
+.pr-list {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.pr-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.pr-item__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.pr-item__name {
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.pr-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.pr-item__actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* ── Insignias ── */
+.pr-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pr-badge--ok {
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success);
+}
+
+.pr-badge--warn {
+  background: color-mix(in srgb, var(--warning) 18%, transparent);
+  color: var(--warning);
+}
+
+/* ── Tabla simple (ranking, historial) ── */
+.pr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.pr-table th,
+.pr-table td {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.pr-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.pr-table tr.pr-table__me {
+  background: color-mix(in srgb, var(--brand-red) 10%, transparent);
+}
+
+.pr-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Selector de modos (jugar) ── */
+.pr-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-3);
+}
+
+.pr-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pr-mode:hover,
+.pr-mode--active {
+  border-color: color-mix(in srgb, var(--brand-red) 40%, var(--border));
+  box-shadow: var(--shadow-md, 0 4px 14px rgba(0, 0, 0, 0.08));
+}
+
+.pr-mode__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.pr-mode__desc {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* ── Jugar: pregunta + opciones ── */
+.pr-runner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.pr-runner__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.pr-lives {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--brand-red);
+}
+
+.pr-statement {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.pr-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pr-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.pr-option:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--brand-red) 40%, var(--border));
+}
+
+.pr-option--selected {
+  border-color: var(--brand-red);
+}
+
+.pr-option--correct {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+}
+
+.pr-option--wrong {
+  border-color: var(--danger, #c0392b);
+  background: color-mix(in srgb, var(--danger, #c0392b) 12%, transparent);
+}
+
+.pr-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-3);
+}
+
+.pr-feedback__title {
+  font-weight: 600;
+}
+
+.pr-feedback--ok .pr-feedback__title {
+  color: var(--success);
+}
+
+.pr-feedback--bad .pr-feedback__title {
+  color: var(--danger, #c0392b);
+}
+
+/* ── Resumen final ── */
+.pr-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+}
+
+.pr-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  text-align: center;
+}
+
+.pr-stat__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.pr-stat__label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ── Lista de preguntas seleccionables (colecciones) ── */
+.pr-pick {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  max-height: 16rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+}
+
+.pr-pick__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+}
+
+/* Fila de opción del editor de preguntas: el texto manda, y el "correcta" +
+   borrar se agrupan a la derecha. En móvil se apila el grupo bajo el input. */
+.pr-optrow {
+  align-items: center;
+}
+
+.pr-optrow__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+@media (max-width: 40rem) {
+  .pr-head {
+    flex-wrap: wrap;
+  }
+  .pr-toolbar__field {
+    min-width: 100%;
+  }
+  .pr-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 30rem) {
+  .pr-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pr-item__actions,
+  .pr-optrow__controls {
+    justify-content: flex-end;
+  }
+  .pr-runner__bar {
+    flex-wrap: wrap;
+  }
+}

@@ -30,6 +30,7 @@ import {
   LucideInfo,
   LucideLayoutDashboard,
   LucideLifeBuoy,
+  LucideListChecks,
   LucideListTodo,
   LucideMessageCircle,
   LucidePencil,
@@ -54,6 +55,7 @@ export type IconName =
   | 'materials'
   | 'games'
   | 'study'
+  | 'quiz'
   | 'tasks'
   | 'profile'
   | 'schedule'
@@ -109,6 +111,7 @@ export type IconName =
     LucideBookOpen,
     LucideGamepad2,
     LucideFolderOpen,
+    LucideListChecks,
     LucideListTodo,
     LucideUser,
     LucideEye,
@@ -166,6 +169,9 @@ export type IconName =
       }
       @case ('study') {
         <svg lucideFolderOpen [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('quiz') {
+        <svg lucideListChecks [size]="size()" aria-hidden="true"></svg>
       }
       @case ('tasks') {
         <svg lucideListTodo [size]="size()" aria-hidden="true"></svg>

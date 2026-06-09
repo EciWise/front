@@ -1,0 +1,56 @@
+<div class="pr-head">
+  <div class="pr-head__title">
+    <h2>{{ 'practica.history.title' | translate }}</h2>
+  </div>
+</div>
+
+@if (loading()) {
+  <p class="pr-msg">{{ 'practica.loading' | translate }}</p>
+} @else if (data(); as d) {
+  @if (d.content.length === 0) {
+    <eci-card><p class="pr-msg">{{ 'practica.history.empty' | translate }}</p></eci-card>
+  } @else {
+    <ul class="pr-list">
+      @for (s of d.content; track s.id) {
+        <li>
+          <eci-card>
+            <div class="pr-item">
+              <div class="pr-item__main">
+                <span class="pr-item__name">{{ 'practica.modes.' + s.mode | translate }}</span>
+                <span class="pr-item__meta">
+                  <span
+                    class="pr-badge"
+                    [class.pr-badge--ok]="s.status === 'COMPLETED'"
+                    [class.pr-badge--warn]="s.status === 'ABANDONED'"
+                  >
+                    {{ 'practica.status.' + s.status | translate }}
+                  </span>
+                  {{ 'practica.history.score' | translate: { score: s.score } }}
+                  ·
+                  {{
+                    'practica.history.correct'
+                      | translate: { correct: s.correctCount, total: s.totalQuestions }
+                  }}
+                  ·
+                  {{ 'practica.history.accuracy' | translate: { value: accuracy(s) } }}
+                </span>
+              </div>
+            </div>
+          </eci-card>
+        </li>
+      }
+    </ul>
+
+    @if (d.totalPages > 1) {
+      <div class="pr-pager">
+        <eci-button variant="ghost" [disabled]="page() === 0" (buttonClick)="prev()">
+          {{ 'practica.pager.prev' | translate }}
+        </eci-button>
+        <span>{{ 'practica.pager.page' | translate: { page: page() + 1, total: d.totalPages } }}</span>
+        <eci-button variant="ghost" [disabled]="page() + 1 >= d.totalPages" (buttonClick)="next()">
+          {{ 'practica.pager.next' | translate }}
+        </eci-button>
+      </div>
+    }
+  }
+}

@@ -1,0 +1,111 @@
+@if (session(); as s) {
+  <eci-practica-quiz-runner [session]="s" (finished)="onFinished()" />
+} @else {
+  <div class="pr-head">
+    <div class="pr-head__title">
+      <h2>{{ 'practica.play.title' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="pr-modes">
+    @for (m of modes; track m.id) {
+      <button
+        type="button"
+        class="pr-mode"
+        [class.pr-mode--active]="mode() === m.id"
+        (click)="pickMode(m.id)"
+      >
+        <span class="pr-mode__title">
+          <eci-icon [name]="m.icon" [size]="18" /> {{ 'practica.modes.' + m.id | translate }}
+        </span>
+        <span class="pr-mode__desc">{{ 'practica.modeDesc.' + m.id | translate }}</span>
+      </button>
+    }
+  </div>
+
+  @if (mode(); as m) {
+    <eci-card>
+      <form class="pr-form" (submit)="$event.preventDefault(); start()">
+        @switch (m) {
+          @case ('PARCIAL') {
+            <div class="pr-form__row">
+              <div class="pr-field">
+                <span>{{ 'practica.questions.subject' | translate }}</span>
+                <eci-select
+                  [value]="subjectId()"
+                  (valueChange)="onSubject($event)"
+                  [options]="subjectOptions()"
+                  [ariaLabel]="'practica.questions.subject' | translate"
+                />
+              </div>
+              <div class="pr-field">
+                <span>{{ 'practica.questions.corte' | translate }}</span>
+                <eci-select
+                  [value]="corte()"
+                  (valueChange)="onCorte($event)"
+                  [options]="corteOptions"
+                  [ariaLabel]="'practica.questions.corte' | translate"
+                />
+              </div>
+            </div>
+            <div class="pr-form__row">
+              <label class="pr-field">
+                <span>{{ 'practica.play.daysUntilExam' | translate }}</span>
+                <input
+                  type="number"
+                  min="0"
+                  [value]="daysUntilExam()"
+                  (input)="daysUntilExam.set(+$any($event.target).value)"
+                />
+              </label>
+              <label class="pr-field">
+                <span>{{ 'practica.play.preparedness' | translate }}</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  [value]="preparedness()"
+                  (input)="preparedness.set(+$any($event.target).value)"
+                />
+              </label>
+              <label class="pr-field">
+                <span>{{ 'practica.play.targetGrade' | translate }}</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  [value]="targetGrade()"
+                  (input)="targetGrade.set(+$any($event.target).value)"
+                />
+              </label>
+            </div>
+          }
+          @case ('REPASO') {
+            <div class="pr-field">
+              <span>{{ 'practica.play.collection' | translate }}</span>
+              <eci-select
+                [value]="collectionId()"
+                (valueChange)="onCollection($event)"
+                [options]="collectionOptions()"
+                [ariaLabel]="'practica.play.collection' | translate"
+              />
+              @if (collectionOptions().length === 0) {
+                <p class="pr-hint">{{ 'practica.play.noCollections' | translate }}</p>
+              }
+            </div>
+          }
+          @case ('SUPERVIVENCIA') {
+            <p class="pr-hint">{{ 'practica.play.survivalHint' | translate }}</p>
+          }
+        }
+
+        <div class="pr-form__actions">
+          <eci-button variant="primary" type="submit" [disabled]="!canStart() || starting()">
+            {{ 'practica.play.start' | translate }}
+          </eci-button>
+        </div>
+      </form>
+    </eci-card>
+  }
+}

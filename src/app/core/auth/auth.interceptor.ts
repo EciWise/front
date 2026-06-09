@@ -1,17 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { AUTH_CONFIG } from './auth.config';
-import { IA_CONFIG } from '../ia/ia.config';
-import { STUDY_CONFIG } from '../study/study.config';
-import { TALK_CONFIG } from '../talk/talk.config';
-import { TODO_CONFIG } from '../todo/todo.config';
+import { isOwnApiUrl, ownApiHosts } from '../config/api-hosts';
 
 const TOKEN_KEY = 'eciwise.token';
 
 /**
  * Adjunta el JWT (Authorization: Bearer) SOLO a las peticiones dirigidas a
- * nuestros propios servicios (wise_auth y los servicios de IA). Restringir por
+ * nuestros propios servicios (wise_auth, IA, study, talk, todo). Restringir por
  * host evita filtrar el token a terceros. SSR-safe: en servidor no hay token.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -19,24 +15,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const authConfig = inject(AUTH_CONFIG);
-  const iaConfig = inject(IA_CONFIG);
-  const studyConfig = inject(STUDY_CONFIG);
-  const talkConfig = inject(TALK_CONFIG);
-  const todoConfig = inject(TODO_CONFIG);
-  const allowedHosts = [
-    authConfig.apiBaseUrl,
-    iaConfig.performanceApiUrl,
-    iaConfig.dropoutApiUrl,
-    studyConfig.studyApiUrl,
-    talkConfig.talkApiUrl,
-    todoConfig.todoApiUrl,
-  ];
-
-  const isOwnApi = allowedHosts.some((base) => base && req.url.startsWith(base));
   const token = localStorage.getItem(TOKEN_KEY);
 
-  if (!isOwnApi || !token) {
+  if (!token || !isOwnApiUrl(req.url, ownApiHosts())) {
     return next(req);
   }
 

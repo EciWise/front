@@ -1,0 +1,117 @@
+<eci-card>
+  <form class="pr-form" (submit)="$event.preventDefault(); submit()">
+    <div class="pr-form__row">
+      <div class="pr-field">
+        <span>{{ 'practica.questions.type.label' | translate }}</span>
+        <eci-select
+          [value]="type()"
+          (valueChange)="onType($event)"
+          [options]="typeOptions"
+          [ariaLabel]="'practica.questions.type.label' | translate"
+        />
+      </div>
+      <label class="pr-field">
+        <span>{{ 'practica.questions.timeLimit' | translate }}</span>
+        <input
+          type="number"
+          min="5"
+          max="300"
+          [value]="timeLimitSeconds()"
+          (input)="timeLimitSeconds.set(+$any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <label class="pr-field">
+      <span>{{ 'practica.questions.statement' | translate }}</span>
+      <textarea
+        [value]="statement()"
+        (input)="statement.set($any($event.target).value)"
+        required
+      ></textarea>
+    </label>
+
+    @if (isClosed()) {
+      <div class="pr-field">
+        <span>{{ 'practica.questions.options' | translate }}</span>
+        @for (opt of options(); track $index) {
+          <div class="pr-item pr-optrow">
+            <input
+              type="text"
+              class="pr-item__main"
+              [value]="opt.text"
+              (input)="setOptionText($index, $any($event.target).value)"
+              [placeholder]="'practica.questions.optionText' | translate"
+            />
+            <div class="pr-optrow__controls">
+              <label class="pr-field--check">
+                <input
+                  type="checkbox"
+                  [checked]="opt.correct"
+                  (change)="toggleOptionCorrect($index)"
+                />
+                <span>{{ 'practica.questions.correct' | translate }}</span>
+              </label>
+              <button
+                type="button"
+                class="icon-btn icon-btn--danger"
+                [attr.aria-label]="'practica.actions.delete' | translate"
+                (click)="removeOption($index)"
+              >
+                <eci-icon name="trash" [size]="16" />
+              </button>
+            </div>
+          </div>
+        }
+        <eci-button variant="ghost" (buttonClick)="addOption()">
+          <eci-icon name="plus" [size]="16" /> {{ 'practica.questions.addOption' | translate }}
+        </eci-button>
+      </div>
+    } @else if (isTrueFalse()) {
+      <div class="pr-field">
+        <span>{{ 'practica.questions.answer' | translate }}</span>
+        <eci-select
+          [value]="correctAnswer()"
+          (valueChange)="correctAnswer.set($any($event))"
+          [options]="boolOptions"
+          [ariaLabel]="'practica.questions.answer' | translate"
+        />
+      </div>
+    } @else {
+      <label class="pr-field">
+        <span>{{ 'practica.questions.answer' | translate }}</span>
+        <input
+          type="text"
+          [value]="correctAnswer()"
+          (input)="correctAnswer.set($any($event.target).value)"
+        />
+      </label>
+    }
+
+    <label class="pr-field">
+      <span>{{ 'practica.questions.explanation' | translate }}</span>
+      <textarea
+        [value]="explanation()"
+        (input)="explanation.set($any($event.target).value)"
+      ></textarea>
+    </label>
+
+    <label class="pr-field pr-field--check">
+      <input
+        type="checkbox"
+        [checked]="availableForSurvival()"
+        (change)="availableForSurvival.set($any($event.target).checked)"
+      />
+      <span>{{ 'practica.questions.survival' | translate }}</span>
+    </label>
+
+    <div class="pr-form__actions">
+      <eci-button variant="ghost" (buttonClick)="cancelForm.emit()">
+        {{ 'practica.actions.cancel' | translate }}
+      </eci-button>
+      <eci-button variant="primary" type="submit">
+        {{ 'practica.actions.save' | translate }}
+      </eci-button>
+    </div>
+  </form>
+</eci-card>

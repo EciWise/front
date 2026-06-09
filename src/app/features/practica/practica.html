@@ -1,0 +1,28 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="practica.title" icon="quiz" />
+  <div class="eci-fit__chrome">
+    <eci-section-tabs [tabs]="tabs()" [(active)]="active" />
+  </div>
+  <div class="eci-fit__body">
+    @switch (active()) {
+      @case ('play') {
+        <eci-practica-play class="eci-section-enter" />
+      }
+      @case ('history') {
+        <eci-practica-history class="eci-section-enter" />
+      }
+      @case ('leaderboard') {
+        <eci-practica-leaderboard class="eci-section-enter" />
+      }
+      @case ('questions') {
+        <eci-practica-questions class="eci-section-enter" />
+      }
+      @case ('collections') {
+        <eci-practica-question-collections class="eci-section-enter" />
+      }
+      @case ('subjects') {
+        <eci-practica-subjects class="eci-section-enter" />
+      }
+    }
+  </div>
+</div>

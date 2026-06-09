@@ -1,0 +1,135 @@
+@if (summary(); as sm) {
+  @if (sm.status === 'COMPLETED') {
+    <eci-confetti />
+  }
+  <div class="pr-head">
+    <div class="pr-head__title">
+      <h2>{{ 'practica.play.summaryTitle' | translate }}</h2>
+    </div>
+  </div>
+  <div class="pr-summary">
+    <div class="pr-stat">
+      <span class="pr-stat__value">{{ sm.score }}</span>
+      <span class="pr-stat__label">{{ 'practica.play.score' | translate }}</span>
+    </div>
+    <div class="pr-stat">
+      <span class="pr-stat__value">{{ sm.correctCount }}/{{ sm.totalQuestions }}</span>
+      <span class="pr-stat__label">{{ 'practica.play.correct' | translate }}</span>
+    </div>
+    <div class="pr-stat">
+      <span class="pr-stat__value">{{ sm.accuracyPercent | number: '1.0-0' }}%</span>
+      <span class="pr-stat__label">{{ 'practica.play.accuracy' | translate }}</span>
+    </div>
+    @if (isSurvival() && sm.livesRemaining !== null) {
+      <div class="pr-stat">
+        <span class="pr-stat__value">{{ sm.livesRemaining }}</span>
+        <span class="pr-stat__label">{{ 'practica.play.lives' | translate }}</span>
+      </div>
+    }
+  </div>
+  <div class="pr-form__actions">
+    <eci-button variant="primary" (buttonClick)="leave()">
+      {{ 'practica.play.again' | translate }}
+    </eci-button>
+  </div>
+} @else if (current(); as q) {
+  <div class="pr-runner">
+    <div class="pr-runner__bar">
+      <span>{{ 'practica.play.progress' | translate: { current: index() + 1, total: total() } }}</span>
+      @if (isSurvival() && lives() !== null) {
+        <span class="pr-lives">
+          <eci-icon name="flame" [size]="16" /> {{ lives() }}
+        </span>
+      }
+    </div>
+
+    <eci-card>
+      <p class="pr-statement">{{ q.statement }}</p>
+
+      @switch (q.type) {
+        @case ('CLOSED') {
+          <div class="pr-options">
+            @for (opt of q.options; track opt.id) {
+              <button
+                type="button"
+                class="pr-option"
+                [class]="optionClass(opt.id)"
+                [disabled]="answered()"
+                (click)="selectOption(opt.id)"
+              >
+                {{ opt.text }}
+              </button>
+            }
+          </div>
+        }
+        @case ('TRUE_FALSE') {
+          <div class="pr-options">
+            <button
+              type="button"
+              class="pr-option"
+              [class]="boolClass('true')"
+              [disabled]="answered()"
+              (click)="setBool('true')"
+            >
+              {{ 'practica.questions.true' | translate }}
+            </button>
+            <button
+              type="button"
+              class="pr-option"
+              [class]="boolClass('false')"
+              [disabled]="answered()"
+              (click)="setBool('false')"
+            >
+              {{ 'practica.questions.false' | translate }}
+            </button>
+          </div>
+        }
+        @default {
+          <label class="pr-field">
+            <span>{{ 'practica.questions.answer' | translate }}</span>
+            <input
+              type="text"
+              [value]="givenAnswer()"
+              (input)="givenAnswer.set($any($event.target).value)"
+              [disabled]="answered()"
+            />
+          </label>
+        }
+      }
+
+      @if (result(); as res) {
+        <div class="pr-feedback" [class.pr-feedback--ok]="res.correct" [class.pr-feedback--bad]="!res.correct">
+          <span class="pr-feedback__title">
+            {{ (res.correct ? 'practica.play.right' : 'practica.play.wrong') | translate }}
+            ({{ 'practica.play.points' | translate: { points: res.pointsAwarded } }})
+          </span>
+          @if (q.type !== 'CLOSED' && res.correctAnswer) {
+            <span class="pr-msg">
+              {{ 'practica.play.correctAnswer' | translate: { answer: res.correctAnswer } }}
+            </span>
+          }
+          @if (res.explanation) {
+            <span class="pr-msg">{{ res.explanation }}</span>
+          }
+        </div>
+      }
+    </eci-card>
+
+    <div class="pr-form__actions">
+      @if (!answered()) {
+        <eci-button variant="primary" [disabled]="!hasInput || answering()" (buttonClick)="submit()">
+          {{ 'practica.play.answer' | translate }}
+        </eci-button>
+      } @else {
+        <eci-button variant="primary" [disabled]="finishing()" (buttonClick)="next()">
+          {{
+            (sessionEnded() || isLast() ? 'practica.play.finish' : 'practica.play.nextQuestion')
+              | translate
+          }}
+        </eci-button>
+      }
+    </div>
+  </div>
+} @else {
+  <eci-card><p class="pr-msg">{{ 'practica.play.empty' | translate }}</p></eci-card>
+}

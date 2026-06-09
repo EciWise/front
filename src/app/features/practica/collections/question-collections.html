@@ -1,0 +1,116 @@
+<div class="pr-head">
+  <div class="pr-head__title">
+    <h2>{{ 'practica.collections.title' | translate }}</h2>
+  </div>
+  <eci-button variant="primary" (buttonClick)="openCreate()">
+    <eci-icon name="plus" [size]="16" /> {{ 'practica.collections.new' | translate }}
+  </eci-button>
+</div>
+
+@if (showForm()) {
+  <eci-card>
+    <form class="pr-form" (submit)="$event.preventDefault(); submit()">
+      <label class="pr-field">
+        <span>{{ 'practica.collections.name' | translate }}</span>
+        <input type="text" [value]="name()" (input)="name.set($any($event.target).value)" required />
+      </label>
+      <label class="pr-field">
+        <span>{{ 'practica.collections.description' | translate }}</span>
+        <textarea
+          [value]="description()"
+          (input)="description.set($any($event.target).value)"
+        ></textarea>
+      </label>
+      <div class="pr-field">
+        <span>{{ 'practica.collections.subject' | translate }}</span>
+        <eci-select
+          [value]="formSubjectId() ?? ''"
+          (valueChange)="onFormSubject($event)"
+          [options]="subjectOptions()"
+          [ariaLabel]="'practica.collections.subject' | translate"
+        />
+      </div>
+
+      @if (editingId() !== null) {
+        <p class="pr-hint">{{ 'practica.collections.editHint' | translate }}</p>
+      }
+
+      @if (formSubjectId() !== null) {
+        <div class="pr-field">
+          <span>{{ 'practica.collections.pick' | translate }}</span>
+          @if (pickQuestions().length === 0) {
+            <p class="pr-hint">{{ 'practica.collections.noQuestions' | translate }}</p>
+          } @else {
+            <ul class="pr-pick">
+              @for (q of pickQuestions(); track q.id) {
+                <li class="pr-pick__item">
+                  <input
+                    type="checkbox"
+                    [checked]="isPicked(q.id)"
+                    (change)="togglePick(q.id)"
+                  />
+                  <span>{{ q.statement }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      } @else {
+        <p class="pr-hint">{{ 'practica.collections.pickHint' | translate }}</p>
+      }
+
+      <div class="pr-form__actions">
+        <eci-button variant="ghost" (buttonClick)="cancel()">
+          {{ 'practica.actions.cancel' | translate }}
+        </eci-button>
+        <eci-button variant="primary" type="submit">
+          {{ 'practica.actions.save' | translate }}
+        </eci-button>
+      </div>
+    </form>
+  </eci-card>
+}
+
+@if (loading()) {
+  <p class="pr-msg">{{ 'practica.loading' | translate }}</p>
+} @else if (collections().length === 0) {
+  <eci-card><p class="pr-msg">{{ 'practica.collections.empty' | translate }}</p></eci-card>
+} @else {
+  <ul class="pr-list">
+    @for (c of collections(); track c.id) {
+      <li>
+        <eci-card>
+          <div class="pr-item">
+            <div class="pr-item__main">
+              <span class="pr-item__name">{{ c.name }}</span>
+              <span class="pr-item__meta">
+                @if (c.subjectName) {
+                  <span class="pr-badge">{{ c.subjectName }}</span>
+                }
+                {{ 'practica.collections.count' | translate: { count: c.questionCount } }}
+              </span>
+            </div>
+            <div class="pr-item__actions">
+              <button
+                type="button"
+                class="icon-btn"
+                [attr.aria-label]="'practica.actions.edit' | translate"
+                (click)="openEdit(c)"
+              >
+                <eci-icon name="edit" [size]="18" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn icon-btn--danger"
+                [attr.aria-label]="'practica.actions.delete' | translate"
+                (click)="remove(c)"
+              >
+                <eci-icon name="trash" [size]="18" />
+              </button>
+            </div>
+          </div>
+        </eci-card>
+      </li>
+    }
+  </ul>
+}

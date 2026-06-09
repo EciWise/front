@@ -19,8 +19,8 @@ export const STUDENT_ROUTES: Routes = [
     loadComponent: () => import('./games/games').then((m) => m.GamesComponent),
   },
   {
-    path: 'study',
-    loadComponent: () => import('./study/study').then((m) => m.StudyComponent),
+    path: 'practica',
+    loadComponent: () => import('../practica/practica').then((m) => m.PracticaComponent),
   },
   {
     path: 'aprendizaje',

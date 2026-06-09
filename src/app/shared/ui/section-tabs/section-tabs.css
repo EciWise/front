@@ -56,6 +56,30 @@
   color: var(--accent);
 }
 
+/* Con muchas pestañas (5–6) no caben en columnas iguales: el control pasa a
+   ser una tira con scroll horizontal. Se oculta la píldora deslizante (su ancho
+   1/N deja de ser válido) y el estado activo se pinta por botón. */
+@media (max-width: 48rem) {
+  .seg {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .seg::-webkit-scrollbar {
+    display: none;
+  }
+  .seg__indicator {
+    display: none;
+  }
+  .seg__btn {
+    flex: 0 0 auto;
+  }
+  .seg__btn--active {
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
 @media (max-width: 30rem) {
   .seg__label {
     display: none;

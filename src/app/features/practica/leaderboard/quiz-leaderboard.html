@@ -1,0 +1,58 @@
+<div class="pr-head">
+  <div class="pr-head__title">
+    <h2>{{ 'practica.leaderboard.title' | translate }}</h2>
+  </div>
+</div>
+
+@if (loading()) {
+  <p class="pr-msg">{{ 'practica.loading' | translate }}</p>
+} @else if (data(); as d) {
+  @if (d.myRank !== null) {
+    <eci-card>
+      <p class="pr-msg">
+        {{ 'practica.leaderboard.myRank' | translate: { rank: d.myRank, score: d.myBestScore } }}
+      </p>
+    </eci-card>
+  }
+
+  @if (d.table.content.length === 0) {
+    <eci-card><p class="pr-msg">{{ 'practica.leaderboard.empty' | translate }}</p></eci-card>
+  } @else {
+    <eci-card>
+      <table class="pr-table">
+        <thead>
+          <tr>
+            <th>{{ 'practica.leaderboard.rank' | translate }}</th>
+            <th>{{ 'practica.leaderboard.player' | translate }}</th>
+            <th>{{ 'practica.leaderboard.score' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of d.table.content; track row.userId) {
+            <tr [class.pr-table__me]="row.rank === d.myRank">
+              <td>#{{ row.rank }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.bestScore }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </eci-card>
+
+    @if (d.table.totalPages > 1) {
+      <div class="pr-pager">
+        <eci-button variant="ghost" [disabled]="page() === 0" (buttonClick)="prev()">
+          {{ 'practica.pager.prev' | translate }}
+        </eci-button>
+        <span>{{ 'practica.pager.page' | translate: { page: page() + 1, total: d.table.totalPages } }}</span>
+        <eci-button
+          variant="ghost"
+          [disabled]="page() + 1 >= d.table.totalPages"
+          (buttonClick)="next()"
+        >
+          {{ 'practica.pager.next' | translate }}
+        </eci-button>
+      </div>
+    }
+  }
+}

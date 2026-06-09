@@ -1,0 +1,78 @@
+<div class="pr-head">
+  <div class="pr-head__title">
+    <h2>{{ 'practica.subjects.title' | translate }}</h2>
+  </div>
+  <eci-button variant="primary" (buttonClick)="openCreate()">
+    <eci-icon name="plus" [size]="16" /> {{ 'practica.subjects.new' | translate }}
+  </eci-button>
+</div>
+
+@if (showForm()) {
+  <eci-card>
+    <form class="pr-form" (submit)="$event.preventDefault(); submit()">
+      <label class="pr-field">
+        <span>{{ 'practica.subjects.name' | translate }}</span>
+        <input
+          type="text"
+          [value]="name()"
+          (input)="name.set($any($event.target).value)"
+          required
+        />
+      </label>
+      <label class="pr-field">
+        <span>{{ 'practica.subjects.description' | translate }}</span>
+        <textarea [value]="description()" (input)="description.set($any($event.target).value)">
+        </textarea>
+      </label>
+      <div class="pr-form__actions">
+        <eci-button variant="ghost" (buttonClick)="cancel()">
+          {{ 'practica.actions.cancel' | translate }}
+        </eci-button>
+        <eci-button variant="primary" type="submit">
+          {{ 'practica.actions.save' | translate }}
+        </eci-button>
+      </div>
+    </form>
+  </eci-card>
+}
+
+@if (loading()) {
+  <p class="pr-msg">{{ 'practica.loading' | translate }}</p>
+} @else if (subjects().length === 0) {
+  <eci-card><p class="pr-msg">{{ 'practica.subjects.empty' | translate }}</p></eci-card>
+} @else {
+  <ul class="pr-list">
+    @for (s of subjects(); track s.id) {
+      <li>
+        <eci-card>
+          <div class="pr-item">
+            <div class="pr-item__main">
+              <span class="pr-item__name">{{ s.name }}</span>
+              @if (s.description) {
+                <span class="pr-item__meta">{{ s.description }}</span>
+              }
+            </div>
+            <div class="pr-item__actions">
+              <button
+                type="button"
+                class="icon-btn"
+                [attr.aria-label]="'practica.actions.edit' | translate"
+                (click)="openEdit(s)"
+              >
+                <eci-icon name="edit" [size]="18" />
+              </button>
+              <button
+                type="button"
+                class="icon-btn icon-btn--danger"
+                [attr.aria-label]="'practica.actions.delete' | translate"
+                (click)="remove(s)"
+              >
+                <eci-icon name="trash" [size]="18" />
+              </button>
+            </div>
+          </div>
+        </eci-card>
+      </li>
+    }
+  </ul>
+}
