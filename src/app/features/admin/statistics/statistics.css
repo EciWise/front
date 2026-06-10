@@ -1,6 +1,6 @@
 .stats__cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-5);
 }
@@ -29,7 +29,7 @@
 
 .stats__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-5);
 }

@@ -118,6 +118,11 @@
   .auth__card {
     padding: var(--space-8);
   }
+
+  /* Dos columnas para los campos del registro a partir de tablet. */
+  .auth__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Tarjeta del registro: más ancha para repartir los campos en dos columnas. */
@@ -284,10 +289,12 @@
   color: #ffffff;
 }
 
-/* ---------------- Distribución en dos columnas ---------------- */
+/* ---------------- Distribución en columnas ----------------
+   Mobile-first: una sola columna en celular para que los campos respiren;
+   dos columnas a partir de tablet (regla en el bloque min-width: 40rem). */
 .auth__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--space-4);
   min-width: 0;
 }
@@ -358,7 +365,7 @@
 
 .auth__checks {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: var(--space-2) var(--space-4);
 }
 

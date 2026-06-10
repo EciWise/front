@@ -17,6 +17,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  /* En pantallas estrechas el estado baja a la siguiente línea en vez de
+     comprimir el texto (mismo patrón que solicitudes y monitorías). */
+  flex-wrap: wrap;
 }
 
 .hist__subject {

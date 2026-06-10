@@ -49,7 +49,9 @@
   font-size: 0.85rem;
 }
 
-.pr-field input,
+/* Excluye checkbox/radio: no deben recibir ancho 100% ni caja de texto (si no,
+   la casilla se estira a todo el ancho y empuja su etiqueta fuera del campo). */
+.pr-field input:not([type='checkbox']):not([type='radio']),
 .pr-field textarea {
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
@@ -77,6 +79,16 @@
   flex-direction: row;
   align-items: center;
   gap: var(--space-2);
+}
+
+/* La casilla conserva su tamaño natural y la etiqueta ocupa el resto, pudiendo
+   envolver en varias líneas sin desbordar el campo. */
+.pr-field--check input {
+  flex: none;
+}
+
+.pr-field--check span {
+  min-width: 0;
 }
 
 .pr-form__row {
@@ -208,7 +220,7 @@
 /* ── Selector de modos (jugar) ── */
 .pr-modes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: var(--space-3);
 }
 
@@ -341,7 +353,7 @@
 /* ── Resumen final ── */
 .pr-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
   gap: var(--space-3);
   margin: var(--space-3) 0;
 }

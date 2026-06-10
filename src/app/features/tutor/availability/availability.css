@@ -64,3 +64,20 @@
   color: var(--success);
   font-size: 0.875rem;
 }
+
+/* Móvil: la rejilla semanal aprovecha todo el ancho, con la columna de horas
+   más estrecha, separación y celdas más compactas para que las 5 columnas de
+   día quepan sin desbordarse en pantallas pequeñas. */
+@media (max-width: 30rem) {
+  .avail__grid {
+    grid-template-columns: 2.75rem repeat(5, 1fr);
+    gap: var(--space-1);
+  }
+  .avail__day,
+  .avail__time {
+    font-size: 0.7rem;
+  }
+  .avail__cell {
+    height: 2.25rem;
+  }
+}

@@ -50,15 +50,16 @@ describe('SectionTabsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('marks the active tab and moves the indicator when a user selects another section', () => {
+  it('marks the active tab and moves the active state when a user selects another section', () => {
     const renderedTabs = tabs();
 
     expect(renderedTabs).toHaveLength(3);
     expect(element().querySelector('[role="tablist"]')).not.toBeNull();
     expect(element().querySelectorAll('eci-icon')).toHaveLength(2);
+    expect(indicator()).not.toBeNull();
     expect(renderedTabs[0].getAttribute('aria-selected')).toBe('true');
+    expect(renderedTabs[0].classList.contains('seg__btn--active')).toBe(true);
     expect(renderedTabs[1].getAttribute('aria-selected')).toBe('false');
-    expect(indicator()?.style.transform).toBe('translateX(0%)');
 
     renderedTabs[1].click();
     fixture.detectChanges();
@@ -66,14 +67,14 @@ describe('SectionTabsComponent', () => {
     expect(host().active()).toBe('agenda');
     expect(tabs()[0].getAttribute('aria-selected')).toBe('false');
     expect(tabs()[1].getAttribute('aria-selected')).toBe('true');
-    expect(indicator()?.style.transform).toBe('translateX(100%)');
+    expect(tabs()[1].classList.contains('seg__btn--active')).toBe(true);
   });
 
-  it('keeps the indicator at the first slot when the active id is unknown', () => {
+  it('marks no tab as active when the active id is unknown', () => {
     host().active.set('missing');
     fixture.detectChanges();
 
     expect(element().querySelector('.seg__btn--active')).toBeNull();
-    expect(indicator()?.style.transform).toBe('translateX(0%)');
+    expect(indicator()).not.toBeNull();
   });
 });

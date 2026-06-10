@@ -332,6 +332,17 @@ body {
   color: color-mix(in srgb, var(--text-muted) 78%, transparent);
 }
 
+/* iOS Safari hace zoom automático al enfocar cualquier campo cuya tipografía
+   sea menor de 16px. En pantallas pequeñas forzamos un mínimo de 16px en los
+   controles de texto para que enfocarlos no provoque ese salto de escala tan
+   incómodo. Mismo patrón (:where + !important) que el resto de esta sección,
+   así que respeta el tamaño de diseño en escritorio y solo actúa en móvil. */
+@media (max-width: 40rem) {
+  :where(input:not([type='checkbox']):not([type='radio']), textarea, select) {
+    font-size: 16px !important;
+  }
+}
+
 select {
   appearance: none;
   -webkit-appearance: none;

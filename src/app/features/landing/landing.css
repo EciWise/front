@@ -86,7 +86,7 @@
 /* Secciones de descripción / misión / visión: centradas en el escenario. */
 .landing__info {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
   gap: var(--space-6);
   align-content: center;
   max-width: 64rem;

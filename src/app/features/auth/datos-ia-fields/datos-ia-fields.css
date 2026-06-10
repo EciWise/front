@@ -10,7 +10,7 @@
 /* Grilla alineada: dos columnas en pantallas amplias, una en móvil. */
 .dia__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: var(--space-4) var(--space-4);
   align-items: start;
 }
@@ -188,7 +188,7 @@
 
 .dia__checks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: var(--space-3);
 }
 

@@ -2,25 +2,32 @@
 .seg {
   position: relative;
   display: flex;
-  /* Sin separación entre botones: cada uno ocupa exactamente 1/N del ancho
-     interno, así el indicador (misma fracción) se alinea con precisión. */
+  /* Sin separación entre botones: la píldora se mide del botón activo. */
   gap: 0;
   padding: var(--space-1);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  /* No se encoge ni hace scroll: forma parte del chrome fijo de la sección. */
+  /* No se encoge en vertical (forma parte del chrome fijo de la sección). Si las
+     pestañas no caben en horizontal, la pista se desplaza en vez de desbordar la
+     pantalla; la sección activa se trae a la vista desde el componente. */
   flex: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.seg::-webkit-scrollbar {
+  display: none;
 }
 
-/* Píldora que se desliza bajo la sección activa. */
+/* Píldora que se desliza bajo la sección activa. Posición y ancho los fija el
+   componente (en px) midiendo el botón activo, así queda alineada con cualquier
+   reparto de anchos. */
 .seg__indicator {
   position: absolute;
   top: var(--space-1);
   left: var(--space-1);
   bottom: var(--space-1);
-  /* Misma fracción que cada botón: ancho interno (descontado el padding) / N. */
-  width: calc((100% - var(--space-2)) / var(--seg-n, 1));
   background: var(--surface);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-sm);
@@ -31,7 +38,10 @@
 .seg__btn {
   position: relative;
   z-index: 1;
-  flex: 1;
+  /* Llenan el ancho cuando sobra espacio y conservan su tamaño natural (sin
+     recortar) cuando no, desplazándose con la pista. */
+  flex: 1 0 auto;
+  min-width: max-content;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -56,30 +66,8 @@
   color: var(--accent);
 }
 
-/* Con muchas pestañas (5–6) no caben en columnas iguales: el control pasa a
-   ser una tira con scroll horizontal. Se oculta la píldora deslizante (su ancho
-   1/N deja de ser válido) y el estado activo se pinta por botón. */
-@media (max-width: 48rem) {
-  .seg {
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .seg::-webkit-scrollbar {
-    display: none;
-  }
-  .seg__indicator {
-    display: none;
-  }
-  .seg__btn {
-    flex: 0 0 auto;
-  }
-  .seg__btn--active {
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-  }
-}
-
+/* En pantallas muy estrechas se deja solo el icono para ahorrar espacio; la
+   píldora medida se adapta automáticamente al botón más pequeño. */
 @media (max-width: 30rem) {
   .seg__label {
     display: none;

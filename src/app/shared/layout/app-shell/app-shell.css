@@ -58,12 +58,17 @@
 
   .shell__nav {
     position: fixed;
-    top: 4rem;
+    /* Arranca justo bajo la barra superior (que ya incluye el notch) y respeta
+       la zona segura inferior para que el último enlace no quede bajo la barra
+       de gestos. */
+    top: calc(4rem + env(safe-area-inset-top));
     bottom: 0;
     left: 0;
     width: 16rem;
+    max-width: 85vw;
     z-index: 50;
     overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom);
     transform: translateX(-100%);
     transition: transform var(--transition-base);
   }
@@ -75,16 +80,18 @@
   .shell__overlay {
     display: block;
     position: fixed;
-    inset: 4rem 0 0 0;
+    inset: calc(4rem + env(safe-area-inset-top)) 0 0 0;
     z-index: 40;
     background: var(--overlay);
     cursor: pointer;
   }
 
   .shell__main {
-    /* Espacio inferior extra para que el botón flotante (esquina inferior
-       derecha) nunca tape el final del contenido en celular. */
-    padding: var(--space-4);
-    padding-bottom: calc(var(--space-4) + 4.5rem);
+    /* Padding lateral con zonas seguras (apaisado con notch) y espacio inferior
+       extra para que el botón flotante (esquina inferior derecha) nunca tape el
+       final del contenido en celular, incluida la barra de gestos. */
+    padding: var(--space-4) max(var(--space-4), env(safe-area-inset-right)) 0
+      max(var(--space-4), env(safe-area-inset-left));
+    padding-bottom: calc(var(--space-4) + 4.5rem + env(safe-area-inset-bottom));
   }
 }

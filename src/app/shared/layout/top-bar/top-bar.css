@@ -4,8 +4,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 4rem;
-  padding: 0 var(--space-6);
+  /* La barra crece para alojar la zona segura superior (notch/cámara) y deja
+     su contenido visible a 4rem por debajo. El padding lateral también respeta
+     las zonas seguras en horizontal (móvil apaisado con notch lateral). */
+  height: calc(4rem + env(safe-area-inset-top));
+  padding:
+    env(safe-area-inset-top)
+    max(var(--space-6), env(safe-area-inset-right))
+    0
+    max(var(--space-6), env(safe-area-inset-left));
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
@@ -38,8 +45,13 @@
 
 @media (max-width: 900px) {
   .top-bar {
-    /* Menos padding lateral para dejar espacio a los controles. */
-    padding: 0 var(--space-3);
+    /* Menos padding lateral para dejar espacio a los controles, sin perder las
+       zonas seguras (notch superior y bordes en apaisado). */
+    padding:
+      env(safe-area-inset-top)
+      max(var(--space-3), env(safe-area-inset-right))
+      0
+      max(var(--space-3), env(safe-area-inset-left));
   }
   .top-bar__menu {
     display: inline-flex;

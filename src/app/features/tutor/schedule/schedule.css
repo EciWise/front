@@ -41,6 +41,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  /* En pantallas estrechas las acciones bajan a la siguiente línea en vez de
+     comprimir el texto del cupo (mismo patrón que solicitudes y monitorías). */
+  flex-wrap: wrap;
 }
 
 .sched-item__subject {
