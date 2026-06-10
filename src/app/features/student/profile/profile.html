@@ -74,11 +74,14 @@
                       form.controls.program.touched && form.controls.program.invalid
                     "
                   >
-                    <span class="profile__label">{{ 'profile.primaryProgram' | translate }}</span>
+                    <span class="profile__label">
+                      {{ 'profile.primaryProgram' | translate }}
+                      <span class="profile__required" aria-hidden="true">*</span>
+                    </span>
                     <eci-select
                       formControlName="program"
                       [placeholder]="'datosIa.selectPlaceholder' | translate"
-                      [ariaLabel]="'profile.primaryProgram' | translate"
+                      [ariaLabel]="'profile.primaryProgramRequired' | translate"
                       [options]="programOptions"
                     />
                     @if (form.controls.program.touched && form.controls.program.invalid) {

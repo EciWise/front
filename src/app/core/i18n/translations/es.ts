@@ -653,7 +653,8 @@ export const es = {
     careersDescription:
       'Selecciona tu carrera principal y, si aplica, una segunda carrera antes de bloquear esta información.',
     primaryProgram: 'Carrera principal',
-    secondaryProgram: 'Segunda carrera (opcional)',
+    primaryProgramRequired: 'Carrera principal obligatoria',
+    secondaryProgram: 'Segunda carrera',
     noSecondProgram: 'Sin segunda carrera',
     programRequired: 'Selecciona tu carrera principal.',
     careersLocked: 'Tus carreras ya fueron guardadas y no pueden editarse.',

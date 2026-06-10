@@ -652,7 +652,8 @@ export const en = {
     careersDescription:
       'Select your main career and, if it applies, a second career before locking this information.',
     primaryProgram: 'Primary career',
-    secondaryProgram: 'Second career (optional)',
+    primaryProgramRequired: 'Required primary career',
+    secondaryProgram: 'Second career',
     noSecondProgram: 'No second career',
     programRequired: 'Choose your primary career.',
     careersLocked: 'Your careers are saved and locked.',
