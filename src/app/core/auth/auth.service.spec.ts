@@ -9,6 +9,10 @@ import { Role } from '../models/role.enum';
 import { ApiUser, AuthResponse, User } from '../models/user.model';
 
 const base = 'http://api.test';
+const validJwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1MSIsImV4cCI6NDEwMjQ0NDgwMH0.sig';
+const expiredJwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1MSIsImV4cCI6MX0.sig';
 
 const datosIaRegistro = {
   gender: 1,
@@ -34,7 +38,7 @@ const apiUser: ApiUser = {
 };
 
 const apiResponse: AuthResponse = {
-  access_token: 'jwt-123',
+  access_token: validJwt,
   user: apiUser,
 };
 
@@ -83,7 +87,7 @@ describe('AuthService', () => {
     });
     expect(service.isAuthenticated()).toBe(true);
     expect(service.hasRole(Role.Student)).toBe(true);
-    expect(service.token).toBe('jwt-123');
+    expect(service.token).toBe(validJwt);
     expect(JSON.parse(localStorage.getItem('eciwise.session') ?? '{}')).toMatchObject({
       email: 'ana@escuelaing.edu.co',
     });
@@ -153,12 +157,37 @@ describe('AuthService', () => {
       role: Role.Tutor,
       active: true,
     };
+    localStorage.setItem('eciwise.token', validJwt);
     localStorage.setItem('eciwise.session', JSON.stringify(stored));
     expect(setup().user()).toEqual(stored);
 
     TestBed.resetTestingModule();
+    localStorage.setItem('eciwise.token', validJwt);
     localStorage.setItem('eciwise.session', '{malformed');
     expect(setup().user()).toBeNull();
+    expect(localStorage.getItem('eciwise.session')).toBeNull();
+    expect(localStorage.getItem('eciwise.token')).toBeNull();
+  });
+
+  it('no restaura sesiones sin token utilizable', () => {
+    const stored: User = {
+      id: 'u2',
+      name: 'Tina Tutor',
+      email: 'tina@escuelaing.edu.co',
+      role: Role.Tutor,
+      active: true,
+    };
+
+    localStorage.setItem('eciwise.session', JSON.stringify(stored));
+    expect(setup().user()).toBeNull();
+    expect(localStorage.getItem('eciwise.session')).toBeNull();
+
+    TestBed.resetTestingModule();
+    localStorage.setItem('eciwise.token', expiredJwt);
+    localStorage.setItem('eciwise.session', JSON.stringify(stored));
+    expect(setup().user()).toBeNull();
+    expect(localStorage.getItem('eciwise.session')).toBeNull();
+    expect(localStorage.getItem('eciwise.token')).toBeNull();
   });
 
   it('completeSession mapea roles y persiste avatar cuando llega del backend', () => {
@@ -239,7 +268,7 @@ describe('AuthService', () => {
     await firstValueFrom(service.updateProfile({ name: 'Sin sesion' }));
     expect(service.user()).toBeNull();
 
-    service.completeSession('tok', apiUser);
+    service.completeSession(validJwt, apiUser);
     patch.mockReturnValue(
       of({
         ...apiUser,
@@ -274,9 +303,23 @@ describe('AuthService', () => {
     });
   });
 
+  it('no intenta actualizar perfil cuando el token local no es utilizable', async () => {
+    const service = setup();
+    service.completeSession(expiredJwt, apiUser);
+
+    await expect(
+      firstValueFrom(service.updateProfile({ program: 'Ingenieria de Sistemas' })),
+    ).rejects.toMatchObject({ messageKey: 'auth.invalid' });
+
+    expect(patch).not.toHaveBeenCalled();
+    expect(service.user()).toBeNull();
+    expect(localStorage.getItem('eciwise.session')).toBeNull();
+    expect(localStorage.getItem('eciwise.token')).toBeNull();
+  });
+
   it('omite segunda carrera cuando esta vacia', async () => {
     const service = setup();
-    service.completeSession('tok', apiUser);
+    service.completeSession(validJwt, apiUser);
     patch.mockReturnValue(
       of({
         ...apiUser,

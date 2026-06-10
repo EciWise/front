@@ -19,7 +19,7 @@ describe('authInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
-        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: 'http://auth.test' } },
+        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: 'http://auth.test/' } },
         {
           provide: IA_CONFIG,
           useValue: {
@@ -44,6 +44,12 @@ describe('authInterceptor', () => {
   it('adjunta Authorization solo a hosts propios con token presente', async () => {
     localStorage.setItem('eciwise.token', 'jwt-test');
 
+    const authOwn = firstValueFrom(http.get('http://auth.test/auth/me'));
+    const authOwnReq = controller.expectOne('http://auth.test/auth/me');
+    expect(authOwnReq.request.headers.get('Authorization')).toBe('Bearer jwt-test');
+    authOwnReq.flush({});
+    await authOwn;
+
     const own = firstValueFrom(http.get('http://todo.test/api/tasks'));
     const ownReq = controller.expectOne('http://todo.test/api/tasks');
     expect(ownReq.request.headers.get('Authorization')).toBe('Bearer jwt-test');
@@ -55,6 +61,12 @@ describe('authInterceptor', () => {
     expect(thirdPartyReq.request.headers.has('Authorization')).toBe(false);
     thirdPartyReq.flush({});
     await thirdParty;
+
+    const similarHost = firstValueFrom(http.get('http://auth.test.evil/api'));
+    const similarHostReq = controller.expectOne('http://auth.test.evil/api');
+    expect(similarHostReq.request.headers.has('Authorization')).toBe(false);
+    similarHostReq.flush({});
+    await similarHost;
   });
 
   it('no adjunta Authorization cuando no hay token', async () => {

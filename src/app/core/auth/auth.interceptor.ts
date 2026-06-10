@@ -6,6 +6,7 @@ import { IA_CONFIG } from '../ia/ia.config';
 import { STUDY_CONFIG } from '../study/study.config';
 import { TALK_CONFIG } from '../talk/talk.config';
 import { TODO_CONFIG } from '../todo/todo.config';
+import { stripTrailingSlashes } from '../config/url.util';
 
 const TOKEN_KEY = 'eciwise.token';
 
@@ -31,9 +32,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     studyConfig.studyApiUrl,
     talkConfig.talkApiUrl,
     todoConfig.todoApiUrl,
-  ];
+  ].map((base) => (base ? stripTrailingSlashes(base) : ''));
 
-  const isOwnApi = allowedHosts.some((base) => base && req.url.startsWith(base));
+  const isOwnApi = allowedHosts.some(
+    (base) => base && (req.url === base || req.url.startsWith(`${base}/`)),
+  );
   const token = localStorage.getItem(TOKEN_KEY);
 
   if (!isOwnApi || !token) {

@@ -21,6 +21,7 @@ import { STUDY_CONFIG } from './core/study/study.config';
 import { TALK_CONFIG } from './core/talk/talk.config';
 import { TODO_CONFIG } from './core/todo/todo.config';
 import { EnvService } from './core/config/env.service';
+import { normalizeServiceUrl } from './core/config/url.util';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -45,7 +46,9 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(EnvService).load()),
     {
       provide: AUTH_CONFIG,
-      useFactory: (env: EnvService) => ({ apiBaseUrl: env.get('apiBaseUrl', 'http://localhost:3001') }),
+      useFactory: (env: EnvService) => ({
+        apiBaseUrl: normalizeServiceUrl(env.get('apiBaseUrl'), 'http://localhost:3001'),
+      }),
       deps: [EnvService],
     },
     {

@@ -8,6 +8,7 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import { normalizeServiceUrl } from './app/core/config/url.util';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -16,7 +17,9 @@ const angularApp = new AngularNodeAppEngine();
 
 // Expose runtime env for the browser to consume.
 app.get('/assets/env.json', (req, res) => {
-  res.json({ apiBaseUrl: process.env['AUTH_SERVICE'] });
+  res.json({
+    apiBaseUrl: normalizeServiceUrl(process.env['AUTH_SERVICE'], 'http://localhost:3001'),
+  });
 });
 
 /**

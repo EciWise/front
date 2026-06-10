@@ -2,8 +2,10 @@ import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core
 import { stripTrailingSlashes } from '../config/url.util';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map, of, throwError } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 import { AUTH_CONFIG } from './auth.config';
+import { AppError } from '../errors/app-error';
 import { Role, roleFromApi } from '../models/role.enum';
 import {
   ApiUser,
@@ -19,6 +21,23 @@ export { AppError, AppError as AuthError } from '../errors/app-error';
 
 const SESSION_KEY = 'eciwise.session';
 const TOKEN_KEY = 'eciwise.token';
+
+interface JwtSessionPayload {
+  readonly exp?: number;
+}
+
+function isUsableToken(token: string | null): token is string {
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const payload = jwtDecode<JwtSessionPayload>(token);
+    return typeof payload.exp !== 'number' || payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Servicio de autenticación real contra wise_auth. Mantiene la sesión en una
@@ -43,7 +62,18 @@ export class AuthService {
 
   /** JWT actual (para el interceptor / SSR-safe). */
   get token(): string | null {
-    return this.isBrowser ? localStorage.getItem(TOKEN_KEY) : null;
+    if (!this.isBrowser) {
+      return null;
+    }
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (isUsableToken(token)) {
+      return token;
+    }
+    if (token) {
+      this.clearStoredSession();
+    }
+    return null;
   }
 
   loginWithEmail(credentials: EmailCredentials): Observable<User> {
@@ -101,10 +131,7 @@ export class AuthService {
 
   logout(): void {
     this._user.set(null);
-    if (this.isBrowser) {
-      localStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem(TOKEN_KEY);
-    }
+    this.clearStoredSession();
   }
 
   /** Actualiza los datos editables del usuario en sesión. */
@@ -114,6 +141,10 @@ export class AuthService {
     const current = this._user();
     if (!current) {
       return of(null);
+    }
+    if (!this.token) {
+      this.logout();
+      return throwError(() => new AppError('auth.invalid'));
     }
     return this.http
       .patch<ApiUser>(`${this.base}/gestion-usuarios/me/info-personal`, {
@@ -172,6 +203,10 @@ export class AuthService {
     if (!this.isBrowser) {
       return null;
     }
+    if (!isUsableToken(localStorage.getItem(TOKEN_KEY))) {
+      this.clearStoredSession();
+      return null;
+    }
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) {
       return null;
@@ -179,7 +214,15 @@ export class AuthService {
     try {
       return JSON.parse(raw) as User;
     } catch {
+      this.clearStoredSession();
       return null;
+    }
+  }
+
+  private clearStoredSession(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(TOKEN_KEY);
     }
   }
 }
