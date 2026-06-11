@@ -1,6 +1,7 @@
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { WeekDay } from './tutor.models';
+import { TutoringMockService } from './tutoring.service';
 
 const STORAGE_KEY = 'eciwise.availability';
 
@@ -14,11 +15,12 @@ export type SlotKey = `${WeekDay}-${string}`;
 @Injectable({ providedIn: 'root' })
 export class AvailabilityService {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly tutoring = inject(TutoringMockService);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly _slots = signal<ReadonlySet<SlotKey>>(this.restore());
   readonly slots = this._slots.asReadonly();
-  readonly count = computed(() => this._slots().size);
+  readonly count = computed(() => this.tutoring.tutorAvailabilityCount());
 
   isActive(key: SlotKey): boolean {
     return this._slots().has(key);

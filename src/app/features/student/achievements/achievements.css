@@ -1,0 +1,111 @@
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.achievements__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-4);
+}
+
+.achievements__progress-head,
+.achievements__section-head,
+.achievements__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.achievements__progress-head h2,
+.achievements__section-head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.achievements__progress-head p,
+.achievements__muted,
+.achievements__list span {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.achievements__icon,
+.achievements__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+  color: var(--accent);
+}
+
+.achievements__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.achievements__bar {
+  height: 0.55rem;
+  margin-top: var(--space-4);
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+
+.achievements__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+}
+
+.achievements__section-head {
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.achievements__section-head span {
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.achievements__list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.achievements__list li {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent);
+}
+
+.achievements__badge {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.achievements__list div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.achievements__list strong {
+  overflow-wrap: anywhere;
+}
+
+.achievements__error {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 700;
+}

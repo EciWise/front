@@ -41,7 +41,7 @@ export const IA_FIELDS: readonly IaFieldConfig[] = [
   { key: 'debtor', section: 'dropout', min: 0, max: 1, step: 1 },
   { key: 'tuitionFeesUpToDate', section: 'dropout', min: 0, max: 1, step: 1 },
   { key: 'scholarshipHolder', section: 'dropout', min: 0, max: 1, step: 1 },
-  { key: 'ageAtEnrollment', section: 'dropout', min: 17, max: 70, step: 1 },
+  { key: 'ageAtEnrollment', section: 'dropout', min: 14, max: 70, step: 1 },
   { key: 'international', section: 'dropout', min: 0, max: 1, step: 1 },
   { key: 'curricularUnits1stSemCredited', section: 'dropout', min: 0, max: 20, step: 1 },
   { key: 'curricularUnits1stSemEnrolled', section: 'dropout', min: 0, max: 26, step: 1 },

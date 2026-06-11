@@ -34,7 +34,13 @@
           @for (item of notifications.items(); track item.id) {
             <li class="bell__item" [class.bell__item--unread]="!item.read">
               <span class="bell__dot" [attr.data-kind]="item.kind" aria-hidden="true"></span>
-              <p class="bell__body">{{ item.body }}</p>
+              <p class="bell__body">
+                @if (item.bodyKey; as bodyKey) {
+                  {{ bodyKey | translate: item.bodyParams }}
+                } @else {
+                  {{ item.body }}
+                }
+              </p>
             </li>
           }
         </ul>

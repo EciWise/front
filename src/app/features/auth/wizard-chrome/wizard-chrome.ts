@@ -54,7 +54,7 @@ interface ChromePage {
           </eci-button>
         } @else {
           <eci-button
-            [ariaLabel]="'completeProfile.save' | translate"
+            [ariaLabel]="'common.save' | translate"
             [disabled]="pending()"
             (click)="finished.emit()"
           >

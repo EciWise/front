@@ -14,6 +14,7 @@ import { PieChartComponent, PieSlice } from '../../../shared/ui/charts/pie-chart
 import { HistogramComponent, HistogramBar } from '../../../shared/ui/charts/histogram';
 import { SectionTabsComponent, SectionTab } from '../../../shared/ui/section-tabs/section-tabs';
 import { IaAdminService, PlatformStats } from '../../../core/ia/ia-admin.service';
+import { TutoringMockService } from '../../tutor/tutoring.service';
 
 /** Color institucional por rol. */
 const ROLE_COLORS: Record<string, string> = {
@@ -48,6 +49,7 @@ const ROLE_LABEL_KEY: Record<string, string> = {
 export class AdminStatisticsComponent implements OnInit {
   private readonly service = inject(IaAdminService);
   private readonly i18n = inject(TranslateService);
+  private readonly tutoringService = inject(TutoringMockService);
 
   protected readonly stats = signal<PlatformStats | null>(null);
   protected readonly loading = signal(true);
@@ -57,8 +59,10 @@ export class AdminStatisticsComponent implements OnInit {
     { id: 'summary', labelKey: 'admin.statistics.tabSummary', icon: 'trophy' },
     { id: 'platform', labelKey: 'admin.statistics.tabPlatform', icon: 'users' },
     { id: 'ia', labelKey: 'admin.statistics.tabIa', icon: 'assistant' },
+    { id: 'tutoring', labelKey: 'admin.statistics.tabTutoring', icon: 'tutorias' },
   ];
   protected readonly section = signal('summary');
+  protected readonly tutoringStats = this.tutoringService.stats;
 
   ngOnInit(): void {
     this.service.platformStats().subscribe({
@@ -134,6 +138,35 @@ export class AdminStatisticsComponent implements OnInit {
       color: d.etiqueta === 'Dropout' ? 'var(--danger)' : 'var(--success)',
     })),
   );
+
+  protected readonly tutoringSubjectsBars = computed<HistogramBar[]>(() => [
+    ...this.tutoringStats().requestedSubjects,
+  ]);
+
+  protected readonly tutoringTopicsBars = computed<HistogramBar[]>(() => [
+    ...this.tutoringStats().commonTopics,
+  ]);
+
+  protected readonly tutoringHoursBars = computed<HistogramBar[]>(() => [
+    ...this.tutoringStats().demandHours,
+  ]);
+
+  protected readonly tutoringTopTutorsBars = computed<HistogramBar[]>(() => [
+    ...this.tutoringStats().topTutors,
+  ]);
+
+  protected readonly tutoringOutcomePie = computed<PieSlice[]>(() => [
+    {
+      label: this.i18n.instant('admin.statistics.tutoringCompleted'),
+      value: this.tutoringStats().completedCount,
+      color: 'var(--success)',
+    },
+    {
+      label: this.i18n.instant('admin.statistics.tutoringCancelled'),
+      value: this.tutoringStats().cancelledCount,
+      color: 'var(--danger)',
+    },
+  ]);
 
   /** Convierte claves `YYYY-MM` en barras con etiqueta de mes corta. */
   private monthBars(serie: { mes: string; conteo: number }[]): HistogramBar[] {

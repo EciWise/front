@@ -1,45 +1,274 @@
 <div class="eci-fit">
   <eci-page-header titleKey="profile.title" icon="profile" />
 
-  <div class="eci-fit__body">
-@if (user(); as currentUser) {
-  <eci-card>
-    <div class="profile__head">
-      <eci-avatar [name]="currentUser.name" [src]="currentUser.avatarUrl" [size]="72" />
-      <div class="profile__head-info">
-        <span class="profile__head-name">{{ currentUser.name }}</span>
-        <span class="profile__head-email">{{ currentUser.email }}</span>
+  <div class="eci-fit__body profile-page">
+    @if (user(); as currentUser) {
+      <div class="profile-layout">
+        <aside class="profile-sidebar" aria-labelledby="profile-personal-title">
+          <eci-card class="profile-card profile-card--identity">
+            <section class="profile__identity">
+              <div class="profile__head">
+                <eci-avatar [name]="currentUser.name" [src]="currentUser.avatarUrl" [size]="72" />
+                <div class="profile__head-info">
+                  <h2 id="profile-personal-title" class="profile__head-name">
+                    {{ currentUser.name }}
+                  </h2>
+                  <span class="profile__head-email">{{ currentUser.email }}</span>
+                </div>
+              </div>
+
+              <dl class="profile__identity-list">
+                <div class="profile__identity-row">
+                  <dt>{{ 'common.name' | translate }}</dt>
+                  <dd>{{ currentUser.name }}</dd>
+                </div>
+                <div class="profile__identity-row">
+                  <dt>{{ 'common.email' | translate }}</dt>
+                  <dd>{{ currentUser.email }}</dd>
+                </div>
+                <div class="profile__identity-row">
+                  <dt>{{ 'profile.role' | translate }}</dt>
+                  <dd>{{ roleLabelKey(currentUser.role) | translate }}</dd>
+                </div>
+              </dl>
+            </section>
+          </eci-card>
+        </aside>
+
+        <main class="profile-main">
+          <eci-card class="profile-card">
+            <section class="profile__section" aria-labelledby="profile-careers-title">
+              <div class="profile__section-head">
+                <span class="profile__section-icon" aria-hidden="true">
+                  <eci-icon name="study" [size]="20" />
+                </span>
+                <div class="profile__section-copy">
+                  <span class="profile__eyebrow">{{ 'profile.academicData' | translate }}</span>
+                  <h2 id="profile-careers-title">{{ 'profile.careersTitle' | translate }}</h2>
+                  <p>{{ 'profile.careersDescription' | translate }}</p>
+                </div>
+                <span
+                  class="profile__state"
+                  [class.profile__state--locked]="careersLocked()"
+                  [class.profile__state--open]="!careersLocked()"
+                >
+                  <eci-icon [name]="careersLocked() ? 'check' : 'info'" [size]="15" />
+                  @if (careersLocked()) {
+                    {{ 'profile.careersLockedShort' | translate }}
+                  } @else {
+                    {{ 'profile.careersEditable' | translate }}
+                  }
+                </span>
+              </div>
+
+              <form
+                class="profile-form"
+                [formGroup]="form"
+                (ngSubmit)="saveProfile()"
+                aria-labelledby="profile-careers-title"
+              >
+                <div class="profile__fields-grid">
+                  <div
+                    class="profile__field"
+                    [class.profile__field--invalid]="
+                      form.controls.program.touched && form.controls.program.invalid
+                    "
+                  >
+                    <span class="profile__label">
+                      {{ 'profile.primaryProgram' | translate }}
+                      <span class="profile__required" aria-hidden="true">*</span>
+                    </span>
+                    <eci-select
+                      formControlName="program"
+                      [placeholder]="'datosIa.selectPlaceholder' | translate"
+                      [ariaLabel]="'profile.primaryProgramRequired' | translate"
+                      [options]="programOptions"
+                    />
+                    @if (form.controls.program.touched && form.controls.program.invalid) {
+                      <span class="profile__field-error" role="alert">{{
+                        'profile.programRequired' | translate
+                      }}</span>
+                    }
+                  </div>
+
+                  <div class="profile__field">
+                    <span class="profile__label">{{ 'profile.secondaryProgram' | translate }}</span>
+                    <eci-select
+                      formControlName="secondaryProgram"
+                      [placeholder]="'profile.noSecondProgram' | translate"
+                      [ariaLabel]="'profile.secondaryProgram' | translate"
+                      [options]="secondaryProgramOptions"
+                    />
+                  </div>
+                </div>
+
+                <div class="profile__feedback-stack">
+                  @if (careersLocked()) {
+                    <output class="profile__feedback profile__feedback--success" aria-live="polite">
+                      <eci-icon name="check" [size]="16" />
+                      <span>{{ 'profile.careersLocked' | translate }}</span>
+                    </output>
+                  } @else {
+                    <div class="profile__feedback profile__feedback--info">
+                      <eci-icon name="info" [size]="16" />
+                      <span>{{ 'profile.careersLockHint' | translate }}</span>
+                    </div>
+                  }
+
+                  @if (profileSaved()) {
+                    <output class="profile__feedback profile__feedback--success" aria-live="polite">
+                      <eci-icon name="check" [size]="16" />
+                      <span>{{ 'profile.saved' | translate }}</span>
+                    </output>
+                  }
+                  @if (profileError()) {
+                    <p class="profile__feedback profile__feedback--error" role="alert">
+                      <eci-icon name="info" [size]="16" />
+                      <span>{{ 'profile.saveError' | translate }}</span>
+                    </p>
+                  }
+                </div>
+
+                @if (!careersLocked()) {
+                  <div class="profile__actions">
+                    <eci-button type="submit" [block]="true" [disabled]="profileSaving()">
+                      {{ 'profile.save' | translate }}
+                    </eci-button>
+                  </div>
+                }
+              </form>
+            </section>
+          </eci-card>
+
+          <eci-card class="profile-card">
+            <section id="profile-ia" class="profile__ia" aria-labelledby="profile-ia-title">
+              <div class="profile__section-head profile__section-head--ia">
+                <span class="profile__section-icon" aria-hidden="true">
+                  <eci-icon name="assistant" [size]="20" />
+                </span>
+                <div class="profile__section-copy">
+                  <span class="profile__eyebrow">{{ 'profile.adminReview' | translate }}</span>
+                  <h2 id="profile-ia-title">{{ 'profile.aiTitle' | translate }}</h2>
+                  <p>{{ 'profile.aiDesc' | translate }}</p>
+                </div>
+                @if (status.dropoutComplete()) {
+                  <span class="profile__state profile__state--locked">
+                    <eci-icon name="check" [size]="15" />
+                    {{ 'profile.aiComplete' | translate }}
+                  </span>
+                }
+              </div>
+
+              @if (aiSaved()) {
+                <div class="profile__feedback profile__feedback--success" aria-live="polite">
+                  <eci-icon name="check" [size]="16" />
+                  <span>{{ 'profile.aiThanks' | translate }}</span>
+                </div>
+              }
+
+              @if (!status.loaded()) {
+                <p class="profile__muted">{{ 'common.loading' | translate }}</p>
+              } @else if (status.dropoutComplete()) {
+                <div class="profile__summary" aria-label="Datos de IA guardados">
+                  @for (item of dropoutSummary(); track item.key) {
+                    <div class="profile__summary-item">
+                      <span>{{ item.labelKey | translate }}</span>
+                      <strong>
+                        @if (item.valueKey) {
+                          {{ item.valueKey | translate }}
+                        } @else {
+                          {{ item.value }}
+                        }
+                      </strong>
+                    </div>
+                  }
+                </div>
+              } @else if (showIaForm()) {
+                @if (!aiExpanded()) {
+                  <div class="profile__prompt">
+                    <p>{{ 'profile.aiPrompt' | translate }}</p>
+                    <eci-button (click)="openIaPanel()">{{ 'profile.aiAction' | translate }}</eci-button>
+                  </div>
+                } @else {
+                  <eci-dropout-ia-fields
+                    [group]="dropoutGroup"
+                    [paginated]="true"
+                    [pending]="aiSaving()"
+                    (completed)="submitIa()"
+                  />
+                  @if (aiError()) {
+                    <p class="profile__feedback profile__feedback--error" role="alert">
+                      <eci-icon name="info" [size]="16" />
+                      <span>{{ 'profile.aiSaveError' | translate }}</span>
+                    </p>
+                  }
+                }
+              }
+            </section>
+          </eci-card>
+        </main>
       </div>
-    </div>
 
-    <form class="profile" [formGroup]="form" (ngSubmit)="save()">
-      <label class="profile__field">
-        <span>{{ 'common.name' | translate }}</span>
-        <input type="text" formControlName="name" autocomplete="name" />
-      </label>
+      <eci-modal
+        [open]="confirmCareerLockOpen()"
+        (openChange)="confirmCareerLockOpen.set($event)"
+        titleKey="profile.careerLockTitle"
+        size="wide"
+      >
+        <div class="profile__confirm">
+          <div class="profile__confirm-alert">
+            <span class="profile__confirm-icon" aria-hidden="true">
+              <eci-icon name="info" [size]="22" />
+            </span>
+            <p>{{ 'profile.careerLockMessage' | translate }}</p>
+          </div>
 
-      <label class="profile__field">
-        <span>{{ 'common.email' | translate }}</span>
-        <input type="email" [value]="currentUser.email" disabled />
-      </label>
+          <div
+            class="profile__confirm-summary"
+            [attr.aria-label]="'profile.careerLockSummary' | translate"
+          >
+            <span class="profile__confirm-summary-title">{{
+              'profile.careerLockSummary' | translate
+            }}</span>
+            <dl>
+              <div>
+                <dt>{{ 'profile.primaryProgram' | translate }}</dt>
+                <dd>{{ selectedPrimaryProgram() || '-' }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'profile.secondaryProgram' | translate }}</dt>
+                <dd>
+                  @if (selectedSecondaryProgram()) {
+                    {{ selectedSecondaryProgram() }}
+                  } @else {
+                    {{ 'profile.noSecondProgram' | translate }}
+                  }
+                </dd>
+              </div>
+            </dl>
+          </div>
 
-      <label class="profile__field">
-        <span>{{ 'common.program' | translate }}</span>
-        <input type="text" formControlName="program" autocomplete="off" />
-      </label>
-
-      <label class="profile__field">
-        <span>{{ 'profile.role' | translate }}</span>
-        <input type="text" [value]="currentUser.role" disabled />
-      </label>
-
-      @if (saved()) {
-        <output class="profile__saved" aria-live="polite">{{ 'profile.saved' | translate }}</output>
-      }
-
-      <eci-button type="submit">{{ 'profile.save' | translate }}</eci-button>
-    </form>
-  </eci-card>
-}
+          <div class="profile__modal-actions">
+            <eci-button
+              type="button"
+              variant="secondary"
+              [block]="true"
+              [disabled]="profileSaving()"
+              (click)="confirmCareerLockOpen.set(false)"
+            >
+              {{ 'common.cancel' | translate }}
+            </eci-button>
+            <eci-button
+              type="button"
+              [block]="true"
+              [disabled]="profileSaving()"
+              (click)="confirmCareerLock()"
+            >
+              {{ 'profile.confirmCareerLock' | translate }}
+            </eci-button>
+          </div>
+        </div>
+      </eci-modal>
+    }
   </div>
 </div>

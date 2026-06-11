@@ -4,6 +4,7 @@ import { IA_CONFIG } from '../ia/ia.config';
 import { STUDY_CONFIG } from '../study/study.config';
 import { TALK_CONFIG } from '../talk/talk.config';
 import { TODO_CONFIG } from '../todo/todo.config';
+import { stripTrailingSlashes } from './url.util';
 
 /**
  * Bases de URL de nuestros propios microservicios (auth, IA, study, talk, todo).
@@ -24,10 +25,15 @@ export function ownApiHosts(): string[] {
     study.studyApiUrl,
     talk.talkApiUrl,
     todo.todoApiUrl,
-  ].filter((host): host is string => !!host);
+  ]
+    .filter((host): host is string => !!host)
+    .map((host) => stripTrailingSlashes(host));
 }
 
 /** ¿La URL apunta a alguno de nuestros servicios? */
 export function isOwnApiUrl(url: string, hosts: readonly string[]): boolean {
-  return hosts.some((base) => url.startsWith(base));
+  return hosts.some((host) => {
+    const base = stripTrailingSlashes(host);
+    return url === base || url.startsWith(`${base}/`);
+  });
 }

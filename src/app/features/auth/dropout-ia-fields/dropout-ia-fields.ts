@@ -171,7 +171,7 @@ export class DropoutIaFieldsComponent extends WizardFieldsBase {
       control: 'fatherOccupation',
       options: [...OCCUPATIONS, { value: 46, key: 'other' }],
     },
-    { kind: 'number', control: 'ageAtEnrollment', min: 17, max: 70, step: 1, hint: true },
+    { kind: 'number', control: 'ageAtEnrollment', min: 14, max: 70, step: 1, hint: true },
     { kind: 'number', control: 'applicationOrder', min: 0, max: 9, step: 1, hint: true },
     { kind: 'number', control: 'curricularUnits1stSemEnrolled', min: 0, max: 26, step: 1, hint: true },
     { kind: 'number', control: 'curricularUnits1stSemApproved', min: 0, max: 26, step: 1, hint: true },

@@ -1,11 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { AppNotification } from './notification.model';
+import { AppNotification, NotificationKind } from './notification.model';
 
 const MOCK_NOTIFICATIONS: readonly AppNotification[] = [
   {
     id: 'n1',
     titleKey: 'notifications.title',
-    body: 'Tu solicitud de monitoría de Cálculo fue aceptada.',
+    bodyKey: 'notifications.mock.accepted',
+    bodyParams: { subject: 'Calculo' },
     kind: 'success',
     createdAt: '2026-05-29T08:30:00Z',
     read: false,
@@ -13,7 +14,8 @@ const MOCK_NOTIFICATIONS: readonly AppNotification[] = [
   {
     id: 'n2',
     titleKey: 'notifications.title',
-    body: 'Nuevo material disponible en Programación.',
+    bodyKey: 'notifications.mock.material',
+    bodyParams: { subject: 'Programacion' },
     kind: 'info',
     createdAt: '2026-05-28T15:00:00Z',
     read: false,
@@ -29,6 +31,24 @@ export class NotificationsService {
   private readonly _items = signal<AppNotification[]>([...MOCK_NOTIFICATIONS]);
   readonly items = this._items.asReadonly();
   readonly unreadCount = computed(() => this._items().filter((n) => !n.read).length);
+
+  add(
+    bodyKey: string,
+    kind: NotificationKind = 'info',
+    bodyParams: Record<string, string | number> = {},
+    titleKey = 'notifications.title',
+  ): void {
+    const item: AppNotification = {
+      id: `n-${Date.now()}-${this._items().length}`,
+      titleKey,
+      bodyKey,
+      bodyParams,
+      kind,
+      createdAt: new Date().toISOString(),
+      read: false,
+    };
+    this._items.update((items) => [item, ...items]);
+  }
 
   markAllRead(): void {
     this._items.update((items) => items.map((n) => ({ ...n, read: true })));

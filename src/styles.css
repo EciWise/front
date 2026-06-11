@@ -61,6 +61,9 @@
   --border: #d9d9e0;
   --overlay: rgba(17, 17, 20, 0.45);
   --accent: var(--brand-red);
+  --scrollbar-track: color-mix(in srgb, var(--surface-2) 78%, transparent);
+  --scrollbar-thumb: color-mix(in srgb, var(--brand-red) 58%, var(--border));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red) 78%, var(--text));
   /* Chevron de los <select>: usa el color text-muted del tema (no se puede
      usar currentColor dentro de background-image, por eso va embebido). */
   --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b5b66' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
@@ -77,6 +80,9 @@
   --border: #33333d;
   --overlay: rgba(0, 0, 0, 0.6);
   --accent: var(--brand-red-soft);
+  --scrollbar-track: color-mix(in srgb, var(--surface-2) 76%, transparent);
+  --scrollbar-thumb: color-mix(in srgb, var(--brand-red-soft) 60%, var(--surface-3));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red-soft) 82%, var(--text));
   --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   color-scheme: dark;
 }
@@ -206,6 +212,9 @@ html[data-theme='light'] .auth .auth__card {
   --text: #000000;
   --text-muted: #1a1a1a;
   --border: #000000;
+  --scrollbar-track: var(--surface);
+  --scrollbar-thumb: var(--text-muted);
+  --scrollbar-thumb-hover: var(--accent);
   --shadow-sm: 0 0 0 2px #000000;
   font-size: 1.0625rem;
 }
@@ -214,6 +223,9 @@ html[data-theme='light'] .auth .auth__card {
   --text: #ffffff;
   --text-muted: #f0f0f0;
   --border: #ffffff;
+  --scrollbar-track: var(--surface);
+  --scrollbar-thumb: var(--text-muted);
+  --scrollbar-thumb-hover: var(--accent);
 }
 
 .a11y-mode :focus-visible {
@@ -290,6 +302,60 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html,
+body,
+* {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 2.5rem;
+  border: 3px solid var(--scrollbar-track);
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--scrollbar-thumb) 92%, #ffffff 8%),
+    var(--scrollbar-thumb)
+  );
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--accent);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+.a11y-mode,
+.a11y-mode * {
+  scrollbar-width: auto;
+}
+
+.a11y-mode::-webkit-scrollbar,
+.a11y-mode *::-webkit-scrollbar {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 body {

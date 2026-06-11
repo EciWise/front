@@ -1,0 +1,65 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="achievements.title" icon="trophy" />
+
+  <div class="eci-fit__body achievements">
+    @if (loading()) {
+      <eci-card>
+        <p class="achievements__muted">{{ 'common.loading' | translate }}</p>
+      </eci-card>
+    } @else if (error()) {
+      <eci-card>
+        <p class="achievements__error" role="alert">{{ 'achievements.error' | translate }}</p>
+      </eci-card>
+    } @else {
+      <section class="achievements__grid" aria-label="Resumen de logros">
+        @for (item of nextMilestones(); track item.type) {
+          <eci-card>
+            <div class="achievements__progress-head">
+              <span class="achievements__icon"><eci-icon name="trophy" [size]="22" /></span>
+              <div>
+                <h2>{{ labelKey(item.type) | translate: { count: item.target } }}</h2>
+                <p>
+                  {{
+                    'achievements.next'
+                      | translate: { current: item.current, target: item.target }
+                  }}
+                </p>
+              </div>
+            </div>
+            <div class="achievements__bar" aria-hidden="true">
+              <span [style.width.%]="progress(item)"></span>
+            </div>
+          </eci-card>
+        }
+      </section>
+
+      <eci-card>
+        <div class="achievements__section-head">
+          <h2>{{ 'achievements.unlocked' | translate }}</h2>
+          <span>{{ achievements().length }}</span>
+        </div>
+
+        @if (achievements().length === 0) {
+          <p class="achievements__muted">{{ 'achievements.empty' | translate }}</p>
+        } @else {
+          <ul class="achievements__list">
+            @for (achievement of achievements(); track achievement.id) {
+              <li>
+                <span class="achievements__badge"><eci-icon name="star" [size]="18" /></span>
+                <div>
+                  <strong>
+                    {{
+                      labelKey(achievement.type)
+                        | translate: { count: achievement.milestone }
+                    }}
+                  </strong>
+                  <span>{{ achievement.awardedAt | date: 'mediumDate' }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </eci-card>
+    }
+  </div>
+</div>

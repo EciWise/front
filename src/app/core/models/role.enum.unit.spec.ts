@@ -1,4 +1,4 @@
-import { Role, ROLE_HOME, roleFromApi, roleToApi } from './role.enum';
+import { Role, ROLE_HOME, roleApiName, roleFromApi, roleLabelKey, roleToApi } from './role.enum';
 
 describe('role enum unit', () => {
   it('mapea roles del backend a rutas principales del front', () => {
@@ -18,5 +18,19 @@ describe('role enum unit', () => {
     expect(roleToApi(Role.Student)).toBe('estudiante');
     expect(roleToApi(Role.Tutor)).toBe('tutor');
     expect(roleToApi(Role.Admin)).toBe('admin');
+  });
+
+  it('devuelve claves i18n para roles del front y del backend', () => {
+    expect(roleLabelKey(Role.Student)).toBe('roles.STUDENT');
+    expect(roleLabelKey('STUDENT')).toBe('roles.STUDENT');
+    expect(roleLabelKey('estudiante')).toBe('roles.STUDENT');
+    expect(roleLabelKey('tutor')).toBe('roles.TUTOR');
+    expect(roleLabelKey('admin')).toBe('roles.ADMIN');
+  });
+
+  it('devuelve nombres de API para clases visuales aunque llegue el enum del front', () => {
+    expect(roleApiName('STUDENT')).toBe('estudiante');
+    expect(roleApiName('TUTOR')).toBe('tutor');
+    expect(roleApiName('ADMIN')).toBe('admin');
   });
 });

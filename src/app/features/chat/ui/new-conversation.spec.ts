@@ -82,6 +82,8 @@ describe('NewConversationComponent', () => {
 
     expect(directory.search).toHaveBeenCalledWith('ana');
     expect(el.querySelector('.new-conv__result-name')?.textContent).toContain('Ana Diaz');
+    expect(el.querySelector('.new-conv__result-rol')?.textContent).toContain('Estudiante');
+    expect(el.querySelector('.new-conv__result-rol')?.textContent).not.toContain('estudiante');
     expect(el.textContent).not.toContain('Yo');
 
     el.querySelector<HTMLButtonElement>('.new-conv__result')?.click();

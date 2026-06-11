@@ -1,0 +1,8 @@
+@if (show()) {
+  <eci-card>
+    <h2 class="ips__title">{{ 'profile.aiTitle' | translate }}</h2>
+    <p class="ips__desc">{{ 'profile.aiPrompt' | translate }}</p>
+
+    <eci-button (click)="start()">{{ 'profile.aiAction' | translate }}</eci-button>
+  </eci-card>
+}

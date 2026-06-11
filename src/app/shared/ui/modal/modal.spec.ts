@@ -8,7 +8,12 @@ import { ModalComponent } from './modal';
   standalone: true,
   imports: [ModalComponent],
   template: `
-    <eci-modal [open]="open()" (openChange)="open.set($event)" [titleKey]="titleKey()">
+    <eci-modal
+      [open]="open()"
+      (openChange)="open.set($event)"
+      [titleKey]="titleKey()"
+      [size]="size()"
+    >
       <button type="button" class="projected-action">Guardar</button>
     </eci-modal>
   `,
@@ -16,6 +21,7 @@ import { ModalComponent } from './modal';
 class ModalHostComponent {
   readonly open = signal(true);
   readonly titleKey = signal('tasks.addTitle');
+  readonly size = signal<'default' | 'wide'>('default');
 }
 
 describe('ModalComponent', () => {
@@ -81,5 +87,12 @@ describe('ModalComponent', () => {
     const dialog = el().querySelector<HTMLElement>('[role="dialog"]')!;
     expect(dialog.getAttribute('aria-label')).toBeNull();
     expect(el().querySelector('.modal__title')).toBeNull();
+  });
+
+  it('aplica la variante amplia cuando se solicita', () => {
+    host().size.set('wide');
+    fixture.detectChanges();
+
+    expect(el().querySelector('.modal')?.classList).toContain('modal--wide');
   });
 });

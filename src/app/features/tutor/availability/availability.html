@@ -1,37 +1,178 @@
-<div class="eci-fit">
+<div class="eci-fit availability-page">
   <eci-page-header titleKey="tutor.availability.title" icon="availability" />
 
-  <div class="eci-fit__body">
-<eci-card>
-  <p class="avail__hint">{{ 'tutor.availability.hint' | translate }}</p>
+  @if (actionSuccess()) {
+    <output class="notice notice--success eci-fit__chrome" aria-live="polite">
+      {{ actionSuccess() | translate }}
+    </output>
+  }
 
-  <fieldset class="avail__grid" [attr.aria-label]="'tutor.availability.title' | translate">
-    <div class="avail__corner" aria-hidden="true"></div>
-    @for (day of days; track day) {
-      <div class="avail__day">{{ 'days.' + day | translate }}</div>
-    }
+  <eci-card class="eci-fit__chrome">
+    <form class="availability-form" (submit)="submitAvailability($event)">
+      <div class="availability-form__head">
+        <div>
+          <h2>{{ (selected() ? 'tutor.availability.editTitle' : 'tutor.availability.createTitle') | translate }}</h2>
+          <p>{{ 'tutor.availability.hint' | translate }}</p>
+        </div>
+        @if (selected()) {
+          <eci-button variant="ghost" type="button" (buttonClick)="resetForm()">
+            {{ 'tutor.availability.new' | translate }}
+          </eci-button>
+        }
+      </div>
 
-    @for (block of blocks; track block) {
-      <div class="avail__time">{{ block }}</div>
-      @for (day of days; track day) {
-        <button
-          type="button"
-          class="avail__cell"
-          [class.avail__cell--on]="isActive(day, block)"
-          [attr.aria-pressed]="isActive(day, block)"
-          [attr.aria-label]="('days.' + day | translate) + ' ' + block"
-          (click)="toggle(day, block)"
-        ></button>
+      @if (actionError()) {
+        <p class="form-error" role="alert">{{ actionError() | translate }}</p>
       }
-    }
-  </fieldset>
 
-  <div class="avail__actions">
-    @if (saved()) {
-      <output class="avail__saved" aria-live="polite">{{ 'tutor.availability.saved' | translate }}</output>
+      <div class="availability-form__grid">
+        <div class="field">
+          <span>{{ 'fields.subject' | translate }}</span>
+          <eci-select
+            [value]="model().subjectId"
+            [options]="subjectOptions()"
+            [placeholder]="'fields.subject' | translate"
+            [ariaLabel]="'fields.subject' | translate"
+            (valueChange)="setSubject($event)"
+          />
+        </div>
+
+        <label class="field">
+          <span>{{ 'tutorias.fields.date' | translate }}</span>
+          <input type="date" [formField]="availabilityForm.date" />
+        </label>
+
+        <label class="field">
+          <span>{{ 'tutor.availability.startTime' | translate }}</span>
+          <input type="time" [formField]="availabilityForm.startTime" />
+        </label>
+
+        <label class="field">
+          <span>{{ 'tutor.availability.endTime' | translate }}</span>
+          <input type="time" [formField]="availabilityForm.endTime" />
+        </label>
+
+        <div class="field">
+          <span>{{ 'tutorias.fields.mode' | translate }}</span>
+          <eci-select
+            [value]="model().mode"
+            [options]="modeOptions"
+            [placeholder]="'tutorias.fields.mode' | translate"
+            [ariaLabel]="'tutorias.fields.mode' | translate"
+            (valueChange)="setMode($event)"
+          />
+        </div>
+
+        <label class="field">
+          <span>{{ 'tutor.schedule.seats' | translate }}</span>
+          <input type="number" [formField]="availabilityForm.capacity" />
+        </label>
+
+        @if (model().mode === 'presential') {
+          <label class="field availability-form__room">
+            <span>{{ 'tutor.availability.room' | translate }}</span>
+            <input type="text" [formField]="availabilityForm.room" />
+          </label>
+        }
+      </div>
+
+      @if (availabilityForm.capacity().touched() && availabilityForm.capacity().invalid()) {
+        <p class="form-error">{{ 'tutor.availability.validation.capacity' | translate }}</p>
+      }
+
+      <div class="availability-form__actions">
+        <eci-button type="submit">
+          <eci-icon [name]="selected() ? 'edit' : 'plus'" [size]="16" />
+          {{ (selected() ? 'tutor.availability.update' : 'tutor.availability.create') | translate }}
+        </eci-button>
+      </div>
+    </form>
+  </eci-card>
+
+  <div class="eci-fit__body">
+    @if (availabilities().length === 0) {
+      <eci-card>
+        <p class="empty">{{ 'tutor.availability.empty' | translate }}</p>
+      </eci-card>
+    } @else {
+      <ul class="availability-list">
+        @for (availability of availabilities(); track availability.id) {
+          <li>
+            <eci-card>
+              <article class="availability-item">
+                <div class="availability-item__main">
+                  <div class="availability-item__eyebrow">
+                    <span class="status" [attr.data-status]="availability.status">
+                      {{ 'tutor.availability.status.' + availability.status | translate }}
+                    </span>
+                    <span>{{ modeKey(availability.mode) | translate }}</span>
+                    <span>{{ availability.date | date: 'mediumDate' }}</span>
+                  </div>
+                  <h2>{{ subjectName(availability.subjectId) }}</h2>
+                  <p>
+                    <span>{{ availability.startTime }} - {{ availability.endTime }}</span>
+                    <span>{{ 'tutorias.seatsAvailable' | translate: { count: availableSeats(availability), total: availability.capacity } }}</span>
+                    <span>{{ 'tutor.availability.reserved' | translate: { count: reservationCount(availability) } }}</span>
+                  </p>
+                  @if (availability.mode === 'presential') {
+                    <p class="availability-item__location">{{ availability.room }}</p>
+                  } @else {
+                    <p class="availability-item__location">{{ availability.virtualUrl }}</p>
+                  }
+                </div>
+
+                <div class="availability-item__actions">
+                  <eci-button
+                    variant="secondary"
+                    [disabled]="!canModify(availability)"
+                    (buttonClick)="edit(availability)"
+                  >
+                    <eci-icon name="edit" [size]="16" />
+                    {{ 'common.edit' | translate }}
+                  </eci-button>
+                  <eci-button
+                    variant="ghost"
+                    [disabled]="!canModify(availability)"
+                    (buttonClick)="remove(availability)"
+                  >
+                    <eci-icon name="trash" [size]="16" />
+                    {{ 'common.delete' | translate }}
+                  </eci-button>
+                  @if (availability.status === 'active') {
+                    <eci-button variant="ghost" (buttonClick)="openCancel(availability)">
+                      <eci-icon name="close" [size]="16" />
+                      {{ 'tutor.availability.cancelPublished' | translate }}
+                    </eci-button>
+                  }
+                </div>
+              </article>
+            </eci-card>
+          </li>
+        }
+      </ul>
     }
-    <eci-button (click)="save()">{{ 'tutor.availability.save' | translate }}</eci-button>
-  </div>
-</eci-card>
   </div>
 </div>
+
+<eci-modal [(open)]="cancelOpen" titleKey="tutor.availability.cancelTitle">
+  <form class="modal-form" (submit)="submitCancel($event)">
+    @if (actionError()) {
+      <p class="form-error" role="alert">{{ actionError() | translate }}</p>
+    }
+
+    <label class="field">
+      <span>{{ 'tutor.availability.cancelReason' | translate }}</span>
+      <textarea rows="4" [formField]="cancelForm.reason"></textarea>
+      @if (cancelForm.reason().touched() && cancelForm.reason().invalid()) {
+        <span class="form-error">{{ 'tutor.availability.validation.cancelReason' | translate }}</span>
+      }
+    </label>
+
+    <div class="modal-actions">
+      <eci-button variant="ghost" type="button" (buttonClick)="cancelOpen.set(false)">
+        {{ 'common.cancel' | translate }}
+      </eci-button>
+      <eci-button type="submit">{{ 'tutor.availability.confirmCancel' | translate }}</eci-button>
+    </div>
+  </form>
+</eci-modal>

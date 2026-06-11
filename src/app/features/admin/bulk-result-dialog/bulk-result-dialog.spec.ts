@@ -63,6 +63,8 @@ describe('BulkResultDialogComponent', () => {
 
     expect(rows(fixture).length).toBe(2);
     expect(el.querySelector('.dialog__chip--ok')?.textContent).toContain('2');
+    expect(el.querySelector('.dialog__role')?.textContent).toContain('Estudiante');
+    expect(el.querySelector('.dialog__role')?.textContent).not.toContain('estudiante');
     // Sin errores, no se muestra el chip de error ni la pestaña de errores.
     expect(el.querySelector('.dialog__chip--err')).toBeNull();
     expect(el.querySelectorAll('.dialog__tab').length).toBe(1);

@@ -76,7 +76,7 @@
           <button type="button" class="new-conv__result" (click)="toggle(u)">
             <span class="new-conv__result-body">
               <span class="new-conv__result-name">{{ u.name }}</span>
-              <span class="new-conv__result-rol">{{ u.rol }}</span>
+              <span class="new-conv__result-rol">{{ roleLabelKey(u.rol) | translate }}</span>
             </span>
             @if (isSelected(u)) {
               <svg lucideCheck [size]="16" aria-hidden="true"></svg>

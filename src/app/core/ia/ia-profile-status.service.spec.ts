@@ -1,10 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { Role } from '../models/role.enum';
+import { User } from '../models/user.model';
 import { IaDataService } from './ia-data.service';
 import { DatosIa } from './ia.model';
 import { IaProfileStatusService } from './ia-profile-status.service';
 
-const completeProfile: DatosIa = {
+const datosIaRegistro = {
   gender: 1,
   ethnicity: 2,
   parentalEducation: 3,
@@ -16,6 +19,10 @@ const completeProfile: DatosIa = {
   sports: 1,
   music: 0,
   volunteering: 1,
+};
+
+const iaProfileFixture: DatosIa = {
+  ...datosIaRegistro,
   maritalStatus: 0,
   applicationMode: 1,
   applicationOrder: 1,
@@ -47,11 +54,16 @@ const completeProfile: DatosIa = {
 describe('IaProfileStatusService', () => {
   let getMyData: ReturnType<typeof vi.fn>;
   let service: IaProfileStatusService;
+  let currentUser: User | null;
 
   beforeEach(() => {
-    getMyData = vi.fn(() => of(completeProfile));
+    currentUser = null;
+    getMyData = vi.fn(() => of(iaProfileFixture));
     TestBed.configureTestingModule({
-      providers: [{ provide: IaDataService, useValue: { getMyData } }],
+      providers: [
+        { provide: IaDataService, useValue: { getMyData } },
+        { provide: AuthService, useValue: { user: () => currentUser } },
+      ],
     });
     service = TestBed.inject(IaProfileStatusService);
   });
@@ -65,7 +77,7 @@ describe('IaProfileStatusService', () => {
   });
 
   it('considera incompleto el perfil si un campo requerido viene null', () => {
-    getMyData.mockReturnValue(of({ ...completeProfile, absences: null }));
+    getMyData.mockReturnValue(of({ ...iaProfileFixture, absences: null }));
 
     service.load();
 
@@ -82,5 +94,49 @@ describe('IaProfileStatusService', () => {
     expect(service.loaded()).toBe(true);
     expect(service.performanceComplete()).toBe(false);
     expect(service.dropoutComplete()).toBe(false);
+  });
+
+  it('usa los datos IA de la sesion cuando el endpoint aun no tiene registro', () => {
+    getMyData.mockReturnValue(of(null));
+    currentUser = {
+      id: 'u1',
+      name: 'Ana Diaz',
+      email: 'ana@escuelaing.edu.co',
+      role: Role.Student,
+      active: true,
+      datosIa: datosIaRegistro,
+    };
+
+    service.load();
+
+    expect(service.loaded()).toBe(true);
+    expect(service.performanceComplete()).toBe(true);
+    expect(service.dropoutComplete()).toBe(false);
+  });
+
+  it('no conserva datos IA de un usuario anterior al cambiar de sesion', () => {
+    getMyData.mockReturnValue(of(null));
+    currentUser = {
+      id: 'u1',
+      name: 'Ana Diaz',
+      email: 'ana@escuelaing.edu.co',
+      role: Role.Student,
+      active: true,
+      datosIa: datosIaRegistro,
+    };
+    service.load();
+    expect(service.performanceComplete()).toBe(true);
+
+    currentUser = {
+      id: 'u2',
+      name: 'Luis Ruiz',
+      email: 'luis@escuelaing.edu.co',
+      role: Role.Student,
+      active: true,
+    };
+    service.load();
+
+    expect(service.loaded()).toBe(true);
+    expect(service.performanceComplete()).toBe(false);
   });
 });

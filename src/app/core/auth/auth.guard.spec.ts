@@ -7,6 +7,9 @@ import { AuthService } from './auth.service';
 import { AUTH_CONFIG } from './auth.config';
 import { Role } from '../models/role.enum';
 
+const validJwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1MSIsImV4cCI6NDEwMjQ0NDgwMH0.sig';
+
 function runAuthGuard(url: string): boolean | UrlTree {
   const state = { url } as RouterStateSnapshot;
   const route = {} as ActivatedRouteSnapshot;
@@ -36,7 +39,7 @@ describe('auth guards', () => {
 
   /** Inicia sesión sin HTTP, sembrando la sesión directamente. */
   function signInStudent(): void {
-    auth.completeSession('token', {
+    auth.completeSession(validJwt, {
       id: 'u1',
       email: 'estudiante@escuelaing.edu.co',
       nombre: 'Ana',

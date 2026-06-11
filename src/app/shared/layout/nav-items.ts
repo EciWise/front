@@ -12,12 +12,14 @@ export interface NavItem {
 
 const STUDENT_NAV: readonly NavItem[] = [
   { labelKey: 'nav.dashboard', route: '/student', icon: 'dashboard', exact: true },
-  { labelKey: 'nav.monitorias', route: '/student/monitorias', icon: 'monitorias' },
+  { labelKey: 'nav.tutorias', route: '/student/tutorias', icon: 'tutorias' },
   { labelKey: 'nav.materials', route: '/student/materials', icon: 'materials' },
   { labelKey: 'nav.games', route: '/student/games', icon: 'games' },
   { labelKey: 'nav.practica', route: '/student/practica', icon: 'quiz' },
   { labelKey: 'nav.aprendizaje', route: '/student/aprendizaje', icon: 'aprendizaje' },
   { labelKey: 'nav.tasks', route: '/student/tasks', icon: 'tasks' },
+  { labelKey: 'nav.achievements', route: '/student/logros', icon: 'trophy' },
+  { labelKey: 'nav.forums', route: '/student/foros', icon: 'chat' },
   { labelKey: 'nav.profile', route: '/student/profile', icon: 'profile' },
 ];
 

@@ -2,9 +2,10 @@ import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core
 import { stripTrailingSlashes } from '../config/url.util';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Observable, map, of, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { Observable, map } from 'rxjs';
 import { AUTH_CONFIG } from './auth.config';
+import { AppError } from '../errors/app-error';
 import { Role, roleFromApi } from '../models/role.enum';
 import {
   ApiUser,
@@ -20,6 +21,23 @@ export { AppError, AppError as AuthError } from '../errors/app-error';
 
 const SESSION_KEY = 'eciwise.session';
 const TOKEN_KEY = 'eciwise.token';
+
+interface JwtSessionPayload {
+  readonly exp?: number;
+}
+
+function isUsableToken(token: string | null): token is string {
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const payload = jwtDecode<JwtSessionPayload>(token);
+    return typeof payload.exp !== 'number' || payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Servicio de autenticación real contra wise_auth. Mantiene la sesión en una
@@ -44,7 +62,18 @@ export class AuthService {
 
   /** JWT actual (para el interceptor / SSR-safe). */
   get token(): string | null {
-    return this.isBrowser ? localStorage.getItem(TOKEN_KEY) : null;
+    if (!this.isBrowser) {
+      return null;
+    }
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (isUsableToken(token)) {
+      return token;
+    }
+    if (token) {
+      this.clearStoredSession();
+    }
+    return null;
   }
 
   loginWithEmail(credentials: EmailCredentials): Observable<User> {
@@ -56,7 +85,14 @@ export class AuthService {
   register(payload: RegisterRequest): Observable<User> {
     return this.http
       .post<AuthResponse>(`${this.base}/auth/register`, payload)
-      .pipe(map((res) => this.persist(res.access_token, res.user)));
+      .pipe(
+        map((res) =>
+          this.persist(res.access_token, {
+            ...res.user,
+            datosIa: res.user.datosIa ?? payload.datosIa,
+          }),
+        ),
+      );
   }
 
   /**
@@ -95,23 +131,43 @@ export class AuthService {
 
   logout(): void {
     this._user.set(null);
-    if (this.isBrowser) {
-      localStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem(TOKEN_KEY);
-    }
+    this.clearStoredSession();
   }
 
   /** Actualiza los datos editables del usuario en sesión. */
-  updateProfile(changes: Pick<Partial<User>, 'name' | 'program' | 'avatarUrl'>): void {
+  updateProfile(
+    changes: Pick<Partial<User>, 'name' | 'program' | 'secondaryProgram' | 'avatarUrl'>,
+  ): Observable<User | null> {
     const current = this._user();
     if (!current) {
-      return;
+      return of(null);
     }
-    const updated: User = { ...current, ...changes };
-    this._user.set(updated);
-    if (this.isBrowser) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+    if (!this.token) {
+      this.logout();
+      return throwError(() => new AppError('auth.invalid'));
     }
+    return this.http
+      .patch<ApiUser>(`${this.base}/gestion-usuarios/me/info-personal`, {
+        ...(changes.program !== undefined && { programaPrincipal: changes.program }),
+        ...(changes.secondaryProgram ? { programaSecundario: changes.secondaryProgram } : {}),
+      })
+      .pipe(
+        map((api) => {
+          const updated: User = {
+            ...current,
+            name: changes.name ?? current.name,
+            avatarUrl: changes.avatarUrl ?? current.avatarUrl,
+            program: api.programaPrincipal ?? changes.program ?? current.program,
+            secondaryProgram:
+              api.programaSecundario ?? changes.secondaryProgram ?? current.secondaryProgram,
+          };
+          this._user.set(updated);
+          if (this.isBrowser) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+          }
+          return updated;
+        }),
+      );
   }
 
   private get base(): string {
@@ -136,12 +192,19 @@ export class AuthService {
       role: roleFromApi(api.rol),
       active: true,
       avatarUrl: api.avatarUrl ?? undefined,
+      ...(api.programaPrincipal ? { program: api.programaPrincipal } : {}),
+      ...(api.programaSecundario ? { secondaryProgram: api.programaSecundario } : {}),
       mustChangePassword: api.mustChangePassword ?? false,
+      ...(api.datosIa ? { datosIa: api.datosIa } : {}),
     };
   }
 
   private restoreUser(): User | null {
     if (!this.isBrowser) {
+      return null;
+    }
+    if (!isUsableToken(localStorage.getItem(TOKEN_KEY))) {
+      this.clearStoredSession();
       return null;
     }
     const raw = localStorage.getItem(SESSION_KEY);
@@ -156,10 +219,17 @@ export class AuthService {
     try {
       return JSON.parse(raw) as User;
     } catch {
+      this.clearStoredSession();
       return null;
     }
   }
 
+  private clearStoredSession(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  }
   /**
    * true solo si el JWT trae `exp` y ya pasó (o el token está corrupto). Un token
    * sin `exp` se considera válido: no se fuerza el cierre de sesión por su ausencia.

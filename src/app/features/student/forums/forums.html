@@ -1,0 +1,160 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="forums.title" icon="chat" />
+
+  <div class="eci-fit__body forums">
+    @if (error()) {
+      <eci-card>
+        <p class="forums__error" role="alert">{{ 'forums.error' | translate }}</p>
+      </eci-card>
+    }
+
+    <div class="forums__layout">
+      <aside class="forums__sidebar" aria-label="Foros disponibles">
+        <eci-card>
+          <form class="forums__create" (ngSubmit)="createForum()">
+            <h2>{{ 'forums.createTitle' | translate }}</h2>
+            <label>
+              <span>{{ 'forums.name' | translate }}</span>
+              <input
+                type="text"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+                name="forumName"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span>{{ 'forums.description' | translate }}</span>
+              <textarea
+                [ngModel]="description()"
+                (ngModelChange)="description.set($event)"
+                name="forumDescription"
+                rows="3"
+              ></textarea>
+            </label>
+            <label>
+              <span>{{ 'forums.participants' | translate }}</span>
+              <input
+                type="search"
+                [ngModel]="search()"
+                (ngModelChange)="onUserSearch($event)"
+                name="forumSearch"
+                [placeholder]="'common.search' | translate"
+              />
+            </label>
+
+            @if (selected().length > 0) {
+              <div class="forums__chips" aria-label="Participantes seleccionados">
+                @for (user of selected(); track user.id) {
+                  <button type="button" (click)="toggleUser(user)">{{ user.name }}</button>
+                }
+              </div>
+            }
+
+            <div class="forums__users">
+              @for (user of directoryResults(); track user.id) {
+                <button
+                  type="button"
+                  [class.forums__user--selected]="isSelected(user)"
+                  (click)="toggleUser(user)"
+                >
+                  <span>{{ user.name }}</span>
+                  <small>{{ user.email }}</small>
+                </button>
+              }
+            </div>
+
+            <eci-button
+              type="submit"
+              [disabled]="creating() || !name().trim() || selected().length === 0"
+              [block]="true"
+            >
+              {{ 'forums.create' | translate }}
+            </eci-button>
+          </form>
+        </eci-card>
+
+        <eci-card>
+          <div class="forums__list-head">
+            <h2>{{ 'forums.listTitle' | translate }}</h2>
+            <span>{{ forums().length }}</span>
+          </div>
+
+          @if (loading()) {
+            <p class="forums__muted">{{ 'common.loading' | translate }}</p>
+          } @else if (forums().length === 0) {
+            <p class="forums__muted">{{ 'forums.empty' | translate }}</p>
+          } @else {
+            <ul class="forums__list">
+              @for (forum of forums(); track forum.id) {
+                <li>
+                  <button
+                    type="button"
+                    [class.forums__forum--active]="activeId() === forum.id"
+                    (click)="openForum(forum)"
+                  >
+                    <strong>{{ forum.name || ('forums.untitled' | translate) }}</strong>
+                    <span>{{ forum.participants.length }} {{ 'forums.members' | translate }}</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </eci-card>
+      </aside>
+
+      <main class="forums__thread">
+        <eci-card>
+          @if (activeForum(); as forum) {
+            <div class="forums__thread-head">
+              <div>
+                <h2>{{ forum.name }}</h2>
+                @if (forum.description) {
+                  <p>{{ forum.description }}</p>
+                }
+              </div>
+              <span><eci-icon name="users" [size]="16" /> {{ forum.participants.length }}</span>
+            </div>
+
+            @if (messagesLoading()) {
+              <p class="forums__muted">{{ 'common.loading' | translate }}</p>
+            } @else {
+              <div class="forums__messages" aria-live="polite">
+                @for (message of messages(); track message.id) {
+                  <article class="forums__message" [class.forums__message--mine]="mine(message)">
+                    <header>
+                      <strong>{{ message.senderName }}</strong>
+                      <time>{{ time(message.createdAt) }}</time>
+                    </header>
+                    <p>{{ message.contentDisplay }}</p>
+                  </article>
+                } @empty {
+                  <p class="forums__muted">{{ 'forums.noMessages' | translate }}</p>
+                }
+              </div>
+            }
+
+            <form class="forums__composer" (ngSubmit)="send()">
+              <input
+                type="text"
+                [ngModel]="draft()"
+                (ngModelChange)="draft.set($event)"
+                name="forumDraft"
+                autocomplete="off"
+                [placeholder]="'forums.replyPlaceholder' | translate"
+              />
+              <eci-button type="submit" [disabled]="sending() || !draft().trim()">
+                {{ 'forums.send' | translate }}
+              </eci-button>
+            </form>
+          } @else {
+            <div class="forums__empty-thread">
+              <eci-icon name="chat" [size]="30" />
+              <p>{{ 'forums.pickForum' | translate }}</p>
+            </div>
+          }
+        </eci-card>
+      </main>
+    </div>
+  </div>
+</div>

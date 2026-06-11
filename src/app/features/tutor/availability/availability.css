@@ -1,68 +1,196 @@
-.avail__hint {
-  margin: 0 0 var(--space-6);
-  color: var(--text-muted);
+.availability-page {
+  min-width: 0;
 }
 
-.avail__grid {
-  display: grid;
-  grid-template-columns: 4rem repeat(5, 1fr);
-  gap: var(--space-2);
-  max-width: 40rem;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.avail__corner {
-  grid-column: 1;
-}
-
-.avail__day,
-.avail__time {
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.avail__day {
-  justify-content: center;
-}
-
-.avail__cell {
-  height: 2.5rem;
+.notice {
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    transform var(--transition-fast);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 0.9rem;
 }
 
-.avail__cell:hover {
-  transform: scale(1.04);
-}
-
-.avail__cell--on {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.avail__actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-}
-
-.avail__saved {
-  display: inline-block;
+.notice--success {
+  border-color: color-mix(in srgb, var(--success) 38%, var(--border));
   color: var(--success);
-  font-size: 0.875rem;
+}
+
+.availability-form,
+.modal-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.availability-form__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.availability-form__head h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 1.05rem;
+}
+
+.availability-form__head p,
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.availability-form__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 500;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.availability-form__actions,
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.availability-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.availability-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.availability-item__main {
+  min-width: 0;
+}
+
+.availability-item__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.availability-item h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+}
+
+.availability-item p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.availability-item__location {
+  margin-top: var(--space-3) !important;
+  word-break: break-word;
+}
+
+.availability-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.status[data-status='cancelled'] {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+.form-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+@media (min-width: 44rem) {
+  .availability-form__head,
+  .availability-item {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .availability-form__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .availability-form__room {
+    grid-column: 1 / -1;
+  }
+
+  .availability-item__actions {
+    flex: none;
+    justify-content: flex-end;
+    max-width: 22rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .availability-form__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
+  }
+
+  .availability-form__room {
+    grid-column: span 2;
+  }
 }
 
 /* Móvil: la rejilla semanal aprovecha todo el ancho, con la columna de horas

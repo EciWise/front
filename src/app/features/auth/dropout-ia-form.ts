@@ -57,7 +57,7 @@ export function buildDropoutGroup(fb: FormBuilder) {
     debtor: [null as number | null, req(0, 1)],
     tuitionFeesUpToDate: [null as number | null, req(0, 1)],
     scholarshipHolder: [null as number | null, req(0, 1)],
-    ageAtEnrollment: [null as number | null, req(17, 70)],
+    ageAtEnrollment: [null as number | null, req(14, 70)],
     international: [null as number | null, req(0, 1)],
     curricularUnits1stSemCredited: [null as number | null, req(0, 20)],
     curricularUnits1stSemEnrolled: [null as number | null, req(0, 26)],

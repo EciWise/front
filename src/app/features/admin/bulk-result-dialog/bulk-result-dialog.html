@@ -89,7 +89,7 @@
                       <td class="dialog__email" [title]="u.email">{{ u.email }}</td>
                       <td class="dialog__col-role">
                         <span class="dialog__role" [class]="'dialog__role--' + roleClass(u.rol)">
-                          {{ u.rol }}
+                          {{ roleLabelKey(u.rol) | translate }}
                         </span>
                       </td>
                       <td>

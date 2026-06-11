@@ -1,60 +1,298 @@
-.empty {
-  margin: 0;
-  color: var(--text-muted);
+.schedule-page {
+  min-width: 0;
 }
 
-.sched-form {
+.notice {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.notice--success {
+  border-color: color-mix(in srgb, var(--success) 38%, var(--border));
+  color: var(--success);
+}
+
+.notice--error,
+.form-error {
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--border));
+  color: var(--danger);
+}
+
+.schedule-stack,
+.session-list,
+.modal-form {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  flex-direction: column;
   gap: var(--space-4);
 }
 
-.sched-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  font-size: 0.875rem;
-  font-weight: 600;
-  flex: 1;
-  min-width: 12rem;
+.schedule-stack {
+  padding-bottom: var(--space-4);
 }
 
-.sched-form__field--seats {
-  flex: 0 0 6rem;
-  min-width: 6rem;
-}
-
-/* .sched-form__field input: caja compartida en "Primitivas compartidas". */
-
-.sched-list {
-  list-style: none;
-  margin: var(--space-6) 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+.schedule-section {
+  display: grid;
   gap: var(--space-3);
 }
 
-.sched-item {
+.schedule-section h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.session-card,
+.closed-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.session-card__main {
+  min-width: 0;
+}
+
+.session-card__eyebrow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
   /* En pantallas estrechas las acciones bajan a la siguiente línea en vez de
      comprimir el texto del cupo (mismo patrón que solicitudes y monitorías). */
   flex-wrap: wrap;
 }
 
-.sched-item__subject {
-  margin: 0 0 var(--space-1);
-  font-size: 1.0625rem;
+.session-card h3,
+.closed-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
 }
 
-.sched-item__meta {
-  display: flex;
-  gap: var(--space-4);
+.session-card__meta,
+.access,
+.observation,
+.empty {
   margin: 0;
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.session-card__meta,
+.access {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+}
+
+.access {
+  margin-top: var(--space-3);
+}
+
+.access a {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.observation {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+}
+
+.metrics div {
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.metrics dt {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.metrics dd {
+  margin: var(--space-1) 0 0;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.comments {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.comments__title {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.comments ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-4);
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.session-card__actions,
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  color: var(--warning);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.status[data-status='completed'] {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.status[data-status='cancelled'],
+.status[data-status='no_show'] {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.form-error {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.modal-actions {
+  justify-content: flex-end;
+}
+
+.rating-fields {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.rating-fields legend {
+  margin-bottom: var(--space-2);
+  font-weight: 800;
+}
+
+.rating-field {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.rating-field > legend {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.stars {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.star-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.star-button--active {
+  border-color: color-mix(in srgb, var(--warning) 55%, var(--border));
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  color: var(--warning);
+}
+
+@media (min-width: 48rem) {
+  .session-card,
+  .closed-card {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .session-card__actions {
+    flex: none;
+    justify-content: flex-end;
+    max-width: 22rem;
+  }
 }

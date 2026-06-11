@@ -30,6 +30,7 @@ import { IconComponent } from '../icon/icon';
         <div
           #dialog
           class="modal"
+          [class.modal--wide]="size() === 'wide'"
           role="dialog"
           aria-modal="true"
           tabindex="-1"
@@ -62,6 +63,8 @@ export class ModalComponent {
   readonly open = model<boolean>(false);
   /** Clave i18n del título; si está vacía no se muestra cabecera de título. */
   readonly titleKey = input<string>('');
+  /** Variante visual del modal. `wide` se usa para confirmaciones con resumen. */
+  readonly size = input<'default' | 'wide'>('default');
 
   private readonly dialog = viewChild<ElementRef<HTMLDivElement>>('dialog');
 

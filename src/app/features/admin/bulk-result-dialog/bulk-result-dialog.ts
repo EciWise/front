@@ -11,6 +11,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  roleApiName,
+  roleLabelKey as roleLabelKeyFor,
+} from '../../../core/models/role.enum';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
 import { BulkUploadResult } from '../user-admin.service';
@@ -108,7 +112,11 @@ export class BulkResultDialogComponent {
 
   /** Sufijo de clase del badge según el rol (estudiante/tutor/admin). */
   protected roleClass(rol: string): string {
-    return rol.toLowerCase();
+    return roleApiName(rol);
+  }
+
+  protected roleLabelKey(rol: string): string {
+    return roleLabelKeyFor(rol);
   }
 
   setTab(tab: Tab): void {

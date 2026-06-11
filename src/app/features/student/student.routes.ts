@@ -7,8 +7,8 @@ export const STUDENT_ROUTES: Routes = [
     loadComponent: () => import('./student-dashboard').then((m) => m.StudentDashboardComponent),
   },
   {
-    path: 'monitorias',
-    loadComponent: () => import('./monitorias/monitorias').then((m) => m.MonitoriasComponent),
+    path: 'tutorias',
+    loadComponent: () => import('./tutorias/tutorias').then((m) => m.TutoriasComponent),
   },
   {
     path: 'materials',
@@ -30,6 +30,14 @@ export const STUDENT_ROUTES: Routes = [
   {
     path: 'tasks',
     loadComponent: () => import('./tasks/tasks').then((m) => m.TasksComponent),
+  },
+  {
+    path: 'logros',
+    loadComponent: () => import('./achievements/achievements').then((m) => m.AchievementsComponent),
+  },
+  {
+    path: 'foros',
+    loadComponent: () => import('./forums/forums').then((m) => m.ForumsComponent),
   },
   {
     path: 'profile',

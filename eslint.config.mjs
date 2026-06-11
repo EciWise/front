@@ -5,7 +5,14 @@ import angular from 'angular-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', '.angular/**', 'coverage/**', 'node_modules/**'],
+    ignores: [
+      'dist/**',
+      '.angular/**',
+      'coverage/**',
+      'node_modules/**',
+      'docs/.vitepress/dist/**',
+      'docs/.vitepress/cache/**',
+    ],
   },
   {
     files: ['**/*.ts'],

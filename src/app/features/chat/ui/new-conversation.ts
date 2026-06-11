@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LucideArrowLeft, LucideCheck, LucideSearch, LucideX } from '@lucide/angular';
+import { roleLabelKey as roleLabelKeyFor } from '../../../core/models/role.enum';
 import { ChatService } from '../chat.service';
 import { DirectoryUser } from '../chat.models';
 import { UsersDirectoryService } from '../users-directory.service';
@@ -70,6 +71,10 @@ export class NewConversationComponent {
     } else {
       this.selected.update((list) => [...list, user]);
     }
+  }
+
+  protected roleLabelKey(rol: string): string {
+    return roleLabelKeyFor(rol);
   }
 
   protected create(): void {

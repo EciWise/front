@@ -38,6 +38,10 @@ describe('SelectComponent', () => {
 
   const trigger = (): HTMLButtonElement =>
     (fixture.nativeElement as HTMLElement).querySelector('.select__trigger') as HTMLButtonElement;
+  const select = (): HTMLElement =>
+    (fixture.nativeElement as HTMLElement).querySelector('eci-select') as HTMLElement;
+  const selectShell = (): HTMLElement =>
+    (fixture.nativeElement as HTMLElement).querySelector('.select') as HTMLElement;
   const options = (): NodeListOf<HTMLButtonElement> =>
     (fixture.nativeElement as HTMLElement).querySelectorAll('.select__option');
 
@@ -117,5 +121,39 @@ describe('SelectComponent', () => {
     fixture.detectChanges();
 
     expect(trigger().textContent).toContain('Numbered');
+  });
+
+  it('despliega el menu hacia arriba cuando no hay espacio suficiente abajo', () => {
+    const originalInnerHeight = window.innerHeight;
+    const originalInnerWidth = window.innerWidth;
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 600 });
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1024 });
+
+    try {
+      select().getBoundingClientRect = () =>
+        ({
+          top: 520,
+          bottom: 568,
+          left: 24,
+          right: 324,
+          width: 300,
+          height: 48,
+          x: 24,
+          y: 520,
+          toJSON: () => ({}),
+        }) as DOMRect;
+
+      trigger().click();
+      fixture.detectChanges();
+
+      expect(selectShell().classList).toContain('select--above');
+      expect((fixture.nativeElement as HTMLElement).querySelector('.select__menu')).not.toBeNull();
+    } finally {
+      Object.defineProperty(window, 'innerHeight', {
+        configurable: true,
+        value: originalInnerHeight,
+      });
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalInnerWidth });
+    }
   });
 });

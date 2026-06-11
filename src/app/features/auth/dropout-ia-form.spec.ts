@@ -1,4 +1,5 @@
-import { buildDropoutPayload, DropoutFormValue } from './dropout-ia-form';
+import { FormBuilder } from '@angular/forms';
+import { buildDropoutGroup, buildDropoutPayload, DropoutFormValue } from './dropout-ia-form';
 
 describe('buildDropoutPayload', () => {
   it('mapea los 21 campos a números', () => {
@@ -38,5 +39,16 @@ describe('buildDropoutPayload', () => {
     const payload = buildDropoutPayload(empty);
     expect(payload.maritalStatus).toBe(0);
     expect(payload.international).toBe(0);
+  });
+
+  it('acepta edad de matricula desde los 14 años', () => {
+    const group = buildDropoutGroup(new FormBuilder());
+    const control = group.controls.ageAtEnrollment;
+
+    control.setValue(16);
+    expect(control.valid).toBe(true);
+
+    control.setValue(13);
+    expect(control.hasError('min')).toBe(true);
   });
 });

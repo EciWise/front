@@ -19,17 +19,17 @@ describe('authInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
-        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: 'http://auth.test' } },
+        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: 'https://auth.test/' } },
         {
           provide: IA_CONFIG,
           useValue: {
-            performanceApiUrl: 'http://ia-performance.test',
-            dropoutApiUrl: 'http://ia-dropout.test',
+            performanceApiUrl: 'https://ia-performance.test',
+            dropoutApiUrl: 'https://ia-dropout.test',
           },
         },
-        { provide: STUDY_CONFIG, useValue: { studyApiUrl: 'http://study.test' } },
-        { provide: TALK_CONFIG, useValue: { talkApiUrl: 'http://talk.test', talkWsUrl: 'ws://talk.test/ws' } },
-        { provide: TODO_CONFIG, useValue: { todoApiUrl: 'http://todo.test' } },
+        { provide: STUDY_CONFIG, useValue: { studyApiUrl: 'https://study.test' } },
+        { provide: TALK_CONFIG, useValue: { talkApiUrl: 'https://talk.test', talkWsUrl: 'wss://talk.test/ws' } },
+        { provide: TODO_CONFIG, useValue: { todoApiUrl: 'https://todo.test' } },
       ],
     });
     http = TestBed.inject(HttpClient);
@@ -44,8 +44,14 @@ describe('authInterceptor', () => {
   it('adjunta Authorization solo a hosts propios con token presente', async () => {
     localStorage.setItem('eciwise.token', 'jwt-test');
 
-    const own = firstValueFrom(http.get('http://todo.test/api/tasks'));
-    const ownReq = controller.expectOne('http://todo.test/api/tasks');
+    const authOwn = firstValueFrom(http.get('https://auth.test/auth/me'));
+    const authOwnReq = controller.expectOne('https://auth.test/auth/me');
+    expect(authOwnReq.request.headers.get('Authorization')).toBe('Bearer jwt-test');
+    authOwnReq.flush({});
+    await authOwn;
+
+    const own = firstValueFrom(http.get('https://todo.test/api/tasks'));
+    const ownReq = controller.expectOne('https://todo.test/api/tasks');
     expect(ownReq.request.headers.get('Authorization')).toBe('Bearer jwt-test');
     ownReq.flush([]);
     await own;
@@ -55,11 +61,17 @@ describe('authInterceptor', () => {
     expect(thirdPartyReq.request.headers.has('Authorization')).toBe(false);
     thirdPartyReq.flush({});
     await thirdParty;
+
+    const similarHost = firstValueFrom(http.get('https://auth.test.evil/api'));
+    const similarHostReq = controller.expectOne('https://auth.test.evil/api');
+    expect(similarHostReq.request.headers.has('Authorization')).toBe(false);
+    similarHostReq.flush({});
+    await similarHost;
   });
 
   it('no adjunta Authorization cuando no hay token', async () => {
-    const result = firstValueFrom(http.get('http://auth.test/auth/me'));
-    const req = controller.expectOne('http://auth.test/auth/me');
+    const result = firstValueFrom(http.get('https://auth.test/auth/me'));
+    const req = controller.expectOne('https://auth.test/auth/me');
     expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush({});
     await result;
