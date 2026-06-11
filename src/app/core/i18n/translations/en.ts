@@ -143,7 +143,7 @@ export const en = {
   },
   nav: {
     dashboard: 'Home',
-    monitorias: 'Tutorships',
+    tutorias: 'Tutorships',
     materials: 'Materials',
     games: 'Game center',
     study: 'Study center',
@@ -625,7 +625,7 @@ export const en = {
       overdue: 'Tasks past their date that are still pending.',
     },
   },
-  monitorias: {
+  tutorias: {
     title: 'Tutorships',
     tabs: {
       search: 'Search',
@@ -656,6 +656,7 @@ export const en = {
       rating: 'Rating',
       sessions: 'Completed',
       attendance: 'Attendance',
+      comments: 'Comments',
     },
     reserve: {
       title: 'Reserve tutoring',
@@ -908,6 +909,7 @@ export const en = {
       rating: 'Average',
       attendance: 'Attendance',
       completed: 'Completed',
+      comments: 'Comments',
     },
   },
   tutoring: {

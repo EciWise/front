@@ -12,7 +12,7 @@ export interface NavItem {
 
 const STUDENT_NAV: readonly NavItem[] = [
   { labelKey: 'nav.dashboard', route: '/student', icon: 'dashboard', exact: true },
-  { labelKey: 'nav.monitorias', route: '/student/tutorias', icon: 'monitorias' },
+  { labelKey: 'nav.tutorias', route: '/student/tutorias', icon: 'tutorias' },
   { labelKey: 'nav.materials', route: '/student/materials', icon: 'materials' },
   { labelKey: 'nav.games', route: '/student/games', icon: 'games' },
   { labelKey: 'nav.study', route: '/student/study', icon: 'study' },

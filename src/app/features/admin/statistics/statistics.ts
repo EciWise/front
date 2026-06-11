@@ -59,7 +59,7 @@ export class AdminStatisticsComponent implements OnInit {
     { id: 'summary', labelKey: 'admin.statistics.tabSummary', icon: 'trophy' },
     { id: 'platform', labelKey: 'admin.statistics.tabPlatform', icon: 'users' },
     { id: 'ia', labelKey: 'admin.statistics.tabIa', icon: 'assistant' },
-    { id: 'tutoring', labelKey: 'admin.statistics.tabTutoring', icon: 'monitorias' },
+    { id: 'tutoring', labelKey: 'admin.statistics.tabTutoring', icon: 'tutorias' },
   ];
   protected readonly section = signal('summary');
   protected readonly tutoringStats = this.tutoringService.stats;

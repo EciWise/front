@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { MonitoriasService } from './monitorias.service';
+import { TutoriasService } from './tutorias.service';
 
-describe('MonitoriasService', () => {
-  let service: MonitoriasService;
+describe('TutoriasService', () => {
+  let service: TutoriasService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MonitoriasService);
+    service = TestBed.inject(TutoriasService);
   });
 
-  it('marca como solicitada una monitoría disponible y reduce los cupos', () => {
+  it('marca como solicitada una tutoría disponible y reduce los cupos', () => {
     const target = service.items().find((m) => m.status === 'available')!;
     const seatsBefore = target.seats;
 
@@ -20,7 +20,7 @@ describe('MonitoriasService', () => {
     expect(updated.seats).toBe(seatsBefore - 1);
   });
 
-  it('no altera monitorías que ya fueron solicitadas', () => {
+  it('no altera tutorías que ya fueron solicitadas', () => {
     const requested = service.items().find((m) => m.status === 'requested')!;
     service.request(requested.id);
 

@@ -36,7 +36,7 @@
         </label>
 
         <label class="field">
-          <span>{{ 'monitorias.fields.date' | translate }}</span>
+          <span>{{ 'tutorias.fields.date' | translate }}</span>
           <input type="date" [formField]="availabilityForm.date" />
         </label>
 
@@ -51,7 +51,7 @@
         </label>
 
         <label class="field">
-          <span>{{ 'monitorias.fields.mode' | translate }}</span>
+          <span>{{ 'tutorias.fields.mode' | translate }}</span>
           <select [formField]="availabilityForm.mode">
             <option value="virtual">{{ 'tutoring.modes.virtual' | translate }}</option>
             <option value="presential">{{ 'tutoring.modes.presential' | translate }}</option>
@@ -106,7 +106,7 @@
                   <h2>{{ subjectName(availability.subjectId) }}</h2>
                   <p>
                     <span>{{ availability.startTime }} - {{ availability.endTime }}</span>
-                    <span>{{ 'monitorias.seatsAvailable' | translate: { count: availableSeats(availability), total: availability.capacity } }}</span>
+                    <span>{{ 'tutorias.seatsAvailable' | translate: { count: availableSeats(availability), total: availability.capacity } }}</span>
                     <span>{{ 'tutor.availability.reserved' | translate: { count: reservationCount(availability) } }}</span>
                   </p>
                   @if (availability.mode === 'presential') {

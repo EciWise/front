@@ -10,7 +10,7 @@ const makeItems = (): AppNotification[] => [
   {
     id: 'n1',
     titleKey: 'notifications.title',
-    body: 'Monitoria aceptada',
+    body: 'Tutoria aceptada',
     kind: 'success',
     createdAt: '2026-06-01T08:00:00Z',
     read: false,

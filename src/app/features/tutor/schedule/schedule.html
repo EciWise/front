@@ -56,6 +56,18 @@
                             <dd>{{ studentCompleted(reservation) }}</dd>
                           </div>
                         </dl>
+                        @if (studentComments(reservation); as comments) {
+                          @if (comments.length > 0) {
+                            <div class="comments">
+                              <p class="comments__title">{{ 'tutor.studentReputation.comments' | translate }}</p>
+                              <ul>
+                                @for (comment of comments; track comment) {
+                                  <li>{{ comment }}</li>
+                                }
+                              </ul>
+                            </div>
+                          }
+                        }
                         <p class="access">
                           <span>{{ 'tutor.schedule.access' | translate }}:</span>
                           @if (availability.mode === 'virtual') {
@@ -191,7 +203,7 @@
                 type="button"
                 class="star-button"
                 [class.star-button--active]="participationModel()[field] >= star"
-                [attr.aria-label]="'monitorias.rating.starLabel' | translate: { count: star }"
+                [attr.aria-label]="'tutorias.rating.starLabel' | translate: { count: star }"
                 (click)="setParticipation(field, star)"
               >
                 <eci-icon name="star" [size]="18" />

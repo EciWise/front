@@ -207,6 +207,10 @@ export class TutorScheduleComponent {
     return this.tutoring.studentReputation(reservation.studentId).attendedSessions;
   }
 
+  studentComments(reservation: TutoringReservation): readonly string[] {
+    return this.tutoring.studentReputation(reservation.studentId).comments.slice(0, 2);
+  }
+
   accessLabel(availability: TutoringAvailability): string {
     return availability.mode === 'virtual'
       ? (availability.virtualUrl ?? '')

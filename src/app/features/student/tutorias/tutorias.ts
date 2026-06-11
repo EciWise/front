@@ -41,7 +41,7 @@ type RatingField = keyof Omit<TutorRatingFormModel, 'comment'>;
 
 /** Listado funcional de tutorias academicas para estudiantes. */
 @Component({
-  selector: 'eci-monitorias',
+  selector: 'eci-tutorias',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
@@ -55,17 +55,17 @@ type RatingField = keyof Omit<TutorRatingFormModel, 'comment'>;
     ModalComponent,
     SectionTabsComponent,
   ],
-  templateUrl: './monitorias.html',
-  styleUrl: './monitorias.css',
+  templateUrl: './tutorias.html',
+  styleUrl: './tutorias.css',
 })
-export class MonitoriasComponent {
+export class TutoriasComponent {
   private readonly tutoring = inject(TutoringMockService);
 
   protected readonly sections: readonly SectionTab[] = [
-    { id: 'search', labelKey: 'monitorias.tabs.search', icon: 'search' },
-    { id: 'reservations', labelKey: 'monitorias.tabs.reservations', icon: 'calendar' },
-    { id: 'recommendations', labelKey: 'monitorias.tabs.recommendations', icon: 'assistant' },
-    { id: 'history', labelKey: 'monitorias.tabs.history', icon: 'history' },
+    { id: 'search', labelKey: 'tutorias.tabs.search', icon: 'search' },
+    { id: 'reservations', labelKey: 'tutorias.tabs.reservations', icon: 'calendar' },
+    { id: 'recommendations', labelKey: 'tutorias.tabs.recommendations', icon: 'assistant' },
+    { id: 'history', labelKey: 'tutorias.tabs.history', icon: 'history' },
   ];
   protected readonly section = signal('search');
   protected readonly subjects = this.tutoring.subjects;
@@ -108,14 +108,14 @@ export class MonitoriasComponent {
     mode: 'virtual',
   });
   protected readonly reserveForm = form(this.reserveModel, (schema) => {
-    required(schema.specificTopic, { message: 'monitorias.validation.topic' });
-    required(schema.description, { message: 'monitorias.validation.description' });
-    required(schema.mode, { message: 'monitorias.validation.mode' });
+    required(schema.specificTopic, { message: 'tutorias.validation.topic' });
+    required(schema.description, { message: 'tutorias.validation.description' });
+    required(schema.mode, { message: 'tutorias.validation.mode' });
   });
 
   protected readonly cancelModel = signal<CancelFormModel>({ reason: '' });
   protected readonly cancelForm = form(this.cancelModel, (schema) => {
-    required(schema.reason, { message: 'monitorias.validation.cancelReason' });
+    required(schema.reason, { message: 'tutorias.validation.cancelReason' });
   });
 
   protected readonly ratingModel = signal<TutorRatingFormModel>({
@@ -126,15 +126,15 @@ export class MonitoriasComponent {
     comment: '',
   });
   protected readonly ratingForm = form(this.ratingModel, (schema) => {
-    min(schema.topicMastery, 1, { message: 'monitorias.validation.rating' });
+    min(schema.topicMastery, 1, { message: 'tutorias.validation.rating' });
     max(schema.topicMastery, 5);
-    min(schema.clarity, 1, { message: 'monitorias.validation.rating' });
+    min(schema.clarity, 1, { message: 'tutorias.validation.rating' });
     max(schema.clarity, 5);
-    min(schema.usefulness, 1, { message: 'monitorias.validation.rating' });
+    min(schema.usefulness, 1, { message: 'tutorias.validation.rating' });
     max(schema.usefulness, 5);
-    min(schema.punctuality, 1, { message: 'monitorias.validation.rating' });
+    min(schema.punctuality, 1, { message: 'tutorias.validation.rating' });
     max(schema.punctuality, 5);
-    required(schema.comment, { message: 'monitorias.validation.comment' });
+    required(schema.comment, { message: 'tutorias.validation.comment' });
   });
 
   protected readonly rescheduleOptions = computed(() => {
@@ -191,7 +191,7 @@ export class MonitoriasComponent {
       this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
       return;
     }
-    this.actionSuccess.set('monitorias.feedback.reserved');
+    this.actionSuccess.set('tutorias.feedback.reserved');
     this.reserveOpen.set(false);
   }
 
@@ -205,7 +205,7 @@ export class MonitoriasComponent {
   submitCancel(event: Event): void {
     event.preventDefault();
     if (this.cancelForm().invalid()) {
-      this.actionError.set('monitorias.validation.cancelReason');
+      this.actionError.set('tutorias.validation.cancelReason');
       return;
     }
     const reservation = this.selectedReservation();
@@ -217,7 +217,7 @@ export class MonitoriasComponent {
       this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
       return;
     }
-    this.actionSuccess.set('monitorias.feedback.cancelled');
+    this.actionSuccess.set('tutorias.feedback.cancelled');
     this.cancelOpen.set(false);
   }
 
@@ -237,7 +237,7 @@ export class MonitoriasComponent {
       this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
       return;
     }
-    this.actionSuccess.set('monitorias.feedback.rescheduled');
+    this.actionSuccess.set('tutorias.feedback.rescheduled');
     this.rescheduleOpen.set(false);
   }
 
@@ -261,7 +261,7 @@ export class MonitoriasComponent {
   submitRating(event: Event): void {
     event.preventDefault();
     if (this.ratingForm().invalid()) {
-      this.actionError.set('monitorias.validation.rating');
+      this.actionError.set('tutorias.validation.rating');
       return;
     }
     const reservation = this.selectedReservation();
@@ -274,7 +274,7 @@ export class MonitoriasComponent {
       this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
       return;
     }
-    this.actionSuccess.set('monitorias.feedback.rated');
+    this.actionSuccess.set('tutorias.feedback.rated');
     this.rateOpen.set(false);
   }
 
@@ -316,6 +316,10 @@ export class MonitoriasComponent {
 
   monitorAttendance(availability: TutoringAvailability): number {
     return this.tutoring.monitorReputation(availability.tutorId).attendanceRate;
+  }
+
+  monitorComments(availability: TutoringAvailability): readonly string[] {
+    return this.tutoring.monitorReputation(availability.tutorId).comments.slice(0, 2);
   }
 
   slotById(availabilityId: string): TutoringSlot | null {

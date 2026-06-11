@@ -10,7 +10,7 @@ export const es = {
     tabAbout: 'Acerca de',
     about: {
       title: '¿Qué es ECIWISE+?',
-      body: 'ECIWISE+ es la plataforma estudiantil que conecta a estudiantes y tutores de la Escuela. Reúne en un solo lugar monitorías, materiales de estudio, centro de juegos y de estudio, tareas pendientes, mensajería y un asistente de IA, para que aprender sea más simple, colaborativo y humano.',
+      body: 'ECIWISE+ es la plataforma estudiantil que conecta a estudiantes y tutores de la Escuela. Reúne en un solo lugar tutorías, materiales de estudio, centro de juegos y de estudio, tareas pendientes, mensajería y un asistente de IA, para que aprender sea más simple, colaborativo y humano.',
     },
     mission: {
       title: 'Misión',
@@ -143,7 +143,7 @@ export const es = {
   },
   nav: {
     dashboard: 'Inicio',
-    monitorias: 'Tutorías',
+    tutorias: 'Tutorías',
     materials: 'Materiales',
     games: 'Centro de juegos',
     study: 'Centro de estudios',
@@ -240,7 +240,7 @@ export const es = {
       studyTimeWeekly:
         'Promedio de horas que dedicas a estudiar por tu cuenta cada semana, fuera de clase.',
       absences: 'Número de clases a las que has faltado en lo que va del año académico.',
-      tutoring: 'Indica si asistes a monitorías o tutorías de apoyo académico.',
+      tutoring: 'Indica si asistes a tutorías de apoyo académico.',
       extracurricular:
         'Actividades fuera del plan de estudios: clubes, semilleros, grupos estudiantiles, etc.',
       sports: 'Si practicas algún deporte de forma regular (en la institución o fuera de ella).',
@@ -626,7 +626,7 @@ export const es = {
       overdue: 'Tareas cuya fecha ya pasó y siguen pendientes.',
     },
   },
-  monitorias: {
+  tutorias: {
     title: 'Tutorías',
     tabs: {
       search: 'Buscar',
@@ -638,7 +638,7 @@ export const es = {
     request: 'Solicitar',
     requested: 'Solicitada',
     accepted: 'Aceptada',
-    empty: 'No hay monitorías disponibles por ahora.',
+    empty: 'No hay tutorías disponibles por ahora.',
     seats: '{{count}} cupos',
     seatsAvailable: '{{count}} de {{total}} cupos',
     fields: {
@@ -657,6 +657,7 @@ export const es = {
       rating: 'Calificación',
       sessions: 'Realizadas',
       attendance: 'Asistencia',
+      comments: 'Comentarios',
     },
     reserve: {
       title: 'Reservar tutoría',
@@ -910,6 +911,7 @@ export const es = {
       rating: 'Promedio',
       attendance: 'Asistencia',
       completed: 'Completadas',
+      comments: 'Comentarios',
     },
   },
   tutoring: {

@@ -50,7 +50,7 @@ import {
 /** Nombres de icono soportados por la plataforma (iconos de línea, sin emojis). */
 export type IconName =
   | 'dashboard'
-  | 'monitorias'
+  | 'tutorias'
   | 'materials'
   | 'games'
   | 'study'
@@ -155,7 +155,7 @@ export type IconName =
       @case ('dashboard') {
         <svg lucideLayoutDashboard [size]="size()" aria-hidden="true"></svg>
       }
-      @case ('monitorias') {
+      @case ('tutorias') {
         <svg lucideGraduationCap [size]="size()" aria-hidden="true"></svg>
       }
       @case ('materials') {

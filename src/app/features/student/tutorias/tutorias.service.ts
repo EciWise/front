@@ -1,13 +1,13 @@
 import { Injectable, computed, inject } from '@angular/core';
-import { Monitoria } from './monitoria.model';
+import { Tutoria } from './tutoria.model';
 import { TutoringMockService } from '../../tutor/tutoring.service';
 
 /** Catalogo mock de tutorias y solicitudes del estudiante. */
 @Injectable({ providedIn: 'root' })
-export class MonitoriasService {
+export class TutoriasService {
   private readonly tutoring = inject(TutoringMockService);
 
-  readonly items = computed<Monitoria[]>(() =>
+  readonly items = computed<Tutoria[]>(() =>
     this.tutoring.slots().map((slot) => ({
       id: slot.availability.id,
       tutorId: slot.tutor.id,

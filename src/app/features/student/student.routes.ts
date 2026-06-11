@@ -8,12 +8,7 @@ export const STUDENT_ROUTES: Routes = [
   },
   {
     path: 'tutorias',
-    loadComponent: () => import('./monitorias/monitorias').then((m) => m.MonitoriasComponent),
-  },
-  {
-    path: 'monitorias',
-    redirectTo: 'tutorias',
-    pathMatch: 'full',
+    loadComponent: () => import('./tutorias/tutorias').then((m) => m.TutoriasComponent),
   },
   {
     path: 'materials',

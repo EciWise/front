@@ -385,8 +385,8 @@ export class TutoringMockService {
               10,
           ) / 10,
         reasonKey: reservedSubjects.has(slot.subject.id)
-          ? 'monitorias.recommendations.reasonHistory'
-          : 'monitorias.recommendations.reasonRating',
+          ? 'tutorias.recommendations.reasonHistory'
+          : 'tutorias.recommendations.reasonRating',
         relatedTopics: this.relatedTopics(slot.subject.id),
       }))
       .sort((a, b) => b.score - a.score)

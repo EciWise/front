@@ -1,7 +1,7 @@
-export type MonitoriaStatus = 'available' | 'requested' | 'accepted';
+export type TutoriaStatus = 'available' | 'requested' | 'accepted';
 
-/** Monitoria ofrecida a los estudiantes. */
-export interface Monitoria {
+/** Tutoria ofrecida a los estudiantes. */
+export interface Tutoria {
   readonly id: string;
   readonly tutorId?: string;
   readonly subjectId?: string;
@@ -9,6 +9,6 @@ export interface Monitoria {
   readonly tutor: string;
   readonly datetime: string;
   readonly seats: number;
-  readonly status: MonitoriaStatus;
+  readonly status: TutoriaStatus;
   readonly mode?: 'virtual' | 'presential';
 }
