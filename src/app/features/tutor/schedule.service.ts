@@ -1,34 +1,54 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { TutorSession } from './tutor.models';
+import { TutoringMockService } from './tutoring.service';
 
-const SEED: readonly TutorSession[] = [
-  { id: 'ts1', subject: 'Cálculo Diferencial', datetime: '2026-06-01T14:00', seats: 5 },
-  { id: 'ts2', subject: 'Álgebra Lineal', datetime: '2026-06-04T10:00', seats: 4 },
-];
+function addMinutes(time: string, minutes: number): string {
+  const [hour = 0, minute = 0] = time.split(':').map(Number);
+  const total = hour * 60 + minute + minutes;
+  return `${Math.floor(total / 60)}`.padStart(2, '0') + `:${total % 60}`.padStart(2, '0');
+}
 
-/** Horarios de tutoría creados por el tutor (mock con signals). */
+/** Adaptador de horarios de tutoria sobre el mock central. */
 @Injectable({ providedIn: 'root' })
 export class TutorScheduleService {
-  private readonly _sessions = signal<TutorSession[]>([...SEED]);
-  readonly sessions = this._sessions.asReadonly();
-  readonly upcomingCount = computed(() => this._sessions().length);
+  private readonly tutoring = inject(TutoringMockService);
+
+  readonly sessions = computed<TutorSession[]>(() =>
+    this.tutoring.tutorAvailabilities()
+      .filter((availability) => availability.status === 'active')
+      .map((availability) => ({
+        id: availability.id,
+        subject: this.tutoring.subjectName(availability.subjectId),
+        datetime: `${availability.date}T${availability.startTime}`,
+        seats: this.tutoring.availableSeats(availability.id),
+        mode: availability.mode,
+      })),
+  );
+  readonly upcomingCount = computed(() => this.sessions().length);
 
   create(subject: string, datetime: string, seats: number): void {
-    if (!subject.trim() || !datetime) {
+    const subjectId =
+      this.tutoring.subjects().find((item) => item.name === subject || item.id === subject)?.id ??
+      this.tutoring.subjects()[0]?.id ??
+      '';
+    const [date = '', time = ''] = datetime.split('T');
+    if (!subjectId || !date || !time) {
       return;
     }
-    const session: TutorSession = {
-      id: `ts-${Date.now()}`,
-      subject: subject.trim(),
-      datetime,
-      seats: Math.max(1, seats),
-    };
-    this._sessions.update((list) =>
-      [...list, session].sort((a, b) => a.datetime.localeCompare(b.datetime)),
-    );
+    this.tutoring.createAvailability({
+      subjectId,
+      date,
+      startTime: time,
+      endTime: addMinutes(time, 90),
+      mode: 'virtual',
+      capacity: seats,
+    });
   }
 
   cancel(id: string): void {
-    this._sessions.update((list) => list.filter((s) => s.id !== id));
+    const result = this.tutoring.deleteAvailability(id);
+    if (!result.ok) {
+      this.tutoring.cancelAvailability(id, 'Cancelacion operativa');
+    }
   }
 }

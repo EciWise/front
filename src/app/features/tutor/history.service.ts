@@ -1,22 +1,14 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HistoryEntry } from './tutor.models';
+import { TutoringMockService } from './tutoring.service';
 
-const SEED: readonly HistoryEntry[] = [
-  { id: 'h-seed1', subject: 'Cálculo', student: 'Sofía Lara', datetime: '2026-05-20T14:00', status: 'completed' },
-  { id: 'h-seed2', subject: 'Programación', student: 'Juan Pérez', datetime: '2026-05-18T10:00', status: 'completed' },
-];
-
-/** Historial de tutorías del tutor (mock con signals). */
+/** Historial de tutorias del tutor (mock con signals). */
 @Injectable({ providedIn: 'root' })
 export class TutorHistoryService {
-  private readonly _entries = signal<HistoryEntry[]>([...SEED]);
-  readonly entries = this._entries.asReadonly();
+  private readonly tutoring = inject(TutoringMockService);
+  readonly entries = this.tutoring.tutorHistoryEntries;
 
   add(entry: HistoryEntry): void {
-    this._entries.update((list) =>
-      [entry, ...list.filter((e) => e.id !== entry.id)].sort((a, b) =>
-        b.datetime.localeCompare(a.datetime),
-      ),
-    );
+    this.tutoring.addLegacyHistory(entry);
   }
 }

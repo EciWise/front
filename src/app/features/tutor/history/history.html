@@ -15,6 +15,15 @@
               <p class="hist__meta">
                 <span>{{ entry.student }}</span>
                 <span>{{ entry.datetime | date: 'short' }}</span>
+                @if (entry.topic) {
+                  <span>{{ entry.topic }}</span>
+                }
+                @if (entry.mode) {
+                  <span>{{ 'tutoring.modes.' + entry.mode | translate }}</span>
+                }
+                @if (entry.rating) {
+                  <span>{{ 'tutor.history.rating' | translate: { rating: entry.rating } }}</span>
+                }
               </p>
             </div>
             <span class="hist__status" [attr.data-status]="entry.status">

@@ -17,6 +17,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .hist__subject {
@@ -26,6 +27,7 @@
 
 .hist__meta {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
   margin: 0;
   color: var(--text-muted);

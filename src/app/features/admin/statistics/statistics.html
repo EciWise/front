@@ -108,6 +108,67 @@
             </eci-card>
           </div>
         }
+
+        @case ('tutoring') {
+          <div class="eci-section-enter stats__grid">
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringSubjects' | translate }}</h3>
+              <eci-histogram [data]="tutoringSubjectsBars()" color="var(--info)">
+                {{ 'admin.statistics.noData' | translate }}
+              </eci-histogram>
+            </eci-card>
+
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringTopics' | translate }}</h3>
+              <eci-histogram [data]="tutoringTopicsBars()">
+                {{ 'admin.statistics.noData' | translate }}
+              </eci-histogram>
+            </eci-card>
+
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringHours' | translate }}</h3>
+              <eci-histogram [data]="tutoringHoursBars()" color="var(--warning)">
+                {{ 'admin.statistics.noData' | translate }}
+              </eci-histogram>
+            </eci-card>
+
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringTopTutors' | translate }}</h3>
+              <eci-histogram [data]="tutoringTopTutorsBars()" color="var(--accent-tutor)">
+                {{ 'admin.statistics.noData' | translate }}
+              </eci-histogram>
+            </eci-card>
+
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringOutcomes' | translate }}</h3>
+              <eci-pie-chart [data]="tutoringOutcomePie()" [title]="'admin.statistics.tutoringOutcomes' | translate">
+                {{ 'admin.statistics.noData' | translate }}
+              </eci-pie-chart>
+            </eci-card>
+
+            <eci-card>
+              <h3 class="stats__heading">{{ 'admin.statistics.tutoringService' | translate }}</h3>
+              <ul class="stats__metrics">
+                <li>
+                  <span>{{ 'admin.statistics.tutoringAttendanceRate' | translate }}</span>
+                  <b>{{ tutoringStats().attendanceRate | number:'1.0-0' }}%</b>
+                </li>
+                <li>
+                  <span>{{ 'admin.statistics.tutoringCompleted' | translate }}</span>
+                  <b>{{ tutoringStats().completedCount }}</b>
+                </li>
+                <li>
+                  <span>{{ 'admin.statistics.tutoringCancelled' | translate }}</span>
+                  <b>{{ tutoringStats().cancelledCount }}</b>
+                </li>
+                <li class="stats__metrics-n">
+                  <span>{{ 'admin.statistics.tutoringStudentsServed' | translate }}</span>
+                  <b>{{ tutoringStats().attendedStudents }}</b>
+                </li>
+              </ul>
+            </eci-card>
+          </div>
+        }
       }
     </div>
   }
