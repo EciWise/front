@@ -2,24 +2,32 @@
 layout: home
 hero:
   name: ECIWISE+ Front
-  text: Technical frontend documentation
-  tagline: Angular standalone, SSR, i18n, accessibility, chat, learning, tutorships and administration.
+  text: Complete frontend documentation
+  tagline: Angular 21, SSR, role-based routes, runtime configuration, shared UI, accessibility, chat, learning, tutorships, practice and administration.
   actions:
     - theme: brand
       text: Start
       link: /en/guide/overview
     - theme: alt
-      text: Conventions
-      link: /en/development/conventions
+      text: Full inventory
+      link: /en/reference/frontend-inventory
 features:
-  - title: Angular architecture
-    details: Lazy role routes, shared shell, injectable services, signals and standalone components.
-  - title: Functional modules
-    details: Student, tutor, administrator, learning, chat, AI, tasks, materials and tutorships.
-  - title: Quality
-    details: Linting, unit tests, integration tests, e2e and SSR build flows.
+  - title: Architecture and runtime
+    details: Bootstrap, SSR, hydration, app initializers, HTTP interceptors and environment providers.
+  - title: Product modules
+    details: Public auth, student, tutor, admin, learning, practice, tasks, chat, AI, help and shared shell.
+  - title: Engineering system
+    details: Development conventions, shared UI, i18n, backend integration, tests, release and deployment.
 ---
 
 # ECIWISE+ Front
 
-This site documents the ECIWISE+ frontend so developers can understand the codebase, run it locally, extend features and connect backend services without changing the existing architecture.
+This English documentation describes the current ECIWISE+ frontend end to end: how it boots, how routes and roles are organized, how each feature area works, how shared UI should be used, how runtime services are configured, and how to build, test and deploy the application.
+
+## Main sections
+
+- [Guide](/en/guide/overview): architecture, setup, structure, routes and runtime configuration.
+- [Features](/en/features/auth): product modules grouped by user role and domain.
+- [Development](/en/development/conventions): contribution rules, UI system, i18n, backend integration, testing and release.
+- [Reference](/en/reference/frontend-inventory): complete frontend inventory, core services, shared UI and deployment runtime.
+- [Deliverables](/en/deliverables/frontend-architecture): presentation-ready frontend architecture, development, deployment, brand and design docs.
