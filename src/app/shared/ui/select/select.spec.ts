@@ -124,10 +124,11 @@ describe('SelectComponent', () => {
   });
 
   it('despliega el menu hacia arriba cuando no hay espacio suficiente abajo', () => {
-    const originalInnerHeight = window.innerHeight;
-    const originalInnerWidth = window.innerWidth;
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 600 });
-    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1024 });
+    const browserWindow = globalThis.window;
+    const originalInnerHeight = browserWindow.innerHeight;
+    const originalInnerWidth = browserWindow.innerWidth;
+    Object.defineProperty(browserWindow, 'innerHeight', { configurable: true, value: 600 });
+    Object.defineProperty(browserWindow, 'innerWidth', { configurable: true, value: 1024 });
 
     try {
       select().getBoundingClientRect = () =>
@@ -141,7 +142,7 @@ describe('SelectComponent', () => {
           x: 24,
           y: 520,
           toJSON: () => ({}),
-        }) as DOMRect;
+        });
 
       trigger().click();
       fixture.detectChanges();
@@ -149,11 +150,14 @@ describe('SelectComponent', () => {
       expect(selectShell().classList).toContain('select--above');
       expect((fixture.nativeElement as HTMLElement).querySelector('.select__menu')).not.toBeNull();
     } finally {
-      Object.defineProperty(window, 'innerHeight', {
+      Object.defineProperty(browserWindow, 'innerHeight', {
         configurable: true,
         value: originalInnerHeight,
       });
-      Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalInnerWidth });
+      Object.defineProperty(browserWindow, 'innerWidth', {
+        configurable: true,
+        value: originalInnerWidth,
+      });
     }
   });
 });

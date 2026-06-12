@@ -224,15 +224,16 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   private updateMenuPosition(): void {
-    if (typeof window === 'undefined') {
+    const browserWindow = this.browserWindow();
+    if (!browserWindow) {
       return;
     }
 
-    const boundary = this.visibleBoundary();
+    const boundary = this.visibleBoundary(browserWindow);
     const hostRect = this.host.nativeElement.getBoundingClientRect();
-    const rootFontSize = this.rootFontSize();
-    const gap = this.cssLength('--space-2', rootFontSize * 0.5);
-    const preferredHeight = this.preferredMenuHeight(rootFontSize, gap);
+    const rootFontSize = this.rootFontSize(browserWindow);
+    const gap = this.cssLength('--space-2', rootFontSize * 0.5, browserWindow);
+    const preferredHeight = this.preferredMenuHeight(rootFontSize, gap, browserWindow);
     const spaceBelow = boundary.bottom - hostRect.bottom - gap;
     const spaceAbove = hostRect.top - boundary.top - gap;
     const shouldOpenAbove = spaceBelow < preferredHeight && spaceAbove > spaceBelow;
@@ -243,17 +244,22 @@ export class SelectComponent implements ControlValueAccessor {
     this.menuMaxHeight.set(`${Math.floor(maxHeight)}px`);
   }
 
-  private visibleBoundary(): BoundaryRect {
+  private browserWindow(): Window | null {
+    return typeof globalThis.window === 'undefined' ? null : globalThis.window;
+  }
+
+  private visibleBoundary(browserWindow: Window): BoundaryRect {
     const boundary = {
       top: 0,
-      bottom: window.innerHeight,
+      bottom: browserWindow.innerHeight,
       left: 0,
-      right: window.innerWidth,
+      right: browserWindow.innerWidth,
     };
     let parent = this.host.nativeElement.parentElement;
+    const { document } = browserWindow;
 
     while (parent && parent !== document.body && parent !== document.documentElement) {
-      const style = window.getComputedStyle(parent);
+      const style = browserWindow.getComputedStyle(parent);
       const overflow = `${style.overflow} ${style.overflowY} ${style.overflowX}`;
       if (/(auto|scroll|hidden|clip)/.test(overflow)) {
         const rect = parent.getBoundingClientRect();
@@ -268,19 +274,26 @@ export class SelectComponent implements ControlValueAccessor {
     return boundary;
   }
 
-  private preferredMenuHeight(rootFontSize: number, gap: number): number {
-    const maxMenuHeight = Math.min(18 * rootFontSize, window.innerHeight * 0.45);
+  private preferredMenuHeight(rootFontSize: number, gap: number, browserWindow: Window): number {
+    const maxMenuHeight = Math.min(18 * rootFontSize, browserWindow.innerHeight * 0.45);
     const optionHeight = this.compact() ? 2.25 * rootFontSize : 2.75 * rootFontSize;
     const estimatedHeight = this.options().length * optionHeight + gap * 2;
     return Math.min(maxMenuHeight, Math.max(optionHeight + gap * 2, estimatedHeight));
   }
 
-  private rootFontSize(): number {
-    return Number.parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+  private rootFontSize(browserWindow: Window): number {
+    return (
+      Number.parseFloat(browserWindow.getComputedStyle(browserWindow.document.documentElement).fontSize) ||
+      16
+    );
   }
 
-  private cssLength(property: string, fallback: number): number {
-    const value = window.getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+  private cssLength(property: string, fallback: number, browserWindow: Window): number {
+    const { document } = browserWindow;
+    const value = browserWindow
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue(property)
+      .trim();
     if (!value) {
       return fallback;
     }

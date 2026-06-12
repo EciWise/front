@@ -54,20 +54,19 @@ function complete(data: IaProfileData | null, keys: readonly string[]): boolean 
 function mergeData(
   ...sources: readonly (IaProfileData | null | undefined)[]
 ): IaProfileData | null {
-  const merged: Record<string, unknown> = {};
+  const merged: IaProfileData = {};
 
   for (const source of sources) {
     if (!source) {
       continue;
     }
-    for (const [key, value] of Object.entries(source)) {
-      if (value !== null && value !== undefined) {
-        merged[key] = value;
-      }
-    }
+    const entries = Object.entries(source).filter(
+      ([, value]) => value !== null && value !== undefined,
+    );
+    Object.assign(merged, Object.fromEntries(entries));
   }
 
-  return Object.keys(merged).length > 0 ? (merged as IaProfileData) : null;
+  return Object.keys(merged).length > 0 ? merged : null;
 }
 
 /**
