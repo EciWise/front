@@ -256,16 +256,25 @@ function pathFor(locale: LocaleKey, section: string, slug: string): string {
 
 function nav(locale: LocaleKey) {
   const label = labels[locale];
-  return [
+  const items = [
     { text: label.guide, link: pathFor(locale, 'guide', 'overview') },
     { text: label.features, link: pathFor(locale, 'features', 'auth') },
     { text: label.development, link: pathFor(locale, 'development', 'conventions') },
   ];
+
+  if (locale === 'en') {
+    items.push(
+      { text: 'Reference', link: '/en/reference/frontend-inventory' },
+      { text: 'Deliverables', link: '/en/deliverables/' },
+    );
+  }
+
+  return items;
 }
 
 function sidebar(locale: LocaleKey) {
   const label = labels[locale];
-  return pageGroups.map((group) => ({
+  const groups = pageGroups.map((group) => ({
     text: label[group.key],
     collapsed: false,
     items: group.items.map(([key, slug]) => ({
@@ -273,6 +282,45 @@ function sidebar(locale: LocaleKey) {
       link: pathFor(locale, group.key, slug),
     })),
   }));
+
+  if (locale === 'en') {
+    groups[1].items.push({
+      text: 'Public pages and help',
+      link: '/en/features/public-and-help',
+    });
+    groups.push(
+      {
+        text: 'Reference',
+        collapsed: false,
+        items: [
+          { text: 'Frontend inventory', link: '/en/reference/frontend-inventory' },
+          { text: 'Core services', link: '/en/reference/core-services' },
+          { text: 'Shared UI and layout', link: '/en/reference/shared-ui-and-layout' },
+          { text: 'Feature services and endpoints', link: '/en/reference/feature-services-and-endpoints' },
+          { text: 'Runtime and deployment', link: '/en/reference/runtime-deployment' },
+        ],
+      },
+      {
+        text: 'Deliverables',
+        collapsed: true,
+        items: [
+          { text: 'Overview', link: '/en/deliverables/' },
+          { text: 'Frontend architecture', link: '/en/deliverables/frontend-architecture' },
+          { text: 'Development guide', link: '/en/deliverables/development-guide' },
+          { text: 'Deployment instructions', link: '/en/deliverables/deployment-instructions' },
+          { text: 'Visual identity manual', link: '/en/deliverables/visual-identity-manual' },
+          { text: 'Brand guide', link: '/en/deliverables/brand-guide' },
+          { text: 'Design system', link: '/en/deliverables/design-system' },
+          {
+            text: 'Product strategy and adoption',
+            link: '/en/deliverables/product-strategy-business-adoption',
+          },
+        ],
+      },
+    );
+  }
+
+  return groups;
 }
 
 function searchTranslations(locale: LocaleKey) {
