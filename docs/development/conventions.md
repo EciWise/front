@@ -48,7 +48,7 @@ Para atributos:
 
 - Reutilizar `eci-button`, `eci-card`, `eci-page-header`, `eci-section-tabs`, `eci-select`, `eci-modal`.
 - Usar iconos desde `eci-icon`.
-- Mantener pantallas funcionales, no landing, dentro de areas autenticadas.
+- Mantener pantallas funcionales, no landing, dentro de áreas autenticadas.
 - Mobile first.
 - Evitar cards dentro de cards.
 - Respetar tema claro, oscuro y modo accesibilidad.
@@ -75,5 +75,5 @@ Consumir tokens de `src/styles.css`:
 - Mantener cambios acotados al dominio.
 - No hacer refactors grandes durante una tarea funcional.
 - No revertir cambios ajenos.
-- Agregar pruebas segun riesgo.
+- Agregar pruebas según riesgo.
 

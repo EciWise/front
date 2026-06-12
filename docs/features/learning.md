@@ -1,6 +1,6 @@
 # Aprendizaje
 
-El dominio `aprendizaje` cubre colecciones, flashcards, estudio con repeticion espaciada y estadisticas de uso.
+El dominio `aprendizaje` cubre colecciones, flashcards, estudio con repetición espaciada y estadísticas de uso.
 
 ## Servicio
 
@@ -14,7 +14,7 @@ La base se arma como:
 `${studyApiUrl}/api`
 ```
 
-Metodos principales:
+Métodos principales:
 
 - `collections`
 - `createCollection`
@@ -32,14 +32,14 @@ Metodos principales:
 
 ## Vistas
 
-- `aprendizaje.ts`: entrada del modulo.
+- `aprendizaje.ts`: entrada del módulo.
 - `collections/`: colecciones y flashcards.
-- `study/`: sesion de estudio.
-- `stats/`: estadisticas.
+- `study/`: sesión de estudio.
+- `stats/`: estadísticas.
 
 ## Contratos
 
-Los modelos estan en `study.models.ts`.
+Los modelos están en `study.models.ts`.
 
 Al modificar el backend de aprendizaje, primero actualizar los modelos y despues el servicio. Evitar adaptar DTOs dentro de templates.
 

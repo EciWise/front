@@ -2,13 +2,13 @@
 
 ## Chat
 
-El chat esta compuesto por:
+El chat está compuesto por:
 
-- `features/chat/chat.service.ts`: orquestacion de estado.
+- `features/chat/chat.service.ts`: orquestación de estado.
 - `features/chat/talk-api.service.ts`: API REST.
 - `features/chat/talk-realtime.service.ts`: WebSocket/STOMP.
 - `features/chat/chat-panel.ts`: panel flotante.
-- `features/chat/ui/*`: componentes de lista, hilo, item, composer, nueva conversacion y moderacion.
+- `features/chat/ui/*`: componentes de lista, hilo, item, composer, nueva conversación y moderación.
 
 ## Capacidades
 
@@ -17,21 +17,21 @@ El chat esta compuesto por:
 - Mensajes por REST o WebSocket.
 - Adjuntos.
 - Respuestas a mensajes.
-- Edicion.
-- Eliminacion.
+- Edición.
+- Eliminación.
 - Reacciones.
 - Fijar mensajes.
-- Marcado como leido.
+- Marcado como leído.
 - Indicador typing.
 - Ocultar conversaciones localmente.
-- Moderacion y palabras censuradas para roles autorizados.
+- Moderación y palabras censuradas para roles autorizados.
 
 ## Estado local
 
 `ChatService` usa signals para:
 
 - conversaciones
-- conversacion activa
+- conversación activa
 - mensajes
 - usuarios escribiendo
 - vista actual
@@ -39,25 +39,25 @@ El chat esta compuesto por:
 - palabras censuradas
 - respuesta activa
 - conversaciones ocultas
-- ultimas lecturas
+- últimas lecturas
 
 ## IA
 
-El front tiene dos areas de IA:
+El front tiene dos áreas de IA:
 
-- **Datos y predicciones academicas:** `core/ia`, `features/ia`.
+- **Datos y predicciones académicas:** `core/ia`, `features/ia`.
 - **Asistente flotante:** `features/ai-assistant`.
 
 ## Predicciones
 
 `IaAdminService` consume endpoints de `wise_auth` para:
 
-- listar estudiantes con prediccion
+- listar estudiantes con predicción
 - ver detalle de estudiante
-- consultar estadisticas
+- consultar estadísticas
 - gestionar asignaciones tutor-estudiante
 
 ## Asistente
 
-`ai-assistant` mantiene el panel y servicio del asistente. Debe conservarse desacoplado del chat institucional para evitar mezclar conversaciones academicas con asistencia automatizada.
+`ai-assistant` mantiene el panel y servicio del asistente. Debe conservarse desacoplado del chat institucional para evitar mezclar conversaciones académicas con asistencia automatizada.
 

@@ -1,36 +1,36 @@
-# Guia de desarrollo
+# Guía de desarrollo
 
 ## Objetivo
 
-Esta guia define como trabajar sobre ECIWISE+ Front sin romper la arquitectura existente. Aplica para cambios de UI, integraciones backend, formularios, servicios, pruebas y documentacion.
+Esta guía define cómo trabajar sobre ECIWISE+ Front sin romper la arquitectura existente. Aplica para cambios de UI, integraciones backend, formularios, servicios, pruebas y documentación.
 
-## Preparacion local
+## Preparación local
 
 Requisitos:
 
 - Node.js compatible con Angular 21.
-- npm 11, segun `packageManager`.
+- npm 11, según `packageManager`.
 - Variables de entorno locales basadas en `.env.template`.
 
-Instalacion:
+Instalación:
 
 ```powershell
 npm install
 ```
 
-Copiar configuracion:
+Copiar configuración:
 
 ```powershell
 Copy-Item .env.template .env
 ```
 
-Levantar aplicacion:
+Levantar aplicación:
 
 ```powershell
 npm start
 ```
 
-Documentacion:
+Documentación:
 
 ```powershell
 npm run docs:dev
@@ -39,9 +39,9 @@ npm run docs:dev
 ## Flujo de trabajo recomendado
 
 1. Actualizar la rama de trabajo desde `develop`.
-2. Revisar el modulo afectado antes de editar.
-3. Implementar cambios pequenos y enfocados.
-4. Agregar o ajustar pruebas segun riesgo.
+2. Revisar el módulo afectado antes de editar.
+3. Implementar cambios pequeños y enfocados.
+4. Agregar o ajustar pruebas según riesgo.
 5. Ejecutar lint, tests y build.
 6. Revisar `git diff` antes de abrir PR.
 
@@ -53,20 +53,20 @@ Usar por defecto:
 - `ChangeDetectionStrategy.OnPush`.
 - `inject()` para dependencias.
 - `signal()` y `computed()` para estado local.
-- Servicios inyectables para logica de dominio.
+- Servicios inyectables para lógica de dominio.
 - Lazy loading para rutas de feature.
 
 Evitar:
 
-- Componentes con demasiada logica en template.
+- Componentes con demasiada lógica en template.
 - `HttpClient` directo desde componentes de pantalla.
 - Estilos hardcodeados que dupliquen tokens globales.
-- Textos visibles sin traduccion.
-- Dependencias nuevas sin razon clara.
+- Textos visibles sin traducción.
+- Dependencias nuevas sin razón clara.
 
 ## Estructura por dominio
 
-Cuando una funcionalidad crece, mantener esta separacion:
+Cuando una funcionalidad crece, mantener esta separación:
 
 ```text
 feature/
@@ -78,7 +78,7 @@ feature/
   feature.spec.ts
 ```
 
-Para componentes pequenos e internos se permite template inline si el patron local ya lo usa. Para pantallas principales, preferir archivos separados.
+Para componentes pequeños e internos se permite template inline si el patrón local ya lo usa. Para pantallas principales, preferir archivos separados.
 
 ## UI compartida
 
@@ -90,19 +90,19 @@ Componentes base:
 | --- | --- |
 | `eci-button` | Acciones primarias, secundarias y ghost |
 | `eci-card` | Contenedores funcionales y elementos repetidos |
-| `eci-select` | Seleccion controlada con opciones explicitas |
-| `eci-modal` | Dialogos, confirmaciones y formularios secundarios |
+| `eci-select` | Selección controlada con opciones explícitas |
+| `eci-modal` | Diálogos, confirmaciones y formularios secundarios |
 | `eci-page-header` | Encabezados de pantalla |
 | `eci-section-tabs` | Tabs de secciones internas |
-| `eci-icon` | Iconografia centralizada |
-| `eci-date-picker` | Seleccion de fechas |
-| `eci-time-picker` | Seleccion de horas |
+| `eci-icon` | Iconografía centralizada |
+| `eci-date-picker` | Selección de fechas |
+| `eci-time-picker` | Selección de horas |
 
 Reglas:
 
-- Usar `buttonClick` en `eci-button` cuando se escucha la accion del boton.
+- Usar `buttonClick` en `eci-button` cuando se escucha la acción del botón.
 - Los botones de icono deben tener `ariaLabel`.
-- Mantener targets tactiles comodos y foco visible.
+- Mantener targets táctiles cómodos y foco visible.
 - No usar iconos fuera del sistema centralizado si ya existe un nombre compatible.
 
 ## Estilos
@@ -127,29 +127,29 @@ Reglas:
 - Evitar frases duplicadas con keys distintas.
 - No concatenar traducciones con valores que puedan cambiar orden gramatical.
 - En templates, usar `| translate`.
-- En TypeScript, usar el servicio de traduccion cuando el texto dependa de logica.
+- En TypeScript, usar el servicio de traducción cuando el texto dependa de lógica.
 
 ## Formularios
 
-Usar Reactive Forms o Signal Forms segun el patron del modulo.
+Usar Reactive Forms o Signal Forms según el patrón del módulo.
 
 Checklist:
 
 - Labels visibles.
 - Mensajes de error cerca del campo.
 - `aria-live` o `role="alert"` para errores importantes.
-- Boton de envio deshabilitado durante guardado.
-- Validacion en cliente solo como soporte, no como unica barrera.
-- Confirmacion antes de acciones irreversibles.
+- Botón de envío deshabilitado durante guardado.
+- Validación en cliente solo como soporte, no como única barrera.
+- Confirmación antes de acciones irreversibles.
 
-## Servicios e integracion backend
+## Servicios e integración backend
 
 Los servicios deben:
 
-- Recibir base URLs desde tokens de configuracion.
+- Recibir base URLs desde tokens de configuración.
 - Normalizar URLs antes de construir endpoints.
 - Encapsular DTOs y transformaciones.
-- Devolver observables o signals segun el patron existente.
+- Devolver observables o signals según el patrón existente.
 - Manejar errores de forma consistente.
 
 No mezclar contratos de backend en componentes de UI.
@@ -167,13 +167,13 @@ npm run build
 npm run e2e
 ```
 
-Criterio practico:
+Criterio práctico:
 
 - Cambio de servicio: prueba unitaria del servicio.
-- Cambio de formulario: prueba de validacion y envio.
-- Cambio de componente compartido: prueba del componente y al menos un caso de integracion.
+- Cambio de formulario: prueba de validación y envío.
+- Cambio de componente compartido: prueba del componente y al menos un caso de integración.
 - Cambio de ruta o guard: prueba de acceso o smoke test.
-- Cambio visual critico: Playwright o revision manual documentada.
+- Cambio visual crítico: Playwright o revisión manual documentada.
 
 ## PR checklist
 
@@ -186,6 +186,5 @@ Antes de abrir PR:
 - Build pasa.
 - Textos visibles traducidos.
 - UI usa tokens y componentes compartidos.
-- Accesibilidad basica revisada: foco, labels, contraste, teclado.
-- La descripcion de PR explica impacto, pruebas y riesgos.
-
+- Accesibilidad básica revisada: foco, labels, contraste, teclado.
+- La descripción de PR explica impacto, pruebas y riesgos.

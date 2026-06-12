@@ -27,11 +27,11 @@ npm run serve:ssr:ECIWISE-Front
 | `initial` | `750kB` | `1MB` |
 | `anyComponentStyle` | `8kB` | `12kB` |
 
-Si el build advierte por presupuesto inicial, revisar chunks, dependencias y lazy loading antes de subir el limite.
+Si el build advierte por presupuesto inicial, revisar chunks, dependencias y lazy loading antes de subir el límite.
 
-## Documentacion
+## Documentación
 
-Build de documentacion:
+Build de documentación:
 
 ```powershell
 npm run docs:build
@@ -55,7 +55,7 @@ docs/.vitepress/dist
 - `npm run test:ci`
 - `npm run build`
 - `npm run docs:build`
-- Revisar rutas criticas en navegador.
+- Revisar rutas críticas en navegador.
 - Confirmar que `.env` de ambiente apunta a servicios correctos.
 - Confirmar que no hay textos visibles sin i18n en cambios nuevos.
 

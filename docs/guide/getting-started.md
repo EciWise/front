@@ -6,7 +6,7 @@
 - npm 11, definido en `packageManager`.
 - Dependencias instaladas con `npm install`.
 
-## Instalacion
+## Instalación
 
 ```powershell
 npm install
@@ -33,7 +33,7 @@ TODO_SERVICE=http://localhost:8083
 npm start
 ```
 
-El script ejecuta `scripts/serve.mjs`, que prepara `assets/env.json` antes de levantar la aplicacion.
+El script ejecuta `scripts/serve.mjs`, que prepara `assets/env.json` antes de levantar la aplicación.
 
 Tambien se puede usar Angular CLI directamente:
 
@@ -41,13 +41,13 @@ Tambien se puede usar Angular CLI directamente:
 npm run ng -- serve
 ```
 
-## Build de produccion
+## Build de producción
 
 ```powershell
 npm run build
 ```
 
-La salida se genera en `dist/ECIWISE-Front`. El proyecto esta configurado con `outputMode: "server"` para SSR.
+La salida se genera en `dist/ECIWISE-Front`. El proyecto está configurado con `outputMode: "server"` para SSR.
 
 ## Pruebas
 
@@ -58,7 +58,7 @@ npm run test:coverage
 npm run e2e
 ```
 
-## Documentacion
+## Documentación
 
 ```powershell
 npm run docs:dev
@@ -66,4 +66,4 @@ npm run docs:build
 npm run docs:preview
 ```
 
-El sitio VitePress vive en `docs/` y usa busqueda local.
+El sitio VitePress vive en `docs/` y usa búsqueda local.

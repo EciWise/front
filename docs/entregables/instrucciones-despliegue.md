@@ -2,25 +2,25 @@
 
 ## Alcance
 
-Este documento cubre el despliegue del frontend ECIWISE+ con Angular SSR y de la documentacion VitePress. No reemplaza los pipelines de infraestructura, pero define los pasos y verificaciones que debe cumplir cada ambiente.
+Este documento cubre el despliegue del frontend ECIWISE+ con Angular SSR y de la documentación VitePress. No reemplaza los pipelines de infraestructura, pero define los pasos y verificaciones que debe cumplir cada ambiente.
 
 ## Artefactos generados
 
 | Artefacto | Comando | Salida |
 | --- | --- | --- |
-| Aplicacion Angular SSR | `npm run build` | `dist/ECIWISE-Front` |
+| Aplicación Angular SSR | `npm run build` | `dist/ECIWISE-Front` |
 | Servidor SSR | `npm run serve:ssr:ECIWISE-Front` | Ejecuta `server.mjs` generado |
-| Documentacion VitePress | `npm run docs:build` | `docs/.vitepress/dist` |
+| Documentación VitePress | `npm run docs:build` | `docs/.vitepress/dist` |
 
 ## Variables de entorno
 
 El despliegue debe definir estas variables:
 
-| Variable | Descripcion | Ejemplo |
+| Variable | Descripción | Ejemplo |
 | --- | --- | --- |
 | `PORT` | Puerto del servidor SSR | `4000` |
 | `AUTH_SERVICE` | Base URL del backend auth/API | `https://api.eciwise.edu/auth` |
-| `STUDY_SERVICE` | Base URL de estudio/practica | `https://api.eciwise.edu/study` |
+| `STUDY_SERVICE` | Base URL de estudio/práctica | `https://api.eciwise.edu/study` |
 | `TALK_SERVICE` | Base URL REST de chat | `https://api.eciwise.edu/talk` |
 | `TALK_WS` | WebSocket de chat | `wss://api.eciwise.edu/ws/chat` |
 | `TODO_SERVICE` | Base URL de tareas | `https://api.eciwise.edu/todo` |
@@ -47,7 +47,7 @@ Validar:
 - Build SSR genera `dist/ECIWISE-Front/server/server.mjs`.
 - `public/assets/env.json` contiene URLs del ambiente correcto.
 - El presupuesto de bundle no supera error budget.
-- Las rutas publicas y autenticadas cargan sin errores.
+- Las rutas públicas y autenticadas cargan sin errores.
 
 ## Despliegue SSR con Node
 
@@ -91,15 +91,15 @@ runtime:
   ejecutar node dist/ECIWISE-Front/server/server.mjs
 ```
 
-Buenas practicas:
+Buenas prácticas:
 
-- No copiar `node_modules` de desarrollo al runtime si la imagen puede instalar solo produccion.
+- No copiar `node_modules` de desarrollo al runtime si la imagen puede instalar solo producción.
 - Definir `NODE_ENV=production`.
 - No incluir `.env` con secretos en la imagen.
 - Inyectar variables por ambiente.
 - Usar imagen Node LTS compatible con Angular 21.
 
-## Despliegue de documentacion
+## Despliegue de documentación
 
 Build:
 
@@ -113,9 +113,9 @@ Salida:
 docs/.vitepress/dist
 ```
 
-La documentacion puede servirse como sitio estatico en GitHub Pages, Netlify, Vercel, Cloudflare Pages, Nginx o cualquier hosting de archivos estaticos.
+La documentación puede servirse como sitio estático en GitHub Pages, Netlify, Vercel, Cloudflare Pages, Nginx o cualquier hosting de archivos estáticos.
 
-Configuracion generica:
+Configuración genérica:
 
 | Setting | Valor |
 | --- | --- |
@@ -132,27 +132,27 @@ location / {
 }
 ```
 
-## Cache y assets
+## Caché y assets
 
 Recomendaciones:
 
 - Assets versionados/hash: `Cache-Control: public, max-age=31536000, immutable`.
-- HTML y `env.json`: cache corto o revalidacion.
+- HTML y `env.json`: caché corto o revalidación.
 - No cachear agresivamente `public/assets/env.json`, porque cambia por ambiente.
 - Servir todo por HTTPS.
 
-## Validacion post-despliegue
+## Validación post-despliegue
 
 Revisar:
 
-- Landing publica carga.
+- Landing pública carga.
 - Login carga y redirige correctamente.
 - Rutas `/student`, `/tutor`, `/admin` protegen por rol.
 - Tema claro/oscuro persiste.
 - Idioma cambia sin romper layout.
-- Chat y WebSocket conectan si el servicio esta activo.
+- Chat y WebSocket conectan si el servicio está activo.
 - No hay errores 404 para chunks JS/CSS.
-- No hay mismatch visible de hidratacion SSR.
+- No hay mismatch visible de hidratación SSR.
 
 ## Rollback
 
@@ -160,18 +160,18 @@ Mantener al menos el artefacto anterior disponible.
 
 Estrategia:
 
-- Desplegar por version o commit SHA.
-- Cambiar alias/trafico al artefacto anterior si hay fallo.
-- Limpiar cache de HTML y `env.json`.
+- Desplegar por versión o commit SHA.
+- Cambiar alias/tráfico al artefacto anterior si hay fallo.
+- Limpiar caché de HTML y `env.json`.
 - Mantener assets hash viejos mientras existan usuarios con HTML anterior.
 
 ## Riesgos comunes
 
-| Riesgo | Sintoma | Mitigacion |
+| Riesgo | Síntoma | Mitigación |
 | --- | --- | --- |
 | URL de API incorrecta | Login o datos fallan | Revisar `.env` y `env.json` |
 | WebSocket mal configurado | Chat sin realtime | Validar `TALK_WS` y HTTPS/WSS |
-| Cache de `env.json` | Ambiente apunta a servicios viejos | Cache corto para `env.json` |
+| Caché de `env.json` | Ambiente apunta a servicios viejos | Caché corto para `env.json` |
 | SSR usa API de navegador | Error en server render | Proteger `window`, `document`, `localStorage` |
 | Base path incorrecto en docs | Links rotos | Configurar `base` si se despliega en subruta |
 

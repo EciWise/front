@@ -1,40 +1,40 @@
-# Estrategia de marketing, negocio, valor y adopcion
+# Estrategia de marketing, negocio, valor y adopción
 
 ## Resumen
 
-ECIWISE+ debe posicionarse como una plataforma institucional de acompanamiento academico, no solo como una herramienta tecnologica. Su valor esta en reunir servicios dispersos, activar apoyo oportuno y generar visibilidad para estudiantes, tutores y administracion.
+ECIWISE+ debe posicionarse como una plataforma institucional de acompañamiento académico, no solo como una herramienta tecnológica. Su valor está en reunir servicios dispersos, activar apoyo oportuno y generar visibilidad para estudiantes, tutores y administración.
 
 Este documento agrupa:
 
-- Estrategia de marketing y masificacion.
-- Modelo de negocio y publico objetivo.
+- Estrategia de marketing y masificación.
+- Modelo de negocio y público objetivo.
 - Propuesta de valor.
-- Estrategia de adopcion.
+- Estrategia de adopción.
 
 ## Propuesta de valor
 
-### Declaracion corta
+### Declaración corta
 
-ECIWISE+ centraliza tutorias, aprendizaje, tareas, chat e inteligencia academica para que estudiantes reciban apoyo oportuno y la institucion pueda acompanar con datos.
+ECIWISE+ centraliza tutorías, aprendizaje, tareas, chat e inteligencia académica para que estudiantes reciban apoyo oportuno y la institución pueda acompañar con datos.
 
 ### Valor por usuario
 
 | Usuario | Dolor | Valor de ECIWISE+ |
 | --- | --- | --- |
-| Estudiante | Herramientas dispersas, dificultad para pedir ayuda, poca claridad del progreso | Un solo lugar para estudiar, organizar tareas, reservar tutorias y recibir apoyo |
-| Tutor | Agenda manual, baja trazabilidad, solicitudes dispersas | Gestion de disponibilidad, reservas, historial y seguimiento |
+| Estudiante | Herramientas dispersas, dificultad para pedir ayuda, poca claridad del progreso | Un solo lugar para estudiar, organizar tareas, reservar tutorías y recibir apoyo |
+| Tutor | Agenda manual, baja trazabilidad, solicitudes dispersas | Gestión de disponibilidad, reservas, historial y seguimiento |
 | Administrador | Baja visibilidad de riesgo y uso de servicios | Indicadores, predicciones, usuarios y asignaciones desde una vista central |
-| Docente | Dificultad para conectar estudiantes con apoyo extra aula | Canal institucional para remitir y acompanar |
-| Directivo | Necesidad de mejorar permanencia y bienestar academico | Plataforma medible para estrategias de apoyo y retencion |
+| Docente | Dificultad para conectar estudiantes con apoyo extra aula | Canal institucional para remitir y acompañar |
+| Directivo | Necesidad de mejorar permanencia y bienestar académico | Plataforma medible para estrategias de apoyo y retención |
 
 ### Diferenciadores
 
 - Experiencia por rol.
-- Integracion de aprendizaje, tutorias, tareas y comunicacion.
-- IA aplicada a apoyo academico.
-- Diseno institucional con accesibilidad.
+- Integración de aprendizaje, tutorías, tareas y comunicación.
+- IA aplicada a apoyo académico.
+- Diseño institucional con accesibilidad.
 - Arquitectura preparada para microservicios.
-- Enfoque de acompanamiento humano, no automatizacion opaca.
+- Enfoque de acompañamiento humano, no automatización opaca.
 
 ## Modelo de negocio
 
@@ -46,68 +46,68 @@ Comprador:
 
 - Universidad.
 - Facultad.
-- Direccion de bienestar o permanencia.
-- Centro de apoyo academico.
-- Area de transformacion digital.
+- Dirección de bienestar o permanencia.
+- Centro de apoyo académico.
+- Área de transformación digital.
 
 Usuarios finales:
 
 - Estudiantes.
 - Tutores.
-- Administradores academicos.
+- Administradores académicos.
 - Docentes relacionados con apoyo.
 
-### Opciones de monetizacion
+### Opciones de monetización
 
-| Modelo | Descripcion | Cuándo aplica |
+| Modelo | Descripción | Cuándo aplica |
 | --- | --- | --- |
-| Licencia institucional anual | Pago por institucion o sede | Producto maduro con soporte |
-| Pago por usuario activo | Precio segun estudiantes/tutores activos | Escalamiento por adopcion real |
-| Modulos premium | IA avanzada, analitica, integraciones, reportes | Instituciones con necesidades especificas |
-| Implementacion + soporte | Setup, capacitacion y acompanamiento | Primeros despliegues |
-| Convenio academico | Uso piloto con investigacion y medicion | Fase universitaria o validacion |
+| Licencia institucional anual | Pago por institución o sede | Producto maduro con soporte |
+| Pago por usuario activo | Precio según estudiantes/tutores activos | Escalamiento por adopción real |
+| Módulos premium | IA avanzada, analítica, integraciones, reportes | Instituciones con necesidades específicas |
+| Implementación + soporte | Setup, capacitación y acompañamiento | Primeros despliegues |
+| Convenio académico | Uso piloto con investigación y medición | Fase universitaria o validación |
 
 ### Indicadores de negocio
 
 - Usuarios activos mensuales.
 - Porcentaje de estudiantes con perfil completo.
-- Reservas de tutorias por semana.
-- Tasa de asistencia a tutorias.
-- Uso de aprendizaje/practica.
+- Reservas de tutorías por semana.
+- Tasa de asistencia a tutorías.
+- Uso de aprendizaje/práctica.
 - Interacciones de chat/asistente.
 - Alertas o riesgos atendidos.
-- Retencion de usuarios por cohorte.
-- Satisfaccion de estudiantes y tutores.
+- Retención de usuarios por cohorte.
+- Satisfacción de estudiantes y tutores.
 
-## Publico objetivo
+## Público objetivo
 
 ### Segmento inicial
 
-Estudiantes de pregrado de la Escuela Colombiana de Ingenieria Julio Garavito que necesitan apoyo academico, organizacion de tareas y acompanamiento por tutorias.
+Estudiantes de pregrado de la Escuela Colombiana de Ingeniería Julio Garavito que necesitan apoyo académico, organización de tareas y acompañamiento por tutorías.
 
 ### Segmentos secundarios
 
-- Tutores academicos.
+- Tutores académicos.
 - Coordinadores de programa.
 - Administradores de bienestar/permanencia.
 - Docentes con interes en seguimiento.
-- Equipos institucionales de analitica academica.
+- Equipos institucionales de analítica académica.
 
 ### Early adopters
 
-Perfiles con mayor probabilidad de adopcion temprana:
+Perfiles con mayor probabilidad de adopción temprana:
 
 - Estudiantes de primeros semestres.
 - Estudiantes en materias de alta dificultad.
 - Monitores o tutores ya activos.
-- Coordinaciones que ya gestionan acompanamiento manual.
-- Docentes que remiten estudiantes a tutorias.
+- Coordinaciones que ya gestionan acompañamiento manual.
+- Docentes que remiten estudiantes a tutorías.
 
-## Estrategia de marketing y masificacion
+## Estrategia de marketing y masificación
 
 ### Objetivo de marketing
 
-Lograr que ECIWISE+ sea percibida como la puerta de entrada al acompanamiento academico: el lugar donde el estudiante estudia, pide ayuda, organiza pendientes y se comunica.
+Lograr que ECIWISE+ sea percibida como la puerta de entrada al acompañamiento académico: el lugar donde el estudiante estudia, pide ayuda, organiza pendientes y se comunica.
 
 ### Mensaje central
 
@@ -115,24 +115,24 @@ Lograr que ECIWISE+ sea percibida como la puerta de entrada al acompanamiento ac
 
 ### Canales
 
-| Canal | Accion |
+| Canal | Acción |
 | --- | --- |
-| Induccion estudiantil | Presentar ECIWISE+ como herramienta base de acompanamiento |
-| Aulas y docentes | Invitacion desde cursos criticos |
+| Inducción estudiantil | Presentar ECIWISE+ como herramienta base de acompañamiento |
+| Aulas y docentes | Invitación desde cursos críticos |
 | Tutores/monitores | Promover reservas y disponibilidad desde la plataforma |
-| Correo institucional | Campanas por beneficio concreto |
+| Correo institucional | Campañas por beneficio concreto |
 | Pantallas del campus | Mensajes cortos con QR |
 | Redes institucionales | Historias de uso, recordatorios y logros |
 | Bienestar/permanencia | Integrar en rutas de apoyo |
-| Eventos academicos | Demos y estaciones de activacion |
+| Eventos académicos | Demos y estaciones de activación |
 
-### Campanas sugeridas
+### Campañas sugeridas
 
-1. Lanzamiento: "Todo tu apoyo academico en un solo lugar".
-2. Tutoraciones: "Reserva una tutoria antes del parcial".
-3. Organizacion: "Convierte tus pendientes en un plan".
-4. Aprendizaje: "Practica, repasa y mide tu avance".
-5. Comunidad: "Conecta con tutores y companeros".
+1. Lanzamiento: "Todo tu apoyo académico en un solo lugar".
+2. Tutoraciones: "Reserva una tutoría antes del parcial".
+3. Organización: "Convierte tus pendientes en un plan".
+4. Aprendizaje: "Práctica, repasa y mide tu avance".
+5. Comunidad: "Conecta con tutores y compañeros".
 
 ### Activaciones
 
@@ -141,17 +141,17 @@ Lograr que ECIWISE+ sea percibida como la puerta de entrada al acompanamiento ac
 - Retos de perfil completo.
 - Reconocimiento a tutores activos.
 - Tablero de impacto mensual.
-- Guia rapida para docentes.
+- Guía rápida para docentes.
 
-## Estrategia de adopcion
+## Estrategia de adopción
 
 ### Fase 1: Piloto controlado
 
-Duracion sugerida: 4 a 6 semanas.
+Duración sugerida: 4 a 6 semanas.
 
 Alcance:
 
-- Uno o dos programas academicos.
+- Uno o dos programas académicos.
 - Materias de alta demanda.
 - Grupo de tutores definidos.
 - Administradores responsables del seguimiento.
@@ -160,77 +160,77 @@ Metas:
 
 - 60% de estudiantes invitados registrados.
 - 40% con perfil completo.
-- 30% usando al menos una funcionalidad academica.
+- 30% usando al menos una funcionalidad académica.
 - Primer reporte de hallazgos.
 
-### Fase 2: Expansion por casos de uso
+### Fase 2: Expansión por casos de uso
 
 Activar por necesidad concreta:
 
 - Tutoraciones antes de parciales.
 - Seguimiento a estudiantes de primer semestre.
-- Gestion de tareas academicas.
-- Aprendizaje y practica por asignatura.
-- Chat institucional para soporte academico.
+- Gestión de tareas académicas.
+- Aprendizaje y práctica por asignatura.
+- Chat institucional para soporte académico.
 
 Metas:
 
 - Aumentar recurrencia semanal.
-- Medir satisfaccion.
-- Identificar funciones mas usadas.
+- Medir satisfacción.
+- Identificar funciones más usadas.
 - Ajustar mensajes y onboarding.
 
-### Fase 3: Institucionalizacion
+### Fase 3: Institucionalización
 
-Convertir ECIWISE+ en parte del proceso academico:
+Convertir ECIWISE+ en parte del proceso académico:
 
-- Incluir en induccion.
+- Incluir en inducción.
 - Integrar con rutas de bienestar/permanencia.
 - Definir responsables por facultad o programa.
 - Publicar indicadores periodicos.
 - Formalizar soporte y mejora continua.
 
-## Barreras y mitigacion
+## Barreras y mitigación
 
-| Barrera | Riesgo | Mitigacion |
+| Barrera | Riesgo | Mitigación |
 | --- | --- | --- |
-| Baja adopcion inicial | Usuarios no entienden valor | Activar por casos concretos, no por features |
+| Baja adopción inicial | Usuarios no entienden valor | Activar por casos concretos, no por features |
 | Tutores no actualizan disponibilidad | Reservas pierden confianza | Recordatorios y reportes de tutor activo |
-| Percepcion de vigilancia | Rechazo a analitica/IA | Mensaje de apoyo, transparencia y privacidad |
-| Fragmentacion con sistemas existentes | Doble trabajo | Integraciones graduales y datos reutilizables |
+| Percepción de vigilancia | Rechazo a analítica/IA | Mensaje de apoyo, transparencia y privacidad |
+| Fragmentación con sistemas existentes | Doble trabajo | Integraciones graduales y datos reutilizables |
 | Falta de soporte | Abandono por errores | Canal de ayuda y responsables claros |
 
-## Metricas de adopcion
+## Métricas de adopción
 
 Embudo:
 
 1. Invitados.
 2. Registrados.
 3. Perfil completo.
-4. Primera accion academica.
+4. Primera acción académica.
 5. Segunda visita semanal.
 6. Uso recurrente mensual.
 
-Metricas clave:
+Métricas clave:
 
-- Activacion: porcentaje que completa perfil y usa una funcion.
-- Retencion: usuarios activos semana 1, 2, 4 y 8.
-- Intensidad: acciones academicas por usuario.
-- Oferta: horas de tutoria disponibles.
+- Activación: porcentaje que completa perfil y usa una función.
+- Retención: usuarios activos semana 1, 2, 4 y 8.
+- Intensidad: acciones académicas por usuario.
+- Oferta: horas de tutoría disponibles.
 - Demanda: reservas solicitadas.
-- Calidad: asistencia y calificacion de tutorias.
-- Impacto: casos atendidos, alertas revisadas, estudiantes acompanados.
+- Calidad: asistencia y calificación de tutorías.
+- Impacto: casos atendidos, alertas revisadas, estudiantes acompañados.
 
-## Roadmap de masificacion
+## Roadmap de masificación
 
 | Horizonte | Enfoque |
 | --- | --- |
-| 0-1 mes | Piloto, validacion de onboarding, soporte cercano |
-| 2-3 meses | Expansion por cursos/programas, campanas por necesidad |
-| 4-6 meses | Integracion institucional, reportes y mejoras de IA |
-| 6-12 meses | Escalamiento a toda la institucion y modelo replicable |
+| 0-1 mes | Piloto, validación de onboarding, soporte cercano |
+| 2-3 meses | Expansión por cursos/programas, campañas por necesidad |
+| 4-6 meses | Integración institucional, reportes y mejoras de IA |
+| 6-12 meses | Escalamiento a toda la institución y modelo replicable |
 
 ## Mensaje final para stakeholders
 
-ECIWISE+ permite que el acompanamiento academico deje de depender de esfuerzos aislados y se convierta en una experiencia visible, medible y cercana. La plataforma conecta estudiantes con apoyo real, tutores con herramientas operativas y administradores con datos para actuar a tiempo.
+ECIWISE+ permite que el acompañamiento académico deje de depender de esfuerzos aislados y se convierta en una experiencia visible, medible y cercana. La plataforma conecta estudiantes con apoyo real, tutores con herramientas operativas y administradores con datos para actuar a tiempo.
 

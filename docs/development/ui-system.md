@@ -23,7 +23,7 @@ El tema se controla por atributo:
 
 Reglas:
 
-- Todo boton de icono necesita `aria-label` traducido.
+- Todo botón de icono necesita `aria-label` traducido.
 - Mantener foco visible.
 - Usar HTML semantico.
 - Respetar `prefers-reduced-motion`.
@@ -36,17 +36,17 @@ Reglas:
 | `eci-card` | Items repetidos, paneles y contenedores funcionales |
 | `eci-page-header` | Encabezado de pantalla |
 | `eci-section-tabs` | Secciones dentro de una pantalla funcional |
-| `eci-select` | Desplegables con opciones controladas por pagina |
-| `eci-modal` | Dialogos y formularios secundarios |
-| `eci-icon` | Iconografia Lucide centralizada |
+| `eci-select` | Desplegables con opciones controladas por página |
+| `eci-modal` | Diálogos y formularios secundarios |
+| `eci-icon` | Iconografía Lucide centralizada |
 | `eci-date-picker` | Fechas cuando se requiere picker custom |
 | `eci-time-picker` | Horas cuando se requiere picker custom |
-| `eci-pie-chart` | Graficos de torta |
+| `eci-pie-chart` | Gráficos de torta |
 | `eci-histogram` | Histogramas |
 
 ## `eci-select`
 
-El componente recibe opciones explicitas:
+El componente recibe opciones explícitas:
 
 ```ts
 readonly options: readonly SelectOption[] = [
@@ -64,5 +64,4 @@ readonly options: readonly SelectOption[] = [
 />
 ```
 
-No debe depender de opciones por defecto compartidas. Cada pagina define su catalogo.
-
+No debe depender de opciones por defecto compartidas. Cada página define su catálogo.

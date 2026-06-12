@@ -1,16 +1,16 @@
-# Configuracion runtime
+# Configuración runtime
 
-## Flujo de configuracion
+## Flujo de configuración
 
 1. `.env` define URLs de servicios.
 2. `scripts/write-env.mjs` genera `public/assets/env.json`.
 3. `EnvService` carga `assets/env.json` durante el bootstrap.
-4. `app.config.ts` expone tokens de configuracion por dominio.
+4. `app.config.ts` expone tokens de configuración por dominio.
 5. Los servicios consumen esos tokens mediante `inject()`.
 
 ## Variables soportadas
 
-| Variable | Uso | Default en codigo |
+| Variable | Uso | Default en código |
 | --- | --- | --- |
 | `AUTH_SERVICE` | Servicio de auth, usuarios, IA admin | `http://localhost:3001` |
 | `STUDY_SERVICE` | Servicio de aprendizaje | `http://localhost:8082` |
@@ -32,6 +32,6 @@
 
 - No leer `.env` directamente desde componentes.
 - No hardcodear URLs dentro de servicios.
-- Para un nuevo backend, crear un token de configuracion en `core/<dominio>`.
+- Para un nuevo backend, crear un token de configuración en `core/<dominio>`.
 - Normalizar URLs con helpers de `core/config/url.util.ts`.
 

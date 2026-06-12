@@ -13,7 +13,7 @@ npm run e2e
 
 ## Unitarias
 
-Los specs viven junto al codigo:
+Los specs viven junto al código:
 
 ```text
 feature.service.ts
@@ -22,9 +22,9 @@ component.ts
 component.spec.ts
 ```
 
-## Integracion
+## Integración
 
-Los specs de integracion usan sufijo:
+Los specs de integración usan sufijo:
 
 ```text
 *.integration.spec.ts
@@ -32,11 +32,11 @@ Los specs de integracion usan sufijo:
 
 ## E2E
 
-Playwright esta configurado en `playwright.config.ts` y los tests estan en `e2e/`.
+Playwright está configurado en `playwright.config.ts` y los tests están en `e2e/`.
 
 ## Cobertura relevante
 
-Areas con cobertura destacada:
+Áreas con cobertura destacada:
 
 - Auth service, guards e interceptor.
 - i18n y language switch.
@@ -45,7 +45,7 @@ Areas con cobertura destacada:
 - Chat services y componentes.
 - Tareas.
 - Aprendizaje.
-- Reglas de negocio de tutorias mockeadas en `tutoring.service.spec.ts`.
+- Reglas de negocio de tutorías mockeadas en `tutoring.service.spec.ts`.
 
 ## Criterios para agregar pruebas
 

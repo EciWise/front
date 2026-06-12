@@ -1,12 +1,12 @@
-# Sistema de diseno
+# Sistema de diseño
 
 ## Objetivo
 
-El sistema de diseno de ECIWISE+ define reglas visuales y de interaccion para construir pantallas consistentes, accesibles y mantenibles. El punto de verdad tecnico esta en `src/styles.css` y en los componentes compartidos de `src/app/shared/ui`.
+El sistema de diseño de ECIWISE+ define reglas visuales y de interacción para construir pantallas consistentes, accesibles y mantenibles. El punto de verdad técnico está en `src/styles.css` y en los componentes compartidos de `src/app/shared/ui`.
 
 ## Principios
 
-- Claridad antes que decoracion.
+- Claridad antes que decoración.
 - Accesibilidad por defecto.
 - Coherencia entre roles.
 - Componentes reutilizables antes que estilos aislados.
@@ -20,7 +20,7 @@ El sistema de diseno de ECIWISE+ define reglas visuales y de interaccion para co
 | Token | Valor | Uso |
 | --- | --- | --- |
 | `--brand-black` | `#08080a` | Marca, fondos sobrios, texto fuerte |
-| `--brand-red` | `#c8102e` | Acciones primarias, logo, enfasis |
+| `--brand-red` | `#c8102e` | Acciones primarias, logo, énfasis |
 | `--brand-red-dark` | `#99000d` | Hover, estados activos |
 | `--brand-red-soft` | `#e23a52` | Acento en tema oscuro |
 
@@ -52,12 +52,12 @@ Tema oscuro:
 
 | Token | Valor | Uso |
 | --- | --- | --- |
-| `--success` | `#1b873f` | Exito |
+| `--success` | `#1b873f` | Éxito |
 | `--warning` | `#b45309` | Advertencia |
 | `--danger` | `#c8102e` | Error |
-| `--info` | `#1d4ed8` | Informacion |
+| `--info` | `#1d4ed8` | Información |
 
-## Tipografia
+## Tipografía
 
 | Token | Uso |
 | --- | --- |
@@ -66,9 +66,9 @@ Tema oscuro:
 
 Reglas:
 
-- Body minimo 16 px.
+- Body mínimo 16 px.
 - Line-height entre 1.5 y 1.75 para contenido.
-- Titulos con peso 700 u 800.
+- Títulos con peso 700 u 800.
 - Labels con peso 600 o 700.
 - No usar letter-spacing negativo.
 
@@ -94,7 +94,7 @@ Reglas:
 
 | Token | Valor | Uso |
 | --- | --- | --- |
-| `--radius-sm` | `0.375rem` | Chips, elementos pequenos |
+| `--radius-sm` | `0.375rem` | Chips, elementos pequeños |
 | `--radius-md` | `0.625rem` | Inputs, selects, botones |
 | `--radius-lg` | `1rem` | Cards, modales, paneles |
 | `--radius-full` | `9999px` | Pills, avatars, toggles |
@@ -106,24 +106,24 @@ Reglas:
 
 ## Componentes base
 
-| Componente | Patron de uso |
+| Componente | Patrón de uso |
 | --- | --- |
 | `eci-button` | Acciones. Variantes: `primary`, `secondary`, `ghost` |
 | `eci-card` | Contenido agrupado y repetible |
-| `eci-select` | Seleccion controlada, accesible y posicionada |
-| `eci-modal` | Dialogos con cierre claro |
+| `eci-select` | Selección controlada, accesible y posicionada |
+| `eci-modal` | Diálogos con cierre claro |
 | `eci-section-tabs` | Cambio de vista dentro de una misma pantalla |
-| `eci-page-header` | Titulo e icono de pantalla |
-| `eci-icon` | Iconografia Lucide centralizada |
+| `eci-page-header` | Título e icono de pantalla |
+| `eci-icon` | Iconografía Lucide centralizada |
 | `eci-avatar` | Identidad de usuario |
 | `eci-tooltip` | Ayuda breve contextual |
-| `eci-date-picker` / `eci-time-picker` | Seleccion de fecha/hora |
+| `eci-date-picker` / `eci-time-picker` | Selección de fecha/hora |
 
 ## Botones
 
 Reglas:
 
-- Una accion primaria visible por bloque.
+- Una acción primaria visible por bloque.
 - Usar `variant="secondary"` para acciones alternativas.
 - Usar `variant="ghost"` para cancelar, limpiar o acciones menos prioritarias.
 - Escuchar `(buttonClick)` en vez de `(click)` sobre el host.
@@ -133,43 +133,43 @@ Reglas:
 
 Patrones:
 
-- Shell autenticado con navegacion lateral.
+- Shell autenticado con navegación lateral.
 - Top bar persistente.
 - Contenido principal con ancho contenido y scroll natural.
-- Cards solo para unidades de informacion, no para envolver secciones completas sin necesidad.
+- Cards solo para unidades de información, no para envolver secciones completas sin necesidad.
 - Grids responsive con `minmax` y `auto-fit` cuando haya colecciones.
 
 Breakpoints de referencia:
 
-| Viewport | Consideracion |
+| Viewport | Consideración |
 | --- | --- |
-| 375 px | Mobile pequeno, una columna |
+| 375 px | Mobile pequeño, una columna |
 | 768 px | Tablet, dos columnas si el contenido lo permite |
-| 1024 px | Desktop pequeno, sidebar estable |
+| 1024 px | Desktop pequeño, sidebar estable |
 | 1440 px | Desktop amplio, controlar ancho de lectura |
 
 ## Accesibilidad
 
 Checklist:
 
-- Contraste minimo 4.5:1 para texto normal.
+- Contraste mínimo 4.5:1 para texto normal.
 - Foco visible en todos los controles.
 - Labels persistentes para formularios.
 - No comunicar estado solo por color.
 - `aria-label` en botones de icono.
-- `aria-live` para mensajes asincronos importantes.
-- Navegacion por teclado completa.
+- `aria-live` para mensajes asíncronos importantes.
+- Navegación por teclado completa.
 - Respetar `prefers-reduced-motion`.
 
-## Graficos y datos
+## Gráficos y datos
 
 Reglas:
 
 - Usar color con texto o leyenda, no color solo.
 - Mostrar estado vacio cuando no hay datos.
 - Mostrar estado de carga.
-- Evitar pie charts con mas de cinco categorias.
-- Incluir resumen textual cuando el grafico comunique una decision.
+- Evitar pie charts con más de cinco categorías.
+- Incluir resumen textual cuando el gráfico comunique una decisión.
 
 ## Antipatrones
 
@@ -178,5 +178,5 @@ Reglas:
 - Meter cards dentro de cards.
 - Crear controles custom si ya existe un `eci-*`.
 - Usar textos en componentes sin pasar por i18n.
-- Ocultar informacion critica detras de hover.
+- Ocultar información critica detras de hover.
 

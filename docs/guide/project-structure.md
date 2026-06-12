@@ -28,13 +28,13 @@ docs/
 
 Contiene comportamiento transversal:
 
-- `auth/`: sesion, guards, interceptor y configuracion.
-- `http/`: normalizacion de errores HTTP.
-- `i18n/`: servicio de idioma, loader estatico y traducciones.
+- `auth/`: sesión, guards, interceptor y configuración.
+- `http/`: normalización de errores HTTP.
+- `i18n/`: servicio de idioma, loader estático y traducciones.
 - `theme/`: tema claro/oscuro.
 - `a11y/`: modo de accesibilidad.
 - `config/`: carga runtime de `assets/env.json`.
-- `ia/`: modelos y clientes HTTP de predicciones/estadisticas.
+- `ia/`: modelos y clientes HTTP de predicciones/estadísticas.
 - `models/`: roles y usuario.
 
 ## `features/`
@@ -53,7 +53,7 @@ Cada carpeta representa un dominio funcional:
 - `ia`
 - `not-found`
 
-El patron preferido para componentes de pantalla es:
+El patrón preferido para componentes de pantalla es:
 
 ```text
 feature/
@@ -63,7 +63,7 @@ feature/
     view.css
 ```
 
-Algunas pantallas historicas usan template inline. Para codigo nuevo, seguir el patron local de la carpeta cercana.
+Algunas pantallas historicas usan template inline. Para código nuevo, seguir el patrón local de la carpeta cercana.
 
 ## `shared/ui/`
 
@@ -85,7 +85,7 @@ Antes de crear un control nuevo, revisar si existe uno en esta carpeta.
 
 ## `shared/layout/`
 
-Componentes de composicion:
+Componentes de composición:
 
 - `app-shell`
 - `side-nav`

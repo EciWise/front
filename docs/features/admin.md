@@ -1,4 +1,4 @@
-# Administracion
+# Administración
 
 ## Rutas
 
@@ -6,12 +6,12 @@
 | --- | --- |
 | Dashboard | `/admin` |
 | Usuarios | `/admin/users` |
-| Estadisticas | `/admin/estadisticas` |
+| Estadísticas | `/admin/estadisticas` |
 | Predicciones | `/admin/predicciones` |
 | Asignaciones | `/admin/asignaciones` |
 | Aprendizaje | `/admin/aprendizaje` |
 
-## Gestion de usuarios
+## Gestión de usuarios
 
 `features/admin/users` consume `UserAdminService`.
 
@@ -23,12 +23,12 @@ Permite:
 - Cargar CSV.
 - Revisar resultado de carga masiva.
 
-## Estadisticas
+## Estadísticas
 
 `features/admin/statistics` combina:
 
-- Estadisticas de plataforma desde `IaAdminService.platformStats`.
-- Estadisticas mockeadas del servicio de tutorias desde `TutoringMockService.stats`.
+- Estadísticas de plataforma desde `IaAdminService.platformStats`.
+- Estadísticas mockeadas del servicio de tutorías desde `TutoringMockService.stats`.
 
 Las visualizaciones usan componentes compartidos:
 

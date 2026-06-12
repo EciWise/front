@@ -1,6 +1,6 @@
 # Rutas y roles
 
-## Rutas publicas
+## Rutas públicas
 
 | Ruta | Componente |
 | --- | --- |
@@ -10,7 +10,7 @@
 | `/auth/callback` | Callback OAuth |
 | `/**` | Not found |
 
-## Areas autenticadas
+## Áreas autenticadas
 
 Las rutas autenticadas usan `AppShellComponent`.
 
@@ -23,10 +23,10 @@ Las rutas autenticadas usan `AppShellComponent`.
 
 ## Estudiante
 
-| Ruta | Funcion |
+| Ruta | Función |
 | --- | --- |
 | `/student` | Dashboard |
-| `/student/tutorias` | Buscar, reservar, reprogramar y calificar tutorias |
+| `/student/tutorias` | Buscar, reservar, reprogramar y calificar tutorías |
 | `/student/materials` | Materiales |
 | `/student/games` | Centro de juegos |
 | `/student/study` | Centro de estudios |
@@ -38,30 +38,30 @@ Las rutas autenticadas usan `AppShellComponent`.
 
 ## Tutor
 
-| Ruta | Funcion |
+| Ruta | Función |
 | --- | --- |
 | `/tutor` | Dashboard |
 | `/tutor/estudiantes` | Estudiantes asignados y predicciones |
-| `/tutor/schedule` | Agenda, asistencia, observaciones y evaluacion de estudiantes |
-| `/tutor/availability` | Publicacion y gestion de disponibilidad |
+| `/tutor/schedule` | Agenda, asistencia, observaciones y evaluación de estudiantes |
+| `/tutor/availability` | Publicación y gestión de disponibilidad |
 | `/tutor/requests` | Solicitudes |
 | `/tutor/history` | Historial |
 | `/tutor/aprendizaje` | Aprendizaje |
 
 ## Administrador
 
-| Ruta | Funcion |
+| Ruta | Función |
 | --- | --- |
 | `/admin` | Dashboard |
-| `/admin/users` | Gestion de usuarios y carga CSV |
-| `/admin/estadisticas` | Estadisticas institucionales |
+| `/admin/users` | Gestión de usuarios y carga CSV |
+| `/admin/estadisticas` | Estadísticas institucionales |
 | `/admin/predicciones` | Predicciones de estudiantes |
-| `/admin/asignaciones` | Asignacion tutor-estudiante |
+| `/admin/asignaciones` | Asignación tutor-estudiante |
 | `/admin/aprendizaje` | Aprendizaje |
 
-## Navegacion lateral
+## Navegación lateral
 
-La navegacion se declara en `src/app/shared/layout/nav-items.ts`. Cada item usa:
+La navegación se declara en `src/app/shared/layout/nav-items.ts`. Cada item usa:
 
 - `labelKey`: clave i18n.
 - `route`: ruta absoluta.

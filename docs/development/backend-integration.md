@@ -1,14 +1,14 @@
-# Integracion backend
+# Integración backend
 
-## Patron recomendado
+## Patrón recomendado
 
 Para integrar un backend nuevo:
 
 1. Crear modelos TypeScript del dominio.
-2. Crear token de configuracion si necesita URL propia.
+2. Crear token de configuración si necesita URL propia.
 3. Registrar el token en `app.config.ts` usando `EnvService`.
-4. Crear servicio HTTP en `features/<dominio>` o `core/<dominio>` segun alcance.
-5. Mantener componentes consumiendo metodos de servicio, no `HttpClient`.
+4. Crear servicio HTTP en `features/<dominio>` o `core/<dominio>` según alcance.
+5. Mantener componentes consumiendo métodos de servicio, no `HttpClient`.
 6. Normalizar errores mediante `errorInterceptor`.
 7. Agregar pruebas del servicio y casos borde.
 
@@ -23,11 +23,11 @@ Para integrar un backend nuevo:
 | Chat REST | `TalkApiService` | `TALK_SERVICE` |
 | Chat realtime | `TalkRealtimeService` | `TALK_WS` |
 | Tareas | `TasksService` | `TODO_SERVICE` |
-| Tutorias | `TutoringMockService` | Pendiente |
+| Tutorías | `TutoringMockService` | Pendiente |
 
-## Tutorias
+## Tutorías
 
-El backend de tutorias debe poder reemplazar `TutoringMockService`.
+El backend de tutorías debe poder reemplazar `TutoringMockService`.
 
 Contrato funcional esperado:
 
@@ -37,20 +37,20 @@ Contrato funcional esperado:
 - Asistencia.
 - Observaciones.
 - Evaluaciones.
-- Reputacion.
+- Reputación.
 - Recomendaciones.
-- Estadisticas.
+- Estadísticas.
 
-Recomendacion de migracion:
+Recomendación de migración:
 
-- Mantener los metodos publicos actuales como fachada.
+- Mantener los métodos públicos actuales como fachada.
 - Crear DTOs si el backend no coincide con `tutor.models.ts`.
 - Dejar validaciones de UX en frontend, pero hacer cumplir reglas de negocio en backend.
 - Actualizar tests para cubrir errores HTTP y DTO mapping.
 
-## Autenticacion
+## Autenticación
 
-El `authInterceptor` adjunta JWT. Los servicios no deben duplicar esa logica.
+El `authInterceptor` adjunta JWT. Los servicios no deben duplicar esa lógica.
 
 ## SSR
 

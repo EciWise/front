@@ -24,7 +24,8 @@
     "lint:ci": "node scripts/lint-ratchet.mjs",
     "lint:baseline": "node scripts/lint-ratchet.mjs --write",
     "serve:ssr:ECIWISE-Front": "node dist/ECIWISE-Front/server/server.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "export-pdf": "press-export-pdf export -c pdf.config.js"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
@@ -73,6 +74,7 @@
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.60.0",
     "vitepress": "^1.6.4",
+    "vitepress-export-pdf": "^1.0.0",
     "vitest": "^4.0.8"
   }
 }
