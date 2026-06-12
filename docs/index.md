@@ -26,3 +26,13 @@ Este sitio documenta el frontend de ECIWISE+, la plataforma institucional de apo
 
 La documentacion esta escrita para que un desarrollador pueda entender el proyecto, levantarlo, ubicar las piezas principales, extender funcionalidades y conectar servicios backend sin rehacer la arquitectura existente.
 
+## Entregables
+
+- [Arquitectura del frontend](/entregables/arquitectura-frontend)
+- [Guia de desarrollo](/entregables/guia-desarrollo)
+- [Instrucciones de despliegue](/entregables/instrucciones-despliegue)
+- [Manual de identidad visual](/entregables/manual-identidad-visual)
+- [Guia de marca](/entregables/guia-marca)
+- [Sistema de diseno](/entregables/sistema-diseno)
+- [Estrategia, negocio, propuesta de valor y adopcion](/entregables/estrategia-negocio-adopcion)
+

@@ -1,20 +1,70 @@
 # Tutor area
 
-The tutor area includes assigned students, schedule, availability, requests, history and learning.
+The tutor area is mounted at `/tutor`, uses the shared app shell, and exposes operational tools for tutoring management.
 
-## What this page covers
+## Route map
 
-- The tutor area includes assigned students, schedule, availability, requests, history and learning.
-- Schedule handles attendance, session observations and student participation evaluation.
-- Availability enforces assigned subjects, capacity and no-overlap rules.
+| Route | Screen | Purpose |
+| --- | --- | --- |
+| `/tutor` | Tutor dashboard | Summary of tutor activity |
+| `/tutor/estudiantes` | Students/predictions | Student prediction view reused from IA |
+| `/tutor/schedule` | Schedule | Upcoming sessions, attendance and observations |
+| `/tutor/availability` | Availability | Create/edit/cancel availability slots |
+| `/tutor/requests` | Requests | Accept or reject pending requests |
+| `/tutor/history` | History | Completed and cancelled session history |
+| `/tutor/aprendizaje` | Learning | Cross-role flashcard module |
+| `/tutor/practica` | Practice | Cross-role quiz module |
 
-## Main files
+## Dashboard
 
-- `src/app/features/tutor/tutor.routes.ts`
-- `src/app/features/tutor/schedule`
-- `src/app/features/tutor/availability`
+`TutorDashboardComponent` summarizes active tutor work and links into the operational screens. It should remain lightweight and delegate detail to route screens.
 
-## Implementation notes
+## Schedule
 
-- Keep changes scoped to the domain and reuse shared UI components before creating new controls.
-- Visible UI text belongs in the app translation files; documentation text belongs in VitePress markdown.
+The schedule screen manages:
+
+- Upcoming confirmed sessions.
+- Attendance.
+- Observations.
+- Student participation.
+- Modal flows for observation and participation updates.
+
+Schedule helper logic lives in `schedule.service.ts`.
+
+## Availability
+
+The availability screen manages:
+
+- Slot creation.
+- Slot editing.
+- Capacity.
+- Subject assignment checks.
+- Cancellation flows.
+- Time/date inputs through shared pickers/selects.
+
+Validation should remain service-driven so UI and tests share the same business rules.
+
+## Requests and history
+
+Requests process pending reservations and write outcomes into history. History presents completed/cancelled flows for review.
+
+## Shared dependencies
+
+- `TutoringMockService` for domain state.
+- `TutorScheduleService`, `TutorAvailabilityService`, `TutoringRequestsService` and `TutorHistoryService` for screen-specific projections.
+- `StudentsPredictionsComponent` for assigned-student/prediction style views.
+- `AprendizajeComponent` and `PracticaComponent` for cross-role learning tools.
+
+## Quality coverage
+
+Relevant specs:
+
+- `features/tutor/tutoring.service.spec.ts`
+- `features/tutor/requests.service.spec.ts`
+
+## Extension rules
+
+- Keep tutor business rules outside templates.
+- Keep tutor routes synchronized with `TUTOR_ROUTES` and `TUTOR_NAV`.
+- Reuse cross-role modules instead of duplicating learning or practice UI.
+- Add tests when changing request, schedule or availability lifecycle rules.
