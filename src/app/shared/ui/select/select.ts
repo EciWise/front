@@ -245,7 +245,7 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   private browserWindow(): Window | null {
-    return typeof globalThis.window === 'undefined' ? null : globalThis.window;
+    return globalThis.window === undefined ? null : globalThis.window;
   }
 
   private visibleBoundary(browserWindow: Window): BoundaryRect {
