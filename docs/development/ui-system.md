@@ -27,6 +27,29 @@ Cada comunidad tiene un acento propio, distinguible entre sí y accesible (AA) s
 
 El fondo rojo→vinotinto del tema claro vive en un solo token, `--public-surface`, compartido por `.landing` y `.auth` para que nunca se desincronicen. El vinotinto de marca (logo, iconos, chips sobre el rojo) es `--brand-wine`; la sombra de las tarjetas blancas, `--public-card-shadow`.
 
+### Continuidad de marca en el panel
+
+Para enlazar la entrada inmersiva (landing/auth) con la app autenticada **sin** restar
+legibilidad ni densidad, el panel usa un lenguaje sutil:
+
+- `--app-ambient`: glow radial muy tenue (por tema y rol) que el `app-shell` pinta tras
+  `--surface-2` en su `:host`. En modo a11y se anula (`--app-ambient: none`).
+- El acento de rol se hace más presente: subrayado bajo `eci-page-header`, icono del header en
+  `var(--accent)`, franja izquierda en las stat-cards del tutor y en el ítem activo del menú.
+- Glass ligero (`backdrop-filter`, dentro de `@supports`) solo en chrome clave (stat-cards), nunca
+  en tarjetas de datos (que siguen sólidas vía `card-surface.css`).
+
+El fondo 3D (`eci-space-background`, three.js) queda **solo** en las pantallas públicas.
+
+### Espaciado y capas (z-index)
+
+- Escala de espaciado: `--space-0_5`, `--space-1`, `--space-1_5`, `--space-2`, `--space-3`,
+  `--space-4`, `--space-5`, `--space-6`, `--space-8`. (`--space-5` faltaba pese a usarse en el fade
+  de `.eci-fit__body` y varios gaps.)
+- Escala de z-index única (evita colisiones tipo menú-de-chat vs modal): `--z-base`, `--z-sticky`,
+  `--z-nav-scrim`, `--z-nav`, `--z-fab`, `--z-header`, `--z-dropdown`, `--z-overlay`, `--z-modal`,
+  `--z-popover`, `--z-toast`, `--z-tooltip`. Usar siempre el token, no números mágicos.
+
 ## Tema
 
 El tema se controla por atributo:

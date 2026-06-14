@@ -1,6 +1,6 @@
 .top-bar {
   position: relative;
-  z-index: 80;
+  z-index: var(--z-header);
   display: flex;
   align-items: center;
   justify-content: space-between;

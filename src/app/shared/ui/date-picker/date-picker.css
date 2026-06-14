@@ -31,7 +31,7 @@
    ningún contenedor con overflow (modal, cuerpo de sección, etc.). */
 .dp-pop {
   position: fixed;
-  z-index: 1100;
+  z-index: var(--z-popover);
   width: 18rem;
   max-width: calc(100vw - var(--space-6));
   margin: 0;
@@ -77,11 +77,11 @@
 .dp-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  gap: var(--space-0_5);
 }
 
 .dp-grid--head {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .dp-weekday {
@@ -149,5 +149,16 @@
 @media (prefers-reduced-motion: reduce) {
   .dp-pop {
     animation: none;
+  }
+}
+
+/* Móvil: calendario más ancho y celdas con área táctil cómoda (≥44px). */
+@media (max-width: 30rem) {
+  .dp-pop {
+    width: min(20rem, calc(100vw - var(--space-4)));
+  }
+  .dp-day {
+    min-height: 2.75rem;
+    font-size: 0.9rem;
   }
 }

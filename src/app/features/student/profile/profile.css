@@ -1,5 +1,7 @@
 .profile-page {
-  padding: 0 0 var(--space-8);
+  /* El shell (.shell__main) ya aporta el padding exterior; antes esto añadía
+     otro --space-8 inferior (doble espaciado). */
+  padding: 0;
   --profile-container-gap: var(--space-6);
 }
 

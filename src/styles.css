@@ -43,16 +43,34 @@
   --radius-lg: 1rem;
   --radius-full: 9999px;
 
+  --space-0_5: 0.125rem; /* micro-spacing: gaps de iconos, padding de botón fino */
   --space-1: 0.25rem;
+  --space-1_5: 0.375rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem; /* faltaba en :root pese a usarse (fade de .eci-fit__body y gaps) */
   --space-6: 1.5rem;
   --space-8: 2rem;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.18);
+
+  /* Escala de z-index única: evita colisiones entre menús, paneles y modales.
+     Antes había valores "mágicos" (p. ej. menú de chat y modal ambos en 1000). */
+  --z-base: 0; /* fondo espacial */
+  --z-sticky: 30;
+  --z-nav-scrim: 40; /* velo del menú lateral en móvil */
+  --z-nav: 50; /* menú lateral deslizable en móvil */
+  --z-fab: 60; /* botón flotante y su dock */
+  --z-header: 80; /* barra superior */
+  --z-dropdown: 90; /* selects, menús contextuales, panel de notificaciones */
+  --z-overlay: 1000; /* scrim de modal (sobre dropdowns) */
+  --z-modal: 1010; /* contenido de modal */
+  --z-popover: 1100; /* date/time picker: pueden abrirse dentro de un modal */
+  --z-toast: 1200;
+  --z-tooltip: 5000;
 
   --transition-fast: 120ms ease;
   --transition-base: 200ms ease;
@@ -68,6 +86,12 @@
   --border: #d9d9e0;
   --overlay: rgba(17, 17, 20, 0.45);
   --accent: var(--brand-red);
+  /* Ambiente de marca tras el contenido del panel: glow radial muy tenue que
+     evoca la entrada (landing/auth) sin restar legibilidad. Toma el acento de
+     rol → cada comunidad respira su color. */
+  --app-ambient:
+    radial-gradient(120% 85% at 100% -10%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 42%),
+    radial-gradient(90% 70% at -10% 110%, color-mix(in srgb, var(--brand-red) 4%, transparent), transparent 48%);
   --scrollbar-track: color-mix(in srgb, var(--surface-2) 78%, transparent);
   --scrollbar-thumb: color-mix(in srgb, var(--brand-red) 58%, var(--border));
   --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red) 78%, var(--text));
@@ -87,6 +111,11 @@
   --border: #33333d;
   --overlay: rgba(0, 0, 0, 0.6);
   --accent: var(--brand-red-soft);
+  /* En oscuro el glow es un punto más visible (superficie ya oscura) pero sigue
+     siendo discreto; usa el rojo suave para no ensuciar el fondo. */
+  --app-ambient:
+    radial-gradient(120% 85% at 100% -10%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 42%),
+    radial-gradient(90% 70% at -10% 110%, color-mix(in srgb, var(--brand-red-soft) 5%, transparent), transparent 48%);
   --scrollbar-track: color-mix(in srgb, var(--surface-2) 76%, transparent);
   --scrollbar-thumb: color-mix(in srgb, var(--brand-red-soft) 60%, var(--surface-3));
   --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red-soft) 82%, var(--text));
@@ -212,6 +241,8 @@ html[data-theme='light'] .auth .auth__card {
   --text: #000000;
   --text-muted: #1a1a1a;
   --border: #000000;
+  /* Alto contraste: sin glow ambiental ni superficies translúcidas. */
+  --app-ambient: none;
   --scrollbar-track: var(--surface);
   --scrollbar-thumb: var(--text-muted);
   --scrollbar-thumb-hover: var(--accent);
