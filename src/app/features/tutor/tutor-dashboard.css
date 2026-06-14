@@ -8,25 +8,28 @@
   gap: var(--space-4);
 }
 
-/* Superficie base (fondo, borde, sombra) en card-surface.css; aquí el layout.
-   Añade una franja de acento de rol y un velo translúcido para que el glow de
-   marca del fondo se intuya (continuidad con la entrada). */
+/* Superficie base (fondo, borde, sombra y glass) en card-surface.css; aquí el
+   layout y la franja de acento de rol. La franja va como pseudo-elemento (no
+   como border-left) para no chocar con el `border` de card-surface, que se
+   carga después en styleUrls. */
 .stat {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-6);
-  border-left: 3px solid var(--accent);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-base);
 }
 
-@supports (backdrop-filter: blur(1px)) {
-  .stat {
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-    backdrop-filter: blur(5px);
-  }
+.stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--accent);
 }
 
 .stat:hover {

@@ -14,3 +14,16 @@
   text-decoration: none;
   color: var(--text);
 }
+
+/* Efecto glass sobre el degradado de marca del panel (mismo lenguaje que las
+   tarjetas de la landing). Alta opacidad (84%) para que el contenido siga
+   legible; solo donde el navegador soporta backdrop-filter. */
+@supports (backdrop-filter: blur(1px)) {
+  .grid__card,
+  .stat {
+    background: color-mix(in srgb, var(--surface) 84%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-color: color-mix(in srgb, var(--border) 70%, transparent);
+  }
+}
