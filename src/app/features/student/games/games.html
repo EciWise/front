@@ -1,0 +1,50 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="games.title" icon="games" />
+  <div class="eci-fit__body">
+    <!-- Juego destacado: Asclepio -->
+    <section class="featured">
+      <div class="featured__info">
+        <span class="featured__badge">
+          <eci-icon name="trophy" [size]="16" />
+          {{ 'games.asclepio.subject' | translate }}
+        </span>
+        <h2 class="featured__name">{{ 'games.asclepio.name' | translate }}</h2>
+        <p class="featured__tagline">{{ 'games.asclepio.tagline' | translate }}</p>
+      </div>
+
+      <div class="featured__modes">
+        <p class="featured__modes-label">{{ 'games.modes.label' | translate }}</p>
+        <ul class="modes">
+          @for (m of modes; track m.id) {
+            <li>
+              <a
+                class="mode"
+                [routerLink]="['/student/games/asclepio']"
+                [queryParams]="{ mode: m.id }"
+              >
+                <span class="mode__icon"><eci-icon [name]="m.icon" [size]="22" /></span>
+                <span class="mode__text">
+                  <span class="mode__name">{{ m.nameKey | translate }}</span>
+                  <span class="mode__desc">{{ m.descKey | translate }}</span>
+                </span>
+                <span class="mode__cta"><eci-icon name="arrow-right" [size]="18" /></span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- Próximos retos -->
+    <ul class="games">
+      @for (g of comingSoon; track g.id) {
+        <li class="game game--soon">
+          <span class="game__icon"><eci-icon name="games" [size]="24" /></span>
+          <h3 class="game__name">{{ g.name }}</h3>
+          <p class="game__subject">{{ g.subject }}</p>
+          <span class="game__soon">{{ 'games.comingSoon' | translate }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</div>

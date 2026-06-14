@@ -16,12 +16,19 @@
     ></button>
   }
 
-  <main id="main-content" class="shell__main" tabindex="-1">
+  <main
+    id="main-content"
+    class="shell__main"
+    [class.shell__main--bleed]="immersive()"
+    tabindex="-1"
+  >
     <router-outlet />
   </main>
 </div>
 
-<eci-floating-actions />
+@if (!immersive()) {
+  <eci-floating-actions />
+}
 
 @if (mustChangePassword()) {
   <eci-force-password-change />

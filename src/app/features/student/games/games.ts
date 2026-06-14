@@ -1,44 +1,46 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
-import { ButtonComponent } from '../../../shared/ui/button/button';
-import { IconComponent } from '../../../shared/ui/icon/icon';
+import { IconComponent, IconName } from '../../../shared/ui/icon/icon';
+import { GameMode } from '../../../core/game/asclepio.protocol';
 
-interface Game {
+interface ModeOption {
+  readonly id: GameMode;
+  readonly icon: IconName;
+  readonly nameKey: string;
+  readonly descKey: string;
+}
+
+interface ComingSoonGame {
   readonly id: string;
   readonly name: string;
   readonly subject: string;
 }
 
-/** Centro de juegos educativos (catálogo mock). */
+/** Centro de juegos: juego destacado Asclepio (jugable) + próximos retos. */
 @Component({
   selector: 'eci-games',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, PageHeaderComponent, ButtonComponent, IconComponent],
-  template: `
-    <div class="eci-fit">
-    <eci-page-header titleKey="games.title" icon="games" />
-    <div class="eci-fit__body">
-    <ul class="games">
-      @for (game of games; track game.id) {
-        <li class="game">
-          <span class="game__icon"><eci-icon name="trophy" [size]="26" /></span>
-          <h2 class="game__name">{{ game.name }}</h2>
-          <p class="game__subject">{{ game.subject }}</p>
-          <eci-button variant="secondary">{{ 'games.play' | translate }}</eci-button>
-        </li>
-      }
-    </ul>
-    </div>
-    </div>
-  `,
+  imports: [RouterLink, TranslatePipe, PageHeaderComponent, IconComponent],
+  templateUrl: './games.html',
   styleUrl: './games.css',
 })
 export class GamesComponent {
-  protected readonly games: readonly Game[] = [
+  protected readonly modes: readonly ModeOption[] = [
+    { id: 'classic', icon: 'games', nameKey: 'games.modes.classic', descKey: 'games.modes.classicDesc' },
+    { id: 'pomodoro', icon: 'timer', nameKey: 'games.modes.pomodoro', descKey: 'games.modes.pomodoroDesc' },
+    {
+      id: 'battleroyale',
+      icon: 'swords',
+      nameKey: 'games.modes.battleroyale',
+      descKey: 'games.modes.battleroyaleDesc',
+    },
+  ];
+
+  protected readonly comingSoon: readonly ComingSoonGame[] = [
     { id: 'g1', name: 'Reto de derivadas', subject: 'Cálculo' },
     { id: 'g2', name: 'Quiz de algoritmos', subject: 'Programación' },
     { id: 'g3', name: 'Trivia de física', subject: 'Física' },
-    { id: 'g4', name: 'Memoria de fórmulas', subject: 'Álgebra' },
   ];
 }

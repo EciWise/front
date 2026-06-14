@@ -19,6 +19,7 @@ import {
   LucideCircleDot,
   LucideClock,
   LucideCloudUpload,
+  LucideCoffee,
   LucideEye,
   LucideEyeOff,
   LucideFileText,
@@ -30,8 +31,10 @@ import {
   LucideInfo,
   LucideLayoutDashboard,
   LucideLifeBuoy,
+  LucideLightbulb,
   LucideListChecks,
   LucideListTodo,
+  LucideMagnet,
   LucideMessageCircle,
   LucidePencil,
   LucidePlus,
@@ -39,13 +42,18 @@ import {
   LucideSearch,
   LucideSettings,
   LucideShieldCheck,
+  LucideSnowflake,
   LucideStar,
+  LucideSwords,
+  LucideTarget,
+  LucideTimer,
   LucideTrash2,
   LucideTrophy,
   LucideUser,
   LucideUserPlus,
   LucideUsers,
   LucideX,
+  LucideZap,
 } from '@lucide/angular';
 
 /** Nombres de icono soportados por la plataforma (iconos de línea, sin emojis). */
@@ -96,7 +104,15 @@ export type IconName =
   | 'calendar'
   | 'chevron-left'
   | 'chevron-right'
-  | 'chevron-down';
+  | 'chevron-down'
+  | 'coffee'
+  | 'idea'
+  | 'target'
+  | 'magnet'
+  | 'snowflake'
+  | 'zap'
+  | 'timer'
+  | 'swords';
 
 /**
  * Envoltorio de iconos. Mapea un nombre semántico a su icono lucide.
@@ -152,6 +168,14 @@ export type IconName =
     LucideChevronLeft,
     LucideChevronRight,
     LucideChevronDown,
+    LucideCoffee,
+    LucideLightbulb,
+    LucideTarget,
+    LucideMagnet,
+    LucideSnowflake,
+    LucideZap,
+    LucideTimer,
+    LucideSwords,
   ],
   template: `
     @switch (name()) {
@@ -295,6 +319,30 @@ export type IconName =
       }
       @case ('chevron-down') {
         <svg lucideChevronDown [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('coffee') {
+        <svg lucideCoffee [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('idea') {
+        <svg lucideLightbulb [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('target') {
+        <svg lucideTarget [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('magnet') {
+        <svg lucideMagnet [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('snowflake') {
+        <svg lucideSnowflake [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('zap') {
+        <svg lucideZap [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('timer') {
+        <svg lucideTimer [size]="size()" aria-hidden="true"></svg>
+      }
+      @case ('swords') {
+        <svg lucideSwords [size]="size()" aria-hidden="true"></svg>
       }
     }
   `,

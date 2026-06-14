@@ -95,3 +95,12 @@
     padding-bottom: calc(var(--space-4) + 4.5rem + env(safe-area-inset-bottom));
   }
 }
+
+/* Modo inmersivo (juego a pantalla completa): el contenido ocupa toda el área
+   bajo el header sin padding ni scroll propio, y es el contexto de
+   posicionamiento de la arena (que se posiciona absolute inset:0). */
+.shell__main--bleed {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}

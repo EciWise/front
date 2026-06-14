@@ -20,6 +20,7 @@ import { AUTH_CONFIG } from './core/auth/auth.config';
 import { STUDY_CONFIG } from './core/study/study.config';
 import { TALK_CONFIG } from './core/talk/talk.config';
 import { TODO_CONFIG } from './core/todo/todo.config';
+import { GAME_CONFIG } from './core/game/game.config';
 import { EnvService } from './core/config/env.service';
 
 export const appConfig: ApplicationConfig = {
@@ -67,6 +68,13 @@ export const appConfig: ApplicationConfig = {
       provide: TODO_CONFIG,
       useFactory: (env: EnvService) => ({
         todoApiUrl: env.get('todoApiUrl', 'http://localhost:8083'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: GAME_CONFIG,
+      useFactory: (env: EnvService) => ({
+        gameWsUrl: env.get('gameWsUrl', 'ws://localhost:3002/ws/game'),
       }),
       deps: [EnvService],
     },

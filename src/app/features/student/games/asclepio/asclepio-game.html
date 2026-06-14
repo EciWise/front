@@ -1,0 +1,158 @@
+<div class="arena">
+  <canvas #canvas class="arena__canvas"></canvas>
+
+  @if (game.status() === 'playing') {
+    <!-- Panel superior izquierdo: salir, puntaje, tiempo, energía, buffs -->
+    <div class="hud hud--tl">
+      <button type="button" class="arena__exit" (click)="exit()" [attr.aria-label]="'games.back' | translate">
+        <eci-icon name="arrow-left" [size]="18" />
+        <span>{{ 'games.back' | translate }}</span>
+      </button>
+
+      <div class="hud__score">
+        <span class="hud__score-label">{{ 'games.hud.score' | translate }}</span>
+        <span class="hud__score-value">{{ game.self()?.score ?? 0 }}</span>
+        @if (timeLabel(); as t) {
+          <span class="hud__timer"><eci-icon name="clock" [size]="15" /> {{ t }}</span>
+        }
+      </div>
+
+      <div class="hud__stamina" role="img" [attr.aria-label]="'games.hud.energy' | translate">
+        <div class="hud__stamina-fill" [style.width.%]="((game.self()?.sprintStamina ?? 0) / 3) * 100"></div>
+      </div>
+
+      <div class="hud__buffs">
+        @if (game.self()?.shielded) {
+          <span class="buff buff--shield"><eci-icon name="target" [size]="14" /></span>
+        }
+        @if (game.self()?.speedBoosted) {
+          <span class="buff buff--speed"><eci-icon name="coffee" [size]="14" /></span>
+        }
+        @if (game.self()?.magnet) {
+          <span class="buff buff--magnet"><eci-icon name="magnet" [size]="14" /></span>
+        }
+        @if (game.self()?.doubled) {
+          <span class="buff buff--double"><eci-icon name="zap" [size]="14" /></span>
+        }
+      </div>
+    </div>
+
+    @if (game.activeEvent(); as ev) {
+      <div class="hud__event">
+        {{ (ev === 'blackout' ? 'games.events.blackout' : 'games.events.ideaRain') | translate }}
+      </div>
+    }
+
+    <!-- Leaderboard (scroll interno, nunca recortado) -->
+    <div class="hud hud--tr">
+      <h2 class="lb__title">{{ 'games.hud.leaderboard' | translate }}</h2>
+      <ol class="lb">
+        @for (e of game.leaderboard(); track e.rank) {
+          <li class="lb__row" [class.lb__row--me]="e.name === game.me()?.name">
+            <span class="lb__rank">{{ e.rank }}</span>
+            <span class="lb__dot" [style.background]="e.color"></span>
+            <span class="lb__name">{{ e.name }}</span>
+            <span class="lb__score">{{ e.score }}</span>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <!-- Ayuda de controles + leyenda de power-ups (solo teclado/ratón) -->
+    <div class="hud__controls">
+      <p class="hud__hint">{{ 'games.controls.hint' | translate }}</p>
+      <div class="hud__legend">
+        @for (p of powerUpLegend; track p.type) {
+          <span class="legend"><eci-icon [name]="p.icon" [size]="14" /> {{ p.labelKey | translate }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Acciones táctiles (móvil): lado derecho, centradas, lejos del minimapa -->
+    <div class="touch-actions">
+      <button
+        type="button"
+        class="touch-btn touch-btn--sprint"
+        (pointerdown)="setTouchSprint(true)"
+        (pointerup)="setTouchSprint(false)"
+        (pointerleave)="setTouchSprint(false)"
+        [attr.aria-label]="'games.controls.sprint' | translate"
+      >
+        <eci-icon name="coffee" [size]="22" />
+      </button>
+      <button type="button" class="touch-btn" (click)="pressEject()" [attr.aria-label]="'games.controls.eject' | translate">
+        <eci-icon name="arrow-right" [size]="22" />
+      </button>
+      <button type="button" class="touch-btn touch-btn--split" (click)="pressSplit()" [attr.aria-label]="'games.controls.split' | translate">
+        <eci-icon name="circle-dot" [size]="22" />
+      </button>
+    </div>
+  }
+
+  @if (game.status() === 'connecting') {
+    <div class="overlay">
+      <div class="overlay__card">
+        <eci-icon name="games" [size]="40" />
+        <p class="overlay__title">{{ 'games.status.connecting' | translate }}</p>
+      </div>
+    </div>
+  }
+
+  @if (game.status() === 'error') {
+    <div class="overlay">
+      <div class="overlay__card">
+        <p class="overlay__title">{{ (game.errorKey() ?? 'games.status.error') | translate }}</p>
+        <div class="overlay__actions">
+          <eci-button (buttonClick)="respawn()">{{ 'games.death.respawn' | translate }}</eci-button>
+          <eci-button variant="ghost" (buttonClick)="exit()">{{ 'games.back' | translate }}</eci-button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (game.status() === 'dead') {
+    <div class="overlay">
+      <div class="overlay__card">
+        <eci-icon name="trophy" [size]="40" />
+        <p class="overlay__title">{{ 'games.death.title' | translate }}</p>
+        @if (game.died(); as d) {
+          <p class="overlay__sub">{{ 'games.death.eatenBy' | translate: { name: d.killedBy } }}</p>
+          <p class="overlay__score">{{ 'games.death.finalScore' | translate: { score: d.finalScore } }}</p>
+        }
+        <div class="overlay__actions">
+          <eci-button (buttonClick)="respawn()">{{ 'games.death.respawn' | translate }}</eci-button>
+          <eci-button variant="ghost" (buttonClick)="exit()">{{ 'games.death.exit' | translate }}</eci-button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (game.status() === 'finished') {
+    <div class="overlay">
+      <div class="overlay__card overlay__card--results">
+        <eci-icon name="trophy" [size]="40" />
+        <p class="overlay__title">{{ 'games.results.title' | translate }}</p>
+        <p class="overlay__sub">{{ 'games.results.timeUp' | translate }}</p>
+        @if (game.results(); as r) {
+          <p class="overlay__score">
+            {{ 'games.results.yourRank' | translate: { rank: r.yourRank, score: r.yourScore } }}
+          </p>
+          <ol class="results-lb">
+            @for (e of r.leaderboard; track e.rank) {
+              <li class="results-lb__row" [class.results-lb__row--me]="e.name === game.me()?.name">
+                <span class="lb__rank">{{ e.rank }}</span>
+                <span class="lb__dot" [style.background]="e.color"></span>
+                <span class="lb__name">{{ e.name }}</span>
+                <span class="lb__score">{{ e.score }}</span>
+              </li>
+            }
+          </ol>
+        }
+        <div class="overlay__actions">
+          <eci-button (buttonClick)="respawn()">{{ 'games.results.playAgain' | translate }}</eci-button>
+          <eci-button variant="ghost" (buttonClick)="exit()">{{ 'games.death.exit' | translate }}</eci-button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

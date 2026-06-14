@@ -3,11 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
-/* ============================================================
-   Tokens institucionales — Escuela Colombiana de Ingeniería
-   Marca: negro y rojo (sobriedad y excelencia).
-   Acento de comunidad estudiantil: fucsia.
-   ============================================================ */
 :root {
   /* Marca */
   --brand-black: #08080a;
