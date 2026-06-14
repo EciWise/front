@@ -5,7 +5,7 @@
 .bell__backdrop {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: var(--z-nav-scrim);
   border: 0;
   padding: 0;
   background: transparent;
@@ -16,7 +16,7 @@
   position: absolute;
   inset: auto 0 auto auto;
   top: calc(100% + 0.5rem);
-  z-index: 50;
+  z-index: var(--z-nav);
   width: min(20rem, 90vw);
   max-width: none;
   max-height: none;

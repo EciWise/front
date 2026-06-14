@@ -32,7 +32,8 @@
 .grid__card:hover {
   transform: scale(1.03);
   box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  /* Borde de acento de rol más presente al pasar el cursor (continuidad de marca). */
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
 }
 
 /* .grid__icon: chip de icono compartido en "Primitivas compartidas". */

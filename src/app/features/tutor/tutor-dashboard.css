@@ -1,14 +1,20 @@
 .stats {
   list-style: none;
-  margin: 0 0 var(--space-8);
+  /* Alineado con student/admin: el cuerpo del dashboard aporta su propio gap. */
+  margin: 0 0 var(--space-6);
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: var(--space-4);
 }
 
-/* Superficie base (fondo, borde, sombra) en card-surface.css; aquí el layout. */
+/* Superficie base (fondo, borde, sombra y glass) en card-surface.css; aquí el
+   layout y la franja de acento de rol. La franja va como pseudo-elemento (no
+   como border-left) para no chocar con el `border` de card-surface, que se
+   carga después en styleUrls. */
 .stat {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -16,6 +22,14 @@
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-base);
+}
+
+.stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--accent);
 }
 
 .stat:hover {

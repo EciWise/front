@@ -53,6 +53,9 @@
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent);
   font-weight: 600;
+  /* Indicador de borde izquierdo en el acento del rol (inset box-shadow para no
+     alterar el layout del enlace). Refuerza "dónde estoy" por comunidad. */
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .side-nav__help {

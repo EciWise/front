@@ -5,7 +5,12 @@
   flex-direction: column;
   height: 100dvh;
   overflow: hidden;
-  background: var(--surface-2);
+  /* Glow de marca muy tenue (token por tema/rol) tras la superficie base, para
+     dar continuidad con la entrada (landing/auth) sin restar legibilidad. Va en
+     el :host fijo, no en .shell__main (que scrollea), para evitar jank. */
+  background:
+    var(--app-ambient, none),
+    var(--surface-2);
 }
 
 /* Acento por rol (comunidad): estudiante fucsia, tutor rojo, admin púrpura */
@@ -66,7 +71,7 @@
     left: 0;
     width: 16rem;
     max-width: 85vw;
-    z-index: 50;
+    z-index: var(--z-nav);
     overflow-y: auto;
     padding-bottom: env(safe-area-inset-bottom);
     transform: translateX(-100%);
@@ -81,7 +86,7 @@
     display: block;
     position: fixed;
     inset: calc(4rem + env(safe-area-inset-top)) 0 0 0;
-    z-index: 40;
+    z-index: var(--z-nav-scrim);
     background: var(--overlay);
     cursor: pointer;
   }
@@ -92,7 +97,9 @@
        final del contenido en celular, incluida la barra de gestos. */
     padding: var(--space-4) max(var(--space-4), env(safe-area-inset-right)) 0
       max(var(--space-4), env(safe-area-inset-left));
-    padding-bottom: calc(var(--space-4) + 4.5rem + env(safe-area-inset-bottom));
+    /* Holgura inferior = FAB (3.5rem) + su separación (--space-6) + respiro, para
+       que el botón flotante nunca tape la última fila de contenido. */
+    padding-bottom: calc(var(--space-4) + 5.5rem + env(safe-area-inset-bottom));
   }
 }
 
