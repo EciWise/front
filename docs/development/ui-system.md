@@ -6,6 +6,27 @@
 
 Los componentes deben usar variables globales en vez de colores o espacios hardcodeados.
 
+### Tipografía de marca
+
+- `--font-sans` (**Inter**): cuerpo, títulos y chrome general. Se importa junto a Nunito.
+- `--font-field` (**Nunito**): controles de formulario (inputs, selects, pickers).
+
+Ambas familias se cargan desde un único `@import` de Google Fonts con `display=swap`.
+
+### Acentos por rol
+
+Cada comunidad tiene un acento propio, distinguible entre sí y accesible (AA) sobre superficies claras. `app-shell` mapea `data-role` → `--accent`:
+
+| Rol | Token | Valor |
+| --- | --- | --- |
+| Estudiante | `--accent-student` | `#c2185b` (fucsia) |
+| Tutor | `--accent-tutor` | `#c8102e` (rojo institucional) |
+| Admin | `--accent-admin` | `#5a2a82` (púrpura) |
+
+### Superficie pública (landing + auth)
+
+El fondo rojo→vinotinto del tema claro vive en un solo token, `--public-surface`, compartido por `.landing` y `.auth` para que nunca se desincronicen. El vinotinto de marca (logo, iconos, chips sobre el rojo) es `--brand-wine`; la sombra de las tarjetas blancas, `--public-card-shadow`.
+
 ## Tema
 
 El tema se controla por atributo:
