@@ -13,7 +13,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ApiUser } from '../../../core/models/user.model';
 import { ROLE_HOME } from '../../../core/models/role.enum';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
-import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
+import { AuroraBackgroundComponent } from '../../../shared/ui/aurora-background/aurora-background';
 
 /**
  * Recibe el resultado del OAuth de Google. wise_auth redirige aquí con los datos
@@ -24,7 +24,7 @@ import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/sp
 @Component({
   selector: 'eci-auth-callback',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, RouterLink, LogoComponent, SpaceBackgroundComponent],
+  imports: [TranslatePipe, RouterLink, LogoComponent, AuroraBackgroundComponent],
   templateUrl: './callback.html',
   styleUrl: '../auth.css',
 })
