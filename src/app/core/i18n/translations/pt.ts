@@ -513,7 +513,7 @@ nav: {
       notificationsQ: 'Como vejo minhas notificações?',
       notificationsA: 'O sino na barra superior mostra seus avisos e um indicador com quantos não foram lidos.',
       profileQ: 'Como edito meu perfil?',
-      profileA: 'Acesse Perfil pelo menu lateral para atualizar seus dados pessoais e de estudo.',
+      profileA: 'Abra seu Perfil clicando no seu nome no canto superior direito (ao lado do botão de sair) para atualizar seus dados pessoais e de estudo.',
       logoutQ: 'Como saio da conta?',
       logoutA: 'Use o botão de sair na barra superior, ao lado do seu avatar.',
     },

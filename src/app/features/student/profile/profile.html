@@ -36,6 +36,7 @@
         </aside>
 
         <main class="profile-main">
+          @if (isStudent()) {
           <eci-card class="profile-card">
             <section class="profile__section" aria-labelledby="profile-careers-title">
               <div class="profile__section-head">
@@ -208,6 +209,7 @@
               }
             </section>
           </eci-card>
+          }
         </main>
       </div>
 
