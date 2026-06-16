@@ -1,0 +1,53 @@
+<!--
+  Región del carrusel: foco por teclado (tabindex) con ArrowLeft/ArrowRight para
+  navegar entre páginas. role="group" + aria-roledescription la anuncian como
+  carrusel a los lectores de pantalla.
+-->
+<div
+  class="carousel"
+  role="group"
+  aria-roledescription="carousel"
+  [attr.aria-label]="ariaLabel() || null"
+  tabindex="0"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Pista desplazable: cada hijo proyectado recibe scroll-snap desde el CSS. -->
+  <div class="carousel__track" #track>
+    <ng-content />
+  </div>
+
+  @if (hasControls()) {
+    <button
+      type="button"
+      class="carousel__arrow carousel__arrow--prev"
+      [attr.aria-label]="prevLabel()"
+      [disabled]="atStart()"
+      (click)="prev()"
+    >
+      <eci-icon [name]="'chevron-left'" [size]="20" />
+    </button>
+
+    <button
+      type="button"
+      class="carousel__arrow carousel__arrow--next"
+      [attr.aria-label]="nextLabel()"
+      [disabled]="atEnd()"
+      (click)="next()"
+    >
+      <eci-icon [name]="'chevron-right'" [size]="20" />
+    </button>
+
+    <div class="carousel__dots" role="tablist">
+      @for (dot of dots(); track dot) {
+        <button
+          type="button"
+          class="carousel__dot"
+          [class.carousel__dot--active]="dot === activeIndex()"
+          [attr.aria-label]="slideLabel() + ' ' + (dot + 1)"
+          [attr.aria-current]="dot === activeIndex() ? 'true' : null"
+          (click)="goTo(dot)"
+        ></button>
+      }
+    </div>
+  }
+</div>
