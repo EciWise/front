@@ -1,0 +1,163 @@
+/* ============================================================
+   eci-aurora-background — orbes de aurora (CSS) + escena 3D de símbolos (canvas).
+   Misma huella que `.space-bg`: fijo, pantalla completa, sin puntero, z-index 0.
+   Pensado para leerse bien sobre el fondo claro (rojo→vinotinto) y el oscuro.
+   ============================================================ */
+:host {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora__orbs {
+  position: absolute;
+  inset: 0;
+}
+
+/* Canvas 3D (estrellas + símbolos): sobre los orbes, detrás del contenido. */
+.aurora__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ---------------- Orbes de aurora ---------------- */
+.aurora__orb {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  /* El glow funciona en ambos temas: aclara sobre el fondo oscuro y satura
+     suavemente sobre el rojo claro. */
+  mix-blend-mode: screen;
+  filter: blur(60px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.aurora__orb--red {
+  top: -8%;
+  left: -6%;
+  width: 42vw;
+  height: 42vw;
+  background: radial-gradient(circle, var(--brand-red) 0%, transparent 70%);
+  animation: aurora-drift-a 26s ease-in-out infinite alternate;
+}
+
+.aurora__orb--wine {
+  top: 38%;
+  left: 58%;
+  width: 48vw;
+  height: 48vw;
+  background: radial-gradient(circle, var(--brand-wine) 0%, transparent 70%);
+  animation: aurora-drift-b 34s ease-in-out infinite alternate;
+}
+
+.aurora__orb--pink {
+  top: 58%;
+  left: -4%;
+  width: 36vw;
+  height: 36vw;
+  background: radial-gradient(circle, var(--accent-student) 0%, transparent 70%);
+  filter: blur(50px);
+  opacity: 0.5;
+  animation: aurora-drift-c 22s ease-in-out infinite alternate;
+}
+
+.aurora__orb--purple {
+  top: -12%;
+  left: 60%;
+  width: 38vw;
+  height: 38vw;
+  background: radial-gradient(circle, var(--accent-admin) 0%, transparent 70%);
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: aurora-drift-a 30s ease-in-out infinite alternate-reverse;
+}
+
+.aurora__orb--red-soft {
+  top: 24%;
+  left: 26%;
+  width: 30vw;
+  height: 30vw;
+  background: radial-gradient(circle, var(--brand-red-soft) 0%, transparent 70%);
+  filter: blur(55px);
+  opacity: 0.4;
+  animation: aurora-drift-b 28s ease-in-out infinite alternate;
+}
+
+.aurora__orb--wine-2 {
+  top: 70%;
+  left: 46%;
+  width: 34vw;
+  height: 34vw;
+  background: radial-gradient(circle, var(--brand-wine) 0%, transparent 72%);
+  filter: blur(64px);
+  opacity: 0.4;
+  animation: aurora-drift-c 38s ease-in-out infinite alternate-reverse;
+}
+
+/* ---------------- Variante `auth`: más sobria ---------------- */
+/* Menos orbes y más tenues, para que el formulario sea el foco. */
+:host(.aurora--auth) .aurora__orb {
+  opacity: 0.34;
+}
+
+:host(.aurora--auth) .aurora__orb--purple,
+:host(.aurora--auth) .aurora__orb--red-soft,
+:host(.aurora--auth) .aurora__orb--wine-2 {
+  display: none;
+}
+
+/* ---------------- Adaptación por tema ---------------- */
+/* En oscuro el `screen` sobre superficie oscura resalta de más: bajamos opacidad. */
+:host-context(html[data-theme='dark']) .aurora__orb {
+  opacity: 0.42;
+  mix-blend-mode: screen;
+}
+
+:host-context(html[data-theme='dark']).aurora--auth .aurora__orb {
+  opacity: 0.3;
+}
+
+/* En claro el fondo rojo es muy luminoso: `soft-light` integra mejor los orbes y
+   evita que parezcan manchas planas. */
+:host-context(html[data-theme='light']) .aurora__orb {
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+
+:host-context(html[data-theme='light']).aurora--auth .aurora__orb {
+  opacity: 0.5;
+}
+
+/* ---------------- Keyframes ---------------- */
+@keyframes aurora-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6%, 8%, 0) scale(1.12); }
+}
+
+@keyframes aurora-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to { transform: translate3d(-7%, -5%, 0) scale(0.95); }
+}
+
+@keyframes aurora-drift-c {
+  from { transform: translate3d(0, 0, 0) scale(0.95); }
+  to { transform: translate3d(5%, -7%, 0) scale(1.1); }
+}
+
+/* ---------------- Movimiento reducido ---------------- */
+/* Congela la deriva de los orbes (la escena 3D no se inicializa en ese caso). */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}
