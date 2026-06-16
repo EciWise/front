@@ -24,7 +24,7 @@ import { IconComponent } from '../../../shared/ui/icon/icon';
 import { PasswordStrengthInputComponent } from '../../../shared/ui/password-strength-input/password-strength-input';
 import { DatosIaFieldsComponent } from '../datos-ia-fields/datos-ia-fields';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
-import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
+import { AuroraBackgroundComponent } from '../../../shared/ui/aurora-background/aurora-background';
 import { ThemeToggleComponent } from '../../../core/theme/theme-toggle';
 import { LanguageSwitchComponent } from '../../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
@@ -67,7 +67,7 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
     PasswordStrengthInputComponent,
     DatosIaFieldsComponent,
     LogoComponent,
-    SpaceBackgroundComponent,
+    AuroraBackgroundComponent,
     ThemeToggleComponent,
     LanguageSwitchComponent,
     A11yToggleComponent,

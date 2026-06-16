@@ -7,10 +7,11 @@ import { AuthError, AuthService } from '../../../core/auth/auth.service';
 import { Role } from '../../../core/models/role.enum';
 import { User } from '../../../core/models/user.model';
 import { StaticTranslateLoader } from '../../../core/i18n/static-translate.loader';
-import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
-import { SpaceSceneService } from '../../../shared/ui/space-background/space-scene.service';
 import { RegisterComponent } from './register';
+import { AuroraBackgroundComponent } from '../../../shared/ui/aurora-background/aurora-background';
+import { SymbolSceneService } from '../../../shared/ui/aurora-background/symbol-scene.service';
 
+/** Evita inicializar WebGL (Three.js) en jsdom: el fondo solo decora. */
 class SceneStub {
   init(): Promise<void> {
     return Promise.resolve();
@@ -89,8 +90,8 @@ describe('RegisterComponent', () => {
         { provide: AuthService, useValue: { register: registerUser } },
       ],
     })
-      .overrideComponent(SpaceBackgroundComponent, {
-        set: { providers: [{ provide: SpaceSceneService, useClass: SceneStub }] },
+      .overrideComponent(AuroraBackgroundComponent, {
+        set: { providers: [{ provide: SymbolSceneService, useClass: SceneStub }] },
       })
       .compileComponents();
 
