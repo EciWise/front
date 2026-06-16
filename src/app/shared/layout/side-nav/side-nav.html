@@ -1,4 +1,6 @@
 <nav class="side-nav" [attr.aria-label]="'nav.dashboard' | translate">
+  <eci-math-decor variant="menu" />
+
   <ul class="side-nav__list">
     @for (item of items(); track item.route) {
       <li>
