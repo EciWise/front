@@ -199,6 +199,34 @@ html[data-theme='light'] .landing .eci-button--secondary {
   border-color: rgba(255, 255, 255, 0.6);
 }
 
+/* Top bar de la landing en modo claro: cristal vinotinto translúcido en lugar
+   del blanco semiopaco que deja var(--surface) al 55%. El backdrop-filter ya
+   existe en landing.css; aquí solo se sobreescribe el color de fondo y el borde. */
+html[data-theme='light'] .landing .landing__topbar {
+  background: rgba(90, 8, 24, 0.28);
+  border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Navegación por secciones (eci-section-tabs › .seg) sobre el fondo rojo:
+   contenedor vinotinto + píldora blanca + texto blanco. */
+html[data-theme='light'] .landing .seg {
+  background: rgba(90, 8, 24, 0.52);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+html[data-theme='light'] .landing .seg__indicator {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.22);
+}
+html[data-theme='light'] .landing .seg__btn {
+  color: rgba(255, 255, 255, 0.75);
+}
+html[data-theme='light'] .landing .seg__btn:hover:not(.seg__btn--active) {
+  color: #ffffff;
+}
+html[data-theme='light'] .landing .seg__btn--active {
+  color: var(--brand-wine);
+}
+
 /* Secciones nuevas (galería / equipo / pie) sobre el fondo rojo del tema claro:
    texto blanco para los títulos/subtítulos y tarjetas de cristal vinotinto
    legibles. El encabezado de banda y las tarjetas de autor heredan el patrón de
