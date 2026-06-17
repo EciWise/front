@@ -346,4 +346,6 @@
 /* El tema claro de la landing (fondo rojo/vinotinto, tarjetas blancas y las
    nuevas secciones galería/equipo/pie) se define en styles.css global: los
    selectores tocan componentes hijos (botón, logo, iconos, avatar) que la
-   encapsulación de este archivo no puede alcanzar. */
+   encapsulación de este archivo no puede alcanzar. El parallax de scroll
+   también vive en styles.css por la misma razón: @keyframes en CSS de
+   componente pueden ser renombrados por Angular y romper la referencia. */
