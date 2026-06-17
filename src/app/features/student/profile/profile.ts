@@ -16,7 +16,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { DatosIa } from '../../../core/ia/ia.model';
 import { IaDataService } from '../../../core/ia/ia-data.service';
 import { IaProfileStatusService } from '../../../core/ia/ia-profile-status.service';
-import { roleLabelKey as roleLabelKeyFor } from '../../../core/models/role.enum';
+import { Role, roleLabelKey as roleLabelKeyFor } from '../../../core/models/role.enum';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
@@ -113,6 +113,8 @@ export class ProfileComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly user = this.auth.user;
+  /** Solo el estudiante tiene datos académicos y de IA; tutor/admin ven solo su identidad. */
+  protected readonly isStudent = computed(() => this.auth.role() === Role.Student);
   protected readonly profileSaved = signal(false);
   protected readonly profileSaving = signal(false);
   protected readonly profileError = signal(false);
@@ -200,7 +202,7 @@ export class ProfileComponent {
       this.form.controls.secondaryProgram.enable({ emitEvent: false });
     });
 
-    if (!this.status.loaded()) {
+    if (this.isStudent() && !this.status.loaded()) {
       this.status.load();
     }
 

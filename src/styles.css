@@ -1,6 +1,6 @@
 /* ECIWISE+ — estilos globales, tokens de diseño y temas (segun yo, son esos colores xd)*/
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -9,9 +9,21 @@
   --brand-red: #c8102e;
   --brand-red-dark: #99000d;
   --brand-red-soft: #e23a52;
+  --brand-wine: #7a0f20; /* vinotinto institucional: logo, iconos y chips sobre el rojo */
 
-  /* Acentos por comunidad / rol */
-  --accent-student: #9a0d0d; /* fucsia */
+  /* Superficie pública (landing + auth) en tema claro: degradado rojo→vinotinto
+     con brillo espejo. Tokenizado para que ambas pantallas se mantengan siempre
+     en sincronía (antes estaba duplicado literal en dos sitios). */
+  --public-surface:
+    radial-gradient(150% 95% at 50% -25%, rgba(255, 255, 255, 0.42), transparent 55%),
+    radial-gradient(55% 45% at 82% 18%, rgba(255, 255, 255, 0.2), transparent 60%),
+    linear-gradient(160deg, #8c0f22 0%, #5e0f1d 45%, #320a13 100%);
+  --public-card-shadow: 0 18px 45px rgba(0, 0, 0, 0.25); /* tarjetas blancas sobre el rojo */
+
+  /* Acentos por comunidad / rol — distinguibles entre sí y accesibles (AA) sobre
+     superficies claras. Cada rol habita un espacio con identidad cromática propia
+     para reforzar "dónde estoy" sin depender solo del texto. */
+  --accent-student: #c2185b; /* fucsia — contraste 5.9:1 sobre blanco */
   --accent-tutor: #c8102e; /* rojo institucional */
   --accent-admin: #5a2a82; /* púrpura administrativo */
 
@@ -31,16 +43,34 @@
   --radius-lg: 1rem;
   --radius-full: 9999px;
 
+  --space-0_5: 0.125rem; /* micro-spacing: gaps de iconos, padding de botón fino */
   --space-1: 0.25rem;
+  --space-1_5: 0.375rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem; /* faltaba en :root pese a usarse (fade de .eci-fit__body y gaps) */
   --space-6: 1.5rem;
   --space-8: 2rem;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.18);
+
+  /* Escala de z-index única: evita colisiones entre menús, paneles y modales.
+     Antes había valores "mágicos" (p. ej. menú de chat y modal ambos en 1000). */
+  --z-base: 0; /* fondo espacial */
+  --z-sticky: 30;
+  --z-nav-scrim: 40; /* velo del menú lateral en móvil */
+  --z-nav: 50; /* menú lateral deslizable en móvil */
+  --z-fab: 60; /* botón flotante y su dock */
+  --z-header: 80; /* barra superior */
+  --z-dropdown: 90; /* selects, menús contextuales, panel de notificaciones */
+  --z-overlay: 1000; /* scrim de modal (sobre dropdowns) */
+  --z-modal: 1010; /* contenido de modal */
+  --z-popover: 1100; /* date/time picker: pueden abrirse dentro de un modal */
+  --z-toast: 1200;
+  --z-tooltip: 5000;
 
   --transition-fast: 120ms ease;
   --transition-base: 200ms ease;
@@ -56,6 +86,14 @@
   --border: #d9d9e0;
   --overlay: rgba(17, 17, 20, 0.45);
   --accent: var(--brand-red);
+  /* Degradado de marca tras el contenido del panel: mismo brillo superior que la
+     landing (at 50% -25%) que se desvanece hacia el contenido, más glows de
+     esquina. Toma el acento de rol → cada comunidad respira su color. La zona
+     central queda neutra para no restar legibilidad a los datos. */
+  --app-ambient:
+    radial-gradient(150% 95% at 50% -25%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 55%),
+    radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--brand-red) 10%, transparent), transparent 60%),
+    radial-gradient(75% 65% at 0% 100%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 58%);
   --scrollbar-track: color-mix(in srgb, var(--surface-2) 78%, transparent);
   --scrollbar-thumb: color-mix(in srgb, var(--brand-red) 58%, var(--border));
   --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red) 78%, var(--text));
@@ -75,6 +113,12 @@
   --border: #33333d;
   --overlay: rgba(0, 0, 0, 0.6);
   --accent: var(--brand-red-soft);
+  /* En oscuro el degradado es algo más intenso (la superficie oscura lo absorbe)
+     usando el rojo suave; misma composición que en claro. */
+  --app-ambient:
+    radial-gradient(150% 95% at 50% -25%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 55%),
+    radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--brand-red-soft) 14%, transparent), transparent 60%),
+    radial-gradient(75% 65% at 0% 100%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 58%);
   --scrollbar-track: color-mix(in srgb, var(--surface-2) 76%, transparent);
   --scrollbar-thumb: color-mix(in srgb, var(--brand-red-soft) 60%, var(--surface-3));
   --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-red-soft) 82%, var(--text));
@@ -88,11 +132,7 @@
    porque toca componentes hijos (botón, logo, iconos).
    ============================================================ */
 html[data-theme='light'] .landing {
-  background:
-    /* Efecto espejo: brillo superior amplio + reflejo lateral pronunciados. */
-    radial-gradient(150% 95% at 50% -25%, rgba(255, 255, 255, 0.42), transparent 55%),
-    radial-gradient(55% 45% at 82% 18%, rgba(255, 255, 255, 0.2), transparent 60%),
-    linear-gradient(160deg, #8c0f22 0%, #5e0f1d 45%, #320a13 100%);
+  background: var(--public-surface);
   color: #ffffff;
 }
 
@@ -107,7 +147,7 @@ html[data-theme='light'] .landing .eci-logo__astroid {
   fill: #ffffff;
 }
 html[data-theme='light'] .landing .eci-logo__plus {
-  stroke: #7a0f20;
+  stroke: var(--brand-wine);
 }
 html[data-theme='light'] .landing .eci-logo__plus-word {
   color: var(--brand-red);
@@ -127,16 +167,12 @@ html[data-theme='light'] .landing .landing__tagline {
   color: rgba(255, 255, 255, 0.9);
 }
 
-html[data-theme='light'] .landing .landing__foot {
-  color: rgba(255, 255, 255, 0.75);
-}
-
 /* Solo las tarjetas son blancas, con texto oscuro. */
 html[data-theme='light'] .landing .info-card {
   background: #ffffff;
   border-color: rgba(255, 255, 255, 0.7);
   color: #18181b;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--public-card-shadow);
 }
 html[data-theme='light'] .landing .info-card__title {
   color: #18181b;
@@ -145,14 +181,14 @@ html[data-theme='light'] .landing .info-card__body {
   color: #5b5b66;
 }
 html[data-theme='light'] .landing .info-card__icon {
-  background: #7a0f20;
+  background: var(--brand-wine);
   color: #ffffff;
 }
 
 /* Botones legibles sobre el fondo rojo. */
 html[data-theme='light'] .landing .eci-button--primary {
   background: #ffffff;
-  color: #7a0f20;
+  color: var(--brand-wine);
 }
 html[data-theme='light'] .landing .eci-button--primary:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.9);
@@ -163,15 +199,60 @@ html[data-theme='light'] .landing .eci-button--secondary {
   border-color: rgba(255, 255, 255, 0.6);
 }
 
+/* Secciones nuevas (galería / equipo / pie) sobre el fondo rojo del tema claro:
+   texto blanco para los títulos/subtítulos y tarjetas de cristal vinotinto
+   legibles. El encabezado de banda y las tarjetas de autor heredan el patrón de
+   cristal, ajustado para contrastar sobre el degradado brillante. */
+html[data-theme='light'] .landing .landing__section-title,
+html[data-theme='light'] .landing .landing__section-subtitle {
+  color: #ffffff;
+}
+html[data-theme='light'] .landing .landing__section-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Marco de imagen de la galería: cristal vinotinto translúcido sobre el rojo. */
+html[data-theme='light'] .landing .gallery-card {
+  background: rgba(122, 15, 32, 0.4);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--public-card-shadow);
+}
+
+/* Tarjetas de autor: blancas con texto oscuro, como las info-cards. */
+html[data-theme='light'] .landing .author-card {
+  background: #ffffff;
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #18181b;
+  box-shadow: var(--public-card-shadow);
+}
+html[data-theme='light'] .landing .author-card__name {
+  color: #18181b;
+}
+html[data-theme='light'] .landing .author-card__role {
+  color: #5b5b66;
+}
+
+/* Pie de página y enlaces rápidos legibles sobre el rojo. */
+html[data-theme='light'] .landing .landing__footer {
+  border-top-color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+}
+html[data-theme='light'] .landing .landing__footer-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+html[data-theme='light'] .landing .landing__footer-link:hover {
+  color: #ffffff;
+}
+html[data-theme='light'] .landing .landing__footer-attr {
+  color: #ffffff;
+}
+
 /* ============================================================
    Login y registro en tema claro — mismo fondo rojo/vinotinto
    que la landing, con la tarjeta del formulario en blanco.
    ============================================================ */
 html[data-theme='light'] .auth {
-  background:
-    radial-gradient(150% 95% at 50% -25%, rgba(255, 255, 255, 0.42), transparent 55%),
-    radial-gradient(55% 45% at 82% 18%, rgba(255, 255, 255, 0.2), transparent 60%),
-    linear-gradient(160deg, #8c0f22 0%, #5e0f1d 45%, #320a13 100%);
+  background: var(--public-surface);
   color: #ffffff;
 }
 
@@ -185,7 +266,7 @@ html[data-theme='light'] .auth .eci-logo__astroid {
   fill: #ffffff;
 }
 html[data-theme='light'] .auth .eci-logo__plus {
-  stroke: #7a0f20;
+  stroke: var(--brand-wine);
 }
 html[data-theme='light'] .auth .eci-logo__plus-word {
   color: var(--brand-red);
@@ -197,7 +278,7 @@ html[data-theme='light'] .auth .auth__card {
   background: #ffffff;
   border-color: rgba(255, 255, 255, 0.7);
   color: #18181b;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--public-card-shadow);
 }
 
 /* ============================================================
@@ -207,6 +288,8 @@ html[data-theme='light'] .auth .auth__card {
   --text: #000000;
   --text-muted: #1a1a1a;
   --border: #000000;
+  /* Alto contraste: sin glow ambiental ni superficies translúcidas. */
+  --app-ambient: none;
   --scrollbar-track: var(--surface);
   --scrollbar-thumb: var(--text-muted);
   --scrollbar-thumb-hover: var(--accent);
@@ -226,6 +309,21 @@ html[data-theme='light'] .auth .auth__card {
 .a11y-mode :focus-visible {
   outline: 3px solid var(--accent) !important;
   outline-offset: 2px !important;
+}
+
+/* Alto contraste: superficies sólidas (sin glass) y sin máscara de difuminado,
+   para máxima nitidez. Selector con `html` para ganar a los estilos del
+   componente (card-surface) sin recurrir a !important. */
+html.a11y-mode .grid__card,
+html.a11y-mode .stat {
+  background: var(--surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.a11y-mode .eci-fit__body {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 /* ============================================================
@@ -489,36 +587,31 @@ input[type='radio'] {
   margin-bottom: 0;
 }
 
-/* Cuerpo de la sección activa: ocupa el resto y contiene su propio overflow. */
+/* Cuerpo de la sección activa: ocupa el resto y contiene su propio overflow.
+
+   Difuminado SOLO en los límites (bordes superior/inferior) del área desplazable:
+   una máscara alpha funde el contenido con el fondo de marca al entrar/salir, en
+   vez de pintar una banda de color (--surface-2) que recortaba las tarjetas y no
+   casaba con el degradado del fondo. Como es alpha, sirve para cualquier fondo. */
 .eci-fit__body {
   flex: 1;
   min-height: 0;
   overflow: auto;
   --eci-fade: var(--space-5);
-}
-
-/* Difuminado de los bordes al hacer scroll: dos degradados pegados (sticky) a
-   los bordes superior e inferior del área desplazable que funden el contenido
-   con el fondo, en vez de un corte seco. No ocupan espacio (margen negativo) ni
-   capturan clics, y quedan por debajo de los popovers (z muy alto). */
-.eci-fit__body::before,
-.eci-fit__body::after {
-  content: '';
-  display: block;
-  position: sticky;
-  z-index: 4;
-  height: var(--eci-fade);
-  pointer-events: none;
-}
-.eci-fit__body::before {
-  top: 0;
-  margin-bottom: calc(-1 * var(--eci-fade));
-  background: linear-gradient(to bottom, var(--surface-2), transparent);
-}
-.eci-fit__body::after {
-  bottom: 0;
-  margin-top: calc(-1 * var(--eci-fade));
-  background: linear-gradient(to top, var(--surface-2), transparent);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--eci-fade),
+    #000 calc(100% - var(--eci-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--eci-fade),
+    #000 calc(100% - var(--eci-fade)),
+    transparent 100%
+  );
 }
 
 /* Disolución al cambiar de sección: en vez de un corte seco, el contenido
@@ -727,14 +820,13 @@ input[type='radio'] {
    conserva sus variaciones propias.
    ============================================================================ */
 
-/* Fondo espacial de las pantallas a pantalla completa (landing y auth). */
+/* Fondo de marca compartido por las pantallas públicas (landing y auth): los
+   orbes de la aurora brillan por encima. El alto/scroll difiere entre ambas y se
+   define abajo (auth: pantalla fija; landing: página desplazable de una sola
+   columna). */
 .auth,
 .landing {
   position: relative;
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   outline: none;
   background:
     radial-gradient(
@@ -749,6 +841,29 @@ input[type='radio'] {
     ),
     var(--surface);
   color: var(--text);
+}
+
+/* Auth: pantalla fija de una sola vista (el formulario nunca empuja la página). */
+.auth {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Landing: página de una sola página, desplazable en el flujo normal del
+   documento. NO recorta con overflow:hidden para que el usuario pueda llegar a
+   las secciones inferiores (galería, equipo, pie). Llena al menos la primera
+   pantalla y se ancla a la parte superior para el scroll-spy de las pestañas. */
+.landing {
+  min-height: 100dvh;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing {
+    scroll-behavior: auto;
+  }
 }
 
 /* Campos de formulario (perfil, horario, auth): misma caja de entrada. */

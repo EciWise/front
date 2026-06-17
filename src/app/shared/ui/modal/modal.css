@@ -2,7 +2,7 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--z-overlay);
   background: var(--overlay);
   animation: modal-fade var(--transition-base) ease;
 }
@@ -11,7 +11,7 @@
 .modal-anchor {
   position: fixed;
   inset: 0;
-  z-index: 1001;
+  z-index: var(--z-modal);
   display: flex;
   align-items: flex-end;
   justify-content: center;

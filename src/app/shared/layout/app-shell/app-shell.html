@@ -3,6 +3,10 @@
 <eci-top-bar (menuToggle)="toggleNav()" />
 
 <div class="shell">
+  @if (!immersive()) {
+    <eci-math-decor variant="frame" />
+  }
+
   <aside class="shell__nav" [class.shell__nav--open]="navOpen()">
     <eci-side-nav (click)="closeNav()" />
   </aside>

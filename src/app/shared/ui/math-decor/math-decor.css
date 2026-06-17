@@ -1,0 +1,53 @@
+:host {
+  /* Capa que cubre al contenedor padre (que debe ser position:relative) y queda
+     por detrás del contenido. Decorativa: no intercepta ni clics ni foco. */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  /* Mismo vinotinto institucional que la landing, legible sobre la superficie
+     clara del dashboard. */
+  color: var(--brand-wine);
+  --decor-min: 0.1;
+  --decor-max: 0.18;
+}
+
+/* En modo oscuro los símbolos son blancos (algo más tenues sobre el fondo oscuro). */
+:host-context([data-theme='dark']) {
+  color: #fff;
+  --decor-min: 0.05;
+  --decor-max: 0.12;
+}
+
+.math-decor__sym {
+  position: absolute;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  line-height: 1;
+  /* Tenue para no competir con el contenido, pero ya legible (vinotinto). */
+  opacity: var(--decor-max);
+  user-select: none;
+  will-change: transform, opacity;
+  animation: eci-decor-float var(--decor-dur, 12s) ease-in-out var(--decor-delay, 0s)
+    infinite alternate;
+}
+
+@keyframes eci-decor-float {
+  from {
+    transform: translateY(4px) rotate(-3deg);
+    opacity: var(--decor-min);
+  }
+  to {
+    transform: translateY(-6px) rotate(3deg);
+    opacity: var(--decor-max);
+  }
+}
+
+/* Respeta la preferencia de reducir movimiento: símbolos estáticos. */
+@media (prefers-reduced-motion: reduce) {
+  .math-decor__sym {
+    animation: none;
+    opacity: var(--decor-max);
+  }
+}

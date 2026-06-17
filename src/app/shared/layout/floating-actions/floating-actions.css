@@ -3,7 +3,7 @@
   /* Respeta las zonas seguras (notch / barra de gestos) en móviles. */
   right: calc(var(--space-6) + env(safe-area-inset-right));
   bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
-  z-index: 60;
+  z-index: var(--z-fab);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -81,7 +81,7 @@
 .dock-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: var(--z-fab);
   background: transparent;
 }
 
@@ -93,7 +93,7 @@
   right: 0;
   bottom: 0;
   left: auto;
-  z-index: 61;
+  z-index: calc(var(--z-fab) + 1);
   max-width: 100vw;
   max-height: none;
   height: 100dvh;

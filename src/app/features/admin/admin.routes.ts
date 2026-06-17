@@ -36,4 +36,8 @@ export const ADMIN_ROUTES: Routes = [
     path: 'practica',
     loadComponent: () => import('../practica/practica').then((m) => m.PracticaComponent),
   },
+  {
+    path: 'profile',
+    loadComponent: () => import('../student/profile/profile').then((m) => m.ProfileComponent),
+  },
 ];

@@ -42,6 +42,8 @@
   background: var(--surface-2);
   color: var(--text);
   min-width: 0;
+  /* URLs/palabras muy largas se parten en vez de desbordar la burbuja a 375px. */
+  overflow-wrap: anywhere;
 }
 
 .msg--mine .msg__bubble {
@@ -162,7 +164,8 @@
    para que quede al frente y no lo recorte el scroll del hilo. */
 .msg__menu {
   position: fixed;
-  z-index: 1000;
+  /* Capa de menú/popover: por debajo del modal (antes colisionaba en 1000). */
+  z-index: var(--z-dropdown);
   display: flex;
   flex-direction: column;
   min-width: 11rem;

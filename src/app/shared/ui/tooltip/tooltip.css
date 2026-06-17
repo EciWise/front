@@ -31,7 +31,7 @@
 .tip__bubble {
   position: absolute;
   transform: translateX(-50%) translateY(-0.25rem) scale(0.96);
-  z-index: 5000;
+  z-index: var(--z-tooltip);
   width: max-content;
   max-width: min(18rem, calc(100vw - (2 * var(--space-2))));
   box-sizing: border-box;

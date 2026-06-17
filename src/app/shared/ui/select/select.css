@@ -89,7 +89,7 @@
   left: 0;
   right: 0;
   top: calc(100% + var(--space-2));
-  z-index: 90;
+  z-index: var(--z-dropdown);
   max-height: var(--select-menu-max-height, min(18rem, 45vh));
   overflow-y: auto;
   padding: var(--space-2);

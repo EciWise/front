@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { randomRange } from '../../util/random';
+import { MATH_SYMBOLS } from '../math-symbols';
 import type {
   BufferGeometry,
   Group,
@@ -14,8 +15,18 @@ import type {
 } from 'three';
 
 
-const STUDY_SYMBOLS = ['π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω', '∂', '∇', '∈', '∉', '∪', '∩', '∀', '∃', '9','3'];
+
 const SYMBOL_COLORS = [0xffffff, 0xc8102e, 0xd6007a];
+
+/** Densidad de la escena según la variante del fondo. */
+export interface SymbolSceneOptions {
+  /** Nº de símbolos académicos flotantes. */
+  readonly symbols: number;
+  /** Nº de estrellas del fondo. */
+  readonly stars: number;
+  /** Opacidad base de los símbolos (más tenue en `auth`). */
+  readonly opacity: number;
+}
 
 interface FloatingSprite {
   readonly sprite: Sprite;
@@ -25,8 +36,17 @@ interface FloatingSprite {
   readonly drift: number;
 }
 
+/**
+ * Escena WebGL ligera (Three.js) reutilizada por `eci-aurora-background`: una
+ * nube de estrellas y símbolos académicos que flotan en 3D (rotación del grupo +
+ * oscilación senoidal + parallax de cámara con el puntero). Sin tarjetas-foto.
+ *
+ * Three.js se importa de forma diferida (`await import('three')`) para no cargar
+ * la librería en el bundle inicial ni en SSR; la escena solo se inicializa en el
+ * navegador (lo orquesta el componente con `afterNextRender`).
+ */
 @Injectable()
-export class SpaceSceneService {
+export class SymbolSceneService {
   private renderer?: WebGLRenderer;
   private scene?: Scene;
   private camera?: PerspectiveCamera;
@@ -41,10 +61,12 @@ export class SpaceSceneService {
   private readonly pointer = { x: 0, y: 0 };
   private clock = 0;
   private initialized = false;
+  private opacity = 0.7;
 
   /** Inicializa la escena dentro del canvas dado (a tamaño de ventana). */
-  async init(canvas: HTMLCanvasElement): Promise<void> {
+  async init(canvas: HTMLCanvasElement, options: SymbolSceneOptions): Promise<void> {
     const THREE = await import('three');
+    this.opacity = options.opacity;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(70, this.aspect(), 0.1, 1000);
@@ -53,8 +75,8 @@ export class SpaceSceneService {
     this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    this.buildStars(THREE);
-    this.buildSymbols(THREE);
+    this.buildStars(THREE, options.stars);
+    this.buildSymbols(THREE, options.symbols);
     this.resize();
 
     window.addEventListener('resize', this.resize);
@@ -87,8 +109,7 @@ export class SpaceSceneService {
     this.renderer = undefined;
   }
 
-  private buildStars(THREE: typeof import('three')): void {
-    const count = 2600;
+  private buildStars(THREE: typeof import('three'), count: number): void {
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < positions.length; i++) {
       positions[i] = randomRange(-6, 6);
@@ -99,7 +120,7 @@ export class SpaceSceneService {
       color: 0xffffff,
       size: 0.018,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
@@ -107,15 +128,15 @@ export class SpaceSceneService {
     this.scene!.add(this.stars);
   }
 
-  private buildSymbols(THREE: typeof import('three')): void {
+  private buildSymbols(THREE: typeof import('three'), count: number): void {
     this.group = new THREE.Group();
-    for (let i = 0; i < 22; i++) {
-      const symbol = STUDY_SYMBOLS[i % STUDY_SYMBOLS.length];
+    for (let i = 0; i < count; i++) {
+      const symbol = MATH_SYMBOLS[i % MATH_SYMBOLS.length];
       const texture = new THREE.CanvasTexture(this.makeSymbolCanvas(symbol));
       const sprMaterial = new THREE.SpriteMaterial({
         map: texture,
         transparent: true,
-        opacity: 0.7,
+        opacity: this.opacity,
         color: SYMBOL_COLORS[i % SYMBOL_COLORS.length],
         depthWrite: false,
       });

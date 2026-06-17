@@ -3,11 +3,14 @@ import { Router, provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { LandingComponent } from './landing';
-import { SpaceBackgroundComponent } from '../../shared/ui/space-background/space-background';
-import { SpaceSceneService } from '../../shared/ui/space-background/space-scene.service';
 import { StaticTranslateLoader } from '../../core/i18n/static-translate.loader';
+import { AuroraBackgroundComponent } from '../../shared/ui/aurora-background/aurora-background';
+import { SymbolSceneService } from '../../shared/ui/aurora-background/symbol-scene.service';
 
-/** Stub de la escena para no inicializar WebGL/three.js en jsdom. */
+@Component({ template: '' })
+class DummyComponent {}
+
+/** Evita inicializar WebGL (Three.js) en jsdom: el fondo solo decora. */
 class SceneStub {
   init(): Promise<void> {
     return Promise.resolve();
@@ -15,12 +18,11 @@ class SceneStub {
   readonly dispose = vi.fn();
 }
 
-@Component({ template: '' })
-class DummyComponent {}
-
 describe('LandingComponent', () => {
   let router: Router;
 
+  // El fondo `eci-aurora-background` combina orbes CSS con una escena 3D
+  // (Three.js); se stubea su escena para no inicializar WebGL en jsdom.
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LandingComponent],
@@ -36,8 +38,8 @@ describe('LandingComponent', () => {
         }),
       ],
     })
-      .overrideComponent(SpaceBackgroundComponent, {
-        set: { providers: [{ provide: SpaceSceneService, useClass: SceneStub }] },
+      .overrideComponent(AuroraBackgroundComponent, {
+        set: { providers: [{ provide: SymbolSceneService, useClass: SceneStub }] },
       })
       .compileComponents();
 

@@ -8,7 +8,7 @@ import { User } from '../../../core/models/user.model';
 import { AuthFormBase } from '../auth-form.base';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { LogoComponent } from '../../../shared/ui/logo/logo';
-import { SpaceBackgroundComponent } from '../../../shared/ui/space-background/space-background';
+import { AuroraBackgroundComponent } from '../../../shared/ui/aurora-background/aurora-background';
 import { ThemeToggleComponent } from '../../../core/theme/theme-toggle';
 import { LanguageSwitchComponent } from '../../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
@@ -23,7 +23,7 @@ import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
     TranslatePipe,
     ButtonComponent,
     LogoComponent,
-    SpaceBackgroundComponent,
+    AuroraBackgroundComponent,
     ThemeToggleComponent,
     LanguageSwitchComponent,
     A11yToggleComponent,

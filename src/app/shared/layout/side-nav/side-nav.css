@@ -11,6 +11,8 @@
   gap: var(--space-1);
   /* La ayuda queda fija abajo; solo la lista hace scroll si no cabe. */
   overflow: hidden;
+  /* Contexto de posicionamiento para los símbolos decorativos del menú. */
+  position: relative;
 }
 
 .side-nav__list {
@@ -20,6 +22,9 @@
   flex-direction: column;
   gap: var(--space-1);
   flex: 1;
+  /* Por encima de la decoración del menú. */
+  position: relative;
+  z-index: 1;
   /* Permite que la lista se encoja y aparezca scroll solo cuando no quepa. */
   min-height: 0;
   overflow-y: auto;
@@ -53,6 +58,9 @@
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent);
   font-weight: 600;
+  /* Indicador de borde izquierdo en el acento del rol (inset box-shadow para no
+     alterar el layout del enlace). Refuerza "dónde estoy" por comunidad. */
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .side-nav__help {
@@ -60,4 +68,7 @@
   border-top: 1px solid var(--border);
   border-radius: 0;
   padding-top: var(--space-4);
+  /* Por encima de la decoración del menú. */
+  position: relative;
+  z-index: 1;
 }

@@ -5,7 +5,12 @@
   flex-direction: column;
   height: 100dvh;
   overflow: hidden;
-  background: var(--surface-2);
+  /* Glow de marca muy tenue (token por tema/rol) tras la superficie base, para
+     dar continuidad con la entrada (landing/auth) sin restar legibilidad. Va en
+     el :host fijo, no en .shell__main (que scrollea), para evitar jank. */
+  background:
+    var(--app-ambient, none),
+    var(--surface-2);
 }
 
 /* Acento por rol (comunidad): estudiante fucsia, tutor rojo, admin púrpura */
@@ -25,6 +30,9 @@
   grid-template-columns: 16rem 1fr;
   /* Permite que las columnas se ajusten a la altura del shell y hagan scroll. */
   min-height: 0;
+  /* Contexto de posicionamiento para la decoración (símbolos en las esquinas),
+     que va detrás de nav y contenido. */
+  position: relative;
 }
 
 .shell__nav {
@@ -32,6 +40,9 @@
   border-right: 1px solid var(--border);
   /* El propio menú gestiona su scroll interno (lista) y deja la ayuda fija. */
   overflow: hidden;
+  /* Por encima de la decoración del marco (la del menú vive dentro de él). */
+  position: relative;
+  z-index: 1;
 }
 
 .shell__main {
@@ -40,6 +51,10 @@
   min-width: 0;
   /* El contenido enrutado hace su propio scroll; el menú permanece fijo. */
   overflow-y: auto;
+  /* Por encima de la decoración del marco; al ser transparente, los símbolos del
+     marco asoman por los márgenes/esquinas sin tapar el contenido. */
+  position: relative;
+  z-index: 1;
   /* Único elemento que participa en la View Transition al navegar:
      el header y el menú lateral quedan fuera y permanecen fijos. */
   view-transition-name: eci-main;
@@ -66,7 +81,7 @@
     left: 0;
     width: 16rem;
     max-width: 85vw;
-    z-index: 50;
+    z-index: var(--z-nav);
     overflow-y: auto;
     padding-bottom: env(safe-area-inset-bottom);
     transform: translateX(-100%);
@@ -81,7 +96,7 @@
     display: block;
     position: fixed;
     inset: calc(4rem + env(safe-area-inset-top)) 0 0 0;
-    z-index: 40;
+    z-index: var(--z-nav-scrim);
     background: var(--overlay);
     cursor: pointer;
   }
@@ -92,7 +107,9 @@
        final del contenido en celular, incluida la barra de gestos. */
     padding: var(--space-4) max(var(--space-4), env(safe-area-inset-right)) 0
       max(var(--space-4), env(safe-area-inset-left));
-    padding-bottom: calc(var(--space-4) + 4.5rem + env(safe-area-inset-bottom));
+    /* Holgura inferior = FAB (3.5rem) + su separación (--space-6) + respiro, para
+       que el botón flotante nunca tape la última fila de contenido. */
+    padding-bottom: calc(var(--space-4) + 5.5rem + env(safe-area-inset-bottom));
   }
 }
 

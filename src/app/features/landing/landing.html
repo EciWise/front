@@ -1,66 +1,184 @@
 <div class="landing" id="main-content" tabindex="-1">
-  <eci-space-background />
+  <eci-aurora-background variant="landing" />
 
-  <header class="landing__bar">
-    <eci-logo home="/" />
-    <div class="landing__controls">
-      <eci-language-switch />
-      <eci-theme-toggle />
-      <eci-a11y-toggle />
-    </div>
-  </header>
+  <!-- Barra superior + navegación: fijas arriba para que el scroll-spy y los
+       controles queden siempre accesibles sobre el contenido. -->
+  <div class="landing__topbar">
+    <header class="landing__bar">
+      <eci-logo home="/" />
+      <div class="landing__controls">
+        <eci-language-switch />
+        <eci-theme-toggle />
+        <eci-a11y-toggle />
+      </div>
+    </header>
 
-  <nav class="landing__nav" [attr.aria-label]="'landing.about.title' | translate">
-    <eci-section-tabs [tabs]="sections" [(active)]="section" />
-  </nav>
-
-  <div class="landing__stage">
-    @switch (section()) {
-      @case ('home') {
-        <main class="landing__hero eci-section-enter">
-          <span class="landing__eci">
-            <eci-icon name="ethics" [size]="16" />
-            {{ 'landing.eci' | translate }}
-          </span>
-          <h1 class="landing__title">{{ 'app.name' | translate }}</h1>
-          <p class="landing__tagline">{{ 'app.tagline' | translate }}</p>
-          <div class="landing__cta">
-            <eci-button (click)="goToLogin()">{{ 'common.enter' | translate }}</eci-button>
-            <eci-button variant="secondary" (click)="goToRegister()">
-              {{ 'common.register' | translate }}
-            </eci-button>
-          </div>
-        </main>
-      }
-
-      @case ('about') {
-        <section
-          class="landing__info eci-section-enter"
-          [attr.aria-label]="'landing.about.title' | translate"
-        >
-          <article class="info-card">
-            <span class="info-card__icon"><eci-icon name="tutorias" [size]="28" /></span>
-            <h2 class="info-card__title">{{ 'landing.about.title' | translate }}</h2>
-            <p class="info-card__body">{{ 'landing.about.body' | translate }}</p>
-          </article>
-
-          <article class="info-card">
-            <span class="info-card__icon"><eci-icon name="trophy" [size]="28" /></span>
-            <h2 class="info-card__title">{{ 'landing.mission.title' | translate }}</h2>
-            <p class="info-card__body">{{ 'landing.mission.body' | translate }}</p>
-          </article>
-
-          <article class="info-card">
-            <span class="info-card__icon"><eci-icon name="ethics" [size]="28" /></span>
-            <h2 class="info-card__title">{{ 'landing.vision.title' | translate }}</h2>
-            <p class="info-card__body">{{ 'landing.vision.body' | translate }}</p>
-          </article>
-        </section>
-      }
-    }
+    <nav class="landing__nav" [attr.aria-label]="'landing.about.title' | translate">
+      <eci-section-tabs
+        [tabs]="sections"
+        [active]="section()"
+        (activeChange)="onTabChange($event)"
+      />
+    </nav>
   </div>
 
-  <footer class="landing__foot">
-    {{ 'landing.eci' | translate }}
+  <!-- HOME: hero a pantalla completa con el reclamo y las dos CTA. -->
+  <main #sectionEl id="home" class="landing__band landing__hero">
+    <span class="landing__eci">
+      <eci-icon name="ethics" [size]="16" />
+      {{ 'landing.eci' | translate }}
+    </span>
+    <h1 class="landing__title">{{ 'app.name' | translate }}</h1>
+    <p class="landing__tagline">{{ 'app.tagline' | translate }}</p>
+    <div class="landing__cta">
+      <eci-button (click)="goToLogin()">{{ 'common.enter' | translate }}</eci-button>
+      <eci-button variant="secondary" (click)="goToRegister()">
+        {{ 'common.register' | translate }}
+      </eci-button>
+    </div>
+  </main>
+
+  <!-- ABOUT: las tres tarjetas de información (qué es / misión / visión). -->
+  <section
+    #sectionEl
+    id="about"
+    class="landing__band"
+    [attr.aria-label]="'landing.about.title' | translate"
+  >
+    <div class="landing__info">
+      <article class="info-card">
+        <span class="info-card__icon"><eci-icon name="tutorias" [size]="28" /></span>
+        <h2 class="info-card__title">{{ 'landing.about.title' | translate }}</h2>
+        <p class="info-card__body">{{ 'landing.about.body' | translate }}</p>
+      </article>
+
+      <article class="info-card">
+        <span class="info-card__icon"><eci-icon name="trophy" [size]="28" /></span>
+        <h2 class="info-card__title">{{ 'landing.mission.title' | translate }}</h2>
+        <p class="info-card__body">{{ 'landing.mission.body' | translate }}</p>
+      </article>
+
+      <article class="info-card">
+        <span class="info-card__icon"><eci-icon name="ethics" [size]="28" /></span>
+        <h2 class="info-card__title">{{ 'landing.vision.title' | translate }}</h2>
+        <p class="info-card__body">{{ 'landing.vision.body' | translate }}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- GALLERY: carrusel de imágenes de marca en marcos de cristal. -->
+  <section
+    #sectionEl
+    id="gallery"
+    class="landing__band"
+    [attr.aria-label]="'landing.gallery.title' | translate"
+  >
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__section-title">{{ 'landing.gallery.title' | translate }}</h2>
+        <p class="landing__section-subtitle">{{ 'landing.gallery.subtitle' | translate }}</p>
+      </header>
+
+      <eci-carousel
+        [ariaLabel]="'landing.gallery.label' | translate"
+        [prevLabel]="'common.previous' | translate"
+        [nextLabel]="'common.next' | translate"
+        [slideLabel]="'landing.gallery.slide' | translate"
+      >
+        @for (image of gallery; track image) {
+          <figure class="gallery-card">
+            <img class="gallery-card__img" [src]="image" alt="" loading="lazy" />
+          </figure>
+        }
+      </eci-carousel>
+    </div>
+  </section>
+
+  <!-- TEAM: carrusel "Hecho por" con tarjetas de autor (avatar + nombre + rol). -->
+  <section
+    #sectionEl
+    id="team"
+    class="landing__band"
+    [attr.aria-label]="'landing.team.title' | translate"
+  >
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__section-title">{{ 'landing.team.title' | translate }}</h2>
+        <p class="landing__section-subtitle">{{ 'landing.team.subtitle' | translate }}</p>
+      </header>
+
+      <eci-carousel
+        [ariaLabel]="'landing.team.label' | translate"
+        [prevLabel]="'common.previous' | translate"
+        [nextLabel]="'common.next' | translate"
+        [slideLabel]="'landing.team.madeBy' | translate"
+      >
+        @for (author of authors; track author.name) {
+          @if (author.link) {
+            <!-- Con enlace (p. ej. LinkedIn): la tarjeta es un enlace que abre en
+                 pestaña nueva; `author-card--link` añade el leve zoom al pasar/enfocar. -->
+            <a
+              class="author-card author-card--link"
+              [href]="author.link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ng-container
+                [ngTemplateOutlet]="authorBody"
+                [ngTemplateOutletContext]="{ $implicit: author }"
+              />
+            </a>
+          } @else {
+            <article class="author-card">
+              <ng-container
+                [ngTemplateOutlet]="authorBody"
+                [ngTemplateOutletContext]="{ $implicit: author }"
+              />
+            </article>
+          }
+        }
+      </eci-carousel>
+    </div>
+  </section>
+
+  <!-- Pie: atribución a la Escuela Colombiana de Ingeniería + enlaces rápidos. -->
+  <footer class="landing__footer">
+    <div class="landing__footer-inner">
+      <div class="landing__footer-brand">
+        <!-- SLOT DEL LOGO ECI: deja el archivo en `public/assets/eci-logo.svg`.
+             Mientras no exista, el (error) lo oculta sin romper el pie; la
+             atribución de texto permanece siempre visible. -->
+        <img
+          class="landing__footer-logo"
+          src="/assets/eci-logo.svg"
+          alt="Escuela Colombiana de Ingeniería Julio Garavito"
+          (error)="hideBrokenLogo($event)"
+        />
+        <p class="landing__footer-attr">{{ 'landing.eci' | translate }}</p>
+      </div>
+
+      <nav class="landing__footer-links" [attr.aria-label]="'landing.footer.links' | translate">
+        <a class="landing__footer-link" href="#home" (click)="scrollToSection('home')">
+          {{ 'landing.tabHome' | translate }}
+        </a>
+        <a class="landing__footer-link" href="#about" (click)="scrollToSection('about')">
+          {{ 'landing.tabAbout' | translate }}
+        </a>
+        <a class="landing__footer-link" href="#gallery" (click)="scrollToSection('gallery')">
+          {{ 'landing.tabGallery' | translate }}
+        </a>
+        <a class="landing__footer-link" href="#team" (click)="scrollToSection('team')">
+          {{ 'landing.footer.madeBy' | translate }}
+        </a>
+      </nav>
+    </div>
   </footer>
+
+  <!-- Contenido de una tarjeta de autor, reutilizado por las variantes con y
+       sin enlace para no duplicar el marcado (avatar + nombre + rol). -->
+  <ng-template #authorBody let-author>
+    <eci-avatar [name]="author.name" [src]="author.photo" [size]="96" />
+    <h3 class="author-card__name">{{ author.name }}</h3>
+    <p class="author-card__role">{{ author.role }}</p>
+  </ng-template>
 </div>
