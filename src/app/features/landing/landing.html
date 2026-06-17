@@ -158,16 +158,16 @@
       </div>
 
       <nav class="landing__footer-links" [attr.aria-label]="'landing.footer.links' | translate">
-        <a class="landing__footer-link" href="#home" (click)="scrollToSection('home')">
+        <a class="landing__footer-link" href="#home" (click)="scrollToSection('home', $event)">
           {{ 'landing.tabHome' | translate }}
         </a>
-        <a class="landing__footer-link" href="#about" (click)="scrollToSection('about')">
+        <a class="landing__footer-link" href="#about" (click)="scrollToSection('about', $event)">
           {{ 'landing.tabAbout' | translate }}
         </a>
-        <a class="landing__footer-link" href="#gallery" (click)="scrollToSection('gallery')">
+        <a class="landing__footer-link" href="#gallery" (click)="scrollToSection('gallery', $event)">
           {{ 'landing.tabGallery' | translate }}
         </a>
-        <a class="landing__footer-link" href="#team" (click)="scrollToSection('team')">
+        <a class="landing__footer-link" href="#team" (click)="scrollToSection('team', $event)">
           {{ 'landing.footer.madeBy' | translate }}
         </a>
       </nav>

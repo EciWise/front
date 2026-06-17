@@ -126,6 +126,16 @@
   color-scheme: dark;
 }
 
+/* Estado inicial de las bandas no-hero: ocultas abajo hasta que el
+   scroll handler de JS las posicione. JS sobreescribe opacity y transform
+   con inline styles en cada frame; la propiedad will-change avisa al
+   browser para que reserve capas de composición. */
+.landing .landing__band:not(.landing__hero) {
+  opacity: 0;
+  transform: translateY(3rem);
+  will-change: opacity, transform;
+}
+
 /* ============================================================
    Landing en tema claro — fondo ROJO → VINOTINTO institucional
    con tarjetas blancas. Va en el CSS global (no encapsulado)
