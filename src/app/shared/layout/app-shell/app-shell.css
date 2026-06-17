@@ -30,6 +30,9 @@
   grid-template-columns: 16rem 1fr;
   /* Permite que las columnas se ajusten a la altura del shell y hagan scroll. */
   min-height: 0;
+  /* Contexto de posicionamiento para la decoración (símbolos en las esquinas),
+     que va detrás de nav y contenido. */
+  position: relative;
 }
 
 .shell__nav {
@@ -37,6 +40,9 @@
   border-right: 1px solid var(--border);
   /* El propio menú gestiona su scroll interno (lista) y deja la ayuda fija. */
   overflow: hidden;
+  /* Por encima de la decoración del marco (la del menú vive dentro de él). */
+  position: relative;
+  z-index: 1;
 }
 
 .shell__main {
@@ -45,6 +51,10 @@
   min-width: 0;
   /* El contenido enrutado hace su propio scroll; el menú permanece fijo. */
   overflow-y: auto;
+  /* Por encima de la decoración del marco; al ser transparente, los símbolos del
+     marco asoman por los márgenes/esquinas sin tapar el contenido. */
+  position: relative;
+  z-index: 1;
   /* Único elemento que participa en la View Transition al navegar:
      el header y el menú lateral quedan fuera y permanecen fijos. */
   view-transition-name: eci-main;

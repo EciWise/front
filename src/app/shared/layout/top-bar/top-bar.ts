@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LucideLogOut, LucideMenu } from '@lucide/angular';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -10,12 +10,14 @@ import { LanguageSwitchComponent } from '../../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
 import { NotificationsBellComponent } from '../notifications-bell/notifications-bell';
 import { AvatarComponent } from '../../ui/avatar/avatar';
+import { MathDecorComponent } from '../../ui/math-decor/math-decor';
 
 /** Barra superior: logo (vuelve al inicio), controles globales y perfil. */
 @Component({
   selector: 'eci-top-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterLink,
     TranslatePipe,
     LucideMenu,
     LucideLogOut,
@@ -25,6 +27,7 @@ import { AvatarComponent } from '../../ui/avatar/avatar';
     A11yToggleComponent,
     NotificationsBellComponent,
     AvatarComponent,
+    MathDecorComponent,
   ],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.css',
@@ -39,6 +42,11 @@ export class TopBarComponent {
   protected readonly home = computed(() => {
     const role = this.auth.role();
     return role ? ROLE_HOME[role] : '/';
+  });
+  /** Acceso al perfil del rol activo (ya no vive en el menú lateral). */
+  protected readonly profileLink = computed(() => {
+    const role = this.auth.role();
+    return role ? `${ROLE_HOME[role]}/profile` : '/';
   });
 
   logout(): void {

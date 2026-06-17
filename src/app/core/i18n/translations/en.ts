@@ -559,7 +559,7 @@ export const en = {
       notificationsQ: 'How do I see my notifications?',
       notificationsA: 'The bell in the top bar shows your alerts and a badge with how many are unread.',
       profileQ: 'How do I edit my profile?',
-      profileA: 'Open Profile from the side menu to update your personal and study details.',
+      profileA: 'Open your Profile by clicking your name in the top right (next to the exit button) to update your personal and study details.',
       logoutQ: 'How do I sign out?',
       logoutA: 'Use the sign-out button in the top bar, next to your avatar.',
     },

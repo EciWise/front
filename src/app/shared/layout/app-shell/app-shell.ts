@@ -15,6 +15,7 @@ import { TopBarComponent } from '../top-bar/top-bar';
 import { SideNavComponent } from '../side-nav/side-nav';
 import { FloatingActionsComponent } from '../floating-actions/floating-actions';
 import { ForcePasswordChangeComponent } from '../../../features/auth/force-password-change/force-password-change';
+import { MathDecorComponent } from '../../ui/math-decor/math-decor';
 
 /**
  * Estructura principal de las areas autenticadas: barra superior, navegacion
@@ -30,6 +31,7 @@ import { ForcePasswordChangeComponent } from '../../../features/auth/force-passw
     SideNavComponent,
     FloatingActionsComponent,
     ForcePasswordChangeComponent,
+    MathDecorComponent,
   ],
   templateUrl: './app-shell.html',
   styleUrl: './app-shell.css',

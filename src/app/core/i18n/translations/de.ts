@@ -531,7 +531,7 @@ nav: {
       notificationsQ: 'Wie sehe ich meine Benachrichtigungen?',
       notificationsA: 'Die Glocke in der oberen Leiste zeigt deine Hinweise und ein Abzeichen mit der Anzahl ungelesener.',
       profileQ: 'Wie bearbeite ich mein Profil?',
-      profileA: 'Öffne Profil über das Seitenmenü, um deine persönlichen und Studiendaten zu aktualisieren.',
+      profileA: 'Öffne dein Profil mit einem Klick auf deinen Namen oben rechts (neben der Beenden-Schaltfläche), um deine persönlichen und Studiendaten zu aktualisieren.',
       logoutQ: 'Wie melde ich mich ab?',
       logoutA: 'Nutze die Abmelde-Schaltfläche in der oberen Leiste neben deinem Avatar.',
     },

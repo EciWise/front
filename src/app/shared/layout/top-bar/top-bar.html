@@ -1,4 +1,6 @@
 <header class="top-bar">
+  <eci-math-decor variant="bar" />
+
   <div class="top-bar__left">
     <button
       type="button"
@@ -19,8 +21,15 @@
 
     @if (user(); as currentUser) {
       <div class="top-bar__profile">
-        <eci-avatar [name]="currentUser.name" [src]="currentUser.avatarUrl" [size]="34" />
-        <span class="top-bar__name">{{ currentUser.name }}</span>
+        <a
+          class="top-bar__user"
+          [routerLink]="profileLink()"
+          [attr.aria-label]="'nav.profile' | translate"
+          [title]="'nav.profile' | translate"
+        >
+          <eci-avatar [name]="currentUser.name" [src]="currentUser.avatarUrl" [size]="34" />
+          <span class="top-bar__name">{{ currentUser.name }}</span>
+        </a>
         <button
           type="button"
           class="icon-button"

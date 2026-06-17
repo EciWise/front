@@ -20,7 +20,6 @@ const STUDENT_NAV: readonly NavItem[] = [
   { labelKey: 'nav.tasks', route: '/student/tasks', icon: 'tasks' },
   { labelKey: 'nav.achievements', route: '/student/logros', icon: 'trophy' },
   { labelKey: 'nav.forums', route: '/student/foros', icon: 'chat' },
-  { labelKey: 'nav.profile', route: '/student/profile', icon: 'profile' },
 ];
 
 const TUTOR_NAV: readonly NavItem[] = [

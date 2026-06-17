@@ -560,7 +560,7 @@ export const es = {
       notificationsQ: '¿Cómo veo mis notificaciones?',
       notificationsA: 'La campana de la barra superior muestra tus avisos y un indicador con cuántos no has leído.',
       profileQ: '¿Cómo edito mi perfil?',
-      profileA: 'Entra a Perfil desde el menú lateral para actualizar tus datos personales y de estudio.',
+      profileA: 'Abre tu Perfil haciendo clic en tu nombre, arriba a la derecha (junto al botón de salir), para actualizar tus datos personales y de estudio.',
       logoutQ: '¿Cómo cierro sesión?',
       logoutA: 'Usa el botón de salir en la barra superior, junto a tu avatar.',
     },

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { randomRange } from '../../util/random';
+import { MATH_SYMBOLS } from '../math-symbols';
 import type {
   BufferGeometry,
   Group,
@@ -13,10 +14,8 @@ import type {
   WebGLRenderer,
 } from 'three';
 
-const STUDY_SYMBOLS = [
-  'π', '∑', '∫', '√', 'ƒ', '∞', 'Δ', 'θ', 'λ', '×', '÷', 'Ω',
-  '∂', '∇', '∈', '∉', '∪', '∩', '∀', '∃', '9', '3',
-];
+
+
 const SYMBOL_COLORS = [0xffffff, 0xc8102e, 0xd6007a];
 
 /** Densidad de la escena según la variante del fondo. */
@@ -132,7 +131,7 @@ export class SymbolSceneService {
   private buildSymbols(THREE: typeof import('three'), count: number): void {
     this.group = new THREE.Group();
     for (let i = 0; i < count; i++) {
-      const symbol = STUDY_SYMBOLS[i % STUDY_SYMBOLS.length];
+      const symbol = MATH_SYMBOLS[i % MATH_SYMBOLS.length];
       const texture = new THREE.CanvasTexture(this.makeSymbolCanvas(symbol));
       const sprMaterial = new THREE.SpriteMaterial({
         map: texture,

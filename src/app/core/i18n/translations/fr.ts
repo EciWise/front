@@ -532,7 +532,7 @@ nav: {
       notificationsQ: 'Comment voir mes notifications ?',
       notificationsA: "La cloche dans la barre supérieure affiche vos alertes et une pastille indiquant le nombre de non lues.",
       profileQ: 'Comment modifier mon profil ?',
-      profileA: 'Ouvrez Profil depuis le menu latéral pour mettre à jour vos données personnelles et d’étude.',
+      profileA: 'Ouvrez votre Profil en cliquant sur votre nom en haut à droite (à côté du bouton de sortie) pour mettre à jour vos données personnelles et d’étude.',
       logoutQ: 'Comment me déconnecter ?',
       logoutA: 'Utilisez le bouton de déconnexion dans la barre supérieure, à côté de votre avatar.',
     },
