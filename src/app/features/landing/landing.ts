@@ -100,7 +100,10 @@ export class LandingComponent {
    * apunta `photo` a, p. ej., `/assets/authors/nombre.jpg`.
    */
   protected readonly authors: readonly Author[] = [
-    { name: 'Daniel Eduardo Useche Pinilla', role: 'Desarrollo Frontend' },
+    { name: 'Daniel Eduardo Useche Pinilla',
+      role: 'Líder Técnico Arquitecto',
+      photo: '/assets/authors/Daniel.png',
+      link: 'https://www.linkedin.com/in/dannieleu/' },
     { name: 'Laura Alejandra Venegas', role: 'Desarrollo Backend' },
     { name: 'Jared Farfan Guevara', role: 'Diseño UX/UI' },
     { name: 'Ignacio Andrés Castillo Rendón', role: 'Arquitectura de software' },
@@ -108,14 +111,19 @@ export class LandingComponent {
     { name: 'David Alejandro Patacón Henao', role: 'Gestión del proyecto' },
     { name: 'Anderson Fabián García Nieto', role: 'Documentación y soporte' },
     { name: 'Christian Alfonso Romero Martínez', role: 'Marketing y difusión' },
-    { name: 'Hildebrando Peña Quezada', role: 'Análisis de datos y métricas' },
+    { name: 'Hildebrando Peña Quezada', role: 'Análisis de datos y métricas',
+      photo: '/assets/authors/brando.jfif',
+      link: 'https://www.linkedin.com/in/hildebrando-peña-quezada-2b32b33a1 '
+     },
     { name: 'Isaac David Palomo Peralta', role: 'Relaciones públicas y comunidad' },
     { name: 'Juana Lozano Chaves', role: 'Seguridad y cumplimiento' },
-    { name: 'Maria Paula Rodríguez Muñoz', role: 'Innovación y nuevas tecnologías' },
+    { name: 'Maria Paula Rodríguez Muñoz', role: 'Innovación y nuevas tecnologías',
+      link: 'https://www.linkedin.com/in/mariapaula-rodriguezmuñoz?utm_source=share_via&utm_content=profile&utm_medium=member_android'
+     },
     { name: 'Felipe Eduardo Calvache Gallego', role: 'Integración y despliegue continuo' },
     {
       name: 'Marianella Polo Peña',
-      role: 'Investigación y desarrollo',
+      role: 'Desarrollo Frontend',
       photo: '/assets/authors/Marianella.jpeg',
       link: 'https://www.linkedin.com/in/marianellapolo/',
     },
