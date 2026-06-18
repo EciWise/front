@@ -67,6 +67,7 @@ interface Author {
 export class LandingComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly el = inject(ElementRef);
 
   /** Secciones navegables de la página única (orden = orden visual). */
   protected readonly sections: readonly SectionTab[] = [
@@ -99,7 +100,10 @@ export class LandingComponent {
    * apunta `photo` a, p. ej., `/assets/authors/nombre.jpg`.
    */
   protected readonly authors: readonly Author[] = [
-    { name: 'Daniel Eduardo Useche Pinilla', role: 'Desarrollo Frontend' },
+    { name: 'Daniel Eduardo Useche Pinilla',
+      role: 'Líder Técnico Arquitecto',
+      photo: '/assets/authors/Daniel.png',
+      link: 'https://www.linkedin.com/in/dannieleu/' },
     { name: 'Laura Alejandra Venegas', role: 'Desarrollo Backend' },
     { name: 'Jared Farfan Guevara', role: 'Diseño UX/UI' },
     { name: 'Ignacio Andrés Castillo Rendón', role: 'Arquitectura de software' },
@@ -107,14 +111,19 @@ export class LandingComponent {
     { name: 'David Alejandro Patacón Henao', role: 'Gestión del proyecto' },
     { name: 'Anderson Fabián García Nieto', role: 'Documentación y soporte' },
     { name: 'Christian Alfonso Romero Martínez', role: 'Marketing y difusión' },
-    { name: 'Hildebrando Peña Quezada', role: 'Análisis de datos y métricas' },
+    { name: 'Hildebrando Peña Quezada', role: 'Análisis de datos y métricas',
+      photo: '/assets/authors/brando.jfif',
+      link: 'https://www.linkedin.com/in/hildebrando-peña-quezada-2b32b33a1 '
+     },
     { name: 'Isaac David Palomo Peralta', role: 'Relaciones públicas y comunidad' },
     { name: 'Juana Lozano Chaves', role: 'Seguridad y cumplimiento' },
-    { name: 'Maria Paula Rodríguez Muñoz', role: 'Innovación y nuevas tecnologías' },
+    { name: 'Maria Paula Rodríguez Muñoz', role: 'Innovación y nuevas tecnologías',
+      link: 'https://www.linkedin.com/in/mariapaula-rodriguezmuñoz?utm_source=share_via&utm_content=profile&utm_medium=member_android'
+     },
     { name: 'Felipe Eduardo Calvache Gallego', role: 'Integración y despliegue continuo' },
     {
       name: 'Marianella Polo Peña',
-      role: 'Investigación y desarrollo',
+      role: 'Desarrollo Frontend',
       photo: '/assets/authors/Marianella.jpeg',
       link: 'https://www.linkedin.com/in/marianellapolo/',
     },
@@ -123,8 +132,10 @@ export class LandingComponent {
   private readonly sectionEls = viewChildren<ElementRef<HTMLElement>>('sectionEl');
 
   constructor() {
-    // Scroll-spy + scroll-reveal. Solo en navegador (SSR no tiene DOM).
-    afterNextRender(() => this.setupObserver());
+    afterNextRender(() => {
+      this.setupObserver();
+      this.setupParallax();
+    });
   }
 
   goToLogin(): void {
@@ -142,7 +153,8 @@ export class LandingComponent {
   }
 
   /** Enlaces del pie: desplazan a una sección y la marcan como activa. */
-  protected scrollToSection(id: string): void {
+  protected scrollToSection(id: string, event?: Event): void {
+    event?.preventDefault();
     if (typeof document === 'undefined') {
       return;
     }
@@ -162,14 +174,10 @@ export class LandingComponent {
     if (typeof IntersectionObserver === 'undefined') {
       return;
     }
-    const reveal = !this.prefersReducedMotion();
     const observer = new IntersectionObserver(
       (entries) => {
         let best: IntersectionObserverEntry | null = null;
         for (const entry of entries) {
-          if (reveal && entry.isIntersecting) {
-            entry.target.classList.add('eci-section-enter');
-          }
           if (
             entry.isIntersecting &&
             (best === null || entry.intersectionRatio > best.intersectionRatio)
@@ -190,6 +198,90 @@ export class LandingComponent {
       observer.observe(el.nativeElement);
     }
     this.destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  /**
+   * Parallax continuo enlazado al scroll: cada banda no-hero se opacifica y
+   * traslada según su distancia al centro del viewport. El hero se desvanece
+   * cuando el usuario lo deja atrás. Se actualiza en requestAnimationFrame
+   * para no bloquear el hilo principal y funciona en todos los browsers sin
+   * depender de la API Scroll-Driven Animations.
+   */
+  private setupParallax(): void {
+    if (typeof window === 'undefined' || this.prefersReducedMotion()) {
+      return;
+    }
+
+    const host = this.el.nativeElement as HTMLElement;
+    const bands = Array.from(
+      host.querySelectorAll<HTMLElement>('.landing__band:not(.landing__hero)'),
+    );
+    const hero = host.querySelector<HTMLElement>('.landing__hero');
+
+    const update = (): void => {
+      const vh = window.innerHeight;
+      const center = vh / 2;
+
+      for (const band of bands) {
+        const rect = band.getBoundingClientRect();
+
+        // Completamente fuera del viewport por arriba → ya fue vista, plena visibilidad.
+        if (rect.bottom <= 0) {
+          band.style.opacity = '1';
+          band.style.transform = 'none';
+          continue;
+        }
+
+        // Completamente debajo del viewport → estado inicial de espera.
+        if (rect.top >= vh) {
+          band.style.opacity = '0';
+          band.style.transform = 'translateY(48px)';
+          continue;
+        }
+
+        const bandCenter = rect.top + rect.height / 2;
+        // dist: 0 = centrada, >0 = por debajo del centro, <0 = por encima del centro
+        const dist = (bandCenter - center) / (vh * 0.55);
+
+        if (dist <= 0) {
+          // Sección ya pasó el centro → plena visibilidad (no se desvanece al salir)
+          band.style.opacity = '1';
+          band.style.transform = 'none';
+        } else {
+          // Sección aún entrando desde abajo → fade-in proporcional a la distancia
+          const clamped = Math.min(1.2, dist);
+          band.style.opacity = String(Math.max(0, 1 - clamped * 0.9));
+          band.style.transform = `translateY(${clamped * 48}px)`;
+        }
+      }
+
+      if (hero) {
+        const rect = hero.getBoundingClientRect();
+        if (rect.bottom < vh) {
+          // Hero ya salió — se eleva y desvanece según cuánto ha salido
+          const progress = Math.min(1, (vh - rect.bottom) / vh);
+          hero.style.opacity = String(Math.max(0, 1 - progress * 1.4));
+          hero.style.transform = `translateY(${-progress * 60}px)`;
+        } else {
+          hero.style.opacity = '1';
+          hero.style.transform = 'none';
+        }
+      }
+    };
+
+    let rafId = 0;
+    const onScroll = (): void => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(); // posiciona correctamente antes del primer scroll
+
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+    });
   }
 
   private prefersReducedMotion(): boolean {

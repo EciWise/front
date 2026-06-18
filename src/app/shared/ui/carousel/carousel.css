@@ -15,7 +15,12 @@
    (no `visible`), así que la pista recorta verticalmente. Para que los slides
    que crecen al animarse (p. ej. el leve zoom de una tarjeta) no se corten, se
    reserva holgura con `padding-block`; el `margin-block` negativo la reabsorbe
-   para no alterar el espaciado con el encabezado y los puntos. */
+   para no alterar el espaciado con el encabezado y los puntos.
+
+   `mask-image`: los slides se disuelven en los extremos en lugar de cortarse
+   abruptamente. El gradiente cubre el 10% de cada lado; el padding-block se
+   replica en el eje vertical para que la máscara no recorte la sombra del
+   hover (la zona vertical permanece completamente opaca). */
 .carousel__track {
   display: flex;
   gap: var(--space-4);
@@ -26,6 +31,14 @@
   scroll-padding: var(--space-4);
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  mask-image:
+    linear-gradient(to bottom, transparent, black var(--space-5), black calc(100% - var(--space-5)), transparent),
+    linear-gradient(to right,  transparent, black 10%, black 90%, transparent);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, black var(--space-5), black calc(100% - var(--space-5)), transparent),
+    linear-gradient(to right,  transparent, black 10%, black 90%, transparent);
+  -webkit-mask-composite: source-in;
 }
 .carousel__track::-webkit-scrollbar {
   display: none;
