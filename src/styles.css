@@ -636,6 +636,7 @@ input[type='radio'] {
   min-height: 0;
   overflow: auto;
   --eci-fade: var(--space-5);
+  padding-block: var(--eci-fade);
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0,

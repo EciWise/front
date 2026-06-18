@@ -121,6 +121,7 @@ export type IconName =
 @Component({
   selector: 'eci-icon',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.icon--filled]': 'filled()' },
   imports: [
     LucideLayoutDashboard,
     LucideGraduationCap,
@@ -352,10 +353,14 @@ export type IconName =
         display: inline-flex;
         line-height: 0;
       }
+      :host.icon--filled svg {
+        fill: currentColor;
+      }
     `,
   ],
 })
 export class IconComponent {
   readonly name = input.required<IconName>();
   readonly size = input(20);
+  readonly filled = input(false);
 }

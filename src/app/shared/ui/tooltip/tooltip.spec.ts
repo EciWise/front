@@ -49,7 +49,7 @@ describe('InfoTooltipComponent', () => {
 
     expect(bubble().classList.contains('tip__bubble--visible')).toBe(true);
     expect(bubble().style.left).toBe('152px');
-    expect(bubble().style.top).toBe('48px');
+    expect(bubble().style.top).toBe('148px');
     expect(bubble().classList.contains('tip__bubble--above')).toBe(false);
   });
 
@@ -63,7 +63,7 @@ describe('InfoTooltipComponent', () => {
     fixture.detectChanges();
 
     expect(bubble().classList.contains('tip__bubble--above')).toBe(true);
-    expect(bubble().style.top).toBe('52px');
+    expect(bubble().style.top).toBe('152px');
 
     trigger().dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
     fixture.detectChanges();
