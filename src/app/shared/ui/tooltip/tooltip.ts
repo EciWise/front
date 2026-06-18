@@ -65,13 +65,11 @@ export class InfoTooltipComponent {
   }
 
   protected show(): void {
-    const host = this.host.nativeElement;
     const trigger = this.host.nativeElement.querySelector('.tip__trigger');
     if (!trigger) {
       return;
     }
 
-    const hostRect = host.getBoundingClientRect();
     const rect = trigger.getBoundingClientRect();
     const viewportWidth = globalThis.innerWidth || 1024;
     const placement = this.placement();
@@ -88,11 +86,11 @@ export class InfoTooltipComponent {
         ? Math.min(Math.max(triggerCenter, minCenter), maxCenter)
         : viewportWidth / 2;
 
-    this.left.set(viewportCenter - hostRect.left);
+    this.left.set(viewportCenter);
     this.top.set(
       showAbove
-        ? rect.top - hostRect.top - this.verticalGap
-        : rect.bottom - hostRect.top + this.verticalGap,
+        ? rect.top - this.verticalGap
+        : rect.bottom + this.verticalGap,
     );
     this.above.set(showAbove);
     this.visible.set(true);

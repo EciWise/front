@@ -29,7 +29,7 @@
 }
 
 .tip__bubble {
-  position: absolute;
+  position: fixed;
   transform: translateX(-50%) translateY(-0.25rem) scale(0.96);
   z-index: var(--z-tooltip);
   width: max-content;

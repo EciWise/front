@@ -115,7 +115,7 @@
                     "
                     (click)="toggleFavorite(c)"
                   >
-                    <eci-icon name="star" [size]="18" />
+                    <eci-icon name="star" [size]="18" [filled]="c.favorite" />
                   </button>
                   @if (canModify(c)) {
                     <button
