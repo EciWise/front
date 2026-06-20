@@ -86,11 +86,15 @@ export class InfoTooltipComponent {
         ? Math.min(Math.max(triggerCenter, minCenter), maxCenter)
         : viewportWidth / 2;
 
-    this.left.set(viewportCenter);
+    // backdrop-filter (y transform/filter/perspective) crean un containing block
+    // para position:fixed, por lo que las coordenadas viewport deben ajustarse
+    // restando el offset del ancestro que establece dicho containing block.
+    const cb = this.getContainingBlockRect();
+    this.left.set(viewportCenter - cb.left);
     this.top.set(
       showAbove
-        ? rect.top - this.verticalGap
-        : rect.bottom + this.verticalGap,
+        ? rect.top - this.verticalGap - cb.top
+        : rect.bottom + this.verticalGap - cb.top,
     );
     this.above.set(showAbove);
     this.visible.set(true);
@@ -98,5 +102,22 @@ export class InfoTooltipComponent {
 
   protected hide(): void {
     this.visible.set(false);
+  }
+
+  private getContainingBlockRect(): { left: number; top: number } {
+    const props = ['backdropFilter', 'transform', 'filter', 'perspective'] as const;
+    let el: Element | null = this.host.nativeElement.parentElement;
+    while (el && el !== document.documentElement) {
+      const s = getComputedStyle(el);
+      const isContainingBlock = props.some((p) => {
+        const v = (s as unknown as Record<string, string>)[p];
+        return v && v !== 'none';
+      });
+      if (isContainingBlock) {
+        return el.getBoundingClientRect();
+      }
+      el = el.parentElement;
+    }
+    return { left: 0, top: 0 };
   }
 }
