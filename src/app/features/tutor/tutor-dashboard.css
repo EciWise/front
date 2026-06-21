@@ -1,20 +1,51 @@
+.dash-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+  padding: var(--space-3) var(--space-3) 0;
+  margin-bottom: var(--space-6);
+  animation: eci-section-in var(--transition-base) ease;
+}
+
+.dash-welcome__role {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.375rem;
+}
+
+.dash-welcome__greeting {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.dash-welcome__name {
+  color: var(--accent);
+}
+
+.dash-welcome__sub {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  max-width: 540px;
+}
+
 .stats {
   list-style: none;
-  /* Alineado con student/admin: el cuerpo del dashboard aporta su propio gap. */
   margin: 0 0 var(--space-6);
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.25rem), 1fr));
   gap: var(--space-4);
 }
 
-/* Superficie base (fondo, borde, sombra y glass) en card-surface.css; aquí el
-   layout y la franja de acento de rol. La franja va como pseudo-elemento (no
-   como border-left) para no chocar con el `border` de card-surface, que se
-   carga después en styleUrls. */
 .stat {
-  position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -24,17 +55,9 @@
     box-shadow var(--transition-base);
 }
 
-.stat::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: var(--accent);
-}
-
 .stat:hover {
-  transform: scale(1.02);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 /* .stat__icon: chip de icono compartido en "Primitivas compartidas". */

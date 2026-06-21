@@ -1,0 +1,35 @@
+<div class="eci-fit">
+  <div class="dash-welcome eci-fit__chrome">
+    <div class="dash-welcome__role">{{ 'roles.ADMIN' | translate }}</div>
+    <h2 class="dash-welcome__greeting">
+      {{ 'dash.welcome' | translate }}<span class="dash-welcome__name"
+        >@if (user(); as u) {, {{ u.name }}}</span
+      >
+    </h2>
+    <p class="dash-welcome__sub">{{ 'dash.subtitleAdmin' | translate }}</p>
+
+    <div class="dash-kpis">
+      <div class="dash-kpi dash-kpi--accent">
+        <span class="dash-kpi__label">{{ 'dash.kpiStudents' | translate }}</span>
+        <span class="dash-kpi__value">{{ stats()?.totalEstudiantes ?? '—' }}</span>
+      </div>
+      <div class="dash-kpi dash-kpi--danger">
+        <span class="dash-kpi__label">{{ 'dash.kpiAtRisk' | translate }}</span>
+        <span class="dash-kpi__value dash-kpi__value--warn">{{ stats()?.enRiesgo ?? '—' }}</span>
+      </div>
+      <div class="dash-kpi dash-kpi--info">
+        <span class="dash-kpi__label">{{ 'dash.kpiWithPrediction' | translate }}</span>
+        <span class="dash-kpi__value">{{ stats()?.conPrediccion ?? '—' }}</span>
+      </div>
+      <div class="dash-kpi dash-kpi--success">
+        <span class="dash-kpi__label">{{ 'dash.kpiWithData' | translate }}</span>
+        <span class="dash-kpi__value">{{ stats()?.conDatos ?? '—' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eci-fit__body">
+    <p class="dash-section-label">{{ 'dash.quickAccess' | translate }}</p>
+    <eci-dashboard-grid [items]="items" />
+  </div>
+</div>
