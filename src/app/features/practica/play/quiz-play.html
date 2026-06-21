@@ -23,7 +23,9 @@
     }
   </div>
 
-  @if (mode(); as m) {
+  @if (mode() === 'AI') {
+    <eci-ai-quiz-runner (finished)="onFinished()" />
+  } @else if (mode(); as m) {
     <eci-card>
       <form class="pr-form" (submit)="$event.preventDefault(); start()">
         @switch (m) {

@@ -22,6 +22,7 @@ export function ownApiHosts(): string[] {
     auth.apiBaseUrl,
     ia.performanceApiUrl,
     ia.dropoutApiUrl,
+    ia.ragApiUrl,
     study.studyApiUrl,
     talk.talkApiUrl,
     todo.todoApiUrl,

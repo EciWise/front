@@ -17,6 +17,7 @@ import { I18nService } from './core/i18n/i18n.service';
 import { ThemeService } from './core/theme/theme.service';
 import { A11yService } from './core/a11y/a11y.service';
 import { AUTH_CONFIG } from './core/auth/auth.config';
+import { IA_CONFIG } from './core/ia/ia.config';
 import { STUDY_CONFIG } from './core/study/study.config';
 import { TALK_CONFIG } from './core/talk/talk.config';
 import { TODO_CONFIG } from './core/todo/todo.config';
@@ -49,6 +50,15 @@ export const appConfig: ApplicationConfig = {
       provide: AUTH_CONFIG,
       useFactory: (env: EnvService) => ({
         apiBaseUrl: normalizeServiceUrl(env.get('apiBaseUrl'), 'http://localhost:3001'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: IA_CONFIG,
+      useFactory: (env: EnvService) => ({
+        performanceApiUrl: normalizeServiceUrl(env.get('performanceApiUrl'), 'http://localhost:8001'),
+        dropoutApiUrl:     normalizeServiceUrl(env.get('dropoutApiUrl'),     'http://localhost:8002'),
+        ragApiUrl:         normalizeServiceUrl(env.get('ragApiUrl'),          'http://localhost:3000'),
       }),
       deps: [EnvService],
     },

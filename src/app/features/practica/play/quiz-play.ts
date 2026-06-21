@@ -8,11 +8,13 @@ import { PracticaService } from '../practica.service';
 import {
   QuestionCollection,
   QuizMode,
+  ExtendedQuizMode,
   SessionResponse,
   StartSessionRequest,
   Subject,
 } from '../practica.models';
 import { QuizRunnerComponent } from './quiz-runner';
+import { AiQuizRunnerComponent } from '../../ai-quiz/ai-quiz-runner';
 
 /** Configuración e inicio de una sesión de quiz (Parcial / Repaso / Supervivencia). */
 @Component({
@@ -25,6 +27,7 @@ import { QuizRunnerComponent } from './quiz-runner';
     IconComponent,
     SelectComponent,
     QuizRunnerComponent,
+    AiQuizRunnerComponent,
   ],
   templateUrl: './quiz-play.html',
   styleUrl: '../practica.css',
@@ -34,7 +37,7 @@ export class QuizPlayComponent {
 
   protected readonly subjects = signal<Subject[]>([]);
   protected readonly collections = signal<QuestionCollection[]>([]);
-  protected readonly mode = signal<QuizMode | null>(null);
+  protected readonly mode = signal<ExtendedQuizMode | null>(null);
   protected readonly starting = signal(false);
   protected readonly session = signal<SessionResponse | null>(null);
 
@@ -46,10 +49,11 @@ export class QuizPlayComponent {
   protected readonly preparedness = signal(3);
   protected readonly targetGrade = signal(4);
 
-  protected readonly modes: readonly { id: QuizMode; icon: 'chart' | 'repeat' | 'flame' }[] = [
+  protected readonly modes: readonly { id: ExtendedQuizMode; icon: 'chart' | 'repeat' | 'flame' | 'assistant' }[] = [
     { id: 'PARCIAL', icon: 'chart' },
     { id: 'REPASO', icon: 'repeat' },
     { id: 'SUPERVIVENCIA', icon: 'flame' },
+    { id: 'AI', icon: 'assistant' },
   ];
 
   protected readonly subjectOptions = computed<readonly SelectOption[]>(() =>
@@ -73,6 +77,8 @@ export class QuizPlayComponent {
         return this.collectionId() != null;
       case 'SUPERVIVENCIA':
         return true;
+      case 'AI':
+        return false; // El runner AI gestiona su propio inicio.
       default:
         return false;
     }
@@ -83,7 +89,7 @@ export class QuizPlayComponent {
     this.service.questionCollections().subscribe((list) => this.collections.set(list));
   }
 
-  protected pickMode(mode: QuizMode): void {
+  protected pickMode(mode: ExtendedQuizMode): void {
     this.mode.set(mode);
   }
 

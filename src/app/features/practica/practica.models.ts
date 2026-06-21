@@ -4,8 +4,11 @@
  * del backend (camelCase, enums en MAYÚSCULAS). No usar `any`.
  */
 
-/** Modos de juego del backend. */
+/** Modos de juego del backend ECIWISE-STUDY. */
 export type QuizMode = 'PARCIAL' | 'REPASO' | 'SUPERVIVENCIA';
+
+/** Modo local que incluye el quiz generativo IA (no va al backend de study). */
+export type ExtendedQuizMode = QuizMode | 'AI';
 
 /** Estado de una sesión de quiz. */
 export type SessionStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED';

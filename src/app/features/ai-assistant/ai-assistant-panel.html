@@ -1,13 +1,56 @@
 <div class="conv">
+  <header class="conv__header">
+    <eci-section-tabs
+      [tabs]="tabs"
+      [active]="activeTab()"
+      (activeChange)="selectTab($event)"
+    />
+    <button
+      type="button"
+      class="icon-button conv__reset"
+      (click)="assistant.resetConversation()"
+      [attr.aria-label]="'aiAssistant.newConversation' | translate"
+      [title]="'aiAssistant.newConversation' | translate"
+    >
+      <svg lucideRotateCcw [size]="16" aria-hidden="true"></svg>
+    </button>
+  </header>
+
   <ul class="conv__list">
     @for (msg of messages(); track msg.id) {
       <li class="conv__msg" [class.conv__msg--user]="msg.author === 'user'">
-        <span class="conv__bubble">{{ msg.text }}</span>
+        <span
+          class="conv__bubble"
+          [class.conv__bubble--typing]="msg.streaming && !msg.text"
+        >
+          @if (msg.streaming && !msg.text) {
+            <span class="conv__dots"><span></span><span></span><span></span></span>
+          } @else {
+            {{ msg.text | translate }}
+          }
+        </span>
+
+        @if (msg.relatedDocuments && msg.relatedDocuments.length > 0) {
+          <div class="conv__docs">
+            <eci-collapse [summary]="'aiAssistant.relatedDocs' | translate">
+              <ul class="conv__doc-list">
+                @for (doc of msg.relatedDocuments; track doc.docId) {
+                  <li class="conv__doc-item">
+                    <span class="conv__doc-name">{{ doc.fileName }}</span>
+                    <span class="conv__doc-meta">{{ doc.materia }} · {{ doc.tema }}</span>
+                  </li>
+                }
+              </ul>
+            </eci-collapse>
+          </div>
+        }
       </li>
     }
     @if (sending()) {
       <li class="conv__msg">
-        <span class="conv__bubble conv__bubble--typing">{{ 'common.loading' | translate }}</span>
+        <span class="conv__bubble conv__bubble--typing">
+          <span class="conv__dots"><span></span><span></span><span></span></span>
+        </span>
       </li>
     }
   </ul>
@@ -19,8 +62,8 @@
       [ngModel]="draft()"
       (ngModelChange)="draft.set($event)"
       name="draft"
-      [placeholder]="'floating.assistant' | translate"
-      [attr.aria-label]="'floating.assistant' | translate"
+      [placeholder]="'aiAssistant.placeholder' | translate"
+      [attr.aria-label]="'aiAssistant.placeholder' | translate"
       autocomplete="off"
     />
     <button

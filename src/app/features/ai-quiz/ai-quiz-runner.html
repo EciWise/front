@@ -1,0 +1,143 @@
+@switch (state()) {
+
+  @case ('idle') {
+    <eci-card>
+      <form class="pr-form" (submit)="$event.preventDefault(); startQuiz()">
+        <label class="pr-field">
+          <span>{{ 'aiQuiz.topic' | translate }}</span>
+          <input
+            type="text"
+            [ngModel]="topic()"
+            (ngModelChange)="topic.set($event)"
+            name="topic"
+            [placeholder]="'aiQuiz.topicPlaceholder' | translate"
+            autocomplete="off"
+          />
+        </label>
+
+        <div class="pr-form__row">
+          <div class="pr-field">
+            <span>{{ 'aiQuiz.numQuestions' | translate }}</span>
+            <eci-select
+              [value]="numQuestions()"
+              (valueChange)="onNumQuestions($event)"
+              [options]="questionCountOptions"
+              [ariaLabel]="'aiQuiz.numQuestions' | translate"
+            />
+          </div>
+          <div class="pr-field">
+            <span>{{ 'aiQuiz.difficulty' | translate }}</span>
+            <eci-select
+              [value]="difficulty()"
+              (valueChange)="onDifficulty($event)"
+              [options]="difficultyOptions"
+              [ariaLabel]="'aiQuiz.difficulty' | translate"
+            />
+          </div>
+        </div>
+
+        <div class="pr-form__actions">
+          <eci-button variant="primary" type="submit" [disabled]="!canStart() || loading()">
+            @if (loading()) {
+              {{ 'aiQuiz.generating' | translate }}
+            } @else {
+              {{ 'aiQuiz.start' | translate }}
+            }
+          </eci-button>
+        </div>
+      </form>
+    </eci-card>
+  }
+
+  @case ('asking') {
+    <eci-card>
+      <p class="pr-hint">
+        {{ 'aiQuiz.question' | translate : { n: currentQuestionIndex(), total: totalQuestions() } }}
+      </p>
+      <p class="ai-quiz__question">{{ question()?.questionText }}</p>
+
+      @if (question()?.type === 'closed') {
+        <div class="ai-quiz__options">
+          @for (opt of question()?.options ?? []; track opt.id) {
+            <button
+              type="button"
+              class="ai-quiz__option"
+              [class.ai-quiz__option--selected]="selectedOption() === opt.id"
+              (click)="selectedOption.set(opt.id)"
+            >
+              {{ opt.text }}
+            </button>
+          }
+        </div>
+      } @else {
+        <textarea
+          class="ai-quiz__textarea"
+          rows="3"
+          [ngModel]="openAnswer()"
+          (ngModelChange)="openAnswer.set($event)"
+          name="openAnswer"
+          [placeholder]="'aiQuiz.openAnswerPlaceholder' | translate"
+        ></textarea>
+      }
+
+      <div class="pr-form__actions">
+        <eci-button
+          variant="primary"
+          [disabled]="loading() || (question()?.type === 'closed' ? !selectedOption() : !openAnswer().trim())"
+          (buttonClick)="submitAnswer()"
+        >
+          {{ 'aiQuiz.answer' | translate }}
+        </eci-button>
+      </div>
+    </eci-card>
+  }
+
+  @case ('feedback') {
+    <eci-card>
+      @if (feedback(); as fb) {
+        <div class="ai-quiz__feedback" [class.ai-quiz__feedback--correct]="fb.isCorrect" [class.ai-quiz__feedback--incorrect]="!fb.isCorrect">
+          <eci-icon [name]="fb.isCorrect ? 'circle-check' : 'close'" [size]="20" />
+          <span>{{ (fb.isCorrect ? 'aiQuiz.correct' : 'aiQuiz.incorrect') | translate }}</span>
+        </div>
+
+        @if (fb.explanation) {
+          <p class="ai-quiz__explanation">
+            <strong>{{ 'aiQuiz.explanation' | translate }}:</strong> {{ fb.explanation }}
+          </p>
+        }
+
+        <div class="pr-form__actions">
+          <eci-button variant="primary" [disabled]="loading()" (buttonClick)="nextQuestion()">
+            {{ (fb.isFinished ? 'aiQuiz.seeResults' : 'aiQuiz.nextQuestion') | translate }}
+          </eci-button>
+        </div>
+      }
+    </eci-card>
+  }
+
+  @case ('results') {
+    <eci-card>
+      @if (results(); as r) {
+        <div class="ai-quiz__score">
+          {{ 'aiQuiz.score' | translate : { correct: r.correctAnswers, total: r.totalQuestions } }}
+        </div>
+
+        <ul class="ai-quiz__result-list">
+          @for (d of r.details; track $index) {
+            <li class="ai-quiz__result-item" [class.ai-quiz__result-item--ok]="d.isCorrect">
+              <eci-icon [name]="d.isCorrect ? 'circle-check' : 'close'" [size]="16" />
+              <span class="ai-quiz__result-q">{{ d.questionText }}</span>
+            </li>
+          }
+        </ul>
+      }
+
+      <div class="pr-form__actions">
+        <eci-button variant="secondary" (buttonClick)="resetQuiz()">
+          {{ 'aiQuiz.newQuiz' | translate }}
+        </eci-button>
+      </div>
+    </eci-card>
+  }
+
+}
