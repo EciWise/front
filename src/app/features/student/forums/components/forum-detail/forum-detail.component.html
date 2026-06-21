@@ -1,0 +1,144 @@
+@if (loading()) {
+  <p class="fd__muted">{{ 'common.loading' | translate }}</p>
+} @else if (error()) {
+  <p class="fd__error" role="alert">{{ 'forums.error' | translate }}</p>
+} @else if (forum(); as f) {
+  <div class="fd">
+    <button type="button" class="fd__back" (click)="goBack()">
+      <eci-icon name="arrow-left" [size]="16" />
+      {{ 'common.back' | translate }}
+    </button>
+
+    <eci-card>
+      <div class="fd__header">
+        <div class="fd__header-body">
+          <div class="fd__meta">
+            <span class="fd__materia">{{ f.materia }}</span>
+            @if (f.closed) {
+              <span class="fd__badge">{{ 'forums.closed' | translate }}</span>
+            }
+          </div>
+          <h2 class="fd__title">{{ f.title }}</h2>
+          @if (f.description) {
+            <p class="fd__desc">{{ f.description }}</p>
+          }
+          <p class="fd__author">{{ 'forums.authorBy' | translate }} {{ f.authorName }}</p>
+        </div>
+
+        <div class="fd__forum-actions">
+          <eci-button
+            variant="ghost"
+            [ariaLabel]="(f.likedByMe ? 'forums.unlike' : 'forums.like') | translate"
+            (buttonClick)="likeForum()"
+          >
+            <eci-icon name="star" [size]="16" [filled]="f.likedByMe" />
+            {{ f.likesCount }} {{ 'forums.likes' | translate }}
+          </eci-button>
+
+          @if (isCreator() && !f.closed) {
+            <eci-button
+              variant="ghost"
+              [disabled]="closing()"
+              [ariaLabel]="'forums.close' | translate"
+              (buttonClick)="closeForum()"
+            >
+              <eci-icon name="circle-check" [size]="16" />
+              {{ 'forums.close' | translate }}
+            </eci-button>
+          }
+
+          <eci-report-button [contentId]="f.id" contentType="FORUM" />
+        </div>
+      </div>
+    </eci-card>
+
+    <eci-card>
+      <div class="fd__threads-header">
+        <h3 class="fd__threads-title">
+          {{ 'forums.threadsTitle' | translate }}
+          <span class="fd__threads-count">{{ f.threads.length }}</span>
+        </h3>
+        @if (!f.closed) {
+          <eci-button variant="secondary" (buttonClick)="openThreadModal()">
+            <eci-icon name="plus" [size]="15" />
+            {{ 'forums.newThread' | translate }}
+          </eci-button>
+        }
+      </div>
+
+      @if (f.threads.length === 0) {
+        <div class="fd__empty">
+          <eci-icon name="chat" [size]="28" />
+          <p>{{ 'forums.noThreads' | translate }}</p>
+        </div>
+      } @else {
+        <ul class="fd__threads">
+          @for (thread of f.threads; track thread.id) {
+            <li class="fd__thread">
+              <div class="fd__thread-body">
+                <h4 class="fd__thread-title">{{ thread.title }}</h4>
+                <p class="fd__thread-content">{{ thread.content }}</p>
+              </div>
+              <div class="fd__thread-footer">
+                <span class="fd__thread-info">
+                  {{ 'forums.authorBy' | translate }} {{ thread.authorName }}
+                  &nbsp;·&nbsp;
+                  <time>{{ time(thread.createdAt) }}</time>
+                  @if (thread.responsesCount > 0) {
+                    &nbsp;·&nbsp;
+                    <eci-icon name="chat" [size]="12" />
+                    {{ thread.responsesCount }}
+                  }
+                </span>
+                <div class="fd__thread-actions">
+                  <eci-button
+                    variant="ghost"
+                    [ariaLabel]="(thread.likedByMe ? 'forums.unlike' : 'forums.like') | translate"
+                    (buttonClick)="likeThread(thread)"
+                  >
+                    <eci-icon name="star" [size]="14" [filled]="thread.likedByMe" />
+                    {{ thread.likesCount }}
+                  </eci-button>
+                  <eci-report-button [contentId]="thread.id" contentType="THREAD" />
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </eci-card>
+  </div>
+}
+
+<eci-modal [(open)]="showThreadModal" titleKey="forums.newThread">
+  <form class="fd__form" (ngSubmit)="submitThread()">
+    <label>
+      <span>{{ 'forums.threadTitle' | translate }}</span>
+      <input
+        type="text"
+        [ngModel]="threadTitle()"
+        (ngModelChange)="threadTitle.set($event)"
+        name="threadTitleField"
+        autocomplete="off"
+        [placeholder]="'forums.threadTitlePlaceholder' | translate"
+      />
+    </label>
+    <label>
+      <span>{{ 'forums.threadContent' | translate }}</span>
+      <textarea
+        [ngModel]="threadContent()"
+        (ngModelChange)="threadContent.set($event)"
+        name="threadContentField"
+        rows="5"
+        [placeholder]="'forums.threadPlaceholder' | translate"
+      ></textarea>
+    </label>
+    <eci-button
+      type="submit"
+      [block]="true"
+      [disabled]="!canSubmitThread() || creating()"
+    >
+      {{ creating() ? ('common.loading' | translate) : ('forums.newThread' | translate) }}
+    </eci-button>
+  </form>
+</eci-modal>

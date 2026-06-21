@@ -1,0 +1,245 @@
+.fd {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.fd__muted {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.fd__error {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Back */
+.fd__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  width: fit-content;
+}
+
+.fd__back:hover {
+  color: var(--text);
+}
+
+/* Header del foro */
+.fd__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.fd__header-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.fd__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.fd__materia {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.fd__badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: var(--space-0_5) var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--text-muted) 14%, transparent);
+  color: var(--text-muted);
+}
+
+.fd__title {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.fd__desc {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.fd__author {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.fd__forum-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Hilos */
+.fd__threads-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.fd__threads-title {
+  margin: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.fd__threads-count {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.fd__empty {
+  display: grid;
+  place-items: center;
+  min-height: 10rem;
+  gap: var(--space-3);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.fd__empty p {
+  margin: 0;
+}
+
+.fd__threads {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd__thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--border);
+}
+
+.fd__threads > .fd__thread:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.fd__thread-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+}
+
+.fd__thread-title {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.fd__thread-content {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fd__thread-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.fd__thread-info {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.fd__thread-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Modal form */
+.fd__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.fd__form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.fd__form input,
+.fd__form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+}
+
+.fd__form textarea {
+  resize: vertical;
+}
+
+@media (max-width: 40rem) {
+  .fd__header {
+    flex-direction: column;
+  }
+
+  .fd__forum-actions {
+    flex-wrap: wrap;
+  }
+}

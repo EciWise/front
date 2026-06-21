@@ -1,0 +1,114 @@
+<div class="fl">
+  <div class="fl__top">
+    <eci-page-header titleKey="forums.title" icon="chat" />
+    <eci-button (buttonClick)="openCreateModal()">
+      <eci-icon name="plus" [size]="15" />
+      {{ 'forums.createTitle' | translate }}
+    </eci-button>
+  </div>
+
+  @if (error()) {
+    <eci-card>
+      <p class="fl__error" role="alert">{{ 'forums.error' | translate }}</p>
+    </eci-card>
+  }
+
+  @if (loading()) {
+    <p class="fl__muted">{{ 'common.loading' | translate }}</p>
+  } @else if (forums().length === 0) {
+    <eci-card>
+      <div class="fl__empty">
+        <eci-icon name="chat" [size]="32" />
+        <p>{{ 'forums.empty' | translate }}</p>
+      </div>
+    </eci-card>
+  } @else {
+    <div class="fl__grid">
+      @for (forum of forums(); track forum.id) {
+        <eci-card>
+          <div class="fl__card">
+            <div class="fl__card-body">
+              <div class="fl__meta">
+                <span class="fl__materia">{{ forum.materia }}</span>
+                @if (forum.closed) {
+                  <span class="fl__badge">{{ 'forums.closed' | translate }}</span>
+                }
+              </div>
+
+              <h3 class="fl__title">{{ forum.title }}</h3>
+
+              @if (forum.description) {
+                <p class="fl__desc">{{ forum.description }}</p>
+              }
+
+              <p class="fl__stat">
+                <eci-icon name="star" [size]="13" />
+                {{ forum.likesCount }} {{ 'forums.likes' | translate }}
+                &nbsp;·&nbsp;
+                <eci-icon name="chat" [size]="13" />
+                {{ forum.threadsCount }} {{ 'forums.threads' | translate }}
+              </p>
+
+              <p class="fl__author">
+                {{ 'forums.authorBy' | translate }} {{ forum.authorName }}
+              </p>
+            </div>
+
+            <div class="fl__actions">
+              <eci-report-button [contentId]="forum.id" contentType="FORUM" />
+              <eci-button variant="secondary" (buttonClick)="selectForum(forum)">
+                {{ 'forums.openForum' | translate }}
+              </eci-button>
+            </div>
+          </div>
+        </eci-card>
+      }
+    </div>
+  }
+</div>
+
+<eci-modal [(open)]="showCreateModal" titleKey="forums.createTitle">
+  <form class="fl__form" (ngSubmit)="submitCreate()">
+    <label>
+      <span>{{ 'forums.name' | translate }}</span>
+      <input
+        type="text"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+        name="forumTitle"
+        autocomplete="off"
+        [placeholder]="'forums.titlePlaceholder' | translate"
+      />
+    </label>
+
+    <label>
+      <span>{{ 'forums.description' | translate }}</span>
+      <textarea
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)"
+        name="forumDesc"
+        rows="3"
+        [placeholder]="'forums.descriptionPlaceholder' | translate"
+      ></textarea>
+    </label>
+
+    <div class="fl__field">
+      <span>{{ 'forums.materia' | translate }}</span>
+      <eci-select
+        [options]="materiaOptions()"
+        [placeholder]="'forums.selectMateria' | translate"
+        [value]="materia()"
+        [ariaLabel]="'forums.materia' | translate"
+        (valueChange)="setMateria($event)"
+      />
+    </div>
+
+    <eci-button
+      type="submit"
+      [block]="true"
+      [disabled]="!canSubmit() || creating()"
+    >
+      {{ creating() ? ('common.loading' | translate) : ('forums.create' | translate) }}
+    </eci-button>
+  </form>
+</eci-modal>
