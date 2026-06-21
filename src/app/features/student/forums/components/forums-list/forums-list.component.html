@@ -9,7 +9,7 @@
 
   @if (error()) {
     <eci-card>
-      <p class="fl__error" role="alert">{{ 'forums.error' | translate }}</p>
+      <p class="fl__error" role="alert">{{ 'forums.loadError' | translate }}</p>
     </eci-card>
   }
 
@@ -19,7 +19,7 @@
     <eci-card>
       <div class="fl__empty">
         <eci-icon name="chat" [size]="32" />
-        <p>{{ 'forums.empty' | translate }}</p>
+        <p>{{ 'forums.noForums' | translate }}</p>
       </div>
     </eci-card>
   } @else {

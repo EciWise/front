@@ -63,7 +63,7 @@ export class ForumsListComponent {
     this.forumsService.listMaterias().subscribe({
       next: (materias) =>
         this.materiaOptions.set(materias.map((m) => ({ value: m.id, label: m.nombre }))),
-      error: () => {},
+      error: (err) => console.error('Error loading materias', err),
     });
   }
 
