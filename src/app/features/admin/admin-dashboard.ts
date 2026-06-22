@@ -1,23 +1,27 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Role } from '../../core/models/role.enum';
-import { PageHeaderComponent } from '../../shared/ui/page-header/page-header';
 import { DashboardGridComponent } from '../../shared/layout/dashboard-grid/dashboard-grid';
 import { navItemsFor } from '../../shared/layout/nav-items';
+import { AuthService } from '../../core/auth/auth.service';
+import { IaAdminService, PlatformStats } from '../../core/ia/ia-admin.service';
 
-/** Panel principal del administrador. */
 @Component({
   selector: 'eci-admin-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageHeaderComponent, DashboardGridComponent],
-  template: `
-    <div class="eci-fit">
-      <eci-page-header titleKey="nav.dashboard" icon="dashboard" />
-      <div class="eci-fit__body">
-        <eci-dashboard-grid [items]="items" />
-      </div>
-    </div>
-  `,
+  imports: [TranslatePipe, DashboardGridComponent],
+  templateUrl: './admin-dashboard.html',
+  styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
+  private readonly auth = inject(AuthService);
+  private readonly iaService = inject(IaAdminService);
+
+  protected readonly user = this.auth.user;
+  protected readonly stats = signal<PlatformStats | null>(null);
   protected readonly items = navItemsFor(Role.Admin).filter((i) => !i.exact);
+
+  ngOnInit(): void {
+    this.iaService.platformStats().subscribe({ next: (s) => this.stats.set(s), error: () => undefined });
+  }
 }

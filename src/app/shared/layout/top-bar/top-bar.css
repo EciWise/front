@@ -27,6 +27,28 @@
   z-index: 1;
 }
 
+.top-bar__tagline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border);
+  padding-left: 0.75rem;
+  margin-left: 0.25rem;
+  max-width: 15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.top-bar__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0 var(--space-4);
+  position: relative;
+}
+
 .top-bar__menu {
   display: none;
 }
@@ -68,6 +90,16 @@
 }
 
 @media (max-width: 900px) {
+  .top-bar__center {
+    /* En mobile el search ocupa lo mínimo (solo el botón ícono) */
+    padding: 0 var(--space-2);
+    flex: unset;
+  }
+
+  .top-bar__tagline {
+    display: none;
+  }
+
   .top-bar {
     /* Menos padding lateral para dejar espacio a los controles, sin perder las
        zonas seguras (notch superior y bordes en apaisado). */

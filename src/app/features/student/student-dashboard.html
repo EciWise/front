@@ -1,0 +1,29 @@
+<div class="eci-fit">
+  <div class="dash-welcome eci-fit__chrome">
+    <div class="dash-welcome__role">{{ 'roles.STUDENT' | translate }}</div>
+    <h2 class="dash-welcome__greeting">
+      {{ 'dash.welcome' | translate }}<span class="dash-welcome__name"
+        >@if (user(); as u) {, {{ u.name }}}</span
+      >
+    </h2>
+    <p class="dash-welcome__sub">{{ 'dash.subtitleStudent' | translate }}</p>
+
+    <div class="dash-kpis">
+      <div class="dash-kpi">
+        <span class="dash-kpi__label">{{ 'dash.kpiPending' | translate }}</span>
+        <span class="dash-kpi__value">{{ tasksLoaded() ? pendingCount() : '—' }}</span>
+      </div>
+      <div class="dash-kpi">
+        <span class="dash-kpi__label">{{ 'dash.kpiDone' | translate }}</span>
+        <span class="dash-kpi__value">{{ tasksLoaded() ? doneCount() : '—' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <eci-ia-profile-section class="eci-fit__chrome" />
+
+  <div class="eci-fit__body">
+    <p class="dash-section-label">{{ 'dash.quickAccess' | translate }}</p>
+    <eci-dashboard-grid [items]="items" />
+  </div>
+</div>

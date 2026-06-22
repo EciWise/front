@@ -5,6 +5,16 @@
   margin-bottom: var(--space-5);
 }
 
+/* Colored left-border variants for the summary KPI cards */
+.stats__kpi {
+  border-left-width: 4px !important;
+}
+
+.stats__kpi--accent  { border-left-color: var(--accent) !important; }
+.stats__kpi--danger  { border-left-color: var(--danger) !important; }
+.stats__kpi--info    { border-left-color: var(--info, #0ea5e9) !important; }
+.stats__kpi--success { border-left-color: var(--success) !important; }
+
 .stats__num {
   display: block;
   font-size: 2rem;

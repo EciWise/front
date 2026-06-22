@@ -4,9 +4,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { IconComponent } from '../../ui/icon/icon';
 import { MathDecorComponent } from '../../ui/math-decor/math-decor';
-import { navItemsFor } from '../nav-items';
+import { navGroupsFor } from '../nav-items';
 
-/** Navegación lateral con los ítems correspondientes al rol activo. */
+/** Navegación lateral con ítems agrupados por sección según el rol activo. */
 @Component({
   selector: 'eci-side-nav',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,5 +16,5 @@ import { navItemsFor } from '../nav-items';
 })
 export class SideNavComponent {
   private readonly auth = inject(AuthService);
-  protected readonly items = computed(() => navItemsFor(this.auth.role()));
+  protected readonly groups = computed(() => navGroupsFor(this.auth.role()));
 }
