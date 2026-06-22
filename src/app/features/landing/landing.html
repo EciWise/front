@@ -251,8 +251,10 @@
   <!-- ═══════════════════════════ ABOUT ═══════════════════════════ -->
   <section class="landing__band landing__band--alt" id="about" #sectionEl aria-labelledby="about-heading">
     <div class="landing__band-inner">
-      <p class="landing__eyebrow">{{ 'landing.aboutEyebrow' | translate }}</p>
-      <h2 id="about-heading" class="landing__band-title">{{ 'landing.about.title' | translate }}</h2>
+      <div class="landing__band-head">
+        <p class="landing__eyebrow">{{ 'landing.aboutEyebrow' | translate }}</p>
+        <h2 id="about-heading" class="landing__band-title">{{ 'landing.tabAbout' | translate }}</h2>
+      </div>
 
       <div class="landing__glass-grid">
         <article class="landing__glass-card">
@@ -292,9 +294,11 @@
   <!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
   <section class="landing__band" aria-labelledby="features-heading">
     <div class="landing__band-inner">
-      <p class="landing__eyebrow">{{ 'landing.featuresEyebrow' | translate }}</p>
-      <h2 id="features-heading" class="landing__band-title">{{ 'features.title' | translate }}</h2>
-      <p class="landing__band-sub">{{ 'features.subtitle' | translate }}</p>
+      <div class="landing__band-head">
+        <p class="landing__eyebrow">{{ 'landing.featuresEyebrow' | translate }}</p>
+        <h2 id="features-heading" class="landing__band-title">{{ 'features.title' | translate }}</h2>
+        <p class="landing__band-sub">{{ 'features.subtitle' | translate }}</p>
+      </div>
 
       <div class="landing__features-grid">
         @for (card of featureCards; track card.labelKey) {
@@ -316,7 +320,7 @@
   <section class="landing__band landing__band--border" id="gallery" #sectionEl aria-labelledby="gallery-heading">
     <div class="landing__band-inner">
       <div class="landing__section-header">
-        <div>
+        <div class="landing__band-head">
           <p class="landing__eyebrow">{{ 'landing.gallery.eyebrow' | translate }}</p>
           <h2 id="gallery-heading" class="landing__band-title">{{ 'landing.gallery.title' | translate }}</h2>
           <p class="landing__band-sub">{{ 'landing.gallery.subtitle' | translate }}</p>
@@ -359,7 +363,7 @@
   <section class="landing__band landing__band--alt" id="team" #sectionEl aria-labelledby="team-heading">
     <div class="landing__band-inner">
       <div class="landing__section-header">
-        <div>
+        <div class="landing__band-head">
           <p class="landing__eyebrow">{{ 'landing.team.eyebrow' | translate }}</p>
           <h2 id="team-heading" class="landing__band-title">
             {{ 'landing.team.madeBy' | translate }}

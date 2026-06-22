@@ -141,146 +141,51 @@
    con tarjetas blancas. Va en el CSS global (no encapsulado)
    porque toca componentes hijos (botón, logo, iconos).
    ============================================================ */
-html[data-theme='light'] .landing {
-  background: var(--public-surface);
+/* Sección hero (sólo ella) lleva texto blanco en modo claro. */
+html[data-theme='light'] .landing .landing__hero-band {
   color: #ffffff;
 }
 
-html[data-theme='light'] .landing .eci-logo,
-html[data-theme='light'] .landing .landing__controls,
-html[data-theme='light'] .landing .icon-button {
-  color: #ffffff;
-}
-
-/* Logo: marca blanca con el "+" vinotinto, legible sobre el rojo. */
-html[data-theme='light'] .landing .eci-logo__astroid {
-  fill: #ffffff;
-}
-html[data-theme='light'] .landing .eci-logo__plus {
-  stroke: var(--brand-wine);
-}
-html[data-theme='light'] .landing .eci-logo__plus-word {
-  color: var(--brand-red);
-}
-
-html[data-theme='light'] .landing .landing__eci {
-  border-color: rgba(255, 255, 255, 0.55);
-  background: rgba(122, 15, 32, 0.82);
-  color: #ffffff;
-}
-
-html[data-theme='light'] .landing .landing__title {
-  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
-}
-
-html[data-theme='light'] .landing .landing__tagline {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Solo las tarjetas son blancas, con texto oscuro. */
-html[data-theme='light'] .landing .info-card {
-  background: #ffffff;
-  border-color: rgba(255, 255, 255, 0.7);
-  color: #18181b;
-  box-shadow: var(--public-card-shadow);
-}
-html[data-theme='light'] .landing .info-card__title {
-  color: #18181b;
-}
-html[data-theme='light'] .landing .info-card__body {
-  color: #5b5b66;
-}
-html[data-theme='light'] .landing .info-card__icon {
-  background: var(--brand-wine);
-  color: #ffffff;
-}
-
-/* Botones legibles sobre el fondo rojo. */
-html[data-theme='light'] .landing .eci-button--primary {
-  background: #ffffff;
-  color: var(--brand-wine);
-}
-html[data-theme='light'] .landing .eci-button--primary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.9);
-}
-html[data-theme='light'] .landing .eci-button--secondary {
-  background: rgba(122, 15, 32, 0.86);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-/* Top bar de la landing en modo claro: cristal vinotinto translúcido en lugar
-   del blanco semiopaco que deja var(--surface) al 55%. El backdrop-filter ya
-   existe en landing.css; aquí solo se sobreescribe el color de fondo y el borde. */
+/* Topbar sobre el rojo: fondo cristal vinotinto. */
 html[data-theme='light'] .landing .landing__topbar {
   background: rgba(90, 8, 24, 0.28);
   border-bottom-color: rgba(255, 255, 255, 0.18);
 }
 
-/* Navegación por secciones (eci-section-tabs › .seg) sobre el fondo rojo:
-   contenedor vinotinto + píldora blanca + texto blanco. */
-html[data-theme='light'] .landing .seg {
-  background: rgba(90, 8, 24, 0.52);
-  border-color: rgba(255, 255, 255, 0.24);
-}
-html[data-theme='light'] .landing .seg__indicator {
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.22);
-}
-html[data-theme='light'] .landing .seg__btn {
-  color: rgba(255, 255, 255, 0.75);
-}
-html[data-theme='light'] .landing .seg__btn:hover:not(.seg__btn--active) {
+/* Controles de topbar (idioma, tema, a11y) en blanco sobre el rojo. */
+html[data-theme='light'] .landing .landing__hero-band .icon-button {
   color: #ffffff;
 }
-html[data-theme='light'] .landing .seg__btn--active {
-  color: var(--brand-wine);
-}
 
-/* Secciones nuevas (galería / equipo / pie) sobre el fondo rojo del tema claro:
-   texto blanco para los títulos/subtítulos y tarjetas de cristal vinotinto
-   legibles. El encabezado de banda y las tarjetas de autor heredan el patrón de
-   cristal, ajustado para contrastar sobre el degradado brillante. */
-html[data-theme='light'] .landing .landing__section-title,
-html[data-theme='light'] .landing .landing__section-subtitle {
-  color: #ffffff;
-}
-html[data-theme='light'] .landing .landing__section-subtitle {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Marco de imagen de la galería: cristal vinotinto translúcido sobre el rojo. */
-html[data-theme='light'] .landing .gallery-card {
-  background: rgba(122, 15, 32, 0.4);
-  border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: var(--public-card-shadow);
-}
-
-/* Tarjetas de autor: blancas con texto oscuro, como las info-cards. */
-html[data-theme='light'] .landing .author-card {
-  background: #ffffff;
-  border-color: rgba(255, 255, 255, 0.7);
-  color: #18181b;
-  box-shadow: var(--public-card-shadow);
-}
-html[data-theme='light'] .landing .author-card__name {
-  color: #18181b;
-}
-html[data-theme='light'] .landing .author-card__role {
-  color: #5b5b66;
-}
-
-/* Pie de página y enlaces rápidos legibles sobre el rojo. */
+/* El resto de bandas (about, features, gallery, team, footer) usa colores
+   del tema: fondo surface, texto oscuro. Los valores heredados del antiguo
+   wrapper .landing (que era todo vino-tinto) se sobreescriben aquí. */
+html[data-theme='light'] .landing .landing__band,
 html[data-theme='light'] .landing .landing__footer {
-  border-top-color: rgba(255, 255, 255, 0.35);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  background: var(--surface);
 }
-html[data-theme='light'] .landing .landing__footer-link {
-  color: rgba(255, 255, 255, 0.85);
+
+html[data-theme='light'] .landing .landing__band--alt {
+  background: var(--surface-2);
 }
+
+html[data-theme='light'] .landing .landing__footer {
+  background: var(--surface-2);
+  border-top-color: var(--border);
+}
+
+html[data-theme='light'] .landing .landing__footer-link,
+html[data-theme='light'] .landing .landing__footer-copy,
+html[data-theme='light'] .landing .landing__footer-tagline {
+  color: var(--text-muted);
+}
+
 html[data-theme='light'] .landing .landing__footer-link:hover {
-  color: #ffffff;
+  color: var(--text);
 }
+
+/* Placeholder para compatibilidad con reglas anteriores — clase eliminada. */
 html[data-theme='light'] .landing .landing__footer-attr {
   color: #ffffff;
 }
