@@ -11,6 +11,7 @@ import { A11yToggleComponent } from '../../../core/a11y/a11y-toggle';
 import { NotificationsBellComponent } from '../notifications-bell/notifications-bell';
 import { AvatarComponent } from '../../ui/avatar/avatar';
 import { MathDecorComponent } from '../../ui/math-decor/math-decor';
+import { GlobalSearchComponent } from '../global-search/global-search';
 
 /** Barra superior: logo (vuelve al inicio), controles globales y perfil. */
 @Component({
@@ -28,6 +29,7 @@ import { MathDecorComponent } from '../../ui/math-decor/math-decor';
     NotificationsBellComponent,
     AvatarComponent,
     MathDecorComponent,
+    GlobalSearchComponent,
   ],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.css',

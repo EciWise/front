@@ -604,10 +604,15 @@ input[type='radio'] {
 }
 
 /* La barra de la app reúne muchos controles (menú, idioma, tema, accesibilidad,
-   notificaciones, avatar, salir). En celular se compactan los botones para que
-   la fila nunca se desborde y ningún control quede cortado. Va en el CSS global
-   porque los botones de idioma/tema/a11y/campana viven en componentes propios
+   notificaciones, avatar, salir). Los botones del top-bar llevan borde visible
+   y fondo de superficie para coincidir con el diseño. Va en el CSS global porque
+   los botones de idioma/tema/a11y/campana viven en componentes propios
    (estilos encapsulados que el CSS de la barra no alcanza). */
+.top-bar .icon-button {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
 @media (max-width: 30rem) {
   .top-bar .icon-button {
     width: 2.25rem;
@@ -738,22 +743,19 @@ input[type='radio'] {
   cursor: not-allowed;
 }
 
-/* Insignia de conteo (notificaciones) */
+/* Punto de notificación no leída (solo indicador visual) */
 .icon-button__badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  min-width: 1.05rem;
-  height: 1.05rem;
-  padding: 0 0.25rem;
+  top: 6px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  min-width: unset;
+  padding: 0;
   border-radius: var(--radius-full);
   background: var(--brand-red);
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  border: 2px solid var(--surface);
+  font-size: 0;
   line-height: 1;
 }
 
