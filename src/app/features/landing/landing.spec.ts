@@ -1,82 +1,77 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
-import { Component } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { LandingComponent } from './landing';
 import { StaticTranslateLoader } from '../../core/i18n/static-translate.loader';
 import { AuroraBackgroundComponent } from '../../shared/ui/aurora-background/aurora-background';
 import { SymbolSceneService } from '../../shared/ui/aurora-background/symbol-scene.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { AUTH_CONFIG } from '../../core/auth/auth.config';
+import { Role } from '../../core/models/role.enum';
+import { User } from '../../core/models/user.model';
 
-@Component({ template: '' })
-class DummyComponent {}
-
-/** Evita inicializar WebGL (Three.js) en jsdom: el fondo solo decora. */
 class SceneStub {
-  init(): Promise<void> {
-    return Promise.resolve();
-  }
+  init(): Promise<void> { return Promise.resolve(); }
   readonly dispose = vi.fn();
 }
 
-describe('LandingComponent', () => {
-  let router: Router;
+const stubUser = { id: 'u1', name: 'Test', email: 't@gmail.com', role: Role.Student } as User;
 
-  // El fondo `eci-aurora-background` combina orbes CSS con una escena 3D
-  // (Three.js); se stubea su escena para no inicializar WebGL en jsdom.
+describe('LandingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LandingComponent],
       providers: [
-        provideRouter([
-          { path: 'auth/login', component: DummyComponent },
-          { path: 'auth/register', component: DummyComponent },
-        ]),
+        provideRouter([]),
         provideTranslateService({
           loader: { provide: TranslateLoader, useClass: StaticTranslateLoader },
           fallbackLang: 'es',
           lang: 'es',
         }),
+        { provide: AUTH_CONFIG, useValue: { apiBaseUrl: '' } },
+        {
+          provide: AuthService,
+          useValue: {
+            loginWithEmail: vi.fn(() => of(stubUser)),
+            register: vi.fn(() => of(stubUser)),
+          },
+        },
       ],
     })
       .overrideComponent(AuroraBackgroundComponent, {
         set: { providers: [{ provide: SymbolSceneService, useClass: SceneStub }] },
       })
       .compileComponents();
-
-    router = TestBed.inject(Router);
   });
 
-  it('renderiza los dos botones de llamado a la acción', () => {
+  it('renderiza los tabs de login y registro en la card de auth', () => {
     const fixture = TestBed.createComponent(LandingComponent);
     fixture.detectChanges();
 
-    const ctaButtons = fixture.nativeElement.querySelectorAll('.landing__cta button');
-    expect(ctaButtons.length).toBe(2);
+    const tabs = fixture.nativeElement.querySelectorAll('.landing__auth-tab');
+    expect(tabs.length).toBe(2);
   });
 
-  it('navega a login al hacer clic en "Ingresar"', () => {
-    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  it('muestra el formulario de login por defecto', () => {
     const fixture = TestBed.createComponent(LandingComponent);
     fixture.detectChanges();
 
-    const enterButton = fixture.nativeElement.querySelectorAll(
-      '.landing__cta button',
-    )[0] as HTMLButtonElement;
-    enterButton.click();
-
-    expect(navigate).toHaveBeenCalledWith(['/auth/login']);
+    const inputs = fixture.nativeElement.querySelectorAll('.landing__auth-form input');
+    expect(inputs.length).toBeGreaterThanOrEqual(2);
   });
 
-  it('navega a registro al hacer clic en "Registrarse"', () => {
-    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  it('cambia al formulario de registro al pulsar el tab de registro', async () => {
     const fixture = TestBed.createComponent(LandingComponent);
     fixture.detectChanges();
 
-    const registerButton = fixture.nativeElement.querySelectorAll(
-      '.landing__cta button',
+    const registerTab = fixture.nativeElement.querySelectorAll(
+      '.landing__auth-tab',
     )[1] as HTMLButtonElement;
-    registerButton.click();
+    registerTab.click();
+    fixture.detectChanges();
 
-    expect(navigate).toHaveBeenCalledWith(['/auth/register']);
+    const dots = fixture.nativeElement.querySelectorAll('.landing__step-dot');
+    expect(dots.length).toBe(3);
   });
 });
