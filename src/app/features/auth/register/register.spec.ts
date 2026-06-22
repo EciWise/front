@@ -62,6 +62,14 @@ describe('RegisterComponent', () => {
     });
   };
 
+  /** Rellena las credenciales del paso 2 (contraseña). */
+  const fillStep2 = (): void => {
+    cmp().form.patchValue({
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
+    });
+  };
+
   /** Rellena todos los datos de IA (pasos 3-6). */
   const fillDatosIa = (): void => {
     cmp().datosIaGroup.patchValue({
