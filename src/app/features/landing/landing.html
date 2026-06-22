@@ -182,7 +182,7 @@
                 <p class="landing__dia-hint">{{ 'register.iaSectionHint' | translate }}</p>
 
                 <div class="landing__field">
-                  <label class="landing__label">{{ 'datosIa.labels.gender' | translate }}</label>
+                  <span class="landing__label">{{ 'datosIa.labels.gender' | translate }}</span>
                   <div class="landing__radio-group">
                     <label class="landing__radio-opt">
                       <input type="radio" name="gender" value="male" [checked]="regDia().gender === 'male'" (change)="updateDia('gender','male')" />
