@@ -1100,3 +1100,33 @@ input[type='radio'] {
   background: color-mix(in srgb, var(--accent) 16%, transparent);
   color: var(--accent);
 }
+
+/* ── Landing page keyframes (referenced by component CSS) ── */
+@keyframes aurora1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(40px, -60px) scale(1.08); }
+  66%  { transform: translate(-30px, 30px) scale(0.94); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes aurora2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  40%  { transform: translate(-50px, 40px) scale(1.1); }
+  70%  { transform: translate(35px, -25px) scale(0.96); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

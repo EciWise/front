@@ -1,184 +1,421 @@
-<div class="landing" id="main-content" tabindex="-1">
-  <eci-aurora-background variant="landing" />
+<div class="landing" id="main-content">
 
-  <!-- Barra superior + navegación: fijas arriba para que el scroll-spy y los
-       controles queden siempre accesibles sobre el contenido. -->
-  <div class="landing__topbar">
-    <header class="landing__bar">
-      <eci-logo home="/" />
-      <div class="landing__controls">
+  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <section class="landing__hero-band" id="home" #sectionEl>
+    <div class="landing__aurora-1" aria-hidden="true"></div>
+    <div class="landing__aurora-2" aria-hidden="true"></div>
+    <span class="landing__math-sym landing__math-sym--1" aria-hidden="true">∑</span>
+    <span class="landing__math-sym landing__math-sym--2" aria-hidden="true">∫</span>
+    <span class="landing__math-sym landing__math-sym--3" aria-hidden="true">π</span>
+    <span class="landing__math-sym landing__math-sym--4" aria-hidden="true">√</span>
+    <div class="landing__math-grid" aria-hidden="true"></div>
+    <canvas class="landing__canvas" #heroCanvas aria-hidden="true"></canvas>
+
+    <!-- TOPBAR -->
+    <header class="landing__topbar">
+      <span class="landing__logotype">ECIWISE<span class="landing__logotype-plus">+</span></span>
+
+      <nav class="landing__nav-tabs" [attr.aria-label]="'landing.navLabel' | translate">
+        @for (tab of navTabs; track tab.id) {
+          <button
+            class="landing__nav-pill"
+            [class.landing__nav-pill--active]="section() === tab.id"
+            (click)="scrollToSection(tab.id, $event)"
+            [attr.aria-current]="section() === tab.id ? 'true' : null"
+          >{{ tab.labelKey | translate }}</button>
+        }
+      </nav>
+
+      <div class="landing__topbar-controls">
         <eci-language-switch />
         <eci-theme-toggle />
         <eci-a11y-toggle />
       </div>
     </header>
 
-    <nav class="landing__nav" [attr.aria-label]="'landing.about.title' | translate">
-      <eci-section-tabs
-        [tabs]="sections"
-        [active]="section()"
-        (activeChange)="onTabChange($event)"
-      />
-    </nav>
-  </div>
+    <!-- HERO GRID -->
+    <div class="landing__hero-grid reveal">
 
-  <!-- HOME: hero a pantalla completa con el reclamo y las dos CTA. -->
-  <main #sectionEl id="home" class="landing__band landing__hero">
-    <span class="landing__eci">
-      <eci-icon name="ethics" [size]="16" />
-      {{ 'landing.eci' | translate }}
-    </span>
-    <h1 class="landing__title">{{ 'app.name' | translate }}</h1>
-    <p class="landing__tagline">{{ 'app.tagline' | translate }}</p>
-    <div class="landing__cta">
-      <eci-button (click)="goToLogin()">{{ 'common.enter' | translate }}</eci-button>
-      <eci-button variant="secondary" (click)="goToRegister()">
-        {{ 'common.register' | translate }}
-      </eci-button>
-    </div>
-  </main>
+      <!-- LEFT: copy -->
+      <div class="landing__hero-copy">
+        <span class="landing__hero-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          {{ 'landing.eci' | translate }}
+        </span>
 
-  <!-- ABOUT: las tres tarjetas de información (qué es / misión / visión). -->
-  <section
-    #sectionEl
-    id="about"
-    class="landing__band"
-    [attr.aria-label]="'landing.about.title' | translate"
-  >
-    <div class="landing__info">
-      <article class="info-card">
-        <span class="info-card__icon"><eci-icon name="tutorias" [size]="28" /></span>
-        <h2 class="info-card__title">{{ 'landing.about.title' | translate }}</h2>
-        <p class="info-card__body">{{ 'landing.about.body' | translate }}</p>
-      </article>
+        <h1 class="landing__hero-h1">ECIWISE<span class="landing__hero-plus">+</span></h1>
+        <p class="landing__hero-tagline">{{ 'app.tagline' | translate }}</p>
 
-      <article class="info-card">
-        <span class="info-card__icon"><eci-icon name="trophy" [size]="28" /></span>
-        <h2 class="info-card__title">{{ 'landing.mission.title' | translate }}</h2>
-        <p class="info-card__body">{{ 'landing.mission.body' | translate }}</p>
-      </article>
-
-      <article class="info-card">
-        <span class="info-card__icon"><eci-icon name="ethics" [size]="28" /></span>
-        <h2 class="info-card__title">{{ 'landing.vision.title' | translate }}</h2>
-        <p class="info-card__body">{{ 'landing.vision.body' | translate }}</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- GALLERY: carrusel de imágenes de marca en marcos de cristal. -->
-  <section
-    #sectionEl
-    id="gallery"
-    class="landing__band"
-    [attr.aria-label]="'landing.gallery.title' | translate"
-  >
-    <div class="landing__container">
-      <header class="landing__section-head">
-        <h2 class="landing__section-title">{{ 'landing.gallery.title' | translate }}</h2>
-        <p class="landing__section-subtitle">{{ 'landing.gallery.subtitle' | translate }}</p>
-      </header>
-
-      <eci-carousel
-        [ariaLabel]="'landing.gallery.label' | translate"
-        [prevLabel]="'common.previous' | translate"
-        [nextLabel]="'common.next' | translate"
-        [slideLabel]="'landing.gallery.slide' | translate"
-      >
-        @for (image of gallery; track image) {
-          <figure class="gallery-card">
-            <img class="gallery-card__img" [src]="image" alt="" loading="lazy" />
-          </figure>
-        }
-      </eci-carousel>
-    </div>
-  </section>
-
-  <!-- TEAM: carrusel "Hecho por" con tarjetas de autor (avatar + nombre + rol). -->
-  <section
-    #sectionEl
-    id="team"
-    class="landing__band"
-    [attr.aria-label]="'landing.team.title' | translate"
-  >
-    <div class="landing__container">
-      <header class="landing__section-head">
-        <h2 class="landing__section-title">{{ 'landing.team.title' | translate }}</h2>
-        <p class="landing__section-subtitle">{{ 'landing.team.subtitle' | translate }}</p>
-      </header>
-
-      <eci-carousel
-        [ariaLabel]="'landing.team.label' | translate"
-        [prevLabel]="'common.previous' | translate"
-        [nextLabel]="'common.next' | translate"
-        [slideLabel]="'landing.team.madeBy' | translate"
-      >
-        @for (author of authors; track author.name) {
-          @if (author.link) {
-            <!-- Con enlace (p. ej. LinkedIn): la tarjeta es un enlace que abre en
-                 pestaña nueva; `author-card--link` añade el leve zoom al pasar/enfocar. -->
-            <a
-              class="author-card author-card--link"
-              [href]="author.link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ng-container
-                [ngTemplateOutlet]="authorBody"
-                [ngTemplateOutletContext]="{ $implicit: author }"
-              />
-            </a>
-          } @else {
-            <article class="author-card">
-              <ng-container
-                [ngTemplateOutlet]="authorBody"
-                [ngTemplateOutletContext]="{ $implicit: author }"
-              />
-            </article>
+        <ul class="landing__hero-bullets" [attr.aria-label]="'landing.hero.bulletsLabel' | translate">
+          @for (bullet of heroBullets; track bullet.labelKey) {
+            <li class="landing__hero-bullet">
+              <svg class="landing__bullet-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path [attr.d]="bullet.icon"/>
+              </svg>
+              <span>{{ bullet.labelKey | translate }}</span>
+            </li>
           }
-        }
-      </eci-carousel>
-    </div>
-  </section>
-
-  <!-- Pie: atribución a la Escuela Colombiana de Ingeniería + enlaces rápidos. -->
-  <footer class="landing__footer">
-    <div class="landing__footer-inner">
-      <div class="landing__footer-brand">
-        <!-- SLOT DEL LOGO ECI: deja el archivo en `public/assets/eci-logo.svg`.
-             Mientras no exista, el (error) lo oculta sin romper el pie; la
-             atribución de texto permanece siempre visible. -->
-        <img
-          class="landing__footer-logo"
-          src="/assets/eci-logo.svg"
-          alt="Escuela Colombiana de Ingeniería Julio Garavito"
-          (error)="hideBrokenLogo($event)"
-        />
-        <p class="landing__footer-attr">{{ 'landing.eci' | translate }}</p>
+        </ul>
       </div>
 
-      <nav class="landing__footer-links" [attr.aria-label]="'landing.footer.links' | translate">
-        <a class="landing__footer-link" href="#home" (click)="scrollToSection('home', $event)">
-          {{ 'landing.tabHome' | translate }}
-        </a>
-        <a class="landing__footer-link" href="#about" (click)="scrollToSection('about', $event)">
-          {{ 'landing.tabAbout' | translate }}
-        </a>
-        <a class="landing__footer-link" href="#gallery" (click)="scrollToSection('gallery', $event)">
-          {{ 'landing.tabGallery' | translate }}
-        </a>
-        <a class="landing__footer-link" href="#team" (click)="scrollToSection('team', $event)">
-          {{ 'landing.footer.madeBy' | translate }}
-        </a>
+      <!-- RIGHT: auth card -->
+      <div class="landing__auth-card">
+        <div class="landing__auth-tabs" role="tablist">
+          <button class="landing__auth-tab" [class.landing__auth-tab--active]="authMode() === 'login'" role="tab" [attr.aria-selected]="authMode() === 'login'" (click)="authMode.set('login')">
+            {{ 'auth.loginTitle' | translate }}
+          </button>
+          <button class="landing__auth-tab" [class.landing__auth-tab--active]="authMode() === 'register'" role="tab" [attr.aria-selected]="authMode() === 'register'" (click)="authMode.set('register'); regStep.set(1)">
+            {{ 'auth.registerTitle' | translate }}
+          </button>
+        </div>
+
+        <!-- LOGIN -->
+        @if (authMode() === 'login') {
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="landing__auth-form" novalidate>
+            <div class="landing__field">
+              <label class="landing__label" for="login-email">{{ 'common.email' | translate }}</label>
+              <input id="login-email" class="landing__input" type="email" formControlName="email" autocomplete="email" />
+            </div>
+            <div class="landing__field">
+              <label class="landing__label" for="login-password">{{ 'common.password' | translate }}</label>
+              <input id="login-password" class="landing__input" type="password" formControlName="password" autocomplete="current-password" />
+            </div>
+            @if (loginError()) {
+              <p class="landing__auth-error" role="alert">{{ loginError() }}</p>
+            }
+            <button type="submit" class="landing__auth-submit" [disabled]="loginLoading()">
+              @if (loginLoading()) { <span class="landing__spinner"></span> }
+              @else { {{ 'common.login' | translate }} }
+            </button>
+          </form>
+        }
+
+        <!-- REGISTER -->
+        @if (authMode() === 'register') {
+          <div class="landing__reg-steps">
+            <div class="landing__step-dots" [attr.aria-label]="'register.stepsLabel' | translate">
+              @for (n of [1,2,3]; track n) {
+                <span class="landing__step-dot" [class.landing__step-dot--active]="regStep() === n" [class.landing__step-dot--done]="regStep() > n"></span>
+              }
+            </div>
+
+            <!-- Step 1: personal data -->
+            @if (regStep() === 1) {
+              <form [formGroup]="reg1Form" (ngSubmit)="onRegNext()" class="landing__auth-form" novalidate>
+                <div class="landing__field-row">
+                  <div class="landing__field">
+                    <label class="landing__label" for="reg-nombre">{{ 'common.name' | translate }}</label>
+                    <input id="reg-nombre" class="landing__input" type="text" formControlName="nombre" autocomplete="given-name" />
+                  </div>
+                  <div class="landing__field">
+                    <label class="landing__label" for="reg-apellido">{{ 'common.lastName' | translate }}</label>
+                    <input id="reg-apellido" class="landing__input" type="text" formControlName="apellido" autocomplete="family-name" />
+                  </div>
+                </div>
+                <div class="landing__field">
+                  <label class="landing__label" for="reg-email">{{ 'common.email' | translate }}</label>
+                  <input id="reg-email" class="landing__input" type="email" formControlName="email" autocomplete="email" />
+                </div>
+                <div class="landing__field">
+                  <label class="landing__label" for="reg-phone">{{ 'common.phone' | translate }}</label>
+                  <input id="reg-phone" class="landing__input" type="tel" formControlName="telefono" autocomplete="tel" />
+                </div>
+                <div class="landing__field">
+                  <label class="landing__label" for="reg-pwd">{{ 'common.password' | translate }}</label>
+                  <input id="reg-pwd" class="landing__input" type="password" formControlName="password" autocomplete="new-password" />
+                </div>
+                <div class="landing__field">
+                  <label class="landing__label" for="reg-confirm">{{ 'register.confirmPassword' | translate }}</label>
+                  <input id="reg-confirm" class="landing__input" type="password" formControlName="confirm" autocomplete="new-password" />
+                </div>
+                <button type="submit" class="landing__auth-submit">{{ 'register.next' | translate }}</button>
+              </form>
+            }
+
+            <!-- Step 2: academic context -->
+            @if (regStep() === 2) {
+              <div class="landing__auth-form">
+                <p class="landing__dia-hint">{{ 'register.iaSectionHint' | translate }}</p>
+
+                <div class="landing__field">
+                  <label class="landing__label">{{ 'datosIa.labels.gender' | translate }}</label>
+                  <div class="landing__radio-group">
+                    <label class="landing__radio-opt">
+                      <input type="radio" name="gender" value="male" [checked]="regDia().gender === 'male'" (change)="updateDia('gender','male')" />
+                      {{ 'datosIa.options.gender.male' | translate }}
+                    </label>
+                    <label class="landing__radio-opt">
+                      <input type="radio" name="gender" value="female" [checked]="regDia().gender === 'female'" (change)="updateDia('gender','female')" />
+                      {{ 'datosIa.options.gender.female' | translate }}
+                    </label>
+                  </div>
+                </div>
+
+                <div class="landing__field">
+                  <label class="landing__label" for="dia-ethnicity">{{ 'datosIa.labels.ethnicity' | translate }}</label>
+                  <select id="dia-ethnicity" class="landing__input" [value]="regDia().ethnicity" (change)="updateDia('ethnicity', $any($event.target).value)">
+                    <option value="">{{ 'datosIa.selectPlaceholder' | translate }}</option>
+                    <option value="caucasian">{{ 'datosIa.options.ethnicity.caucasian' | translate }}</option>
+                    <option value="african">{{ 'datosIa.options.ethnicity.african' | translate }}</option>
+                    <option value="asian">{{ 'datosIa.options.ethnicity.asian' | translate }}</option>
+                    <option value="other">{{ 'datosIa.options.ethnicity.other' | translate }}</option>
+                  </select>
+                </div>
+
+                <div class="landing__field">
+                  <label class="landing__label" for="dia-parental-edu">{{ 'datosIa.labels.parentalEducation' | translate }}</label>
+                  <select id="dia-parental-edu" class="landing__input" [value]="regDia().parentalEducation" (change)="updateDia('parentalEducation', $any($event.target).value)">
+                    <option value="">{{ 'datosIa.selectPlaceholder' | translate }}</option>
+                    <option value="none">{{ 'datosIa.options.parentalEducation.none' | translate }}</option>
+                    <option value="highschool">{{ 'datosIa.options.parentalEducation.highschool' | translate }}</option>
+                    <option value="technical">{{ 'datosIa.options.parentalEducation.somecollege' | translate }}</option>
+                    <option value="bachelor">{{ 'datosIa.options.parentalEducation.bachelor' | translate }}</option>
+                    <option value="higher">{{ 'datosIa.options.parentalEducation.higher' | translate }}</option>
+                  </select>
+                </div>
+
+                <div class="landing__field">
+                  <label class="landing__label" for="dia-parental-sup">{{ 'datosIa.labels.parentalSupport' | translate }}</label>
+                  <select id="dia-parental-sup" class="landing__input" [value]="regDia().parentalSupport" (change)="updateDia('parentalSupport', $any($event.target).value)">
+                    <option value="">{{ 'datosIa.selectPlaceholder' | translate }}</option>
+                    <option value="none">{{ 'datosIa.options.parentalSupport.none' | translate }}</option>
+                    <option value="low">{{ 'datosIa.options.parentalSupport.low' | translate }}</option>
+                    <option value="moderate">{{ 'datosIa.options.parentalSupport.moderate' | translate }}</option>
+                    <option value="high">{{ 'datosIa.options.parentalSupport.high' | translate }}</option>
+                    <option value="veryhigh">{{ 'datosIa.options.parentalSupport.veryhigh' | translate }}</option>
+                  </select>
+                </div>
+
+                <div class="landing__field-row">
+                  <div class="landing__field">
+                    <label class="landing__label" for="dia-study-time">{{ 'datosIa.labels.studyTimeWeekly' | translate }}</label>
+                    <input id="dia-study-time" class="landing__input" type="number" min="0" max="168" [value]="regDia().studyTimeWeekly" (input)="updateDia('studyTimeWeekly', +$any($event.target).value)" />
+                  </div>
+                  <div class="landing__field">
+                    <label class="landing__label" for="dia-absences">{{ 'datosIa.labels.absences' | translate }}</label>
+                    <input id="dia-absences" class="landing__input" type="number" min="0" max="30" [value]="regDia().absences" (input)="updateDia('absences', +$any($event.target).value)" />
+                  </div>
+                </div>
+
+                <div class="landing__field-row landing__field-row--wrap">
+                  <button type="button" class="landing__auth-back" (click)="onRegBack()">{{ 'common.back' | translate }}</button>
+                  <button type="button" class="landing__auth-submit" (click)="onRegNext()">{{ 'register.next' | translate }}</button>
+                </div>
+              </div>
+            }
+
+            <!-- Step 3: activities -->
+            @if (regStep() === 3) {
+              <div class="landing__auth-form">
+                <p class="landing__dia-hint">{{ 'datosIa.labels.activitiesTitle' | translate }}</p>
+
+                <div class="landing__checks-grid">
+                  @for (act of [
+                    {key:'tutoring',       label:'datosIa.labels.tutoring'},
+                    {key:'extracurricular',label:'datosIa.labels.extracurricular'},
+                    {key:'sports',         label:'datosIa.labels.sports'},
+                    {key:'music',          label:'datosIa.labels.music'},
+                    {key:'volunteering',   label:'datosIa.labels.volunteering'}
+                  ]; track act.key) {
+                    <label class="landing__check-opt">
+                      <input type="checkbox" [checked]="$any(regDia())[act.key]" (change)="updateDia($any(act.key), $any($event.target).checked)" />
+                      <span>{{ act.label | translate }}</span>
+                    </label>
+                  }
+                </div>
+
+                @if (regError()) {
+                  <p class="landing__auth-error" role="alert">{{ regError() }}</p>
+                }
+
+                <div class="landing__field-row landing__field-row--wrap">
+                  <button type="button" class="landing__auth-back" (click)="onRegBack()">{{ 'common.back' | translate }}</button>
+                  <button type="button" class="landing__auth-submit" [disabled]="regLoading()" (click)="onRegSubmit()">
+                    @if (regLoading()) { <span class="landing__spinner"></span> }
+                    @else { {{ 'common.register' | translate }} }
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- SVG wave -->
+    <svg class="landing__wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--surface)"/>
+    </svg>
+  </section>
+
+  <!-- ═══════════════════════════ ABOUT ═══════════════════════════ -->
+  <section class="landing__band landing__band--alt" id="about" #sectionEl aria-labelledby="about-heading">
+    <div class="landing__band-inner">
+      <p class="landing__eyebrow">{{ 'landing.aboutEyebrow' | translate }}</p>
+      <h2 id="about-heading" class="landing__band-title">{{ 'landing.about.title' | translate }}</h2>
+
+      <div class="landing__glass-grid">
+        <article class="landing__glass-card">
+          <div class="landing__glass-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="landing__glass-title">{{ 'landing.about.title' | translate }}</h3>
+          <p class="landing__glass-body">{{ 'landing.about.body' | translate }}</p>
+        </article>
+
+        <article class="landing__glass-card">
+          <div class="landing__glass-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <h3 class="landing__glass-title">{{ 'landing.mission.title' | translate }}</h3>
+          <p class="landing__glass-body">{{ 'landing.mission.body' | translate }}</p>
+        </article>
+
+        <article class="landing__glass-card">
+          <div class="landing__glass-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3 class="landing__glass-title">{{ 'landing.vision.title' | translate }}</h3>
+          <p class="landing__glass-body">{{ 'landing.vision.body' | translate }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
+  <section class="landing__band" aria-labelledby="features-heading">
+    <div class="landing__band-inner">
+      <p class="landing__eyebrow">{{ 'landing.featuresEyebrow' | translate }}</p>
+      <h2 id="features-heading" class="landing__band-title">{{ 'features.title' | translate }}</h2>
+      <p class="landing__band-sub">{{ 'features.subtitle' | translate }}</p>
+
+      <div class="landing__features-grid">
+        @for (card of featureCards; track card.labelKey) {
+          <article class="landing__feature-card">
+            <div class="landing__feature-icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path [attr.d]="card.icon"/>
+              </svg>
+            </div>
+            <h3 class="landing__feature-title">{{ card.labelKey | translate }}</h3>
+            <p class="landing__feature-desc">{{ card.descKey | translate }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ GALLERY ═══════════════════════════ -->
+  <section class="landing__band landing__band--border" id="gallery" #sectionEl aria-labelledby="gallery-heading">
+    <div class="landing__band-inner">
+      <div class="landing__section-header">
+        <div>
+          <p class="landing__eyebrow">{{ 'landing.gallery.eyebrow' | translate }}</p>
+          <h2 id="gallery-heading" class="landing__band-title">{{ 'landing.gallery.title' | translate }}</h2>
+          <p class="landing__band-sub">{{ 'landing.gallery.subtitle' | translate }}</p>
+        </div>
+        <div class="landing__gal-controls" [attr.aria-label]="'landing.gallery.label' | translate">
+          <button class="landing__gal-btn" [attr.aria-label]="'landing.prevSlide' | translate" (click)="scrollGallery(-1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="landing__gal-btn" [attr.aria-label]="'landing.nextSlide' | translate" (click)="scrollGallery(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="landing__gal-track" #galTrack role="list" [attr.aria-label]="'landing.gallery.label' | translate">
+        @for (card of galleryCards; let i = $index; track card.labelKey) {
+          <article class="landing__gal-card" role="listitem" [style.--card-tint]="card.tint" [style.--card-tint-bg]="card.tintBg">
+            <div class="landing__gal-chrome" aria-hidden="true">
+              <span class="landing__chrome-dot landing__chrome-dot--red"></span>
+              <span class="landing__chrome-dot landing__chrome-dot--yellow"></span>
+              <span class="landing__chrome-dot landing__chrome-dot--green"></span>
+            </div>
+            <div class="landing__gal-body">
+              <div class="landing__gal-icon-wrap" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" [attr.stroke]="card.tint" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path [attr.d]="card.icon"/>
+                </svg>
+              </div>
+              <h3 class="landing__gal-label">{{ card.labelKey | translate }}</h3>
+              <p class="landing__gal-desc">{{ card.descKey | translate }}</p>
+            </div>
+            <span class="landing__gal-num" aria-hidden="true">0{{ i + 1 }}</span>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ TEAM ═══════════════════════════ -->
+  <section class="landing__band landing__band--alt" id="team" #sectionEl aria-labelledby="team-heading">
+    <div class="landing__band-inner">
+      <div class="landing__section-header">
+        <div>
+          <p class="landing__eyebrow">{{ 'landing.team.eyebrow' | translate }}</p>
+          <h2 id="team-heading" class="landing__band-title">
+            {{ 'landing.team.madeBy' | translate }}
+            <span class="landing__team-eci">ECI</span>
+          </h2>
+          <p class="landing__band-sub">{{ 'landing.team.subtitle' | translate }}</p>
+        </div>
+        <div class="landing__gal-controls" [attr.aria-label]="'landing.team.label' | translate">
+          <button class="landing__gal-btn" [attr.aria-label]="'landing.prevSlide' | translate" (click)="scrollCarousel(-1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="landing__gal-btn" [attr.aria-label]="'landing.nextSlide' | translate" (click)="scrollCarousel(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="landing__authors-track" #authorsTrack role="list" [attr.aria-label]="'landing.team.label' | translate">
+        @for (author of authors; track author.name) {
+          <article class="landing__author-card" role="listitem">
+            <div class="landing__author-avatar">
+              @if (author.photo) {
+                <img [src]="author.photo" [alt]="author.name" class="landing__author-img" (error)="hideBrokenLogo($event)" loading="lazy" />
+              } @else {
+                <span class="landing__author-initials" aria-hidden="true">{{ author.name.split(' ')[0][0] }}{{ author.name.split(' ')[1]?.[0] ?? '' }}</span>
+              }
+            </div>
+            <p class="landing__author-name">{{ author.name }}</p>
+            <p class="landing__author-role">{{ author.role }}</p>
+            @if (author.link) {
+              <a class="landing__author-linkedin" [href]="author.link" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'LinkedIn ' + author.name">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+                LinkedIn
+              </a>
+            }
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <footer class="landing__footer">
+    <div class="landing__footer-inner">
+      <span class="landing__logotype">ECIWISE<span class="landing__logotype-plus">+</span></span>
+      <p class="landing__footer-tagline">{{ 'app.tagline' | translate }}</p>
+      <nav class="landing__footer-nav" [attr.aria-label]="'landing.footerNavLabel' | translate">
+        @for (tab of navTabs; track tab.id) {
+          <button class="landing__footer-link" (click)="scrollToSection(tab.id)">{{ tab.labelKey | translate }}</button>
+        }
       </nav>
+      <p class="landing__footer-copy">© {{ currentYear }} ECIWISE+ · Escuela Colombiana de Ingeniería</p>
     </div>
   </footer>
 
-  <!-- Contenido de una tarjeta de autor, reutilizado por las variantes con y
-       sin enlace para no duplicar el marcado (avatar + nombre + rol). -->
-  <ng-template #authorBody let-author>
-    <eci-avatar [name]="author.name" [src]="author.photo" [size]="96" />
-    <h3 class="author-card__name">{{ author.name }}</h3>
-    <p class="author-card__role">{{ author.role }}</p>
-  </ng-template>
 </div>
