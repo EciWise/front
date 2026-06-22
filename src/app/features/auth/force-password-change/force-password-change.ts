@@ -46,7 +46,7 @@ export class ForcePasswordChangeComponent extends AuthFormBase {
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/),
         ],
       ],
       confirm: ['', [Validators.required]],

@@ -174,7 +174,7 @@ nav: {
       email: 'Digite um endereço de e-mail válido.',
       emailDomain:
         'Somente e-mails @gmail.com, @escuelaing.edu.co ou @mail.escuelaing.edu.co são aceitos.',
-      password: 'A senha deve ter pelo menos 8 caracteres e incluir letras e números.',
+      password: 'Mínimo 8 caracteres, com maiúscula, minúscula e um caractere especial (ex. @#$%).',
       passwordMismatch: 'As senhas não coincidem.',
     },
   },

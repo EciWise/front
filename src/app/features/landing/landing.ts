@@ -16,6 +16,7 @@ import { ThemeToggleComponent } from '../../core/theme/theme-toggle';
 import { LanguageSwitchComponent } from '../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../core/a11y/a11y-toggle';
 import { SymbolSceneService } from '../../shared/ui/aurora-background/symbol-scene.service';
+import { CarouselComponent } from '../../shared/ui/carousel/carousel';
 import { AuthService } from '../../core/auth/auth.service';
 import { ROLE_HOME } from '../../core/models/role.enum';
 import type { RegisterRequest } from '../../core/models/user.model';
@@ -59,6 +60,7 @@ interface RegDia {
     ThemeToggleComponent,
     LanguageSwitchComponent,
     A11yToggleComponent,
+    CarouselComponent,
   ],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
@@ -74,8 +76,6 @@ export class LandingComponent {
   protected readonly section = signal('home');
   private readonly sectionEls = viewChildren<ElementRef<HTMLElement>>('sectionEl');
   private readonly heroCanvas = viewChild<ElementRef<HTMLCanvasElement>>('heroCanvas');
-  private readonly galTrack = viewChild<ElementRef<HTMLElement>>('galTrack');
-  private readonly authorsTrack = viewChild<ElementRef<HTMLElement>>('authorsTrack');
 
   protected readonly currentYear = new Date().getFullYear();
 
@@ -252,7 +252,7 @@ export class LandingComponent {
       apellido: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefono: [''],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/)]],
       confirm: ['', Validators.required],
     });
 
@@ -267,6 +267,45 @@ export class LandingComponent {
       }
     });
     this.destroyRef.onDestroy(() => this.scene.dispose());
+  }
+
+  protected loginHasError(field: 'email' | 'password'): boolean {
+    const ctrl = this.loginForm.get(field);
+    return !!(ctrl?.invalid && ctrl?.touched);
+  }
+
+  protected loginErrorKey(field: 'email' | 'password'): string | null {
+    const ctrl = this.loginForm.get(field);
+    if (!ctrl?.invalid || !ctrl?.touched) return null;
+    if (ctrl.hasError('required')) return 'register.errors.required';
+    if (ctrl.hasError('email')) return 'register.errors.email';
+    return null;
+  }
+
+  protected reg1HasError(field: string): boolean {
+    const ctrl = this.reg1Form.get(field);
+    if (!ctrl?.touched) return false;
+    if (field === 'confirm') {
+      const v = this.reg1Form.value as { password: string; confirm: string };
+      return !!(ctrl.invalid || (ctrl.value && v.password !== v.confirm));
+    }
+    return !!ctrl?.invalid;
+  }
+
+  protected reg1ErrorKey(field: string): string | null {
+    const ctrl = this.reg1Form.get(field);
+    if (!ctrl?.touched) return null;
+    if (field === 'confirm') {
+      if (ctrl.hasError('required')) return 'register.errors.required';
+      const v = this.reg1Form.value as { password: string; confirm: string };
+      if (v.password !== v.confirm) return 'register.errors.passwordMismatch';
+      return null;
+    }
+    if (!ctrl?.invalid) return null;
+    if (ctrl.hasError('required')) return 'register.errors.required';
+    if (ctrl.hasError('email')) return 'register.errors.email';
+    if (ctrl.hasError('minlength') || ctrl.hasError('pattern')) return 'register.errors.password';
+    return null;
   }
 
   protected toggleAuth(): void {
@@ -388,19 +427,6 @@ export class LandingComponent {
     });
   }
 
-  protected scrollGallery(dir: -1 | 1): void {
-    const el = this.galTrack()?.nativeElement;
-    if (el) {
-      el.scrollBy({ left: dir * 340, behavior: this.prefersReducedMotion() ? 'auto' : 'smooth' });
-    }
-  }
-
-  protected scrollCarousel(dir: -1 | 1): void {
-    const el = this.authorsTrack()?.nativeElement;
-    if (el) {
-      el.scrollBy({ left: dir * 240, behavior: this.prefersReducedMotion() ? 'auto' : 'smooth' });
-    }
-  }
 
   protected hideBrokenLogo(event: Event): void {
     (event.target as HTMLImageElement).style.display = 'none';

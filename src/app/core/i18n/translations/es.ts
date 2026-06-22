@@ -231,7 +231,7 @@ export const es = {
     inactive: 'Tu cuenta está inactiva. Contacta a un administrador.',
     googleFailed: 'No se pudo iniciar sesión con Google. Inténtalo de nuevo.',
     invalidData: 'Revisa los datos del formulario.',
-    passwordHint: 'Mínimo 8 caracteres, con letras y números.',
+    passwordHint: 'Mínimo 8 caracteres, con mayúscula, minúscula y carácter especial.',
     completing: 'Completando inicio de sesión…',
     changePassword: {
       title: 'Cambia tu contraseña',
@@ -264,7 +264,7 @@ export const es = {
       email: 'Ingresa un correo electrónico válido.',
       emailDomain:
         'Solo se aceptan correos @gmail.com, @escuelaing.edu.co o @mail.escuelaing.edu.co.',
-      password: 'La contraseña debe tener mínimo 8 caracteres e incluir letras y números.',
+      password: 'Mínimo 8 caracteres, con mayúscula, minúscula y un carácter especial (ej. @#$%).',
       passwordMismatch: 'Las contraseñas no coinciden.',
     },
   },

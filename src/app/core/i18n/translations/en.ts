@@ -231,7 +231,7 @@ export const en = {
     inactive: 'Your account is inactive. Please contact an administrator.',
     googleFailed: 'Could not sign in with Google. Please try again.',
     invalidData: 'Please check the form data.',
-    passwordHint: 'At least 8 characters, with letters and numbers.',
+    passwordHint: 'At least 8 characters, with uppercase, lowercase and a special character.',
     completing: 'Completing sign in…',
     changePassword: {
       title: 'Change your password',
@@ -264,7 +264,7 @@ export const en = {
       email: 'Enter a valid email address.',
       emailDomain:
         'Only @gmail.com, @escuelaing.edu.co or @mail.escuelaing.edu.co emails are accepted.',
-      password: 'Password must be at least 8 characters and include letters and numbers.',
+      password: 'At least 8 characters, with uppercase, lowercase and a special character (e.g. @#$%).',
       passwordMismatch: 'Passwords do not match.',
     },
   },
