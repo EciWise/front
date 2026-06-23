@@ -1,0 +1,72 @@
+<div class="eci-fit">
+  <a class="game-back" [routerLink]="['/student/games']">
+    <eci-icon name="arrow-left" [size]="16" />
+    {{ 'games.title' | translate }}
+  </a>
+  <eci-page-header titleKey="games.serpiente.name" icon="zap" />
+  <div class="eci-fit__body serp">
+
+    <!-- HUD superior (visible en playing/gameover) -->
+    @if (phase() !== 'idle') {
+      <div class="serp__hud">
+        <div class="serp__target">
+          {{ 'games.serpiente.target' | translate: { category: categoryLabel() } }}
+        </div>
+        <div class="serp__score">
+          <span class="serp__score-label">{{ 'games.serpiente.score' | translate }}</span>
+          <span class="serp__score-val">{{ score() }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Canvas: siempre en DOM para que viewChild resuelva -->
+    <div class="serp__canvas-wrap" [class.serp__canvas-wrap--hidden]="phase() === 'idle'">
+      <canvas #gameCanvas class="serp__canvas"></canvas>
+
+      <!-- Overlay: idle -->
+      @if (phase() === 'idle') {
+        <div class="serp__overlay">
+          <div class="serp__splash-icon"><eci-icon name="zap" [size]="44" /></div>
+          <h2 class="serp__over-label" style="font-size:1.5rem">{{ 'games.serpiente.name' | translate }}</h2>
+          <p class="serp__over-sub">{{ 'games.serpiente.tagline' | translate }}</p>
+          <p class="serp__controls-hint">{{ 'games.serpiente.controls' | translate }}</p>
+          <div class="serp__record-row">
+            <span class="serp__record-label">{{ 'games.serpiente.record' | translate }}</span>
+            <span class="serp__record-val">{{ record() }} pts</span>
+          </div>
+          <button class="serp__btn serp__btn--primary" (click)="startGame()">
+            {{ 'games.serpiente.start' | translate }}
+          </button>
+        </div>
+      }
+
+      <!-- Overlay: game over -->
+      @if (phase() === 'gameover') {
+        <div class="serp__overlay">
+          <div class="serp__over-score">{{ score() }}</div>
+          <div class="serp__over-label">{{ 'games.serpiente.gameOver' | translate }}</div>
+          @if (isNewRecord()) {
+            <div class="serp__new-record">
+              <eci-icon name="trophy" [size]="16" />
+              {{ 'games.serpiente.record' | translate }}: {{ record() }} pts
+            </div>
+          }
+          <button class="serp__btn serp__btn--primary" (click)="startGame()">
+            {{ 'games.serpiente.playAgain' | translate }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- D-pad táctil (solo en juego activo) -->
+    @if (phase() === 'playing') {
+      <div class="serp__dpad" aria-label="Controles táctiles">
+        <button class="serp__dpad-btn serp__dpad-up"    (click)="onSwipe('up')"   >▲</button>
+        <button class="serp__dpad-btn serp__dpad-left"  (click)="onSwipe('left')" >◀</button>
+        <button class="serp__dpad-btn serp__dpad-right" (click)="onSwipe('right')">▶</button>
+        <button class="serp__dpad-btn serp__dpad-down"  (click)="onSwipe('down')" >▼</button>
+      </div>
+    }
+
+  </div>
+</div>

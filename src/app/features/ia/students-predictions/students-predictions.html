@@ -64,7 +64,7 @@
               <tr>
                 <td>
                   <span class="pred-student">
-                    <span class="pred-student__avatar">{{ (s.nombre[0] ?? '') + (s.apellido[0] ?? '') }}</span>
+                    <span class="pred-student__avatar">{{ (s.nombre[0] || '') + (s.apellido[0] || '') }}</span>
                     <span>
                       <span class="pred-student__name">{{ s.nombre }} {{ s.apellido }}</span>
                       <span class="pred-student__sem">

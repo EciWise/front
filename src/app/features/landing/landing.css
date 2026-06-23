@@ -47,22 +47,87 @@
   pointer-events: none;
 }
 
-/* Math symbol decorators */
-.landing__math-sym {
+/* ── Math decoration layer ── */
+.landing__math-decor {
   position: absolute;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 6rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.05);
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  user-select: none;
-  line-height: 1;
+  z-index: 0;
 }
 
-.landing__math-sym--1 { top: 12%; left: 4%; font-size: 5rem; }
-.landing__math-sym--2 { top: 55%; right: 3%; font-size: 7rem; }
-.landing__math-sym--3 { bottom: 18%; left: 48%; font-size: 4.5rem; }
-.landing__math-sym--4 { top: 30%; left: 52%; font-size: 3.5rem; }
+/* Base symbol */
+.landing__ms {
+  position: absolute;
+  font-family: 'STIX Two Math', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #e23a52;
+  opacity: 0;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  will-change: transform, opacity;
+  --sd-min: 0.05;
+  --sd-max: 0.19;
+  --sd-glow: rgba(226, 58, 82, 0.32);
+}
+
+/* Monospace expressions (lim, ker T…) */
+.landing__ms--expr {
+  font-family: 'Source Code Pro', 'Courier New', monospace;
+  font-style: italic;
+}
+
+/* Multi-line accents (matrix, euler) */
+.landing__ms--accent {
+  font-family: 'STIX Two Math', Georgia, serif;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+.landing__ms--matrix { letter-spacing: 0.06em; }
+
+/* Animation variants — duration/delay injected as CSS vars per element */
+.landing__ms--a {
+  animation:
+    mdf-fa var(--mdf-dur, 18s) ease-in-out var(--mdf-dl, 0s) infinite alternate,
+    mdf-gl 32s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.landing__ms--b {
+  animation:
+    mdf-fb var(--mdf-dur, 18s) ease-in-out var(--mdf-dl, 0s) infinite alternate,
+    mdf-gl 34s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.landing__ms--em {
+  animation:
+    mdf-em var(--mdf-dur, 22s) ease-in-out var(--mdf-dl, 0s) infinite,
+    mdf-gl 44s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.landing__ms--p {
+  animation:
+    mdf-pu var(--mdf-dur, 22s) ease-in-out var(--mdf-dl, 0s) infinite,
+    mdf-gl 42s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+
+/* Static SVG accents */
+.landing__ms-svg {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  display: block;
+}
+.landing__ms-svg--axes {
+  left: 2.5%;
+  bottom: 9%;
+  width: 10%;
+  max-width: 120px;
+}
+.landing__ms-svg--wave {
+  right: 2%;
+  bottom: 11%;
+  width: 18%;
+  max-width: 230px;
+}
 
 /* Math grid overlay */
 .landing__math-grid {
@@ -431,6 +496,51 @@
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+
+.landing__auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text-muted, #6b7280);
+  margin: 0.75rem 0;
+}
+
+.landing__auth-divider::before,
+.landing__auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border, #e5e7eb);
+}
+
+.landing__google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem 1.25rem;
+  background: var(--surface, #fff);
+  color: var(--text, #111);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.landing__google-btn:hover {
+  background: var(--surface-2, #f9fafb);
+  border-color: #c8c8c8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.landing__google-btn:active {
+  transform: scale(0.98);
 }
 
 /* Register steps */
@@ -909,6 +1019,14 @@
   border-top: 1px solid var(--border, #e5e7eb);
 }
 
+.landing__footer .landing__logotype {
+  color: var(--text, #111);
+}
+
+.landing__footer .landing__logotype-plus {
+  color: var(--brand-red, #c8102e);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════ */
@@ -927,7 +1045,7 @@
     padding: 1rem 1.25rem;
   }
 
-  .landing__math-sym {
+  .landing__math-decor {
     display: none;
   }
 }
@@ -970,6 +1088,12 @@
   .reveal {
     animation: none;
   }
+
+  .landing__ms {
+    animation: none !important;
+    opacity: var(--sd-max, 0.14) !important;
+  }
+  .landing__ms-svg { opacity: 0.12; }
 
   .landing__glass-card:hover,
   .landing__feature-card:hover,

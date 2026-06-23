@@ -24,6 +24,26 @@ export const STUDENT_ROUTES: Routes = [
       import('./games/asclepio/asclepio-game').then((m) => m.AsclepioGameComponent),
   },
   {
+    path: 'games/pomodoro',
+    loadComponent: () =>
+      import('./games/pomodoro/pomodoro-game').then((m) => m.PomodoroGameComponent),
+  },
+  {
+    path: 'games/fiebre',
+    loadComponent: () =>
+      import('./games/fiebre/fiebre-game').then((m) => m.FiebreGameComponent),
+  },
+  {
+    path: 'games/memoria',
+    loadComponent: () =>
+      import('./games/memoria/memoria-game').then((m) => m.MemoriaGameComponent),
+  },
+  {
+    path: 'games/serpiente',
+    loadComponent: () =>
+      import('./games/serpiente/serpiente-game').then((m) => m.SerpienteGameComponent),
+  },
+  {
     path: 'practica',
     loadComponent: () => import('../practica/practica').then((m) => m.PracticaComponent),
   },

@@ -315,6 +315,10 @@ export class LandingComponent {
     this.regError.set(null);
   }
 
+  protected loginWithGoogle(): void {
+    this.authService.startGoogleLogin();
+  }
+
   protected onLogin(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

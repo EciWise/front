@@ -1,5 +1,5 @@
 <div class="eci-fit">
-  <eci-page-header titleKey="games.title" icon="games" />
+  <eci-page-header titleKey="games.title" icon="coffee" />
   <div class="eci-fit__body">
     <!-- Juego destacado: Asclepio -->
     <section class="featured">
@@ -21,6 +21,7 @@
                 class="mode"
                 [routerLink]="['/student/games/asclepio']"
                 [queryParams]="{ mode: m.id }"
+                [title]="m.descKey | translate"
               >
                 <span class="mode__icon"><eci-icon [name]="m.icon" [size]="22" /></span>
                 <span class="mode__text">
@@ -35,14 +36,31 @@
       </div>
     </section>
 
-    <!-- Próximos retos -->
-    <ul class="games">
-      @for (g of comingSoon; track g.id) {
-        <li class="game game--soon">
-          <span class="game__icon"><eci-icon name="games" [size]="24" /></span>
-          <h3 class="game__name">{{ g.name }}</h3>
-          <p class="game__subject">{{ g.subject }}</p>
-          <span class="game__soon">{{ 'games.comingSoon' | translate }}</span>
+    <!-- Mini-juegos / Actividades -->
+    <p class="minigames__label">{{ 'games.miniGames.label' | translate }}</p>
+    <ul class="minigames">
+      @for (g of miniGames; track g.id) {
+        <li>
+          <a
+            class="minigame"
+            [routerLink]="[g.route]"
+            [style.--mg-accent]="g.accentColor"
+            [title]="g.taglineKey | translate"
+            [attr.aria-label]="(g.nameKey | translate) + ' — ' + (g.taglineKey | translate)"
+          >
+            <span class="minigame__header">
+              <span class="minigame__icon"><eci-icon [name]="g.icon" [size]="28" /></span>
+            </span>
+            <span class="minigame__body">
+              <span class="minigame__subject">{{ g.subjectKey | translate }}</span>
+              <span class="minigame__name">{{ g.nameKey | translate }}</span>
+              <span class="minigame__tagline">{{ g.taglineKey | translate }}</span>
+              <span class="minigame__cta">
+                {{ 'games.play' | translate }}
+                <eci-icon name="arrow-right" [size]="16" />
+              </span>
+            </span>
+          </a>
         </li>
       }
     </ul>
