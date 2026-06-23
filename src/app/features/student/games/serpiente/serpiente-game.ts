@@ -35,7 +35,6 @@ interface Category {
 }
 
 const RECORD_KEY = 'eciwise.serpiente.record';
-const CELL = 28;
 const COLS = 20;
 const ROWS = 16;
 const BASE_SPEED = 160;
