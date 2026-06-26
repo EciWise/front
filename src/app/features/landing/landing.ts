@@ -209,7 +209,7 @@ export class LandingComponent {
   protected readonly authors: readonly Author[] = [
     {
       name: 'Daniel Eduardo Useche Pinilla',
-      role: 'Líder Técnico · Arquitecto',
+      role: 'Líder Técnico · Arquitecto · Fullstack',
       photo: '/assets/authors/Daniel.png',
       link: 'https://www.linkedin.com/in/dannieleu/',
     },
@@ -219,27 +219,45 @@ export class LandingComponent {
       photo: '/assets/authors/Marianella.jpeg',
       link: 'https://www.linkedin.com/in/marianellapolo/',
     },
-    { name: 'Laura Alejandra Venegas', role: 'Desarrollo Backend' },
-    { name: 'Jared Farfán Guevara', role: 'Diseño UX/UI' },
-    { name: 'Ignacio Andrés Castillo Rendón', role: 'Arquitectura de software' },
-    { name: 'Juan Diego Rodríguez Velásquez', role: 'Control de calidad' },
-    { name: 'David Alejandro Patacón Henao', role: 'Gestión del proyecto' },
-    { name: 'Anderson Fabián García Nieto', role: 'Documentación y soporte' },
-    { name: 'Christian Alfonso Romero Martínez', role: 'Marketing y difusión' },
+    { name: 'Laura Alejandra Venegas', role: 'Desarrollo Backend', photo: 'assets/authors/Laura Alejandra Venegas Piraban.jpg',
+      link: 'https://www.linkedin.com/in/laura-alejandra-venegas-piraban-a893643ab?utm_source=share_via&utm_content=profile&utm_medium=member_ios',
+     },
+
+    { name: 'Jared Farfán Guevara', role: 'Diseño UX/UI', photo: '/assets/authors/Jared Farfan.png',
+      link: 'https://www.linkedin.com/in/jared-farfan/' },
+
+    { name: 'Ignacio Andrés Castillo Rendón', role: 'Arquitectura de software', photo: '/assets/authors/Ignacio Castillo.jpeg',
+      link: 'https://www.linkedin.com/in/ignacioandrescastillorendon/',
+     },
+
+    { name: 'Juan Diego Rodríguez Velásquez', role: 'Control de calidad', photo: '/assets/authors/Diego.png',
+      link: 'https://www.linkedin.com/in/jdiegorodriguezv/',
+    },
+    { name: 'David Alejandro Patacón Henao', role: 'Gestión del proyecto', photo: '/assets/authors/Alejandro Patacon.png',
+       link: 'http://www.linkedin.com/in/david-alejandro-patacon-henao' },
+
+    { name: 'Anderson Fabián García Nieto', role: 'Documentación y soporte', photo: '/assets/authors/FOTOGRAFIA ANDERSON GARCIA.png',
+      link: 'https://www.linkedin.com/in/anderson-fabian-garcia-nieto/',
+    },
+    { name: 'Christian Alfonso Romero Martínez', role: 'Marketing y difusión', photo: '/assets/authors/christian alfonso.jfif',
+      link: 'https://www.linkedin.com/in/ing-christian-romero',
+     },
     {
       name: 'Hildebrando Peña Quezada',
-      role: 'Análisis de datos y métricas',
+      role: 'Análisis de datos y métricas · Marketing y difusión',
       photo: '/assets/authors/brando.jfif',
       link: 'https://www.linkedin.com/in/hildebrando-pe%C3%B1a-quezada-2b32b33a1',
     },
-    { name: 'Isaac David Palomo Peralta', role: 'Relaciones públicas y comunidad' },
-    { name: 'Juana Lozano Chaves', role: 'Seguridad y cumplimiento' },
+    { name: 'Isaac David Palomo Peralta', role: 'Relaciones públicas y comunidad', photo: '/assets/authors/isaac.jfif',
+      link: 'http://www.linkedin.com/in/cntrisaac',
+    },
+    { name: 'Juana Lozano Chaves', role: 'Seguridad y cumplimiento', photo: '/assets/authors/Juana.jpeg' },
     {
       name: 'Maria Paula Rodríguez Muñoz',
       role: 'Innovación y nuevas tecnologías',
+      photo: '/assets/authors/MP.jpeg',
       link: 'https://www.linkedin.com/in/mariapaula-rodriguezmu%C3%B1oz',
-    },
-    { name: 'Felipe Eduardo Calvache Gallego', role: 'Integración y despliegue continuo' },
+    }
   ];
 
   constructor() {
