@@ -17,6 +17,7 @@ export const en = {
     featuresEyebrow: 'Features',
     footerNavLabel: 'Quick links',
     hero: {
+      welcome: 'Welcome',
       bulletsLabel: 'Key features',
       bullet1: 'Tutoring',
       bullet2: 'Study',

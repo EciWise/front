@@ -93,26 +93,16 @@
     <!-- HERO GRID -->
     <div class="landing__hero-grid reveal">
 
-      <!-- LEFT: copy -->
+      <!-- LEFT: welcome + mascot -->
       <div class="landing__hero-copy">
-        <span class="landing__hero-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          {{ 'landing.eci' | translate }}
-        </span>
-
-        <h1 class="landing__hero-h1">ECIWISE<span class="landing__hero-plus">+</span></h1>
-        <p class="landing__hero-tagline">{{ 'app.tagline' | translate }}</p>
-
-        <ul class="landing__hero-bullets" [attr.aria-label]="'landing.hero.bulletsLabel' | translate">
-          @for (bullet of heroBullets; track bullet.labelKey) {
-            <li class="landing__hero-bullet">
-              <svg class="landing__bullet-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path [attr.d]="bullet.icon"/>
-              </svg>
-              <span>{{ bullet.labelKey | translate }}</span>
-            </li>
-          }
-        </ul>
+        <div class="landing__hero-mascot-group">
+<img
+            class="landing__mascot-hero"
+            src="/assets/pet/eciwise-pet-standar.svg"
+            alt="Mascota ECIWISE+"
+            draggable="false"
+          />
+        </div>
       </div>
 
       <!-- RIGHT: auth card -->
@@ -127,6 +117,10 @@
         </div>
 
         <div class="landing__auth-body" [class.landing__auth-body--login]="authMode() === 'login'">
+
+          <p class="landing__auth-brand" aria-hidden="true">
+            ECIWISE<span class="landing__auth-brand-plus">+</span>
+          </p>
 
         <!-- LOGIN -->
         @if (authMode() === 'login') {
@@ -408,7 +402,7 @@
   </section>
 
   <!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
-  <section class="landing__band" aria-labelledby="features-heading">
+  <section class="landing__band" id="features" aria-labelledby="features-heading">
     <div class="landing__band-inner">
       <div class="landing__band-head">
         <p class="landing__eyebrow">{{ 'landing.featuresEyebrow' | translate }}</p>

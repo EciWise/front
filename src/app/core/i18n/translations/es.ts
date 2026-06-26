@@ -17,6 +17,7 @@ export const es = {
     featuresEyebrow: 'Funcionalidades',
     footerNavLabel: 'Accesos rápidos',
     hero: {
+      welcome: 'Bienvenido',
       bulletsLabel: 'Características principales',
       bullet1: 'Tutorías',
       bullet2: 'Estudio',

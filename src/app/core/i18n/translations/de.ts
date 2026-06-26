@@ -14,6 +14,7 @@ export const de = {
     tabGallery: 'Galerie',
     tabTeam: 'Team',
     hero: {
+      welcome: 'Willkommen',
       bullet1: 'Tutorien',
       bullet2: 'Lernen',
       bullet3: 'Community',
