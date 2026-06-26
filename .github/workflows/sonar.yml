@@ -1,0 +1,48 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches: [main, develop, 'feat/**', 'fix/**']
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  sonar:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history for blame/SCM)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests with LCOV coverage
+        run: npm run test:ci -- --coverage --reporter=lcov
+        env:
+          # Variables de entorno para prebuild (write-env.mjs)
+          AUTH_SERVICE: http://localhost:3001
+          STUDY_SERVICE: http://localhost:8082
+          TALK_SERVICE: http://localhost:3003
+          TALK_WS: ws://localhost:3003/ws/chat
+          TODO_SERVICE: http://localhost:8083
+          GAME_WS: ws://localhost:3002/ws/game
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

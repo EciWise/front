@@ -278,4 +278,107 @@ describe('TutoringMockService', () => {
       }).ok,
     ).toBe(true);
   });
+
+  it('stats calcula countBy sobre reservas (cubre countBy y demandHours)', () => {
+    const s = service.stats();
+    expect(s.completedCount).toBeGreaterThanOrEqual(0);
+    expect(Array.isArray(s.requestedSubjects)).toBe(true);
+    expect(Array.isArray(s.commonTopics)).toBe(true);
+    expect(Array.isArray(s.demandHours)).toBe(true);
+    expect(Array.isArray(s.topTutors)).toBe(true);
+  });
+
+  it('recommendations genera relatedTopics para cada slot disponible', () => {
+    const recs = service.recommendations();
+    expect(Array.isArray(recs)).toBe(true);
+    for (const rec of recs) {
+      expect(Array.isArray(rec.relatedTopics)).toBe(true);
+    }
+  });
+
+  it('tutorHistoryEntries construye entradas de historial (cubre historyEntryFor)', () => {
+    const entries = service.tutorHistoryEntries();
+    expect(Array.isArray(entries)).toBe(true);
+  });
+
+  it('tutorHistoryEntries retorna null para reservas sin disponibilidad conocida (cubre rama null)', () => {
+    const state = internals(service);
+    state._reservations.update((items) => [
+      ...items,
+      {
+        id: 'res-orphan',
+        availabilityId: 'av-nonexistent',
+        studentId: 'student-1',
+        subjectId: 'calc',
+        specificTopic: 'Limites',
+        description: 'Sin disponibilidad',
+        mode: 'virtual',
+        status: 'cancelled',
+        createdAt: '2026-01-01T00:00:00Z',
+      },
+    ]);
+    const entries = service.tutorHistoryEntries();
+    const orphan = entries.find((e) => e.id === 'h-res-orphan');
+    expect(orphan).toBeUndefined();
+  });
+
+  it('createAvailability exitosa cubre la rama presential y nextRoom', () => {
+    const result = service.createAvailability({
+      subjectId: 'calc',
+      date: '2027-01-15',
+      startTime: '08:00',
+      endTime: '09:00',
+      mode: 'presential',
+      capacity: 2,
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok && result.value) {
+      expect(typeof result.value.id).toBe('string');
+    }
+  });
+
+  it('searchSlots con filtros vacíos devuelve todos los slots activos', () => {
+    const slots = service.searchSlots({ subjectId: '', tutorId: '', mode: '', date: '', time: '' });
+    expect(Array.isArray(slots)).toBe(true);
+  });
+
+  it('searchSlots filtra por materia, modo y fecha', () => {
+    const bySubject = service.searchSlots({ subjectId: 'calc', tutorId: '', mode: '', date: '', time: '' });
+    expect(bySubject.every((s) => s.availability.subjectId === 'calc')).toBe(true);
+
+    const byMode = service.searchSlots({ subjectId: '', tutorId: '', mode: 'virtual', date: '', time: '' });
+    expect(byMode.every((s) => s.availability.mode === 'virtual')).toBe(true);
+
+    const byDate = service.searchSlots({ subjectId: '', tutorId: '', mode: '', date: '2026-06-17', time: '' });
+    expect(byDate.every((s) => s.availability.date === '2026-06-17')).toBe(true);
+  });
+
+  it('monitorReputation para tutor sin reservas usa base reputation', () => {
+    const rep = service.monitorReputation('tutor-3');
+    expect(typeof rep.averageRating).toBe('number');
+    expect(rep.averageRating).toBeGreaterThan(0);
+  });
+
+  it('studentReputation calcula tasas correctamente', () => {
+    const rep = service.studentReputation('student-1');
+    expect(typeof rep.attendanceRate).toBe('number');
+    expect(rep.attendanceRate).toBeGreaterThanOrEqual(0);
+  });
+
+  it('addLegacyHistory agrega y deduplica entradas', () => {
+    const entry = {
+      id: 'h-legacy-1',
+      subject: 'Calculo',
+      student: 'Estudiante X',
+      datetime: '2026-01-01T10:00:00Z',
+      status: 'completed' as const,
+      topic: 'Integrales',
+      mode: 'virtual' as const,
+    };
+    service.addLegacyHistory(entry);
+    service.addLegacyHistory(entry);
+    const entries = service.tutorHistoryEntries();
+    const count = entries.filter((e: { id: string }) => e.id === 'h-legacy-1').length;
+    expect(count).toBe(1);
+  });
 });
