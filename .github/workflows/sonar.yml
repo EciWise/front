@@ -30,10 +30,11 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
+      # npm run test:coverage = ng test --watch=false --coverage
+      # Con coverageReporters:[lcov] en angular.json genera coverage/ECIWISE-Front/lcov.info
       - name: Run tests with LCOV coverage
-        run: npm run test:ci -- --coverage --reporter=lcov
+        run: npm run test:coverage
         env:
-          # Variables de entorno para prebuild (write-env.mjs)
           AUTH_SERVICE: http://localhost:3001
           STUDY_SERVICE: http://localhost:8082
           TALK_SERVICE: http://localhost:3003
