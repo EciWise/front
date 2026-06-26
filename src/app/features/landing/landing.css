@@ -540,6 +540,46 @@
   background: rgba(255, 49, 88, 0.08);
 }
 
+.landing__password-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.landing__input--password {
+  padding-right: 3rem;
+}
+
+.landing__password-toggle {
+  position: absolute;
+  right: 0.3rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  color: var(--landing-auth-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.landing__password-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--landing-auth-text);
+}
+
+.landing__password-toggle:focus-visible {
+  outline: none;
+  color: var(--landing-auth-text);
+  box-shadow: 0 0 0 3px rgba(255, 49, 88, 0.18);
+}
+
 .landing__field-tooltip {
   display: inline-flex;
   align-items: center;

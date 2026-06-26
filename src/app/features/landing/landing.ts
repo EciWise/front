@@ -18,6 +18,7 @@ import { A11yToggleComponent } from '../../core/a11y/a11y-toggle';
 import { SymbolSceneService } from '../../shared/ui/aurora-background/symbol-scene.service';
 import { CarouselComponent } from '../../shared/ui/carousel/carousel';
 import { SelectComponent, SelectOption, SelectValue } from '../../shared/ui/select/select';
+import { IconComponent } from '../../shared/ui/icon/icon';
 import { AuthService } from '../../core/auth/auth.service';
 import { ROLE_HOME } from '../../core/models/role.enum';
 import type { RegisterRequest } from '../../core/models/user.model';
@@ -25,9 +26,9 @@ import type { RegisterRequest } from '../../core/models/user.model';
 const NAME_MAX_LENGTH = 30;
 const NAME_PATTERN = /^[^\d]*$/;
 const STRICT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const FORM_LOCALE = 'es-CO';
 
 type NameField = 'nombre' | 'apellido';
-type NameFeedback = 'digits' | 'maxlength' | null;
 type RegDiaSelectField = 'ethnicity' | 'parentalEducation' | 'parentalSupport';
 type RegDiaNumberField = 'studyTimeWeekly' | 'absences';
 type RegDiaRequiredField =
@@ -76,6 +77,7 @@ interface RegDia {
     A11yToggleComponent,
     CarouselComponent,
     SelectComponent,
+    IconComponent,
   ],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
@@ -100,18 +102,11 @@ export class LandingComponent {
   protected readonly loginError = signal<string | null>(null);
   protected readonly regLoading = signal(false);
   protected readonly regError = signal<string | null>(null);
-  protected readonly nameFeedback = signal<Record<NameField, NameFeedback>>({
-    nombre: null,
-    apellido: null,
-  });
-  protected readonly diaTouched = signal<Record<RegDiaRequiredField, boolean>>({
-    gender: false,
-    ethnicity: false,
-    parentalEducation: false,
-    parentalSupport: false,
-    studyTimeWeekly: false,
-    absences: false,
-  });
+  protected readonly reg1Submitted = signal(false);
+  protected readonly diaSubmitted = signal(false);
+  protected readonly loginPasswordVisible = signal(false);
+  protected readonly regPasswordVisible = signal(false);
+  protected readonly regConfirmVisible = signal(false);
 
   protected readonly loginForm: FormGroup;
   protected readonly reg1Form: FormGroup;
@@ -370,26 +365,23 @@ export class LandingComponent {
   }
 
   protected reg1HasError(field: string): boolean {
-    const ctrl = this.reg1Form.get(field);
-    if (!ctrl?.touched) return false;
-    if (field === 'confirm') {
-      const v = this.reg1Form.value as { password: string; confirm: string };
-      return !!(ctrl.invalid || (ctrl.value && v.password !== v.confirm));
-    }
-    return !!ctrl?.invalid;
+    return this.reg1ErrorKey(field) !== null;
   }
 
   protected reg1ErrorKey(field: string): string | null {
     const ctrl = this.reg1Form.get(field);
-    if (!ctrl?.touched) return null;
+    if (!ctrl) return null;
+    const submitted = this.reg1Submitted();
+    const interacted = ctrl.dirty || ctrl.touched || submitted;
     if (field === 'confirm') {
-      if (ctrl.hasError('required')) return 'register.errors.required';
+      if (ctrl.hasError('required')) return submitted ? 'register.errors.required' : null;
       const v = this.reg1Form.value as { password: string; confirm: string };
-      if (v.password !== v.confirm) return 'register.errors.passwordMismatch';
+      if (interacted && v.confirm && v.password !== v.confirm) return 'register.errors.passwordMismatch';
       return null;
     }
     if (!ctrl?.invalid) return null;
-    if (ctrl.hasError('required')) return 'register.errors.required';
+    if (ctrl.hasError('required')) return submitted ? 'register.errors.required' : null;
+    if (!interacted) return null;
     if (field === 'nombre' || field === 'apellido') {
       if (ctrl.hasError('maxlength')) return 'register.errors.nameMaxLength';
       if (ctrl.hasError('pattern')) return 'register.errors.nameNoNumbers';
@@ -401,28 +393,20 @@ export class LandingComponent {
     return null;
   }
 
-  protected nameFeedbackKey(field: NameField): string | null {
-    const feedback = this.nameFeedback()[field];
-    if (feedback === 'digits') return 'register.errors.nameNoNumbers';
-    if (feedback === 'maxlength') return 'register.errors.nameMaxLength';
-    return null;
-  }
-
-  protected onNameInput(field: NameField, rawValue: string): void {
-    const noDigits = rawValue.replace(/\d/g, '');
-    const clipped = noDigits.slice(0, NAME_MAX_LENGTH);
-    const feedback: NameFeedback = /\d/.test(rawValue)
-      ? 'digits'
-      : noDigits.length > NAME_MAX_LENGTH
-        ? 'maxlength'
-        : null;
-
-    this.reg1Form.get(field)?.setValue(clipped, { emitEvent: false });
-    this.nameFeedback.update((current) => ({ ...current, [field]: feedback }));
-  }
-
   protected phoneInput(value: string): void {
     this.reg1Form.get('telefono')?.setValue(this.formatPhone(value), { emitEvent: false });
+  }
+
+  protected formatNameInput(field: NameField, value: string): void {
+    this.setControlValue(this.reg1Form, field, this.toTitleWords(value));
+  }
+
+  protected formatLoginEmailInput(value: string): void {
+    this.setControlValue(this.loginForm, 'email', this.normalizeEmail(value));
+  }
+
+  protected formatRegisterEmailInput(value: string): void {
+    this.setControlValue(this.reg1Form, 'email', this.normalizeEmail(value));
   }
 
   protected updateDiaSelect(key: RegDiaSelectField, value: SelectValue): void {
@@ -436,7 +420,7 @@ export class LandingComponent {
   }
 
   protected diaErrorKey(field: RegDiaRequiredField): string | null {
-    if (!this.diaTouched()[field] || this.isDiaFieldValid(field)) {
+    if (!this.diaSubmitted() || this.isDiaFieldValid(field)) {
       return null;
     }
     if (field === 'studyTimeWeekly' || field === 'absences') {
@@ -450,6 +434,8 @@ export class LandingComponent {
     this.regStep.set(1);
     this.loginError.set(null);
     this.regError.set(null);
+    this.reg1Submitted.set(false);
+    this.diaSubmitted.set(false);
   }
 
   protected loginWithGoogle(): void {
@@ -478,23 +464,18 @@ export class LandingComponent {
 
   protected onRegNext(): void {
     if (this.regStep() === 1) {
-      this.reg1Form.markAllAsTouched();
+      this.reg1Submitted.set(true);
       const v = this.reg1Form.value as { password: string; confirm: string };
       if (this.reg1Form.invalid || v.password !== v.confirm) {
         return;
       }
+      this.reg1Submitted.set(false);
     } else if (this.regStep() === 2) {
-      this.markDiaTouched([
-        'gender',
-        'ethnicity',
-        'parentalEducation',
-        'parentalSupport',
-        'studyTimeWeekly',
-        'absences',
-      ]);
+      this.diaSubmitted.set(true);
       if (!this.isDiaStepValid()) {
         return;
       }
+      this.diaSubmitted.set(false);
     }
     this.regStep.update((s) => Math.min(3, s + 1));
   }
@@ -505,9 +486,6 @@ export class LandingComponent {
 
   protected updateDia<K extends keyof RegDia>(key: K, value: RegDia[K]): void {
     this.regDia.update((d) => ({ ...d, [key]: value }));
-    if (this.isRequiredDiaField(key)) {
-      this.markDiaTouched([key]);
-    }
   }
 
   protected onRegSubmit(): void {
@@ -681,16 +659,6 @@ export class LandingComponent {
     );
   }
 
-  private markDiaTouched(fields: readonly RegDiaRequiredField[]): void {
-    this.diaTouched.update((current) => {
-      const next = { ...current };
-      for (const field of fields) {
-        next[field] = true;
-      }
-      return next;
-    });
-  }
-
   private isDiaStepValid(): boolean {
     return ([
       'gender',
@@ -717,17 +685,6 @@ export class LandingComponent {
     return data[field].trim().length > 0;
   }
 
-  private isRequiredDiaField(field: keyof RegDia): field is RegDiaRequiredField {
-    return (
-      field === 'gender' ||
-      field === 'ethnicity' ||
-      field === 'parentalEducation' ||
-      field === 'parentalSupport' ||
-      field === 'studyTimeWeekly' ||
-      field === 'absences'
-    );
-  }
-
   private formatPhone(value: string): string {
     const digits = this.phoneDigits(value).slice(0, 10);
     if (!digits) return '';
@@ -738,5 +695,23 @@ export class LandingComponent {
 
   private phoneDigits(value: string): string {
     return value.replace(/\D/g, '');
+  }
+
+  private normalizeEmail(value: string): string {
+    return value.toLocaleLowerCase('en-US');
+  }
+
+  private toTitleWords(value: string): string {
+    const lower = value.toLocaleLowerCase(FORM_LOCALE);
+    return lower.replace(/(^|[\s'-])(\p{L})/gu, (_match, prefix: string, letter: string) => (
+      `${prefix}${letter.toLocaleUpperCase(FORM_LOCALE)}`
+    ));
+  }
+
+  private setControlValue(form: FormGroup, field: string, value: string): void {
+    const control = form.get(field);
+    if (control && control.value !== value) {
+      control.setValue(value, { emitEvent: false });
+    }
   }
 }
