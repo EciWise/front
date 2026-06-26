@@ -17,9 +17,23 @@ import { LanguageSwitchComponent } from '../../core/i18n/language-switch';
 import { A11yToggleComponent } from '../../core/a11y/a11y-toggle';
 import { SymbolSceneService } from '../../shared/ui/aurora-background/symbol-scene.service';
 import { CarouselComponent } from '../../shared/ui/carousel/carousel';
+import { SelectComponent, SelectOption, SelectValue } from '../../shared/ui/select/select';
 import { AuthService } from '../../core/auth/auth.service';
 import { ROLE_HOME } from '../../core/models/role.enum';
 import type { RegisterRequest } from '../../core/models/user.model';
+
+const NAME_MAX_LENGTH = 30;
+const NAME_PATTERN = /^[^\d]*$/;
+const STRICT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+type NameField = 'nombre' | 'apellido';
+type NameFeedback = 'digits' | 'maxlength' | null;
+type RegDiaSelectField = 'ethnicity' | 'parentalEducation' | 'parentalSupport';
+type RegDiaNumberField = 'studyTimeWeekly' | 'absences';
+type RegDiaRequiredField =
+  | 'gender'
+  | RegDiaSelectField
+  | RegDiaNumberField;
 
 interface Author {
   readonly name: string;
@@ -41,8 +55,8 @@ interface RegDia {
   ethnicity: string;
   parentalEducation: string;
   parentalSupport: string;
-  studyTimeWeekly: number;
-  absences: number;
+  studyTimeWeekly: number | null;
+  absences: number | null;
   tutoring: boolean;
   extracurricular: boolean;
   sports: boolean;
@@ -61,6 +75,7 @@ interface RegDia {
     LanguageSwitchComponent,
     A11yToggleComponent,
     CarouselComponent,
+    SelectComponent,
   ],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
@@ -85,6 +100,18 @@ export class LandingComponent {
   protected readonly loginError = signal<string | null>(null);
   protected readonly regLoading = signal(false);
   protected readonly regError = signal<string | null>(null);
+  protected readonly nameFeedback = signal<Record<NameField, NameFeedback>>({
+    nombre: null,
+    apellido: null,
+  });
+  protected readonly diaTouched = signal<Record<RegDiaRequiredField, boolean>>({
+    gender: false,
+    ethnicity: false,
+    parentalEducation: false,
+    parentalSupport: false,
+    studyTimeWeekly: false,
+    absences: false,
+  });
 
   protected readonly loginForm: FormGroup;
   protected readonly reg1Form: FormGroup;
@@ -93,8 +120,8 @@ export class LandingComponent {
     ethnicity: '',
     parentalEducation: '',
     parentalSupport: '',
-    studyTimeWeekly: 0,
-    absences: 0,
+    studyTimeWeekly: null,
+    absences: null,
     tutoring: false,
     extracurricular: false,
     sports: false,
@@ -127,6 +154,29 @@ export class LandingComponent {
       labelKey: 'landing.hero.bullet4',
     },
   ] as const;
+
+  protected readonly ethnicityOptions: readonly SelectOption[] = [
+    { value: 'caucasian', labelKey: 'datosIa.options.ethnicity.caucasian' },
+    { value: 'african', labelKey: 'datosIa.options.ethnicity.african' },
+    { value: 'asian', labelKey: 'datosIa.options.ethnicity.asian' },
+    { value: 'other', labelKey: 'datosIa.options.ethnicity.other' },
+  ];
+
+  protected readonly parentalEducationOptions: readonly SelectOption[] = [
+    { value: 'none', labelKey: 'datosIa.options.parentalEducation.none' },
+    { value: 'highschool', labelKey: 'datosIa.options.parentalEducation.highschool' },
+    { value: 'technical', labelKey: 'datosIa.options.parentalEducation.somecollege' },
+    { value: 'bachelor', labelKey: 'datosIa.options.parentalEducation.bachelor' },
+    { value: 'higher', labelKey: 'datosIa.options.parentalEducation.higher' },
+  ];
+
+  protected readonly parentalSupportOptions: readonly SelectOption[] = [
+    { value: 'none', labelKey: 'datosIa.options.parentalSupport.none' },
+    { value: 'low', labelKey: 'datosIa.options.parentalSupport.low' },
+    { value: 'moderate', labelKey: 'datosIa.options.parentalSupport.moderate' },
+    { value: 'high', labelKey: 'datosIa.options.parentalSupport.high' },
+    { value: 'veryhigh', labelKey: 'datosIa.options.parentalSupport.veryhigh' },
+  ];
 
   protected readonly featureCards = [
     {
@@ -262,15 +312,34 @@ export class LandingComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.pattern(STRICT_EMAIL_PATTERN)],
+      ],
       password: ['', Validators.required],
     });
     this.reg1Form = this.fb.group({
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      nombre: [
+        '',
+        [Validators.required, Validators.maxLength(NAME_MAX_LENGTH), Validators.pattern(NAME_PATTERN)],
+      ],
+      apellido: [
+        '',
+        [Validators.required, Validators.maxLength(NAME_MAX_LENGTH), Validators.pattern(NAME_PATTERN)],
+      ],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.pattern(STRICT_EMAIL_PATTERN)],
+      ],
       telefono: [''],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/)]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/),
+        ],
+      ],
       confirm: ['', Validators.required],
     });
 
@@ -296,7 +365,7 @@ export class LandingComponent {
     const ctrl = this.loginForm.get(field);
     if (!ctrl?.invalid || !ctrl?.touched) return null;
     if (ctrl.hasError('required')) return 'register.errors.required';
-    if (ctrl.hasError('email')) return 'register.errors.email';
+    if (ctrl.hasError('email') || ctrl.hasError('pattern')) return 'register.errors.email';
     return null;
   }
 
@@ -321,9 +390,59 @@ export class LandingComponent {
     }
     if (!ctrl?.invalid) return null;
     if (ctrl.hasError('required')) return 'register.errors.required';
-    if (ctrl.hasError('email')) return 'register.errors.email';
+    if (field === 'nombre' || field === 'apellido') {
+      if (ctrl.hasError('maxlength')) return 'register.errors.nameMaxLength';
+      if (ctrl.hasError('pattern')) return 'register.errors.nameNoNumbers';
+    }
+    if (field === 'email' && (ctrl.hasError('email') || ctrl.hasError('pattern'))) {
+      return 'register.errors.email';
+    }
     if (ctrl.hasError('minlength') || ctrl.hasError('pattern')) return 'register.errors.password';
     return null;
+  }
+
+  protected nameFeedbackKey(field: NameField): string | null {
+    const feedback = this.nameFeedback()[field];
+    if (feedback === 'digits') return 'register.errors.nameNoNumbers';
+    if (feedback === 'maxlength') return 'register.errors.nameMaxLength';
+    return null;
+  }
+
+  protected onNameInput(field: NameField, rawValue: string): void {
+    const noDigits = rawValue.replace(/\d/g, '');
+    const clipped = noDigits.slice(0, NAME_MAX_LENGTH);
+    const feedback: NameFeedback = /\d/.test(rawValue)
+      ? 'digits'
+      : noDigits.length > NAME_MAX_LENGTH
+        ? 'maxlength'
+        : null;
+
+    this.reg1Form.get(field)?.setValue(clipped, { emitEvent: false });
+    this.nameFeedback.update((current) => ({ ...current, [field]: feedback }));
+  }
+
+  protected phoneInput(value: string): void {
+    this.reg1Form.get('telefono')?.setValue(this.formatPhone(value), { emitEvent: false });
+  }
+
+  protected updateDiaSelect(key: RegDiaSelectField, value: SelectValue): void {
+    this.updateDia(key, typeof value === 'string' ? value : '');
+  }
+
+  protected updateDiaNumber(key: RegDiaNumberField, value: string): void {
+    const trimmed = value.trim();
+    const parsed = trimmed === '' ? null : Number(trimmed);
+    this.updateDia(key, parsed === null || Number.isFinite(parsed) ? parsed : null);
+  }
+
+  protected diaErrorKey(field: RegDiaRequiredField): string | null {
+    if (!this.diaTouched()[field] || this.isDiaFieldValid(field)) {
+      return null;
+    }
+    if (field === 'studyTimeWeekly' || field === 'absences') {
+      return this.regDia()[field] === null ? 'datosIa.errors.required' : 'datosIa.errors.range';
+    }
+    return 'datosIa.errors.required';
   }
 
   protected toggleAuth(): void {
@@ -364,6 +483,18 @@ export class LandingComponent {
       if (this.reg1Form.invalid || v.password !== v.confirm) {
         return;
       }
+    } else if (this.regStep() === 2) {
+      this.markDiaTouched([
+        'gender',
+        'ethnicity',
+        'parentalEducation',
+        'parentalSupport',
+        'studyTimeWeekly',
+        'absences',
+      ]);
+      if (!this.isDiaStepValid()) {
+        return;
+      }
     }
     this.regStep.update((s) => Math.min(3, s + 1));
   }
@@ -374,6 +505,9 @@ export class LandingComponent {
 
   protected updateDia<K extends keyof RegDia>(key: K, value: RegDia[K]): void {
     this.regDia.update((d) => ({ ...d, [key]: value }));
+    if (this.isRequiredDiaField(key)) {
+      this.markDiaTouched([key]);
+    }
   }
 
   protected onRegSubmit(): void {
@@ -407,14 +541,14 @@ export class LandingComponent {
       password: v.password,
       nombre: v.nombre,
       apellido: v.apellido,
-      telefono: v.telefono || undefined,
+      telefono: this.phoneDigits(v.telefono) || undefined,
       datosIa: {
         gender: gMap[d.gender] ?? 0,
         ethnicity: eMap[d.ethnicity] ?? 0,
         parentalEducation: pMap[d.parentalEducation] ?? 0,
         parentalSupport: sMap[d.parentalSupport] ?? 0,
-        studyTimeWeekly: d.studyTimeWeekly,
-        absences: d.absences,
+        studyTimeWeekly: d.studyTimeWeekly ?? 0,
+        absences: d.absences ?? 0,
         tutoring: d.tutoring ? 1 : 0,
         extracurricular: d.extracurricular ? 1 : 0,
         sports: d.sports ? 1 : 0,
@@ -545,5 +679,64 @@ export class LandingComponent {
     return (
       typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
     );
+  }
+
+  private markDiaTouched(fields: readonly RegDiaRequiredField[]): void {
+    this.diaTouched.update((current) => {
+      const next = { ...current };
+      for (const field of fields) {
+        next[field] = true;
+      }
+      return next;
+    });
+  }
+
+  private isDiaStepValid(): boolean {
+    return ([
+      'gender',
+      'ethnicity',
+      'parentalEducation',
+      'parentalSupport',
+      'studyTimeWeekly',
+      'absences',
+    ] as const).every((field) => this.isDiaFieldValid(field));
+  }
+
+  private isDiaFieldValid(field: RegDiaRequiredField): boolean {
+    const data = this.regDia();
+    if (field === 'studyTimeWeekly') {
+      return (
+        data.studyTimeWeekly !== null &&
+        data.studyTimeWeekly >= 0 &&
+        data.studyTimeWeekly <= 20
+      );
+    }
+    if (field === 'absences') {
+      return data.absences !== null && data.absences >= 0 && data.absences <= 30;
+    }
+    return data[field].trim().length > 0;
+  }
+
+  private isRequiredDiaField(field: keyof RegDia): field is RegDiaRequiredField {
+    return (
+      field === 'gender' ||
+      field === 'ethnicity' ||
+      field === 'parentalEducation' ||
+      field === 'parentalSupport' ||
+      field === 'studyTimeWeekly' ||
+      field === 'absences'
+    );
+  }
+
+  private formatPhone(value: string): string {
+    const digits = this.phoneDigits(value).slice(0, 10);
+    if (!digits) return '';
+    if (digits.length <= 3) return `(${digits}`;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  private phoneDigits(value: string): string {
+    return value.replace(/\D/g, '');
   }
 }
