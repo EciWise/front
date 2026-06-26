@@ -1,0 +1,86 @@
+<div class="eci-fit">
+  <a class="game-back" [routerLink]="['/student/games']">
+    <eci-icon name="arrow-left" [size]="16" />
+    {{ 'games.title' | translate }}
+  </a>
+  <eci-page-header titleKey="games.memoria.name" icon="repeat" />
+  <div class="eci-fit__body mem">
+
+    @if (phase() === 'idle') {
+      <div class="mem__splash">
+        <div class="mem__splash-icon"><eci-icon name="repeat" [size]="48" /></div>
+        <h2 class="mem__splash-title">{{ 'games.memoria.name' | translate }}</h2>
+        <p class="mem__splash-sub">{{ 'games.memoria.tagline' | translate }}</p>
+        <div class="mem__record-row">
+          <span class="mem__record-label">{{ 'games.memoria.record' | translate }}</span>
+          <span class="mem__record-val">{{ record() }} pts</span>
+        </div>
+        <button class="mem__btn mem__btn--primary" (click)="startGame()">
+          {{ 'games.memoria.start' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (phase() === 'playing' || phase() === 'win' || phase() === 'timeup') {
+
+      <!-- HUD -->
+      <div class="mem__hud">
+        <div class="mem__hud-cell">
+          <span class="mem__hud-label">{{ 'games.memoria.pairs' | translate: { n: matchedPairs() } }}</span>
+        </div>
+        <div class="mem__hud-cell">
+          <span class="mem__hud-label">{{ 'games.memoria.timeLeft' | translate }}</span>
+          <span class="mem__hud-val" [class.mem__hud-val--danger]="timerDanger()">{{ timeLeft() }}s</span>
+        </div>
+      </div>
+
+      <!-- Timer bar -->
+      <div class="mem__timer-bar">
+        <div
+          class="mem__timer-fill"
+          [style.width.%]="timerWidth()"
+          [class.mem__timer-fill--danger]="timerDanger()"
+        ></div>
+      </div>
+
+      <!-- Tablero -->
+      @if (phase() === 'playing') {
+        <div class="mem__board" role="grid">
+          @for (card of cards(); track card.id) {
+            <button
+              class="mem__card"
+              [class.mem__card--revealed]="card.state === 'revealed'"
+              [class.mem__card--matched]="card.state === 'matched'"
+              (click)="flipCard(card)"
+              [disabled]="card.state !== 'hidden'"
+              [attr.aria-pressed]="card.state !== 'hidden'"
+            >
+              <span class="mem__card-back" aria-hidden="true"></span>
+              <span class="mem__card-front">{{ card.face }}</span>
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Resultado final -->
+      @if (phase() === 'win' || phase() === 'timeup') {
+        <div class="mem__result">
+          <div class="mem__result-score">{{ score() }}</div>
+          <div class="mem__result-msg">
+            {{ (phase() === 'win' ? 'games.memoria.win' : 'games.memoria.timeUp') | translate }}
+          </div>
+          @if (isNewRecord()) {
+            <div class="mem__new-record">
+              <eci-icon name="trophy" [size]="18" />
+              {{ 'games.memoria.record' | translate }}: {{ record() }} pts
+            </div>
+          }
+          <button class="mem__btn mem__btn--primary" (click)="startGame()">
+            {{ 'games.memoria.playAgain' | translate }}
+          </button>
+        </div>
+      }
+    }
+
+  </div>
+</div>

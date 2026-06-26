@@ -1,0 +1,280 @@
+.pomo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+/* ── Timer central ────────────────────────────────────────────────────── */
+.pomo__timer-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.pomo__phase-badge {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.pomo__phase-badge[data-phase='work'] {
+  background: color-mix(in srgb, var(--brand-red) 15%, transparent);
+  color: var(--brand-red);
+}
+.pomo__phase-badge[data-phase='shortBreak'] {
+  background: color-mix(in srgb, #22c55e 15%, transparent);
+  color: #16a34a;
+}
+.pomo__phase-badge[data-phase='longBreak'] {
+  background: color-mix(in srgb, #6366f1 15%, transparent);
+  color: #4f46e5;
+}
+
+.pomo__ring-wrap {
+  position: relative;
+  width: 13rem;
+  height: 13rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pomo__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.pomo__ring-track {
+  fill: none;
+  stroke: var(--surface-3, #e5e7eb);
+  stroke-width: 10;
+}
+
+.pomo__ring-fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.9s linear, stroke var(--transition-base);
+}
+.pomo__ring-fill[data-phase='work']       { stroke: var(--brand-red); }
+.pomo__ring-fill[data-phase='shortBreak'] { stroke: #22c55e; }
+.pomo__ring-fill[data-phase='longBreak']  { stroke: #6366f1; }
+
+.pomo__time {
+  color: var(--text);
+  font-size: 3rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ── Indicadores de ciclo ─────────────────────────────────────────────── */
+.pomo__cycles {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.pomo__cycle-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 2px solid var(--border);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.pomo__cycle-dot--done {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+}
+
+/* ── Controles ────────────────────────────────────────────────────────── */
+.pomo__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pomo__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.pomo__btn:active { transform: scale(0.97); }
+
+.pomo__btn--primary {
+  background: var(--brand-red);
+  color: #fff;
+}
+.pomo__btn--primary:hover { background: #a00c24; }
+
+.pomo__btn--secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.pomo__btn--secondary:hover { background: var(--surface-3); }
+
+.pomo__btn--ghost {
+  background: transparent;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+}
+.pomo__btn--ghost:hover { color: var(--text); }
+
+.pomo__tip {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 32ch;
+}
+
+/* ── Jardín ───────────────────────────────────────────────────────────── */
+.pomo__garden {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.pomo__garden-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.pomo__garden-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.pomo__garden-count {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.pomo__garden-bed {
+  position: relative;
+  height: 10rem;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #d0f0d0 0%, #b8e8b8 40%, #8ec16c 70%, #7aaa50 100%);
+}
+
+.pomo__garden-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a4d09;
+  text-align: center;
+  padding: var(--space-4);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+  /* suelo queda sobre el vacío pero el texto llena la zona central del jardín */
+  padding-bottom: calc(var(--space-4) + 1.5rem);
+}
+
+.pomo__garden-soil {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background: #7a5c2a;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  /* el suelo queda delante de las plantas por DOM order; z-index explicito para claridad */
+  z-index: 1;
+}
+
+.pomo__plant {
+  position: absolute;
+  /* alinear base de la planta con la superficie del suelo */
+  bottom: 1.5rem;
+  width: 2rem;
+  height: 3rem;
+  z-index: 2;
+  transform: translateX(-50%) scale(var(--ps, 1));
+  transform-origin: bottom center;
+  animation: plant-grow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes plant-grow {
+  from { transform: translateX(-50%) scale(0); }
+  to   { transform: translateX(-50%) scale(var(--ps, 1)); }
+}
+
+/* ── Responsive móvil ─────────────────────────────────────────────────── */
+@media (max-width: 36rem) {
+  /* Reducir gap del contenedor principal para que el jardín entre en pantalla */
+  .pomo {
+    gap: var(--space-4);
+  }
+
+  /* Reducir gap interno del timer para compactar los elementos */
+  .pomo__timer-wrap {
+    gap: var(--space-3);
+  }
+
+  /* Ring más pequeño: de 13rem → 7.5rem */
+  .pomo__ring-wrap {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+
+  .pomo__time {
+    font-size: 1.75rem;
+  }
+
+  .pomo__controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .pomo__btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.875rem;
+  }
+
+  .pomo__tip {
+    font-size: 0.8125rem;
+    max-width: 26ch;
+  }
+
+  /* Jardín más compacto en móvil */
+  .pomo__garden-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .pomo__garden-bed {
+    height: 7rem;
+  }
+
+  .pomo__plant {
+    width: 1.5rem;
+    height: 2.25rem;
+  }
+}

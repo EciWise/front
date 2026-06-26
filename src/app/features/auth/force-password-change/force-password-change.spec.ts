@@ -57,18 +57,18 @@ describe('ForcePasswordChangeComponent', () => {
 
   it('no envía si las contraseñas no coinciden', async () => {
     const fixture = await create();
-    formOf(fixture).patchValue({ newPassword: 'abcd1234', confirm: 'otra1234' });
+    formOf(fixture).patchValue({ newPassword: 'Abcd1234!', confirm: 'Otra9876!' });
     fixture.componentInstance.submit();
     expect(calls.length).toBe(0);
   });
 
   it('envía solo la nueva contraseña, sin datosIa', async () => {
     const fixture = await create();
-    formOf(fixture).patchValue({ newPassword: 'abcd1234', confirm: 'abcd1234' });
+    formOf(fixture).patchValue({ newPassword: 'Abcd1234!', confirm: 'Abcd1234!' });
     fixture.componentInstance.submit();
 
     expect(calls.length).toBe(1);
-    expect(calls[0].newPassword).toBe('abcd1234');
+    expect(calls[0].newPassword).toBe('Abcd1234!');
     expect(calls[0].datosIa).toBeUndefined();
   });
 });
