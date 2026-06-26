@@ -25,14 +25,3 @@ features:
 Este sitio documenta el frontend de ECIWISE+, la plataforma institucional de apoyo al aprendizaje de la Escuela Colombiana de Ingeniería Julio Garavito.
 
 La documentación está escrita para que un desarrollador pueda entender el proyecto, levantarlo, ubicar las piezas principales, extender funcionalidades y conectar servicios backend sin rehacer la arquitectura existente.
-
-## Entregables
-
-- [Arquitectura del frontend](/entregables/arquitectura-frontend)
-- [Guía de desarrollo](/entregables/guia-desarrollo)
-- [Instrucciones de despliegue](/entregables/instrucciones-despliegue)
-- [Manual de identidad visual](/entregables/manual-identidad-visual)
-- [Guía de marca](/entregables/guia-marca)
-- [Sistema de diseño](/entregables/sistema-diseno)
-- [Estrategia, negocio, propuesta de valor y adopción](/entregables/estrategia-negocio-adopcion)
-
