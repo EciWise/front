@@ -1,0 +1,6 @@
+# Falsos positivos documentados — tokens de prueba, no credenciales reales.
+# Cada línea es el fingerprint exacto que reporta Gitleaks (commit:file:rule:line).
+
+# JWT ficticio usado en chat.service.spec.ts para probar el parsing del token.
+# Algoritmo "none", payload {"sub":"jwt-me"} — no es un secreto real.
+eccd768854720f34dfbae3acb464cb02fc0140c9:src/app/features/chat/chat.service.spec.ts:jwt:192
