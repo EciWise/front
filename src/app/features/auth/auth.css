@@ -10,8 +10,7 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior-y: contain;
   scroll-padding-block-end: calc(var(--auth-card-bottom-gap));
   outline: none;
@@ -55,13 +54,12 @@
   position: relative;
   z-index: 2;
   flex: 1;
-  min-height: auto;
-  /* La tarjeta se centra cuando cabe; si no, fluye con el scroll de .auth. */
-  overflow: visible;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding:
     var(--space-4)
     max(var(--space-4), env(safe-area-inset-right))
@@ -123,11 +121,22 @@
   .auth__grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* En tablet/desktop el padding del card es mayor (space-8), ajustar overhead. */
+  .auth__view {
+    max-height: clamp(15rem, calc(100dvh - 22rem), 40rem);
+  }
 }
 
-/* Tarjeta del registro: más ancha para repartir los campos en dos columnas. */
+/* Tarjeta del registro: más ancha para repartir los campos en dos columnas.
+   overflow:hidden recorta la animación slide de .auth__view al límite de la tarjeta.
+   La tarjeta se dimensiona a su contenido; .auth__view usa max-height para limitar
+   su altura en pantallas pequeñas y hacer scroll interno si se necesita. */
 .auth__card--wide {
   width: min(40rem, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Marca centrada dentro de la tarjeta (p. ej. en el callback de OAuth). */
@@ -164,7 +173,18 @@
   flex-direction: column;
   gap: var(--space-4);
   min-width: 0;
+  /* max-height limita el área de scroll cuando hay muchos campos.
+     clamp: mínimo 15rem, preferido viewport-overhead, máximo 40rem. */
+  max-height: clamp(15rem, calc(100dvh - 20rem), 40rem);
+  overflow-y: auto;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
   animation: auth-slide-in-right 280ms ease;
+}
+
+.auth__view::-webkit-scrollbar {
+  display: none;
 }
 
 .auth__view--back {
@@ -235,7 +255,7 @@
 /* ---------------- Indicador de pasos (registro) ---------------- */
 .auth__steps {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
   list-style: none;
   margin: 0 0 var(--space-6);
   padding: 0;
@@ -246,15 +266,14 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  justify-content: center;
+  gap: 0;
   padding-top: var(--space-2);
   border-top: 3px solid var(--border);
   color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
   transition:
     color var(--transition-base),
-    border-color var(--transition-base);
+    border-top-color var(--transition-base);
 }
 
 .auth__step--active,
@@ -267,26 +286,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
   flex: none;
   border-radius: var(--radius-full);
   background: var(--surface-3);
   color: var(--text-muted);
-  font-size: 0.8rem;
+  transition:
+    background var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
-.auth__step-label {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.auth__step--active .auth__step-dot,
 .auth__step--done .auth__step-dot {
   background: var(--brand-red);
   color: #ffffff;
+}
+
+.auth__step--active .auth__step-dot {
+  background: var(--brand-red);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 28%, transparent);
 }
 
 /* ---------------- Distribución en columnas ----------------
@@ -363,10 +383,39 @@
   font-weight: 700;
 }
 
+/* Etiqueta de campo con tooltip inline (pasos de datos IA). */
+.auth__field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 .auth__checks {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+}
+
+.auth__checks-title {
+  padding: 0 var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.auth__checks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.auth__check--full {
+  grid-column: 1 / -1;
 }
 
 .auth__check {
@@ -414,10 +463,6 @@
   .auth__actions > :last-child {
     flex: none;
   }
-
-  .auth__step-label {
-    display: none;
-  }
 }
 
 .auth__error {
@@ -458,4 +503,65 @@
   color: var(--accent);
   font-weight: 600;
   text-decoration: none;
+}
+
+/* Pantallas cortas: reducir espaciado para que cada paso quepa sin scroll. */
+@media (max-height: 640px) {
+  .auth__main {
+    padding-block: var(--space-2);
+  }
+
+  .auth__card {
+    padding: var(--space-4);
+  }
+
+  .auth__card--wide {
+    padding: var(--space-4);
+  }
+
+  .auth__title {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .auth__steps {
+    margin: 0 0 var(--space-3);
+    gap: var(--space-1);
+  }
+
+  .auth__step-dot {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .auth__form {
+    gap: var(--space-3);
+  }
+
+  .auth__view {
+    gap: var(--space-3);
+    /* En pantallas muy cortas reducir aún más el espacio disponible para scroll. */
+    max-height: clamp(10rem, calc(100dvh - 18rem), 30rem);
+  }
+
+  .auth__grid {
+    gap: var(--space-3);
+  }
+
+  .auth__field input {
+    padding-block: var(--space-2);
+  }
+
+  .auth__checks {
+    padding: var(--space-3);
+  }
+
+  .auth__checks-grid {
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .auth__switch {
+    display: none;
+  }
 }

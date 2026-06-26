@@ -1,0 +1,111 @@
+<div class="eci-fit">
+  <a class="game-back" [routerLink]="['/student/games']">
+    <eci-icon name="arrow-left" [size]="16" />
+    {{ 'games.title' | translate }}
+  </a>
+  <eci-page-header titleKey="games.pomodoro.name" icon="timer" />
+  <div class="eci-fit__body pomo">
+
+    <!-- Timer central -->
+    <div class="pomo__timer-wrap">
+      <div class="pomo__phase-badge" [attr.data-phase]="phase()">
+        {{ phaseKey() | translate }}
+      </div>
+
+      <div class="pomo__ring-wrap">
+        <svg class="pomo__ring" viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="pomo__ring-track" cx="100" cy="100" r="88" />
+          <circle
+            class="pomo__ring-fill"
+            cx="100" cy="100" r="88"
+            [attr.stroke-dasharray]="ringCirc"
+            [attr.stroke-dashoffset]="ringOffset()"
+            [attr.data-phase]="phase()"
+          />
+        </svg>
+        <span class="pomo__time">{{ timeLabel() }}</span>
+      </div>
+
+      <!-- Indicadores de ciclo -->
+      <div class="pomo__cycles" aria-label="Ciclos completados">
+        @for (i of cycles(); track i) {
+          <span class="pomo__cycle-dot" [class.pomo__cycle-dot--done]="isCycleDone(i)"></span>
+        }
+      </div>
+
+      <!-- Controles -->
+      <div class="pomo__controls">
+        @if (status() === 'idle') {
+          <button class="pomo__btn pomo__btn--primary" (click)="start()">
+            <eci-icon name="timer" [size]="18" />
+            {{ 'games.pomodoro.start' | translate }}
+          </button>
+        } @else if (status() === 'running') {
+          <button class="pomo__btn pomo__btn--secondary" (click)="pause()">
+            {{ 'games.pomodoro.pause' | translate }}
+          </button>
+        } @else {
+          <button class="pomo__btn pomo__btn--primary" (click)="resume()">
+            {{ 'games.pomodoro.resume' | translate }}
+          </button>
+        }
+        <button class="pomo__btn pomo__btn--ghost" (click)="skip()">
+          {{ 'games.pomodoro.skip' | translate }}
+        </button>
+        <button class="pomo__btn pomo__btn--ghost" (click)="reset()">
+          <eci-icon name="repeat" [size]="15" />
+        </button>
+      </div>
+
+      <!-- Tip de la fase -->
+      <p class="pomo__tip">{{ tipKey() | translate }}</p>
+    </div>
+
+    <!-- Jardín -->
+    <section class="pomo__garden">
+      <header class="pomo__garden-header">
+        <span class="pomo__garden-title">{{ 'games.pomodoro.garden' | translate }}</span>
+        <span class="pomo__garden-count">{{ 'games.pomodoro.today' | translate: { count: todayCount() } }}</span>
+      </header>
+
+      <div class="pomo__garden-bed">
+        @if (plants().length === 0) {
+          <p class="pomo__garden-empty">{{ 'games.pomodoro.gardenEmpty' | translate }}</p>
+        }
+        @for (p of plants(); track $index) {
+          <svg
+            class="pomo__plant"
+            [style.left.%]="p.x"
+            [style.--ph]="p.hue + 'deg'"
+            [style.--ps]="p.scale"
+            viewBox="0 0 32 48"
+            aria-hidden="true"
+          >
+            @if (p.type === 0) {
+              <!-- Flor simple -->
+              <ellipse cx="16" cy="14" rx="5" ry="7" fill="hsl(var(--ph),70%,65%)" />
+              <ellipse cx="9"  cy="18" rx="5" ry="7" fill="hsl(var(--ph),70%,65%)" transform="rotate(-40 9 18)" />
+              <ellipse cx="23" cy="18" rx="5" ry="7" fill="hsl(var(--ph),70%,65%)" transform="rotate(40 23 18)" />
+              <circle cx="16" cy="16" r="5" fill="hsl(calc(var(--ph) + 40deg),80%,75%)" />
+              <line x1="16" y1="21" x2="16" y2="46" stroke="#5a8c3a" stroke-width="2" stroke-linecap="round"/>
+            } @else if (p.type === 1) {
+              <!-- Árbol -->
+              <ellipse cx="16" cy="16" rx="11" ry="13" fill="hsl(var(--ph),55%,45%)" />
+              <ellipse cx="16" cy="12" rx="8"  ry="10" fill="hsl(var(--ph),60%,55%)" />
+              <line x1="16" y1="28" x2="16" y2="46" stroke="#7a5c2a" stroke-width="3" stroke-linecap="round"/>
+            } @else {
+              <!-- Seta -->
+              <ellipse cx="16" cy="16" rx="12" ry="10" fill="hsl(var(--ph),65%,55%)" />
+              <ellipse cx="10" cy="14" rx="2.5" ry="1.5" fill="rgba(255,255,255,0.5)" />
+              <ellipse cx="18" cy="12" rx="2" ry="1.5" fill="rgba(255,255,255,0.5)" />
+              <rect x="13" y="25" width="6" height="18" rx="3" fill="#d4b896" />
+            }
+          </svg>
+        }
+        <!-- Suelo -->
+        <div class="pomo__garden-soil"></div>
+      </div>
+    </section>
+
+  </div>
+</div>

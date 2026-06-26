@@ -1,0 +1,100 @@
+<div class="eci-fit">
+  <a class="game-back" [routerLink]="['/student/games']">
+    <eci-icon name="arrow-left" [size]="16" />
+    {{ 'games.title' | translate }}
+  </a>
+  <eci-page-header titleKey="games.fiebre.name" icon="flame" />
+  <div class="eci-fit__body fiebre">
+
+    @if (phase() === 'idle') {
+      <!-- Pantalla de inicio -->
+      <div class="fiebre__splash">
+        <div class="fiebre__splash-icon"><eci-icon name="flame" [size]="48" /></div>
+        <h2 class="fiebre__splash-title">{{ 'games.fiebre.name' | translate }}</h2>
+        <p class="fiebre__splash-sub">{{ 'games.fiebre.tagline' | translate }}</p>
+        <div class="fiebre__record-row">
+          <span class="fiebre__record-label">{{ 'games.fiebre.record' | translate }}</span>
+          <span class="fiebre__record-val">{{ record() }} pts</span>
+        </div>
+        <button class="fiebre__btn fiebre__btn--primary" (click)="startGame()">
+          {{ 'games.fiebre.start' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (phase() === 'playing') {
+      <!-- Juego activo -->
+      <div class="fiebre__hud">
+        <div class="fiebre__hud-cell">
+          <span class="fiebre__hud-label">{{ 'games.fiebre.score' | translate }}</span>
+          <span class="fiebre__hud-val">{{ score() }}</span>
+        </div>
+        <div class="fiebre__hud-cell">
+          <span class="fiebre__hud-label">{{ 'games.fiebre.streak' | translate }}</span>
+          <span class="fiebre__hud-val">{{ streak() }}</span>
+        </div>
+        <div class="fiebre__hud-cell">
+          <span class="fiebre__hud-label">{{ 'games.fiebre.timeLeft' | translate }}</span>
+          <span class="fiebre__hud-val" [class.fiebre__hud-val--danger]="timerDanger()">{{ timeLeft() }}s</span>
+        </div>
+      </div>
+
+      <!-- Barra de tiempo -->
+      <div class="fiebre__timer-bar" role="progressbar" [attr.aria-valuenow]="timerWidth()">
+        <div
+          class="fiebre__timer-fill"
+          [style.width.%]="timerWidth()"
+          [class.fiebre__timer-fill--danger]="timerDanger()"
+        ></div>
+      </div>
+
+      @if (multiplier() > 1) {
+        <div class="fiebre__multiplier">
+          {{ 'games.fiebre.multiplier' | translate: { n: multiplier() } }}
+        </div>
+      }
+
+      <!-- Ecuación -->
+      <div
+        class="fiebre__equation"
+        [class.fiebre__equation--correct]="lastResult() === 'correct'"
+        [class.fiebre__equation--wrong]="lastResult() === 'wrong'"
+      >
+        {{ currentQ().display }}
+      </div>
+
+      <!-- Opciones -->
+      <div class="fiebre__options">
+        @for (opt of currentQ().options; track $index) {
+          <button
+            class="fiebre__option"
+            (click)="pick($index)"
+            [disabled]="lastResult() !== null"
+          >{{ opt }}</button>
+        }
+      </div>
+    }
+
+    @if (phase() === 'finished') {
+      <!-- Resultados -->
+      <div class="fiebre__results">
+        <div class="fiebre__results-score">{{ score() }}</div>
+        <div class="fiebre__results-label">{{ 'games.fiebre.results' | translate: { score: score() } }}</div>
+        @if (isNewRecord()) {
+          <div class="fiebre__new-record">
+            <eci-icon name="trophy" [size]="20" />
+            {{ 'games.fiebre.newRecord' | translate }}
+          </div>
+        }
+        <div class="fiebre__record-row">
+          <span class="fiebre__record-label">{{ 'games.fiebre.record' | translate }}</span>
+          <span class="fiebre__record-val">{{ record() }} pts</span>
+        </div>
+        <button class="fiebre__btn fiebre__btn--primary" (click)="startGame()">
+          {{ 'games.fiebre.playAgain' | translate }}
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

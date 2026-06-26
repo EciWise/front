@@ -1,0 +1,87 @@
+<div class="gsearch">
+  @if (!open()) {
+    <button
+      type="button"
+      class="gsearch__trigger"
+      (click)="openSearch()"
+      [attr.aria-label]="'search.open' | translate"
+      [title]="'search.open' | translate"
+    >
+      <svg lucideSearch [size]="18" aria-hidden="true"></svg>
+      <span class="gsearch__trigger-label">{{ 'search.placeholder' | translate }}</span>
+      <kbd class="gsearch__kbd">Ctrl K</kbd>
+    </button>
+  } @else {
+    <button
+      type="button"
+      class="gsearch__backdrop"
+      [attr.aria-label]="'common.cancel' | translate"
+      (click)="close()"
+    ></button>
+
+    <div class="gsearch__box" role="combobox" aria-haspopup="listbox" aria-controls="gsearch-listbox" [attr.aria-expanded]="results().length > 0">
+      <svg lucideSearch [size]="16" class="gsearch__icon" aria-hidden="true"></svg>
+
+      <input
+        #searchInput
+        type="search"
+        class="gsearch__input"
+        autocomplete="off"
+        [attr.aria-label]="'search.label' | translate"
+        [placeholder]="'search.placeholder' | translate"
+        [value]="query()"
+        (input)="onQueryChange($any($event.target).value)"
+        (keydown)="onInputKeydown($event)"
+      />
+
+      @if (query()) {
+        <button
+          type="button"
+          class="gsearch__clear icon-button"
+          [attr.aria-label]="'common.cancel' | translate"
+          (click)="onQueryChange('')"
+        >
+          <svg lucideX [size]="14" aria-hidden="true"></svg>
+        </button>
+      }
+    </div>
+
+    @if (query()) {
+      <ul
+        id="gsearch-listbox"
+        class="gsearch__results"
+        role="listbox"
+        [attr.aria-label]="'search.label' | translate"
+      >
+        @if (results().length === 0) {
+          <li class="gsearch__empty">{{ 'search.noResults' | translate }}</li>
+        } @else {
+          @for (item of results(); track item.route; let i = $index) {
+            <li
+              role="option"
+              class="gsearch__result"
+              tabindex="0"
+              [class.gsearch__result--active]="activeIndex() === i"
+              [attr.aria-selected]="activeIndex() === i"
+              (click)="navigateTo(item)"
+              (keydown.enter)="navigateTo(item)"
+              (keydown.space)="navigateTo(item)"
+              (mouseenter)="activeIndex.set(i)"
+            >
+              <span class="gsearch__result-icon">
+                <eci-icon [name]="item.icon" [size]="16" />
+              </span>
+              <span class="gsearch__result-text">
+                @if (item.parentLabelKey) {
+                  <span class="gsearch__result-parent">{{ item.parentLabelKey | translate }}</span>
+                  <span class="gsearch__result-sep" aria-hidden="true">›</span>
+                }
+                <span class="gsearch__result-label">{{ item.labelKey | translate }}</span>
+              </span>
+            </li>
+          }
+        }
+      </ul>
+    }
+  }
+</div>

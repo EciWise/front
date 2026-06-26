@@ -12,19 +12,19 @@
       @switch (section()) {
         @case ('summary') {
           <div class="eci-section-enter stats__cards">
-            <eci-card>
+            <eci-card class="stats__kpi stats__kpi--accent">
               <span class="stats__num">{{ s.totalEstudiantes }}</span>
               <span class="stats__label">{{ 'admin.statistics.totalStudents' | translate }}</span>
             </eci-card>
-            <eci-card>
+            <eci-card class="stats__kpi stats__kpi--success">
               <span class="stats__num">{{ s.conDatos }}</span>
               <span class="stats__label">{{ 'admin.statistics.withData' | translate }}</span>
             </eci-card>
-            <eci-card>
+            <eci-card class="stats__kpi stats__kpi--info">
               <span class="stats__num">{{ s.conPrediccion }}</span>
               <span class="stats__label">{{ 'admin.statistics.withPrediction' | translate }}</span>
             </eci-card>
-            <eci-card>
+            <eci-card class="stats__kpi stats__kpi--danger">
               <span class="stats__num stats__num--risk">{{ s.enRiesgo }}</span>
               <span class="stats__label">{{ 'admin.statistics.atRisk' | translate }}</span>
             </eci-card>

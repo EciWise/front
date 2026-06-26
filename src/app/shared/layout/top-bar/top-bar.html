@@ -11,6 +11,11 @@
       <svg lucideMenu [size]="22" aria-hidden="true"></svg>
     </button>
     <eci-logo [home]="home()" />
+    <span class="top-bar__tagline">{{ 'app.tagline' | translate }}</span>
+  </div>
+
+  <div class="top-bar__center">
+    <eci-global-search />
   </div>
 
   <div class="top-bar__right">

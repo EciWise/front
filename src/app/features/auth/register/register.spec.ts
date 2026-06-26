@@ -23,16 +23,18 @@ interface RegisterHarness {
   readonly form: FormGroup;
   readonly datosIaGroup: FormGroup;
   readonly step: {
-    (): 1 | 2 | 3;
-    set(value: 1 | 2 | 3): void;
+    (): 1 | 2 | 3 | 4 | 5 | 6;
+    set(value: 1 | 2 | 3 | 4 | 5 | 6): void;
   };
   readonly loading: () => boolean;
   readonly errorKey: () => string | null;
   next(): void;
+  back(): void;
   submit(): void;
   phoneInput(value: string): void;
   errorKeyFor(name: string): string | null;
   confirmPasswordErrorKey(): string | null;
+  iaErrorKeyFor(name: string): string | null;
 }
 
 describe('RegisterComponent', () => {
@@ -49,16 +51,26 @@ describe('RegisterComponent', () => {
   };
   const cmp = (): RegisterHarness => fixture.componentInstance as unknown as RegisterHarness;
 
+  /** Rellena los campos del paso 1 (datos básicos). */
   const fillStep1 = (): void => {
     cmp().form.patchValue({
       nombre: 'Ana',
       apellido: 'Diaz',
       email: 'ana@gmail.com',
-      password: 'Password1',
-      confirmPassword: 'Password1',
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
     });
   };
 
+  /** Rellena las credenciales del paso 2 (contraseña). */
+  const fillStep2 = (): void => {
+    cmp().form.patchValue({
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
+    });
+  };
+
+  /** Rellena todos los datos de IA (pasos 3-6). */
   const fillDatosIa = (): void => {
     cmp().datosIaGroup.patchValue({
       gender: 1,
@@ -101,13 +113,13 @@ describe('RegisterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('permanece en paso 1 y expone errores de email, password y confirmacion', () => {
+  // ── Paso 1: datos básicos ────────────────────────────────────────────────
+
+  it('permanece en paso 1 y expone errores cuando los campos básicos son inválidos', () => {
     cmp().form.patchValue({
       nombre: 'Ana',
       apellido: '',
       email: 'ana@universidad.test',
-      password: 'short',
-      confirmPassword: 'otra',
     });
 
     cmp().next();
@@ -115,34 +127,131 @@ describe('RegisterComponent', () => {
     expect(cmp().step()).toBe(1);
     expect(cmp().errorKeyFor('apellido')).toBe('register.errors.required');
     expect(cmp().errorKeyFor('email')).toBe('register.errors.emailDomain');
+  });
+
+  it('avanza al paso 2 cuando los datos básicos son válidos', () => {
+    fillStep1();
+    cmp().next();
+    expect(cmp().step()).toBe(2);
+  });
+
+  // ── Paso 2: seguridad ────────────────────────────────────────────────────
+
+  it('permanece en paso 2 y expone errores de contraseña y confirmación', () => {
+    fillStep1();
+    cmp().next();
+
+    cmp().form.patchValue({ password: 'short', confirmPassword: 'otra' });
+    cmp().next();
+
+    expect(cmp().step()).toBe(2);
     expect(cmp().errorKeyFor('password')).toBe('register.errors.password');
     expect(cmp().confirmPasswordErrorKey()).toBe('register.errors.passwordMismatch');
   });
 
-  it('valida la primera pagina de datos IA antes de avanzar al paso final', () => {
+  it('avanza al paso 3 cuando las credenciales son válidas', () => {
     fillStep1();
-
     cmp().next();
-    expect(cmp().step()).toBe(2);
-
+    fillStep2();
     cmp().next();
-    expect(cmp().step()).toBe(2);
-    expect(cmp().datosIaGroup.controls['gender'].touched).toBe(true);
-
-    cmp().datosIaGroup.patchValue({
-      gender: 1,
-      ethnicity: 2,
-      parentalEducation: 3,
-      parentalSupport: 4,
-    });
-    cmp().next();
-
     expect(cmp().step()).toBe(3);
   });
 
-  it('envia payload normalizado con telefono de solo digitos y datos IA numericos', () => {
+  // ── Paso 3: género y etnia ───────────────────────────────────────────────
+
+  it('permanece en paso 3 y marca como tocados gender y ethnicity si están vacíos', () => {
+    fillStep1();
+    cmp().next();
+    fillStep2();
+    cmp().next();
+
+    cmp().next();
+
+    expect(cmp().step()).toBe(3);
+    expect(cmp().datosIaGroup.controls['gender'].touched).toBe(true);
+    expect(cmp().datosIaGroup.controls['ethnicity'].touched).toBe(true);
+    expect(cmp().iaErrorKeyFor('gender')).toBe('datosIa.errors.required');
+  });
+
+  it('avanza al paso 4 cuando género y etnia están completos', () => {
+    fillStep1();
+    cmp().next();
+    fillStep2();
+    cmp().next();
+
+    cmp().datosIaGroup.patchValue({ gender: 0, ethnicity: 1 });
+    cmp().next();
+
+    expect(cmp().step()).toBe(4);
+  });
+
+  // ── Paso 4: familia ──────────────────────────────────────────────────────
+
+  it('permanece en paso 4 cuando educación parental o apoyo están vacíos', () => {
+    fillStep1();
+    cmp().next();
+    fillStep2();
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ gender: 0, ethnicity: 1 });
+    cmp().next();
+
+    cmp().next();
+
+    expect(cmp().step()).toBe(4);
+    expect(cmp().datosIaGroup.controls['parentalEducation'].touched).toBe(true);
+  });
+
+  // ── Paso 5: estudio ──────────────────────────────────────────────────────
+
+  it('avanza al paso 5 después de completar familia', () => {
+    fillStep1();
+    cmp().next();
+    fillStep2();
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ gender: 0, ethnicity: 1 });
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ parentalEducation: 2, parentalSupport: 3 });
+    cmp().next();
+    expect(cmp().step()).toBe(5);
+  });
+
+  // ── Paso 6: actividades ──────────────────────────────────────────────────
+
+  it('avanza al paso 6 después de completar datos de estudio', () => {
+    fillStep1();
+    cmp().next();
+    fillStep2();
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ gender: 0, ethnicity: 1 });
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ parentalEducation: 2, parentalSupport: 3 });
+    cmp().next();
+    cmp().datosIaGroup.patchValue({ studyTimeWeekly: 10, absences: 3 });
+    cmp().next();
+    expect(cmp().step()).toBe(6);
+  });
+
+  // ── Navegación retroceso ─────────────────────────────────────────────────
+
+  it('retrocede al paso anterior con back()', () => {
+    fillStep1();
+    cmp().next();
+    expect(cmp().step()).toBe(2);
+    cmp().back();
+    expect(cmp().step()).toBe(1);
+  });
+
+  it('no retrocede más allá del paso 1', () => {
+    cmp().back();
+    expect(cmp().step()).toBe(1);
+  });
+
+  // ── Submit ───────────────────────────────────────────────────────────────
+
+  it('envía payload normalizado con teléfono de solo dígitos y datos IA numéricos', () => {
     fillStep1();
     cmp().phoneInput('300-123-4567 ext 99');
+    fillStep2();
     fillDatosIa();
 
     cmp().submit();
@@ -150,7 +259,7 @@ describe('RegisterComponent', () => {
     expect(registerUser).toHaveBeenCalledTimes(1);
     expect(registerUser.mock.calls[0][0]).toEqual({
       email: 'ana@gmail.com',
-      password: 'Password1',
+      password: 'Password1!',
       nombre: 'Ana',
       apellido: 'Diaz',
       telefono: '3001234567',
@@ -171,11 +280,14 @@ describe('RegisterComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/student');
   });
 
+  // ── Manejo de errores del backend ────────────────────────────────────────
+
   it('vuelve al paso 1 cuando el backend rechaza el correo', () => {
     registerUser.mockReturnValue(throwError(() => new AuthError('auth.emailTaken')));
     fillStep1();
+    fillStep2();
     fillDatosIa();
-    cmp().step.set(3);
+    cmp().step.set(6);
 
     cmp().submit();
 

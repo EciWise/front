@@ -12,13 +12,17 @@ interface ModeOption {
   readonly descKey: string;
 }
 
-interface ComingSoonGame {
+interface MiniGame {
   readonly id: string;
-  readonly name: string;
-  readonly subject: string;
+  readonly icon: IconName;
+  readonly route: string;
+  readonly nameKey: string;
+  readonly subjectKey: string;
+  readonly taglineKey: string;
+  readonly accentColor: string;
 }
 
-/** Centro de juegos: juego destacado Asclepio (jugable) + próximos retos. */
+/** Centro de juegos: Asclepio (multijugador), Pomodoro Garden y mini-juegos sin backend. */
 @Component({
   selector: 'eci-games',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,9 +42,42 @@ export class GamesComponent {
     },
   ];
 
-  protected readonly comingSoon: readonly ComingSoonGame[] = [
-    { id: 'g1', name: 'Reto de derivadas', subject: 'Cálculo' },
-    { id: 'g2', name: 'Quiz de algoritmos', subject: 'Programación' },
-    { id: 'g3', name: 'Trivia de física', subject: 'Física' },
+  protected readonly miniGames: readonly MiniGame[] = [
+    {
+      id: 'pomodoro',
+      icon: 'timer',
+      route: '/student/games/pomodoro',
+      nameKey: 'games.pomodoro.name',
+      subjectKey: 'games.pomodoro.subject',
+      taglineKey: 'games.pomodoro.tagline',
+      accentColor: '#c8102e',
+    },
+    {
+      id: 'fiebre',
+      icon: 'flame',
+      route: '/student/games/fiebre',
+      nameKey: 'games.fiebre.name',
+      subjectKey: 'games.fiebre.subject',
+      taglineKey: 'games.fiebre.tagline',
+      accentColor: '#f59e0b',
+    },
+    {
+      id: 'memoria',
+      icon: 'repeat',
+      route: '/student/games/memoria',
+      nameKey: 'games.memoria.name',
+      subjectKey: 'games.memoria.subject',
+      taglineKey: 'games.memoria.tagline',
+      accentColor: '#6366f1',
+    },
+    {
+      id: 'serpiente',
+      icon: 'zap',
+      route: '/student/games/serpiente',
+      nameKey: 'games.serpiente.name',
+      subjectKey: 'games.serpiente.subject',
+      taglineKey: 'games.serpiente.tagline',
+      accentColor: '#10b981',
+    },
   ];
 }
