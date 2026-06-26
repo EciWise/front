@@ -42,8 +42,14 @@ jobs:
           TODO_SERVICE: http://localhost:8083
           GAME_WS: ws://localhost:3002/ws/game
 
+      # Se salta si SONAR_TOKEN no está configurado en los secrets del repo.
+      # Para activarlo: Settings → Secrets → Actions → New repository secret:
+      #   SONAR_TOKEN    → token generado en tu instancia SonarQube/SonarCloud
+      #   SONAR_HOST_URL → p.ej. https://sonarcloud.io  (SonarCloud)
+      #                         o https://sonar.tudominio.com  (self-hosted)
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
