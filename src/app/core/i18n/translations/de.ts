@@ -180,6 +180,8 @@ nav: {
         'Es werden nur E-Mails mit @gmail.com, @escuelaing.edu.co oder @mail.escuelaing.edu.co akzeptiert.',
       password: 'Mindestens 8 Zeichen, mit Großbuchstabe, Kleinbuchstabe und Sonderzeichen (z.B. @#$%).',
       passwordMismatch: 'Die Passwörter stimmen nicht überein.',
+      nameMaxLength: 'Maximal 30 Zeichen.',
+      nameNoNumbers: 'Zahlen sind nicht erlaubt.',
     },
   },
   datosIa: {
