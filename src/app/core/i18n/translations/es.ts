@@ -287,6 +287,8 @@ export const es = {
         'Solo se aceptan correos @gmail.com, @escuelaing.edu.co o @mail.escuelaing.edu.co.',
       password: 'Mínimo 8 caracteres, con mayúscula, minúscula y un carácter especial (ej. @#$%).',
       passwordMismatch: 'Las contraseñas no coinciden.',
+      nameMaxLength: 'Máximo 30 caracteres.',
+      nameNoNumbers: 'No se permiten números.',
     },
   },
   datosIa: {

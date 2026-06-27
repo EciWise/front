@@ -287,6 +287,8 @@ export const en = {
         'Only @gmail.com, @escuelaing.edu.co or @mail.escuelaing.edu.co emails are accepted.',
       password: 'At least 8 characters, with uppercase, lowercase and a special character (e.g. @#$%).',
       passwordMismatch: 'Passwords do not match.',
+      nameMaxLength: 'Maximum 30 characters.',
+      nameNoNumbers: 'Numbers are not allowed.',
     },
   },
   datosIa: {
