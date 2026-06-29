@@ -1,26 +1,35 @@
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TutoringApiService } from '../../core/tutoring/tutoring-api.service';
 import { WeekDay } from './tutor.models';
-import { TutoringMockService } from './tutoring.service';
 
 const STORAGE_KEY = 'eciwise.availability';
 
 /** Clave de un bloque de disponibilidad: `${día}-${hora}`. */
 export type SlotKey = `${WeekDay}-${string}`;
 
-/**
- * Disponibilidad semanal del tutor como conjunto de bloques activos.
- * Persiste en localStorage. Reemplazable por API real sin tocar la UI.
- */
+const DAY_MAP: Record<number, WeekDay> = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri' };
+
 @Injectable({ providedIn: 'root' })
 export class AvailabilityService {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly tutoring = inject(TutoringMockService);
+  private readonly api = inject(TutoringApiService);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly _slots = signal<ReadonlySet<SlotKey>>(this.restore());
   readonly slots = this._slots.asReadonly();
-  readonly count = computed(() => this.tutoring.tutorAvailabilityCount());
+  readonly count = computed(() => this._slots().size);
+
+  constructor() {
+    this.api.listarDisponibilidades().subscribe({
+      next: (data) => {
+        const keys = data
+          .filter((d) => d.activa)
+          .map((d): SlotKey => `${DAY_MAP[d.franjaDiaSemana] ?? 'mon'}-00:00`);
+        this._slots.set(new Set(keys));
+      },
+    });
+  }
 
   isActive(key: SlotKey): boolean {
     return this._slots().has(key);
@@ -43,13 +52,9 @@ export class AvailabilityService {
   }
 
   private restore(): ReadonlySet<SlotKey> {
-    if (!this.isBrowser) {
-      return new Set<SlotKey>(['mon-08:00', 'wed-10:00']);
-    }
+    if (!this.isBrowser) return new Set<SlotKey>();
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return new Set<SlotKey>(['mon-08:00', 'wed-10:00']);
-    }
+    if (!raw) return new Set<SlotKey>();
     try {
       return new Set<SlotKey>(JSON.parse(raw) as SlotKey[]);
     } catch {

@@ -1,54 +1,52 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { TutoringApiService, DisponibilidadDto } from '../../core/tutoring/tutoring-api.service';
 import { TutorSession } from './tutor.models';
-import { TutoringMockService } from './tutoring.service';
 
-function addMinutes(time: string, minutes: number): string {
-  const [hour = 0, minute = 0] = time.split(':').map(Number);
-  const total = hour * 60 + minute + minutes;
-  return `${Math.floor(total / 60)}`.padStart(2, '0') + `:${total % 60}`.padStart(2, '0');
+function toSession(d: DisponibilidadDto): TutorSession {
+  return {
+    id: d.id,
+    subject: d.materiaId,
+    datetime: `${d.vigenciaDesde}T00:00`,
+    seats: d.cuposMaximos,
+    mode: d.modalidad === 'VIRTUAL' ? 'virtual' : 'presential',
+  };
 }
 
-/** Adaptador de horarios de tutoria sobre el mock central. */
 @Injectable({ providedIn: 'root' })
 export class TutorScheduleService {
-  private readonly tutoring = inject(TutoringMockService);
+  private readonly api = inject(TutoringApiService);
 
-  readonly sessions = computed<TutorSession[]>(() =>
-    this.tutoring.tutorAvailabilities()
-      .filter((availability) => availability.status === 'active')
-      .map((availability) => ({
-        id: availability.id,
-        subject: this.tutoring.subjectName(availability.subjectId),
-        datetime: `${availability.date}T${availability.startTime}`,
-        seats: this.tutoring.availableSeats(availability.id),
-        mode: availability.mode,
-      })),
-  );
-  readonly upcomingCount = computed(() => this.sessions().length);
+  private readonly _sessions = signal<TutorSession[]>([]);
+  readonly sessions = this._sessions.asReadonly();
+  readonly upcomingCount = computed(() => this._sessions().length);
 
-  create(subject: string, datetime: string, seats: number): void {
-    const subjectId =
-      this.tutoring.subjects().find((item) => item.name === subject || item.id === subject)?.id ??
-      this.tutoring.subjects()[0]?.id ??
-      '';
-    const [date = '', time = ''] = datetime.split('T');
-    if (!subjectId || !date || !time) {
-      return;
-    }
-    this.tutoring.createAvailability({
-      subjectId,
-      date,
-      startTime: time,
-      endTime: addMinutes(time, 90),
-      mode: 'virtual',
-      capacity: seats,
+  constructor() {
+    this.load();
+  }
+
+  load(): void {
+    this.api.listarDisponibilidades().subscribe({
+      next: (data) => this._sessions.set(data.filter((d) => d.activa).map(toSession)),
     });
   }
 
   cancel(id: string): void {
-    const result = this.tutoring.deleteAvailability(id);
-    if (!result.ok) {
-      this.tutoring.cancelAvailability(id, 'Cancelacion operativa');
-    }
+    this.api.desactivarDisponibilidad(id).subscribe({
+      next: () => this._sessions.update((items) => items.filter((s) => s.id !== id)),
+    });
+  }
+
+  create(subject: string, datetime: string, seats: number): void {
+    const [date = ''] = datetime.split('T');
+    this.api
+      .publicarDisponibilidad({
+        franjaId: '',
+        materiaId: subject,
+        modalidad: 'VIRTUAL',
+        cuposMaximos: seats,
+        vigenciaDesde: date,
+        vigenciaHasta: date,
+      })
+      .subscribe({ next: (d) => this._sessions.update((items) => [...items, toSession(d)]) });
   }
 }

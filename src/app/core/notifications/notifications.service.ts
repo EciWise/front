@@ -1,36 +1,66 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { NOTIFICATIONS_CONFIG } from './notifications.config';
 import { AppNotification, NotificationKind } from './notification.model';
 
-const MOCK_NOTIFICATIONS: readonly AppNotification[] = [
-  {
-    id: 'n1',
-    titleKey: 'notifications.title',
-    bodyKey: 'notifications.mock.accepted',
-    bodyParams: { subject: 'Calculo' },
-    kind: 'success',
-    createdAt: '2026-05-29T08:30:00Z',
-    read: false,
-  },
-  {
-    id: 'n2',
-    titleKey: 'notifications.title',
-    bodyKey: 'notifications.mock.material',
-    bodyParams: { subject: 'Programacion' },
-    kind: 'info',
-    createdAt: '2026-05-28T15:00:00Z',
-    read: false,
-  },
-];
+interface ApiNotification {
+  readonly id: number;
+  readonly asunto: string;
+  readonly resumen: string;
+  readonly visto: boolean;
+  readonly fechaCreacion: string;
+  readonly type: string;
+}
 
-/**
- * Fuente mock de notificaciones. Reemplazable por una llamada HTTP real
- * sin afectar a los componentes consumidores.
- */
+function kindFromType(type: string): NotificationKind {
+  if (type === 'success') return 'success';
+  if (type === 'warning') return 'warning';
+  return 'info';
+}
+
+function fromApi(n: ApiNotification): AppNotification {
+  return {
+    id: String(n.id),
+    titleKey: 'notifications.title',
+    body: n.asunto,
+    kind: kindFromType(n.type),
+    createdAt: String(n.fechaCreacion),
+    read: n.visto,
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
-  private readonly _items = signal<AppNotification[]>([...MOCK_NOTIFICATIONS]);
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(NOTIFICATIONS_CONFIG);
+
+  private readonly _items = signal<AppNotification[]>([]);
   readonly items = this._items.asReadonly();
   readonly unreadCount = computed(() => this._items().filter((n) => !n.read).length);
+
+  load(): void {
+    this.http
+      .get<ApiNotification[]>(`${this.config.notificationsApiUrl}/notificacion`)
+      .subscribe({ next: (data) => this._items.set(data.map(fromApi)) });
+  }
+
+  markAllRead(): void {
+    this.http
+      .patch(`${this.config.notificationsApiUrl}/notificacion/read-all`, {})
+      .subscribe({ next: () => this._items.update((items) => items.map((n) => ({ ...n, read: true }))) });
+  }
+
+  markRead(id: string): void {
+    this.http
+      .patch(`${this.config.notificationsApiUrl}/notificacion/read/${id}`, {})
+      .subscribe({ next: () => this._items.update((items) => items.map((n) => (n.id === id ? { ...n, read: true } : n))) });
+  }
+
+  delete(id: string): void {
+    this.http
+      .delete(`${this.config.notificationsApiUrl}/notificacion/${id}`)
+      .subscribe({ next: () => this._items.update((items) => items.filter((n) => n.id !== id)) });
+  }
 
   add(
     bodyKey: string,
@@ -39,7 +69,7 @@ export class NotificationsService {
     titleKey = 'notifications.title',
   ): void {
     const item: AppNotification = {
-      id: `n-${Date.now()}-${this._items().length}`,
+      id: `local-${Date.now()}`,
       titleKey,
       bodyKey,
       bodyParams,
@@ -48,13 +78,5 @@ export class NotificationsService {
       read: false,
     };
     this._items.update((items) => [item, ...items]);
-  }
-
-  markAllRead(): void {
-    this._items.update((items) => items.map((n) => ({ ...n, read: true })));
-  }
-
-  markRead(id: string): void {
-    this._items.update((items) => items.map((n) => (n.id === id ? { ...n, read: true } : n)));
   }
 }

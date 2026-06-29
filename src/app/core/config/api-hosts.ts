@@ -4,6 +4,10 @@ import { IA_CONFIG } from '../ia/ia.config';
 import { STUDY_CONFIG } from '../study/study.config';
 import { TALK_CONFIG } from '../talk/talk.config';
 import { TODO_CONFIG } from '../todo/todo.config';
+import { NOTIFICATIONS_CONFIG } from '../notifications/notifications.config';
+import { TUTORING_CONFIG } from '../tutoring/tutoring.config';
+import { GAMIFICATION_CONFIG } from '../gamification/gamification.config';
+import { MATERIALS_CONFIG } from '../../features/student/materials/materials.config';
 import { stripTrailingSlashes } from './url.util';
 
 /**
@@ -18,6 +22,10 @@ export function ownApiHosts(): string[] {
   const study = inject(STUDY_CONFIG);
   const talk = inject(TALK_CONFIG);
   const todo = inject(TODO_CONFIG);
+  const notifications = inject(NOTIFICATIONS_CONFIG);
+  const materials = inject(MATERIALS_CONFIG);
+  const tutoring = inject(TUTORING_CONFIG);
+  const gamification = inject(GAMIFICATION_CONFIG);
   return [
     auth.apiBaseUrl,
     ia.performanceApiUrl,
@@ -25,6 +33,10 @@ export function ownApiHosts(): string[] {
     study.studyApiUrl,
     talk.talkApiUrl,
     todo.todoApiUrl,
+    notifications.notificationsApiUrl,
+    materials.materialsApiUrl,
+    tutoring.tutoringApiUrl,
+    gamification.gamificationApiUrl,
   ]
     .filter((host): host is string => !!host)
     .map((host) => stripTrailingSlashes(host));
