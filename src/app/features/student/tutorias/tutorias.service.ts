@@ -43,7 +43,9 @@ export class TutoriasService {
       .subscribe({
         next: () =>
           this._items.update((items) =>
-            items.map((t) => (t.id === id ? { ...t, status: 'requested' as const } : t)),
+            items.map((t) =>
+              t.id === id ? { ...t, status: 'requested' as const, seats: Math.max(0, t.seats - 1) } : t,
+            ),
           ),
       });
   }

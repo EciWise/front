@@ -52,6 +52,7 @@ describe('NotificationsBellComponent', () => {
             items: items.asReadonly(),
             unreadCount: computed(() => items().filter((item) => !item.read).length),
             markAllRead,
+            load: vi.fn(),
           },
         },
       ],
