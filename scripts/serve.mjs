@@ -14,7 +14,15 @@ const ngBin = join(
 );
 
 const port = process.env.PORT ?? '4000';
-const args = ['serve', '--port', port, ...process.argv.slice(2)];
+const args = [
+  'serve',
+  '--port',
+  port,
+  '--host',
+  '0.0.0.0',
+  '--allowed-hosts',
+  ...process.argv.slice(2),
+];
 
 spawn(ngBin, args, { stdio: 'inherit' }).on('exit', (code) => {
   process.exit(code ?? 0);

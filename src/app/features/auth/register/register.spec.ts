@@ -57,14 +57,16 @@ describe('RegisterComponent', () => {
       nombre: 'Ana',
       apellido: 'Diaz',
       email: 'ana@gmail.com',
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
     });
   };
 
-  /** Rellena los campos del paso 2 (seguridad). */
+  /** Rellena las credenciales del paso 2 (contraseña). */
   const fillStep2 = (): void => {
     cmp().form.patchValue({
-      password: 'Password1',
-      confirmPassword: 'Password1',
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
     });
   };
 
@@ -257,7 +259,7 @@ describe('RegisterComponent', () => {
     expect(registerUser).toHaveBeenCalledTimes(1);
     expect(registerUser.mock.calls[0][0]).toEqual({
       email: 'ana@gmail.com',
-      password: 'Password1',
+      password: 'Password1!',
       nombre: 'Ana',
       apellido: 'Diaz',
       telefono: '3001234567',

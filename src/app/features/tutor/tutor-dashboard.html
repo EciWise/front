@@ -1,5 +1,13 @@
 <div class="eci-fit">
-  <eci-page-header titleKey="nav.controlCenter" icon="dashboard" />
+  <div class="dash-welcome eci-fit__chrome">
+    <div class="dash-welcome__role">{{ 'roles.TUTOR' | translate }}</div>
+    <h2 class="dash-welcome__greeting">
+      {{ 'dash.welcome' | translate }}<span class="dash-welcome__name"
+        >@if (user(); as u) {, {{ u.name }}}</span
+      >
+    </h2>
+    <p class="dash-welcome__sub">{{ 'dash.subtitleTutor' | translate }}</p>
+  </div>
 
   <ul class="stats eci-fit__chrome">
     @for (stat of stats; track stat.labelKey) {

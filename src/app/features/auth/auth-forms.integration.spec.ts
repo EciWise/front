@@ -116,8 +116,8 @@ describe('auth forms integration', () => {
       apellido: 'Diaz',
       email: 'ana@gmail.com',
       telefono: '300 123 4567',
-      password: 'Password1',
-      confirmPassword: 'Password1',
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
     });
     cmp.datosIaGroup.patchValue({
       gender: 1,

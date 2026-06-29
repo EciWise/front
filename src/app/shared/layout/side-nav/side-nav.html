@@ -1,21 +1,28 @@
 <nav class="side-nav" [attr.aria-label]="'nav.dashboard' | translate">
   <eci-math-decor variant="menu" />
 
-  <ul class="side-nav__list">
-    @for (item of items(); track item.route) {
-      <li>
-        <a
-          class="side-nav__link"
-          [routerLink]="item.route"
-          routerLinkActive="side-nav__link--active"
-          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-        >
-          <eci-icon [name]="item.icon" [size]="20" />
-          <span>{{ item.labelKey | translate }}</span>
-        </a>
-      </li>
+  <div class="side-nav__list">
+    @for (group of groups(); track group.labelKey) {
+      <div class="side-nav__group">
+        <span class="side-nav__group-label">{{ group.labelKey | translate }}</span>
+        <ul class="side-nav__items">
+          @for (item of group.items; track item.route) {
+            <li>
+              <a
+                class="side-nav__link"
+                [routerLink]="item.route"
+                routerLinkActive="side-nav__link--active"
+                [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              >
+                <eci-icon [name]="item.icon" [size]="20" />
+                <span>{{ item.labelKey | translate }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
     }
-  </ul>
+  </div>
 
   <a
     class="side-nav__link side-nav__help"

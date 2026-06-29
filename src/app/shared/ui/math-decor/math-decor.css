@@ -1,53 +1,100 @@
 :host {
-  /* Capa que cubre al contenedor padre (que debe ser position:relative) y queda
-     por detrás del contenido. Decorativa: no intercepta ni clics ni foco. */
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  /* Mismo vinotinto institucional que la landing, legible sobre la superficie
-     clara del dashboard. */
-  color: var(--brand-wine);
-  --decor-min: 0.07;
-  --decor-max: 0.22;
+  color: var(--accent, var(--brand-wine));
+  --sd-min: 0.05;
+  --sd-max: 0.19;
+  --sd-glow: color-mix(in srgb, currentColor 26%, transparent);
 }
 
-/* En modo oscuro los símbolos son blancos (algo más tenues sobre el fondo oscuro). */
 :host-context([data-theme='dark']) {
-  color: #fff;
-  --decor-min: 0.04;
-  --decor-max: 0.15;
+  --sd-min: 0.04;
+  --sd-max: 0.15;
 }
 
-.math-decor__sym {
+/* Base symbol */
+.mds {
   position: absolute;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'STIX Two Math', Georgia, 'Times New Roman', serif;
   font-weight: 700;
+  font-style: normal;
+  color: inherit;
+  opacity: 0;
   line-height: 1;
-  /* Tenue para no competir con el contenido, pero ya legible (vinotinto). */
-  opacity: var(--decor-max);
   user-select: none;
+  pointer-events: none;
   will-change: transform, opacity;
-  animation: eci-decor-float var(--decor-dur, 12s) ease-in-out var(--decor-delay, 0s)
-    infinite alternate;
 }
 
-@keyframes eci-decor-float {
-  from {
-    transform: translateY(10px) rotate(-5deg) scale(0.80);
-    opacity: var(--decor-min);
-  }
-  to {
-    transform: translateY(-10px) rotate(7deg) scale(1.10);
-    opacity: var(--decor-max);
-  }
+/* Monospace expressions (lim, det A, ker T, ∫ dx) */
+.mds--expr {
+  font-family: 'Source Code Pro', 'Courier New', monospace;
+  font-style: italic;
 }
 
-/* Respeta la preferencia de reducir movimiento: símbolos estáticos. */
+/* Multi-line accents (Euler, matrix) */
+.mds--accent {
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+.mds--matrix { letter-spacing: 0.06em; }
+
+/* Superscript for Euler identity */
+.mds__sup {
+  font-size: 0.65em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+/* Animation variants — use global mdf-* keyframes from styles.css */
+.mds--em {
+  animation:
+    mdf-em var(--mdf-dur, 22s) ease-in-out var(--mdf-dl, 0s) infinite,
+    mdf-gl 44s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.mds--a {
+  animation:
+    mdf-fa var(--mdf-dur, 18s) ease-in-out var(--mdf-dl, 0s) infinite alternate,
+    mdf-gl 32s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.mds--b {
+  animation:
+    mdf-fb var(--mdf-dur, 18s) ease-in-out var(--mdf-dl, 0s) infinite alternate,
+    mdf-gl 34s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+.mds--p {
+  animation:
+    mdf-pu var(--mdf-dur, 22s) ease-in-out var(--mdf-dl, 0s) infinite,
+    mdf-gl 42s ease-in-out var(--mdf-dl, 0s) infinite;
+}
+
+/* SVG decorations (frame variant only) */
+.mds__svg {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  display: block;
+}
+.mds__svg--axes {
+  left: 2.5%;
+  bottom: 9%;
+  width: 10%;
+  max-width: 120px;
+}
+.mds__svg--wave {
+  right: 2%;
+  bottom: 11%;
+  width: 16%;
+  max-width: 200px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .math-decor__sym {
-    animation: none;
-    opacity: var(--decor-max);
+  .mds {
+    animation: none !important;
+    opacity: var(--sd-max, 0.15) !important;
   }
+  .mds__svg { opacity: 0.08; }
 }

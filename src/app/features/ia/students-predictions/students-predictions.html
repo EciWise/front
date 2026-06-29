@@ -2,47 +2,112 @@
   <eci-page-header titleKey="ia.predictions.title" icon="assistant" />
 
   <div class="eci-fit__body">
-@if (loading()) {
-  <p>{{ 'common.loading' | translate }}</p>
-} @else if (students().length === 0) {
-  <eci-card><p>{{ 'ia.predictions.empty' | translate }}</p></eci-card>
-} @else {
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>{{ 'common.name' | translate }}</th>
-          <th>{{ 'common.email' | translate }}</th>
-          <th>{{ 'ia.predictions.performance' | translate }}</th>
-          <th>{{ 'ia.predictions.dropout' | translate }}</th>
-          <th>{{ 'ia.predictions.confidence' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (s of students(); track s.id) {
-          <tr>
-            <td>{{ s.nombre }} {{ s.apellido }}</td>
-            <td class="admin-table__email">{{ s.email }}</td>
-            <td>{{ s.datosIa?.prediccionRendimiento || '—' }}</td>
-            <td>
-              @if (s.datosIa?.prediccionDesercion; as dp) {
-                <span
-                  class="risk"
-                  [class.risk--high]="dp === 'Dropout'"
-                  [class.risk--low]="dp !== 'Dropout'"
-                >{{ dp }}</span>
-              } @else {
-                —
-              }
-            </td>
-            <td>
-              {{ s.datosIa?.confianzaDesercion !== null && s.datosIa?.confianzaDesercion !== undefined ? s.datosIa?.confianzaDesercion + '%' : '—' }}
-            </td>
-          </tr>
+    @if (loading()) {
+      <p>{{ 'common.loading' | translate }}</p>
+    } @else if (students().length === 0) {
+      <eci-card><p>{{ 'ia.predictions.empty' | translate }}</p></eci-card>
+    } @else {
+      <!-- KPI cards -->
+      <div class="pred-kpis">
+        <div class="pred-kpi pred-kpi--accent">
+          <span class="pred-kpi__label">{{ 'ia.predictions.kpi.total' | translate }}</span>
+          <span class="pred-kpi__value">{{ kpis().total }}</span>
+        </div>
+        <div class="pred-kpi pred-kpi--danger">
+          <span class="pred-kpi__label">{{ 'ia.predictions.kpi.atRisk' | translate }}</span>
+          <span class="pred-kpi__value">{{ kpis().atRisk }}</span>
+        </div>
+        <div class="pred-kpi pred-kpi--info">
+          <span class="pred-kpi__label">{{ 'ia.predictions.kpi.withPrediction' | translate }}</span>
+          <span class="pred-kpi__value">{{ kpis().withPred }}</span>
+        </div>
+        <div class="pred-kpi pred-kpi--success">
+          <span class="pred-kpi__label">{{ 'ia.predictions.kpi.avgConf' | translate }}</span>
+          <span class="pred-kpi__value">
+            @if (kpis().avgConf !== null) { {{ kpis().avgConf }}% } @else { — }
+          </span>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="pred-filters" role="group" [attr.aria-label]="'ia.predictions.dropout' | translate">
+        @for (f of [
+          { id: 'all', key: 'ia.predictions.filter.all' },
+          { id: 'low', key: 'ia.predictions.filter.low' },
+          { id: 'med', key: 'ia.predictions.filter.med' },
+          { id: 'high', key: 'ia.predictions.filter.high' }
+        ]; track f.id) {
+          <button
+            type="button"
+            class="pred-pill"
+            [class.pred-pill--active]="riskFilter() === f.id"
+            (click)="riskFilter.set($any(f.id))"
+          >
+            {{ f.key | translate }}
+          </button>
         }
-      </tbody>
-    </table>
-  </div>
-}
+      </div>
+
+      <!-- Table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table pred-table">
+          <thead>
+            <tr>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'ia.predictions.performance' | translate }}</th>
+              <th>{{ 'ia.predictions.dropout' | translate }}</th>
+              <th>{{ 'ia.predictions.confidence' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of filteredStudents(); track s.id) {
+              <tr>
+                <td>
+                  <span class="pred-student">
+                    <span class="pred-student__avatar">{{ (s.nombre[0] || '') + (s.apellido[0] || '') }}</span>
+                    <span>
+                      <span class="pred-student__name">{{ s.nombre }} {{ s.apellido }}</span>
+                      <span class="pred-student__sem">
+                        {{ 'ia.predictions.semester' | translate: { n: s.semestre } }}
+                      </span>
+                    </span>
+                  </span>
+                </td>
+                <td class="pred-perf">{{ s.datosIa?.prediccionRendimiento || '—' }}</td>
+                <td>
+                  @if (s.datosIa?.prediccionDesercion) {
+                    @switch (riskLevel(s)) {
+                      @case ('high') {
+                        <span class="pred-risk pred-risk--high">{{ 'ia.predictions.risk.high' | translate }}</span>
+                      }
+                      @case ('med') {
+                        <span class="pred-risk pred-risk--med">{{ 'ia.predictions.risk.med' | translate }}</span>
+                      }
+                      @default {
+                        <span class="pred-risk pred-risk--low">{{ 'ia.predictions.risk.low' | translate }}</span>
+                      }
+                    }
+                  } @else {
+                    <span class="pred-risk">{{ 'ia.predictions.risk.none' | translate }}</span>
+                  }
+                </td>
+                <td>
+                  @if (s.datosIa?.confianzaDesercion !== null && s.datosIa?.confianzaDesercion !== undefined) {
+                    <span class="pred-conf">
+                      <span class="pred-conf__bar">
+                        <span class="pred-conf__fill" [style.width.%]="s.datosIa!.confianzaDesercion!"></span>
+                      </span>
+                      <span class="pred-conf__val">{{ s.datosIa!.confianzaDesercion | number:'1.0-0' }}%</span>
+                    </span>
+                  } @else {
+                    —
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </div>
 </div>
