@@ -153,6 +153,10 @@ nav: {
     statistics: 'Statistiken',
     predictions: 'Prognosen',
     assignments: 'Zuweisungen',
+    monitorias: 'Tutorensitzungen',
+    materiales: 'Materialien',
+    materiasTutores: 'Faecher pro Tutor',
+    materias: 'Fachkatalog',
     aprendizaje: 'Lernen',
   },  errors: {
     network: 'Keine Verbindung zum Server. Bitte überprüfe dein Netzwerk.',
@@ -983,6 +987,10 @@ tutor: {
         rol_invalido: 'Unbekannte Rolle.',
       },
     },
+    monitorias: { ...en.admin.monitorias, title: 'Tutorensitzungen', allMaterias: 'Alle Faecher', allModalidades: 'Alle Modalitaeten', colTutor: 'Tutor', colMateria: 'Fach', colFecha: 'Datum', colHora: 'Uhrzeit', colModalidad: 'Modalitaet', colCupos: 'Plaetze verf./gesamt', empty: 'Keine Sitzungen gefunden.' },
+    materiales: { ...en.admin.materiales, title: 'Materialverwaltung', upload: 'Material hochladen', empty: 'Keine Materialien registriert.', nombre: 'Name', materia: 'Fach/Etikett', tipo: 'Typ', descripcion: 'Beschreibung (optional)', tags: 'Etiketten', archivo: 'Datei', view: 'Anzeigen', delete: 'Loeschen', uploading: 'Hochladen…', uploaded: 'Material erfolgreich hochgeladen.', error: 'Material konnte nicht gespeichert werden.', errorFile: 'Datei auswaehlen und Name eingeben.', deleteError: 'Konnte nicht loeschen.' },
+    materias: { ...en.admin.materias, title: 'Fachkatalog', createTitle: 'Neues Fach', editTitle: 'Fach bearbeiten', create: 'Neues Fach', save: 'Aenderungen speichern', count: '{{count}} Faecher', empty: 'Keine Faecher registriert.', activa: 'Aktiv', inactiva: 'Inaktiv', activate: 'Aktivieren', deactivate: 'Deaktivieren', edit: 'Bearbeiten', codigoPlaceholder: 'z. B. MAT101', nombrePlaceholder: 'z. B. Differentialrechnung', error: 'Fach konnte nicht gespeichert werden (doppelter Code?).', actionError: 'Aktion konnte nicht abgeschlossen werden.' },
+    materiasTutores: { ...en.admin.materiasTutores, title: 'Faecher pro Tutor', selectTutor: 'Tutor auswaehlen', noTutor: 'Tutor auswaehlen, um zugewiesene Faecher zu sehen.', assign: 'Fach zuweisen', selectMateria: 'Fach auswaehlen', assigned: 'Zugewiesene Faecher', empty: 'Keine Faecher zugewiesen.', remove: 'Entfernen', error: 'Vorgang konnte nicht abgeschlossen werden.', loadError: 'Faecher des Tutors konnten nicht geladen werden.' },
   },
   auth: {
     loginTitle: 'Willkommen zurück',

@@ -153,6 +153,10 @@ nav: {
     statistics: 'Statistiques',
     predictions: 'Predictions',
     assignments: 'Affectations',
+    monitorias: 'Seances de tutorat',
+    materiales: 'Materiaux',
+    materiasTutores: 'Matieres par tuteur',
+    materias: 'Catalogue des matieres',
     aprendizaje: 'Apprentissage',
   },  errors: {
     network: 'Aucune connexion au serveur. Vérifiez votre réseau.',
@@ -984,6 +988,10 @@ tutor: {
         rol_invalido: 'Rôle non reconnu.',
       },
     },
+    monitorias: { ...en.admin.monitorias, title: 'Seances de tutorat', allMaterias: 'Toutes les matieres', allModalidades: 'Toutes les modalites', colTutor: 'Tuteur', colMateria: 'Matiere', colFecha: 'Date', colHora: 'Heure', colModalidad: 'Modalite', colCupos: 'Places dispo./total', empty: 'Aucune seance trouvee.' },
+    materiales: { ...en.admin.materiales, title: 'Gestion des materiaux', upload: 'Telecharger un materiau', empty: 'Aucun materiau enregistre.', nombre: 'Nom', materia: 'Matiere/Etiquette', tipo: 'Type', descripcion: 'Description (facultatif)', tags: 'Etiquettes', archivo: 'Fichier', view: 'Voir', delete: 'Supprimer', uploading: 'Telechargement…', uploaded: 'Materiau telecharge avec succes.', error: 'Impossible de sauvegarder le materiau.', errorFile: 'Selectionnez un fichier et remplissez le nom.', deleteError: 'Impossible de supprimer.' },
+    materias: { ...en.admin.materias, title: 'Catalogue des matieres', createTitle: 'Nouvelle matiere', editTitle: 'Modifier la matiere', create: 'Nouvelle matiere', save: 'Enregistrer les modifications', count: '{{count}} matieres', empty: 'Aucune matiere enregistree.', activa: 'Active', inactiva: 'Inactive', activate: 'Activer', deactivate: 'Desactiver', codigoPlaceholder: 'Ex: MAT101', nombrePlaceholder: 'Ex: Calcul differentiel', error: 'Impossible de sauvegarder (code duplique?).', actionError: "Impossible de terminer l'action." },
+    materiasTutores: { ...en.admin.materiasTutores, title: 'Matieres par tuteur', selectTutor: 'Selectionner un tuteur', noTutor: 'Selectionnez un tuteur pour voir ses matieres attribuees.', assign: 'Attribuer une matiere', selectMateria: 'Selectionner une matiere', assigned: 'Matieres attribuees', empty: 'Aucune matiere attribuee.', remove: 'Retirer', error: "L'operation a echoue.", loadError: 'Impossible de charger les matieres du tuteur.' },
   },
   auth: {
     loginTitle: 'Bon retour',

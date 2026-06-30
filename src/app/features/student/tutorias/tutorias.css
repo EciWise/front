@@ -23,14 +23,68 @@
   color: var(--success);
 }
 
-.filters,
-.modal-form {
+.filters {
   display: grid;
   gap: var(--space-4);
+  grid-template-columns: 1fr;
 }
 
-.filters {
-  grid-template-columns: 1fr;
+/* ── Reserve modal ───────────────────────────────────────────────────────── */
+.reserve-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.reserve-summary {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.reserve-summary__eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reserve-summary__subject {
+  margin: 0 0 var(--space-4);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.reserve-summary__details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+}
+
+.reserve-summary__details dt {
+  margin: 0 0 var(--space-1);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reserve-summary__details dd {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.reserve-form {
+  display: grid;
+  gap: var(--space-4);
 }
 
 .field {
@@ -112,18 +166,22 @@
 }
 
 .status[data-status='cancelled'],
-.status[data-status='no_show'] {
+.status[data-status='no_show'],
+.status[data-status='cancelada'],
+.status[data-status='inasistida'] {
   background: color-mix(in srgb, var(--danger) 14%, transparent);
   color: var(--danger);
 }
 
-.status[data-status='completed'] {
+.status[data-status='completed'],
+.status[data-status='asistida'] {
   background: color-mix(in srgb, var(--success) 14%, transparent);
   color: var(--success);
 }
 
 .status[data-status='requested'],
-.status[data-status='confirmed'] {
+.status[data-status='confirmed'],
+.status[data-status='confirmada'] {
   background: color-mix(in srgb, var(--warning) 14%, transparent);
   color: var(--warning);
 }
@@ -220,6 +278,8 @@
 
 .tutoring-card__aside {
   justify-content: flex-start;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
 }
 
 .seats {
@@ -388,6 +448,30 @@
     flex: none;
     justify-content: flex-end;
     max-width: 16rem;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  /* Reserve modal: summary left / form right on tablets+ */
+  .reserve-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-6);
+  }
+
+  .reserve-summary {
+    flex: 0 0 13rem;
+    position: sticky;
+    top: 0;
+  }
+
+  .reserve-summary__details {
+    grid-template-columns: 1fr;
+  }
+
+  .reserve-form {
+    flex: 1;
+    min-width: 0;
   }
 }
 

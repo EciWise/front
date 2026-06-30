@@ -28,6 +28,28 @@ export const ADMIN_ROUTES: Routes = [
       import('./assignments/assignments').then((m) => m.AdminAssignmentsComponent),
   },
   {
+    path: 'monitorias',
+    loadComponent: () =>
+      import('./monitorias/admin-monitorias').then((m) => m.AdminMonitoriasComponent),
+  },
+  {
+    path: 'materiales',
+    loadComponent: () =>
+      import('./materiales/admin-materiales').then((m) => m.AdminMaterialesComponent),
+  },
+  {
+    path: 'materias-tutores',
+    loadComponent: () =>
+      import('./materias-tutores/admin-materias-tutores').then(
+        (m) => m.AdminMateriasTutoresComponent,
+      ),
+  },
+  {
+    path: 'materias',
+    loadComponent: () =>
+      import('./materias/admin-materias').then((m) => m.AdminMateriasComponent),
+  },
+  {
     path: 'aprendizaje',
     loadComponent: () =>
       import('../aprendizaje/aprendizaje').then((m) => m.AprendizajeComponent),
@@ -35,6 +57,10 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'practica',
     loadComponent: () => import('../practica/practica').then((m) => m.PracticaComponent),
+  },
+  {
+    path: 'salas',
+    loadComponent: () => import('./salas/admin-salas').then((m) => m.AdminSalasComponent),
   },
   {
     path: 'profile',

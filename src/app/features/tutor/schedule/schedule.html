@@ -8,7 +8,7 @@
   }
 
   @if (actionError()) {
-    <p class="notice notice--error eci-fit__chrome" role="alert">{{ actionError() | translate }}</p>
+    <p class="notice notice--error eci-fit__chrome" role="alert">{{ actionError() }}</p>
   }
 
   <div class="eci-fit__body">
@@ -22,92 +22,50 @@
           </eci-card>
         } @else {
           <ul class="session-list">
-            @for (reservation of upcomingReservations(); track reservation.id) {
-              @if (availabilityFor(reservation); as availability) {
-                <li>
-                  <eci-card>
-                    <article class="session-card">
-                      <div class="session-card__main">
-                        <div class="session-card__eyebrow">
-                          <span class="status" [attr.data-status]="reservation.status">
-                            {{ statusKey(reservation.status) | translate }}
-                          </span>
-                          <span>{{ modeKey(availability) | translate }}</span>
-                          <span>{{ availability.date | date: 'mediumDate' }}</span>
-                          <span>{{ availability.startTime }} - {{ availability.endTime }}</span>
-                        </div>
-                        <h3>{{ subjectName(reservation.subjectId) }}</h3>
-                        <p class="session-card__meta">
-                          <span>{{ 'tutor.requests.student' | translate }}: {{ studentName(reservation) }}</span>
-                          <span>{{ studentCareer(reservation) }}</span>
-                          <span>{{ reservation.specificTopic }}</span>
-                        </p>
-                        <dl class="metrics">
-                          <div>
-                            <dt>{{ 'tutor.studentReputation.rating' | translate }}</dt>
-                            <dd>{{ studentRating(reservation) | number: '1.1-1' }}</dd>
-                          </div>
-                          <div>
-                            <dt>{{ 'tutor.studentReputation.attendance' | translate }}</dt>
-                            <dd>{{ studentAttendance(reservation) }}%</dd>
-                          </div>
-                          <div>
-                            <dt>{{ 'tutor.studentReputation.completed' | translate }}</dt>
-                            <dd>{{ studentCompleted(reservation) }}</dd>
-                          </div>
-                        </dl>
-                        @if (studentComments(reservation); as comments) {
-                          @if (comments.length > 0) {
-                            <div class="comments">
-                              <p class="comments__title">{{ 'tutor.studentReputation.comments' | translate }}</p>
-                              <ul>
-                                @for (comment of comments; track comment) {
-                                  <li>{{ comment }}</li>
-                                }
-                              </ul>
-                            </div>
-                          }
+            @for (r of upcomingReservations(); track r.id) {
+              <li>
+                <eci-card>
+                  <article class="session-card">
+                    <div class="session-card__main">
+                      <div class="session-card__eyebrow">
+                        <span class="status" [attr.data-status]="statusCssValue(r.estadoAsistencia)">
+                          {{ statusKey(r.estadoAsistencia) | translate }}
+                        </span>
+                        <span class="pill">{{ modeKey(r.sesion.modalidad) | translate }}</span>
+                        <span>{{ r.sesion.fecha | date: 'mediumDate' }}</span>
+                        <span>{{ r.sesion.horaInicio }} - {{ r.sesion.horaFin }}</span>
+                      </div>
+                      <h3>{{ r.sesion.materiaNombre }}</h3>
+                      <p class="session-card__meta">
+                        <span>{{ 'tutor.requests.student' | translate }}: {{ r.estudianteNombre ?? '-' }}</span>
+                        @if (r.temaEspecifico) {
+                          <span>{{ r.temaEspecifico }}</span>
                         }
-                        <p class="access">
-                          <span>{{ 'tutor.schedule.access' | translate }}:</span>
-                          @if (availability.mode === 'virtual') {
-                            <a [href]="accessLabel(availability)" target="_blank" rel="noopener">
-                              {{ 'tutor.schedule.openSession' | translate }}
-                            </a>
-                          } @else {
-                            <strong>{{ accessLabel(availability) }}</strong>
-                          }
-                        </p>
-                      </div>
+                      </p>
+                      @if (r.descripcionDudas) {
+                        <p class="session-description">{{ r.descripcionDudas }}</p>
+                      }
+                      <p class="access">
+                        <span>{{ 'tutor.schedule.access' | translate }}:</span>
+                        @if (r.sesion.modalidad === 'VIRTUAL') {
+                          <a [href]="r.sesion.enlaceVirtual" target="_blank" rel="noopener">
+                            {{ 'tutor.schedule.openSession' | translate }}
+                          </a>
+                        } @else {
+                          <strong>{{ r.sesion.salaCodigo }}</strong>
+                        }
+                      </p>
+                    </div>
 
-                      <div class="session-card__actions">
-                        <eci-button
-                          variant="secondary"
-                          (buttonClick)="markAttendance(reservation, 'confirmed')"
-                        >
-                          <eci-icon name="circle-check" [size]="16" />
-                          {{ 'tutoring.status.confirmed' | translate }}
-                        </eci-button>
-                        <eci-button (buttonClick)="markAttendance(reservation, 'completed')">
-                          <eci-icon name="check" [size]="16" />
-                          {{ 'tutoring.status.completed' | translate }}
-                        </eci-button>
-                        <eci-button
-                          variant="ghost"
-                          (buttonClick)="markAttendance(reservation, 'no_show')"
-                        >
-                          <eci-icon name="close" [size]="16" />
-                          {{ 'tutoring.status.no_show' | translate }}
-                        </eci-button>
-                        <eci-button variant="ghost" (buttonClick)="openObservation(reservation)">
-                          <eci-icon name="edit" [size]="16" />
-                          {{ 'tutor.schedule.observations' | translate }}
-                        </eci-button>
-                      </div>
-                    </article>
-                  </eci-card>
-                </li>
-              }
+                    <div class="session-card__actions">
+                      <eci-button variant="ghost" (buttonClick)="openObservation(r)">
+                        <eci-icon name="edit" [size]="16" />
+                        {{ 'tutor.schedule.observations' | translate }}
+                      </eci-button>
+                    </div>
+                  </article>
+                </eci-card>
+              </li>
             }
           </ul>
         }
@@ -122,43 +80,37 @@
           </eci-card>
         } @else {
           <ul class="session-list">
-            @for (reservation of closedReservations(); track reservation.id) {
-              @if (availabilityFor(reservation); as availability) {
-                <li>
-                  <eci-card>
-                    <article class="closed-card">
-                      <div>
-                        <div class="session-card__eyebrow">
-                          <span class="status" [attr.data-status]="reservation.status">
-                            {{ statusKey(reservation.status) | translate }}
-                          </span>
-                          <span>{{ availability.date | date: 'mediumDate' }}</span>
-                        </div>
-                        <h3>{{ subjectName(reservation.subjectId) }}</h3>
-                        <p class="session-card__meta">
-                          <span>{{ studentName(reservation) }}</span>
-                          <span>{{ reservation.specificTopic }}</span>
-                        </p>
-                        @if (reservation.tutorObservation) {
-                          <p class="observation">{{ reservation.tutorObservation }}</p>
-                        }
+            @for (r of closedReservations(); track r.id) {
+              <li>
+                <eci-card>
+                  <article class="closed-card">
+                    <div>
+                      <div class="session-card__eyebrow">
+                        <span class="status" [attr.data-status]="statusCssValue(r.estadoAsistencia)">
+                          {{ statusKey(r.estadoAsistencia) | translate }}
+                        </span>
+                        <span>{{ r.sesion.fecha | date: 'mediumDate' }}</span>
                       </div>
-                      <div class="session-card__actions">
-                        <eci-button variant="secondary" (buttonClick)="openObservation(reservation)">
-                          <eci-icon name="edit" [size]="16" />
-                          {{ 'tutor.schedule.observations' | translate }}
-                        </eci-button>
-                        @if (reservation.status === 'completed') {
-                          <eci-button (buttonClick)="openParticipation(reservation)">
-                            <eci-icon name="star" [size]="16" />
-                            {{ 'tutor.schedule.evaluateStudent' | translate }}
-                          </eci-button>
+                      <h3>{{ r.sesion.materiaNombre }}</h3>
+                      <p class="session-card__meta">
+                        <span>{{ r.estudianteNombre ?? '-' }}</span>
+                        @if (r.temaEspecifico) {
+                          <span>{{ r.temaEspecifico }}</span>
                         }
-                      </div>
-                    </article>
-                  </eci-card>
-                </li>
-              }
+                      </p>
+                      @if (r.motivoCancelacion) {
+                        <p class="observation">{{ r.motivoCancelacion }}</p>
+                      }
+                    </div>
+                    <div class="session-card__actions">
+                      <eci-button variant="secondary" (buttonClick)="openObservation(r)">
+                        <eci-icon name="edit" [size]="16" />
+                        {{ 'tutor.schedule.observations' | translate }}
+                      </eci-button>
+                    </div>
+                  </article>
+                </eci-card>
+              </li>
             }
           </ul>
         }
@@ -169,6 +121,10 @@
 
 <eci-modal [(open)]="observationOpen" titleKey="tutor.schedule.observations">
   <form class="modal-form" (submit)="submitObservation($event)">
+    @if (actionError()) {
+      <p class="form-error" role="alert">{{ actionError() }}</p>
+    }
+
     <label class="field">
       <span>{{ 'tutor.schedule.observationLabel' | translate }}</span>
       <textarea rows="5" [formField]="observationForm.observation"></textarea>
@@ -182,55 +138,6 @@
         {{ 'common.cancel' | translate }}
       </eci-button>
       <eci-button type="submit">{{ 'common.save' | translate }}</eci-button>
-    </div>
-  </form>
-</eci-modal>
-
-<eci-modal [(open)]="participationOpen" titleKey="tutor.schedule.evaluateStudent" size="wide">
-  <form class="modal-form" (submit)="submitParticipation($event)">
-    @if (actionError()) {
-      <p class="form-error" role="alert">{{ actionError() | translate }}</p>
-    }
-
-    <fieldset class="rating-fields">
-      <legend>{{ 'tutor.schedule.participationLegend' | translate }}</legend>
-      @for (field of participationFields; track field) {
-        <fieldset class="rating-field">
-          <legend>{{ 'tutor.schedule.participation.' + field | translate }}</legend>
-          <div class="stars">
-            @for (star of stars; track star) {
-              <button
-                type="button"
-                class="star-button"
-                [class.star-button--active]="participationModel()[field] >= star"
-                [attr.aria-label]="'tutorias.rating.starLabel' | translate: { count: star }"
-                (click)="setParticipation(field, star)"
-              >
-                <eci-icon name="star" [size]="18" />
-              </button>
-            }
-          </div>
-        </fieldset>
-      }
-    </fieldset>
-
-    @if (participationForm.punctuality().touched() && participationForm.punctuality().invalid()) {
-      <p class="form-error">{{ 'tutor.schedule.validation.rating' | translate }}</p>
-    }
-
-    <label class="field">
-      <span>{{ 'tutor.schedule.participation.comment' | translate }}</span>
-      <textarea rows="4" [formField]="participationForm.comment"></textarea>
-      @if (participationForm.comment().touched() && participationForm.comment().invalid()) {
-        <span class="form-error">{{ 'tutor.schedule.validation.comment' | translate }}</span>
-      }
-    </label>
-
-    <div class="modal-actions">
-      <eci-button variant="ghost" type="button" (buttonClick)="participationOpen.set(false)">
-        {{ 'common.cancel' | translate }}
-      </eci-button>
-      <eci-button type="submit">{{ 'tutor.schedule.saveEvaluation' | translate }}</eci-button>
     </div>
   </form>
 </eci-modal>

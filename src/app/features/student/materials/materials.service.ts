@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { MATERIALS_CONFIG } from './materials.config';
 import { Material, MaterialType } from './material.model';
 
@@ -79,5 +80,17 @@ export class MaterialsService {
 
   downloadUrl(id: string): string {
     return `${this.config.materialsApiUrl}/material/${id}/download`;
+  }
+
+  reload(): void {
+    this.load();
+  }
+
+  create(data: FormData): Observable<unknown> {
+    return this.http.post(`${this.config.materialsApiUrl}/material`, data);
+  }
+
+  delete(id: string): Observable<unknown> {
+    return this.http.delete(`${this.config.materialsApiUrl}/material/${id}`);
   }
 }

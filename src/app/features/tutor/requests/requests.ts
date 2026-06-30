@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
+import { IconComponent } from '../../../shared/ui/icon/icon';
 import { TutoringRequestsService } from '../requests.service';
 import { TutoringRequest } from '../tutor.models';
 
@@ -11,7 +12,7 @@ import { TutoringRequest } from '../tutor.models';
 @Component({
   selector: 'eci-tutor-requests',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, TranslatePipe, PageHeaderComponent, CardComponent, ButtonComponent],
+  imports: [DatePipe, TranslatePipe, PageHeaderComponent, CardComponent, ButtonComponent, IconComponent],
   templateUrl: './requests.html',
   styleUrl: './requests.css',
 })

@@ -1,13 +1,19 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { AuthService } from '../../core/auth/auth.service';
 import { TutoringRequestsService } from './requests.service';
 import { TutorHistoryService } from './history.service';
+
+const fakeAuth = { user: signal<null>(null).asReadonly() };
 
 describe('TutoringRequestsService', () => {
   let service: TutoringRequestsService;
   let history: TutorHistoryService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: AuthService, useValue: fakeAuth }],
+    });
     service = TestBed.inject(TutoringRequestsService);
     history = TestBed.inject(TutorHistoryService);
   });

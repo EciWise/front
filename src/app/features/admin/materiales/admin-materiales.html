@@ -1,0 +1,113 @@
+<eci-page-header titleKey="admin.materiales.title" icon="materials" />
+
+<div class="mat-header-row">
+  <p class="admin__count">
+    {{ 'admin.materiales.count' | translate: { count: items().length } }}
+  </p>
+  <eci-button (click)="openUpload()">
+    <eci-icon name="plus" [size]="16" />
+    {{ 'admin.materiales.upload' | translate }}
+  </eci-button>
+</div>
+
+@if (successKey(); as key) {
+  <p class="mat__success" role="status">{{ key | translate }}</p>
+}
+
+@if (items().length > 0) {
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.materiales.nombre' | translate }}</th>
+          <th>{{ 'admin.materiales.materia' | translate }}</th>
+          <th>{{ 'admin.materiales.tipo' | translate }}</th>
+          <th>{{ 'fields.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of items(); track m.id) {
+          <tr>
+            <td>{{ m.title }}</td>
+            <td>{{ m.subject || '—' }}</td>
+            <td>
+              <span class="mat-type mat-type--{{ m.type }}">{{ m.type }}</span>
+            </td>
+            <td class="mat-actions">
+              <a [href]="downloadUrl(m.id)" target="_blank" rel="noopener">
+                <eci-button variant="ghost">
+                  <eci-icon name="eye" [size]="15" />
+                  {{ 'admin.materiales.view' | translate }}
+                </eci-button>
+              </a>
+              <eci-button variant="ghost" (click)="remove(m.id)">
+                <eci-icon name="trash" [size]="15" />
+                {{ 'admin.materiales.delete' | translate }}
+              </eci-button>
+              @if (deleteErrorId() === m.id) {
+                <span class="mat__error">{{ 'admin.materiales.deleteError' | translate }}</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="admin__empty">{{ 'admin.materiales.empty' | translate }}</p>
+}
+
+<eci-modal [(open)]="uploadOpen" titleKey="admin.materiales.upload">
+  <form class="mat-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mat-field">
+      <label class="mat-label" for="mat-nombre">{{ 'admin.materiales.nombre' | translate }}</label>
+      <input
+        id="mat-nombre"
+        class="mat-input"
+        type="text"
+        formControlName="nombre"
+        [placeholder]="'admin.materiales.nombre' | translate"
+      />
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="mat-desc">{{ 'admin.materiales.descripcion' | translate }}</label>
+      <textarea
+        id="mat-desc"
+        class="mat-input mat-input--area"
+        formControlName="descripcion"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="mat-tags">{{ 'admin.materiales.tags' | translate }}</label>
+      <input
+        id="mat-tags"
+        class="mat-input"
+        type="text"
+        formControlName="tags"
+        [placeholder]="'admin.materiales.tagsPlaceholder' | translate"
+      />
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="mat-file">{{ 'admin.materiales.archivo' | translate }}</label>
+      <input id="mat-file" class="mat-file" type="file" (change)="onFile($event)" />
+    </div>
+
+    @if (errorKey(); as err) {
+      <p class="mat__error" role="alert">{{ err | translate }}</p>
+    }
+
+    <div class="mat-actions-row">
+      <eci-button type="submit" [disabled]="uploading()">
+        @if (uploading()) {
+          {{ 'admin.materiales.uploading' | translate }}
+        } @else {
+          {{ 'admin.materiales.upload' | translate }}
+        }
+      </eci-button>
+    </div>
+  </form>
+</eci-modal>

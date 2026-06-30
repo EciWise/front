@@ -1,0 +1,109 @@
+<eci-page-header titleKey="admin.materias.title" icon="study" />
+
+<div class="mat-header-row">
+  <p class="admin__count">
+    {{ 'admin.materias.count' | translate: { count: materias().length } }}
+  </p>
+  <eci-button (click)="openCreate()">
+    <eci-icon name="plus" [size]="16" />
+    {{ 'admin.materias.create' | translate }}
+  </eci-button>
+</div>
+
+@if (materias().length > 0) {
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.materias.colCodigo' | translate }}</th>
+          <th>{{ 'admin.materias.colNombre' | translate }}</th>
+          <th>{{ 'admin.materias.colEstado' | translate }}</th>
+          <th>{{ 'fields.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of materias(); track m.id) {
+          <tr [class.mat-row--inactive]="!m.activa">
+            <td class="mat-code">{{ m.codigo }}</td>
+            <td>{{ m.nombre }}</td>
+            <td>
+              <span class="mat-badge" [class.mat-badge--active]="m.activa">
+                {{ (m.activa ? 'admin.materias.activa' : 'admin.materias.inactiva') | translate }}
+              </span>
+            </td>
+            <td class="mat-actions">
+              <eci-button variant="ghost" (click)="openEdit(m)">
+                <eci-icon name="edit" [size]="15" />
+                {{ 'admin.materias.edit' | translate }}
+              </eci-button>
+              <eci-button variant="ghost" (click)="toggleActiva(m)">
+                <eci-icon [name]="m.activa ? 'eye-off' : 'eye'" [size]="15" />
+                {{ (m.activa ? 'admin.materias.deactivate' : 'admin.materias.activate') | translate }}
+              </eci-button>
+              @if (!m.activa) {
+                <eci-button variant="ghost" (click)="remove(m)">
+                  <eci-icon name="trash" [size]="15" />
+                  {{ 'admin.materias.delete' | translate }}
+                </eci-button>
+              }
+              @if (actionErrorId() === m.id) {
+                <span class="mat__error">{{ 'admin.materias.actionError' | translate }}</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="admin__empty">{{ 'admin.materias.empty' | translate }}</p>
+}
+
+<eci-modal
+  [(open)]="modalOpen"
+  [titleKey]="editTarget() ? 'admin.materias.editTitle' : 'admin.materias.createTitle'"
+>
+  <form class="mat-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mat-field">
+      <label class="mat-label" for="mat-codigo">{{ 'admin.materias.colCodigo' | translate }}</label>
+      <input
+        id="mat-codigo"
+        class="mat-input"
+        type="text"
+        formControlName="codigo"
+        [placeholder]="'admin.materias.codigoPlaceholder' | translate"
+      />
+      @if (form.controls.codigo.invalid && form.controls.codigo.touched) {
+        <span class="mat__error">{{ 'admin.materias.codigoRequired' | translate }}</span>
+      }
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="mat-nombre">{{ 'admin.materias.colNombre' | translate }}</label>
+      <input
+        id="mat-nombre"
+        class="mat-input"
+        type="text"
+        formControlName="nombre"
+        [placeholder]="'admin.materias.nombrePlaceholder' | translate"
+      />
+      @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+        <span class="mat__error">{{ 'admin.materias.nombreRequired' | translate }}</span>
+      }
+    </div>
+
+    @if (errorKey(); as err) {
+      <p class="mat__error" role="alert">{{ err | translate }}</p>
+    }
+
+    <div class="mat-actions-row">
+      <eci-button type="submit" [disabled]="saving()">
+        @if (saving()) {
+          {{ 'admin.materias.saving' | translate }}
+        } @else {
+          {{ (editTarget() ? 'admin.materias.save' : 'admin.materias.create') | translate }}
+        }
+      </eci-button>
+    </div>
+  </form>
+</eci-modal>

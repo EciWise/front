@@ -1,0 +1,60 @@
+<eci-page-header titleKey="admin.monitorias.title" icon="tutorias" />
+
+
+<eci-card>
+  <div class="mon-filters">
+    <eci-select
+      [value]="filterMateriaId()"
+      [options]="materiaOptions()"
+      [placeholder]="'admin.monitorias.allMaterias' | translate"
+      [ariaLabel]="'admin.monitorias.colMateria' | translate"
+      (valueChange)="setMateria($event)"
+    />
+    <eci-select
+      [value]="filterModalidad()"
+      [options]="modalidadOptions"
+      [placeholder]="'admin.monitorias.allModalidades' | translate"
+      [ariaLabel]="'admin.monitorias.colModalidad' | translate"
+      (valueChange)="setModalidad($event)"
+    />
+  </div>
+</eci-card>
+
+<p class="admin__count">
+  {{ 'admin.monitorias.count' | translate: { count: sesionesVisible().length } }}
+</p>
+
+@if (sesionesVisible().length > 0) {
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.monitorias.colTutor' | translate }}</th>
+          <th>{{ 'admin.monitorias.colMateria' | translate }}</th>
+          <th>{{ 'admin.monitorias.colFecha' | translate }}</th>
+          <th>{{ 'admin.monitorias.colHora' | translate }}</th>
+          <th>{{ 'admin.monitorias.colModalidad' | translate }}</th>
+          <th>{{ 'admin.monitorias.colCupos' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of sesionesVisible(); track s.id) {
+          <tr>
+            <td>{{ s.tutorNombre ?? '—' }}</td>
+            <td>{{ s.materiaCodigo }} – {{ s.materiaNombre }}</td>
+            <td>{{ s.fecha | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ s.horaInicio }} – {{ s.horaFin }}</td>
+            <td>
+              <span class="mon-badge" [class.mon-badge--virtual]="s.modalidad === 'VIRTUAL'">
+                {{ (s.modalidad === 'VIRTUAL' ? 'admin.monitorias.virtual' : 'admin.monitorias.presencial') | translate }}
+              </span>
+            </td>
+            <td>{{ s.cuposDisponibles }}/{{ s.cuposMaximos }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="admin__empty">{{ 'admin.monitorias.empty' | translate }}</p>
+}

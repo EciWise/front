@@ -47,6 +47,11 @@ const ADMIN_NAV: readonly NavItem[] = [
   { labelKey: 'nav.statistics', route: '/admin/estadisticas', icon: 'trophy', descKey: 'nav.desc.statistics' },
   { labelKey: 'nav.predictions', route: '/admin/predicciones', icon: 'assistant', descKey: 'nav.desc.predictions' },
   { labelKey: 'nav.assignments', route: '/admin/asignaciones', icon: 'add-user', descKey: 'nav.desc.assignments' },
+  { labelKey: 'nav.monitorias', route: '/admin/monitorias', icon: 'tutorias', descKey: 'nav.desc.monitorias' },
+  { labelKey: 'nav.materiales', route: '/admin/materiales', icon: 'materials', descKey: 'nav.desc.materiales' },
+  { labelKey: 'nav.materiasTutores', route: '/admin/materias-tutores', icon: 'study', descKey: 'nav.desc.materiasTutores' },
+  { labelKey: 'nav.materias', route: '/admin/materias', icon: 'file', descKey: 'nav.desc.materias' },
+  { labelKey: 'nav.salas', route: '/admin/salas', icon: 'schedule', descKey: 'nav.desc.salas' },
   { labelKey: 'nav.aprendizaje', route: '/admin/aprendizaje', icon: 'aprendizaje' },
   { labelKey: 'nav.practica', route: '/admin/practica', icon: 'quiz' },
 ];
@@ -77,7 +82,8 @@ const ADMIN_GROUPS: readonly NavGroup[] = [
   { labelKey: 'nav.grp.principal', items: [ADMIN_NAV[0]] },
   { labelKey: 'nav.grp.manage', items: [ADMIN_NAV[1]] },
   { labelKey: 'nav.grp.analytics', items: [ADMIN_NAV[2], ADMIN_NAV[3]] },
-  { labelKey: 'nav.grp.content', items: [ADMIN_NAV[4], ADMIN_NAV[5], ADMIN_NAV[6]] },
+  { labelKey: 'nav.grp.tutorias', items: [ADMIN_NAV[4], ADMIN_NAV[5], ADMIN_NAV[7], ADMIN_NAV[8], ADMIN_NAV[9]] },
+  { labelKey: 'nav.grp.content', items: [ADMIN_NAV[6], ADMIN_NAV[10], ADMIN_NAV[11]] },
 ];
 
 const GROUPS_BY_ROLE: Record<Role, readonly NavGroup[]> = {
@@ -122,18 +128,23 @@ const TUTOR_SUBSECTIONS: readonly SearchEntry[] = [
 ];
 
 const ADMIN_SUBSECTIONS: readonly SearchEntry[] = [
-  { labelKey: 'admin.users.tabList',             route: '/admin/users',         icon: 'users',       parentLabelKey: 'nav.users' },
-  { labelKey: 'admin.users.tabImport',           route: '/admin/users',         icon: 'users',       parentLabelKey: 'nav.users' },
-  { labelKey: 'admin.statistics.tabSummary',     route: '/admin/estadisticas',  icon: 'trophy',      parentLabelKey: 'nav.statistics' },
-  { labelKey: 'admin.statistics.tabPlatform',    route: '/admin/estadisticas',  icon: 'trophy',      parentLabelKey: 'nav.statistics' },
-  { labelKey: 'admin.statistics.tabIa',          route: '/admin/estadisticas',  icon: 'trophy',      parentLabelKey: 'nav.statistics' },
-  { labelKey: 'admin.statistics.tabTutoring',    route: '/admin/estadisticas',  icon: 'trophy',      parentLabelKey: 'nav.statistics' },
-  { labelKey: 'practica.tab.play',               route: '/admin/practica',      icon: 'quiz',        parentLabelKey: 'nav.practica' },
-  { labelKey: 'practica.tab.questions',          route: '/admin/practica',      icon: 'quiz',        parentLabelKey: 'nav.practica' },
-  { labelKey: 'practica.tab.collections',        route: '/admin/practica',      icon: 'quiz',        parentLabelKey: 'nav.practica' },
-  { labelKey: 'aprendizaje.tab.collections',     route: '/admin/aprendizaje',   icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
-  { labelKey: 'aprendizaje.tab.study',           route: '/admin/aprendizaje',   icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
-  { labelKey: 'aprendizaje.tab.stats',           route: '/admin/aprendizaje',   icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
+  { labelKey: 'admin.users.tabList',             route: '/admin/users',             icon: 'users',       parentLabelKey: 'nav.users' },
+  { labelKey: 'admin.users.tabImport',           route: '/admin/users',             icon: 'users',       parentLabelKey: 'nav.users' },
+  { labelKey: 'admin.statistics.tabSummary',     route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
+  { labelKey: 'admin.statistics.tabPlatform',    route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
+  { labelKey: 'admin.statistics.tabIa',          route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
+  { labelKey: 'admin.statistics.tabTutoring',    route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
+  { labelKey: 'admin.monitorias.title',          route: '/admin/monitorias',        icon: 'tutorias',    parentLabelKey: 'nav.monitorias' },
+  { labelKey: 'admin.materiales.title',          route: '/admin/materiales',        icon: 'materials',   parentLabelKey: 'nav.materiales' },
+  { labelKey: 'admin.materiasTutores.title',     route: '/admin/materias-tutores',  icon: 'study',       parentLabelKey: 'nav.materiasTutores' },
+  { labelKey: 'admin.materias.title',            route: '/admin/materias',          icon: 'file',        parentLabelKey: 'nav.materias' },
+  { labelKey: 'admin.salas.title',               route: '/admin/salas',             icon: 'schedule',    parentLabelKey: 'nav.salas' },
+  { labelKey: 'practica.tab.play',               route: '/admin/practica',          icon: 'quiz',        parentLabelKey: 'nav.practica' },
+  { labelKey: 'practica.tab.questions',          route: '/admin/practica',          icon: 'quiz',        parentLabelKey: 'nav.practica' },
+  { labelKey: 'practica.tab.collections',        route: '/admin/practica',          icon: 'quiz',        parentLabelKey: 'nav.practica' },
+  { labelKey: 'aprendizaje.tab.collections',     route: '/admin/aprendizaje',       icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
+  { labelKey: 'aprendizaje.tab.study',           route: '/admin/aprendizaje',       icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
+  { labelKey: 'aprendizaje.tab.stats',           route: '/admin/aprendizaje',       icon: 'aprendizaje', parentLabelKey: 'nav.aprendizaje' },
 ];
 
 const SEARCH_ENTRIES_BY_ROLE: Record<Role, readonly SearchEntry[]> = {

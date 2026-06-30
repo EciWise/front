@@ -1,6 +1,8 @@
-.empty {
-  margin: 0;
-  color: var(--text-muted);
+.hist-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
 }
 
 .hist-list {
@@ -9,46 +11,99 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
-.hist {
+.hist-card {
   display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hist-card__main {
+  min-width: 0;
+}
+
+.hist-card__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  /* En pantallas estrechas el estado baja a la siguiente línea en vez de
-     comprimir el texto (mismo patrón que solicitudes y monitorías). */
-  flex-wrap: wrap;
-}
-
-.hist__subject {
-  margin: 0 0 var(--space-1);
-  font-size: 1.0625rem;
-}
-
-.hist__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin: 0;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
   color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-.hist__status {
   font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.25rem 0.75rem;
+}
+
+.hist-card__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.hist-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.hist-card__aside {
+  display: flex;
+  align-items: center;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0 var(--space-3);
   border-radius: var(--radius-full);
-}
-
-.hist__status[data-status='completed'] {
-  background: color-mix(in srgb, var(--success) 18%, transparent);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
   color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
-.hist__status[data-status='cancelled'] {
-  background: color-mix(in srgb, var(--danger) 18%, transparent);
+.status[data-status='cancelled'],
+.status[data-status='no_show'] {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
   color: var(--danger);
+}
+
+.status[data-status='confirmed'] {
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  color: var(--warning);
+}
+
+.rating-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (min-width: 44rem) {
+  .hist-card {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .hist-card__aside {
+    flex: none;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
 }
