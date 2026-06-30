@@ -1,5 +1,6 @@
-import { WritableSignal } from '@angular/core';
+import { WritableSignal, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { AuthService } from '../../core/auth/auth.service';
 import {
   StudentProfile,
   TutorProfile,
@@ -7,6 +8,8 @@ import {
   TutoringReservation,
 } from './tutor.models';
 import { TutoringMockService } from './tutoring.service';
+
+const fakeAuth = { user: signal<null>(null).asReadonly() };
 
 interface TutoringMockInternals {
   readonly _availabilities: WritableSignal<readonly TutoringAvailability[]>;
@@ -53,7 +56,9 @@ describe('TutoringMockService', () => {
   let service: TutoringMockService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: AuthService, useValue: fakeAuth }],
+    });
     service = TestBed.inject(TutoringMockService);
   });
 
@@ -61,7 +66,7 @@ describe('TutoringMockService', () => {
     const state = internals(service);
 
     state._tutors.update((items) =>
-      items.map((tutor) => (tutor.id === service.currentTutorId ? { ...tutor, authorized: false } : tutor)),
+      items.map((tutor) => (tutor.id === service.currentTutorId() ? { ...tutor, authorized: false } : tutor)),
     );
     expect(
       service.createAvailability({
@@ -75,7 +80,7 @@ describe('TutoringMockService', () => {
     ).toBe('tutor.availability.errors.unauthorized');
 
     state._tutors.update((items) =>
-      items.map((tutor) => (tutor.id === service.currentTutorId ? { ...tutor, authorized: true } : tutor)),
+      items.map((tutor) => (tutor.id === service.currentTutorId() ? { ...tutor, authorized: true } : tutor)),
     );
     expect(
       service.createAvailability({
@@ -130,7 +135,7 @@ describe('TutoringMockService', () => {
 
     state._students.update((items) =>
       items.map((student) =>
-        student.id === service.currentStudentId ? { ...student, active: false } : student,
+        student.id === service.currentStudentId() ? { ...student, active: false } : student,
       ),
     );
     expect(
@@ -143,7 +148,7 @@ describe('TutoringMockService', () => {
 
     state._students.update((items) =>
       items.map((student) =>
-        student.id === service.currentStudentId ? { ...student, active: true } : student,
+        student.id === service.currentStudentId() ? { ...student, active: true } : student,
       ),
     );
     expect(

@@ -1,0 +1,106 @@
+<eci-page-header titleKey="admin.salas.title" icon="schedule" />
+
+<div class="mat-header-row">
+  <p class="admin__count">
+    {{ 'admin.salas.count' | translate: { count: salas().length } }}
+  </p>
+  <eci-button (click)="openCreate()">
+    <eci-icon name="plus" [size]="16" />
+    {{ 'admin.salas.create' | translate }}
+  </eci-button>
+</div>
+
+@if (salas().length > 0) {
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.salas.colCodigo' | translate }}</th>
+          <th>{{ 'admin.salas.colEdificio' | translate }}</th>
+          <th>{{ 'admin.salas.colEstado' | translate }}</th>
+          <th>{{ 'fields.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of salas(); track s.id) {
+          <tr [class.mat-row--inactive]="!s.activa">
+            <td class="mat-code">{{ s.codigo }}</td>
+            <td>{{ s.edificio ?? '–' }}</td>
+            <td>
+              <span class="mat-badge" [class.mat-badge--active]="s.activa">
+                {{ (s.activa ? 'admin.salas.activa' : 'admin.salas.inactiva') | translate }}
+              </span>
+            </td>
+            <td class="mat-actions">
+              <eci-button variant="ghost" (click)="openEdit(s)">
+                <eci-icon name="edit" [size]="15" />
+                {{ 'admin.salas.edit' | translate }}
+              </eci-button>
+              <eci-button variant="ghost" (click)="toggleActiva(s)">
+                <eci-icon [name]="s.activa ? 'eye-off' : 'eye'" [size]="15" />
+                {{ (s.activa ? 'admin.salas.deactivate' : 'admin.salas.activate') | translate }}
+              </eci-button>
+              @if (!s.activa) {
+                <eci-button variant="ghost" (click)="remove(s)">
+                  <eci-icon name="trash" [size]="15" />
+                  {{ 'admin.salas.delete' | translate }}
+                </eci-button>
+              }
+              @if (actionErrorId() === s.id) {
+                <span class="mat__error">{{ 'admin.salas.actionError' | translate }}</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="admin__empty">{{ 'admin.salas.empty' | translate }}</p>
+}
+
+<eci-modal
+  [(open)]="modalOpen"
+  [titleKey]="editTarget() ? 'admin.salas.editTitle' : 'admin.salas.createTitle'"
+>
+  <form class="mat-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mat-field">
+      <label class="mat-label" for="sala-codigo">{{ 'admin.salas.colCodigo' | translate }}</label>
+      <input
+        id="sala-codigo"
+        class="mat-input"
+        type="text"
+        formControlName="codigo"
+        [placeholder]="'admin.salas.codigoPlaceholder' | translate"
+      />
+      @if (form.controls.codigo.invalid && form.controls.codigo.touched) {
+        <span class="mat__error">{{ 'admin.salas.codigoRequired' | translate }}</span>
+      }
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="sala-edificio">{{ 'admin.salas.colEdificio' | translate }}</label>
+      <input
+        id="sala-edificio"
+        class="mat-input"
+        type="text"
+        formControlName="edificio"
+        [placeholder]="'admin.salas.edificioPlaceholder' | translate"
+      />
+    </div>
+
+    @if (errorKey(); as err) {
+      <p class="mat__error" role="alert">{{ err | translate }}</p>
+    }
+
+    <div class="mat-actions-row">
+      <eci-button type="submit" [disabled]="saving()">
+        @if (saving()) {
+          {{ 'admin.salas.saving' | translate }}
+        } @else {
+          {{ (editTarget() ? 'admin.salas.save' : 'admin.salas.create') | translate }}
+        }
+      </eci-button>
+    </div>
+  </form>
+</eci-modal>

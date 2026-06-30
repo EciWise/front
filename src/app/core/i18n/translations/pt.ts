@@ -153,6 +153,10 @@ nav: {
     statistics: 'Estatisticas',
     predictions: 'Previsoes',
     assignments: 'Atribuicoes',
+    monitorias: 'Sessoes de tutoria',
+    materiales: 'Materiais',
+    materiasTutores: 'Disciplinas por tutor',
+    materias: 'Catalogo de disciplinas',
     aprendizaje: 'Aprendizagem',
   },  errors: {
     network: 'Sem conexão com o servidor. Verifique sua rede.',
@@ -984,6 +988,10 @@ tutor: {
         rol_invalido: 'Função não reconhecida.',
       },
     },
+    monitorias: { ...en.admin.monitorias, title: 'Sessoes de tutoria', allMaterias: 'Todas as disciplinas', allModalidades: 'Todas as modalidades', colTutor: 'Tutor', colMateria: 'Disciplina', colFecha: 'Data', colHora: 'Horario', colModalidad: 'Modalidade', colCupos: 'Vagas disp./total', empty: 'Nenhuma sessao encontrada.' },
+    materiales: { ...en.admin.materiales, title: 'Gestao de materiais', upload: 'Enviar material', empty: 'Nenhum material registrado.', nombre: 'Nome', materia: 'Disciplina/Etiqueta', tipo: 'Tipo', descripcion: 'Descricao (opcional)', tags: 'Etiquetas', archivo: 'Arquivo', view: 'Ver', delete: 'Excluir', uploading: 'Enviando…', uploaded: 'Material enviado com sucesso.', error: 'Nao foi possivel salvar o material.', errorFile: 'Selecione um arquivo e preencha o nome.', deleteError: 'Nao foi possivel excluir.' },
+    materias: { ...en.admin.materias, title: 'Catalogo de disciplinas', createTitle: 'Nova disciplina', editTitle: 'Editar disciplina', create: 'Nova disciplina', save: 'Salvar alteracoes', count: '{{count}} disciplinas', empty: 'Nenhuma disciplina registrada.', activa: 'Ativa', inactiva: 'Inativa', activate: 'Ativar', deactivate: 'Desativar', codigoPlaceholder: 'Ex: MAT101', nombrePlaceholder: 'Ex: Calculo diferencial', error: 'Nao foi possivel salvar (codigo duplicado?).', actionError: 'Nao foi possivel concluir a acao.' },
+    materiasTutores: { ...en.admin.materiasTutores, title: 'Disciplinas por tutor', selectTutor: 'Selecionar tutor', noTutor: 'Selecione um tutor para ver as disciplinas atribuidas.', assign: 'Atribuir disciplina', selectMateria: 'Selecionar disciplina', assigned: 'Disciplinas atribuidas', empty: 'Nenhuma disciplina atribuida.', remove: 'Remover', error: 'Nao foi possivel concluir a operacao.', loadError: 'Nao foi possivel carregar as disciplinas do tutor.' },
   },
   auth: {
     loginTitle: 'Bem-vindo de volta',

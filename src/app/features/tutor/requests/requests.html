@@ -2,40 +2,49 @@
   <eci-page-header titleKey="tutor.requests.title" icon="requests" />
 
   <div class="eci-fit__body">
-@if (requests().length === 0) {
-  <eci-card><p class="empty">{{ 'tutor.requests.empty' | translate }}</p></eci-card>
-} @else {
-  <ul class="req-list">
-    @for (req of requests(); track req.id) {
-      <li>
+    <div class="req-stack eci-section-enter">
+      @if (requests().length === 0) {
         <eci-card>
-          <div class="req">
-            <div class="req__info">
-              <h2 class="req__subject">{{ req.subject }}</h2>
-              <p class="req__meta">
-                <span>{{ 'tutor.requests.student' | translate }}: {{ req.student }}</span>
-                <span>{{ req.datetime | date: 'short' }}</span>
-              </p>
-            </div>
-            <div class="req__action">
-              @if (req.status === 'pending') {
-                <eci-button variant="ghost" (click)="reject(req)">
-                  {{ 'tutor.requests.reject' | translate }}
-                </eci-button>
-                <eci-button (click)="accept(req)">
-                  {{ 'tutor.requests.accept' | translate }}
-                </eci-button>
-              } @else {
-                <span class="req__status" [attr.data-status]="req.status">
-                  {{ 'tutor.requests.' + req.status | translate }}
-                </span>
-              }
-            </div>
-          </div>
+          <p class="empty">{{ 'tutor.requests.empty' | translate }}</p>
         </eci-card>
-      </li>
-    }
-  </ul>
-}
+      } @else {
+        <ul class="req-list">
+          @for (req of requests(); track req.id) {
+            <li>
+              <eci-card>
+                <article class="req-card">
+                  <div class="req-card__main">
+                    <div class="req-card__eyebrow">
+                      <span class="status" [attr.data-status]="req.status">
+                        {{ 'tutor.requests.' + req.status | translate }}
+                      </span>
+                      <span>{{ req.datetime | date: 'mediumDate' }}</span>
+                      <span>{{ req.datetime | date: 'shortTime' }}</span>
+                    </div>
+                    <h2 class="req-card__title">{{ req.subject }}</h2>
+                    <p class="req-card__meta">
+                      <span>{{ 'tutor.requests.student' | translate }}: {{ req.student }}</span>
+                    </p>
+                  </div>
+
+                  @if (req.status === 'pending') {
+                    <div class="req-card__actions">
+                      <eci-button variant="ghost" (buttonClick)="reject(req)">
+                        <eci-icon name="close" [size]="16" />
+                        {{ 'tutor.requests.reject' | translate }}
+                      </eci-button>
+                      <eci-button (buttonClick)="accept(req)">
+                        <eci-icon name="check" [size]="16" />
+                        {{ 'tutor.requests.accept' | translate }}
+                      </eci-button>
+                    </div>
+                  }
+                </article>
+              </eci-card>
+            </li>
+          }
+        </ul>
+      }
+    </div>
   </div>
 </div>
