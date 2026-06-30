@@ -112,15 +112,15 @@ describe('AdminUsersComponent', () => {
   it('renderiza tabla y estado vacio desde la pestana de usuarios', () => {
     const root: HTMLElement = fixture.nativeElement;
 
-    expect(root.querySelector('.admin-table')).not.toBeNull();
+    expect(root.querySelector('.list-card')).not.toBeNull();
     expect(root.textContent).toContain('Ana Diaz');
     expect(root.textContent).toContain('ana@test.com');
-    expect(root.querySelector('.admin-status--on')).not.toBeNull();
+    expect(root.querySelector('.list-badge--on')).not.toBeNull();
 
     users.set([]);
     fixture.detectChanges();
 
-    expect(root.querySelector('.admin-table')).toBeNull();
+    expect(root.querySelector('.list-card')).toBeNull();
     expect(root.querySelector('.admin__empty')).not.toBeNull();
   });
 
