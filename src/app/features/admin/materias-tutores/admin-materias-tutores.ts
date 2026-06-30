@@ -5,15 +5,13 @@ import { forkJoin } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
+import { IconComponent } from '../../../shared/ui/icon/icon';
 import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
 import { IaAdminService, UsuarioBasico } from '../../../core/ia/ia-admin.service';
-import { TutoringApiService } from '../../../core/tutoring/tutoring-api.service';
-
-interface MateriaBasica {
-  id: string;
-  codigo: string;
-  nombre: string;
-}
+import {
+  MateriaDelTutorDto,
+  TutoringApiService,
+} from '../../../core/tutoring/tutoring-api.service';
 
 @Component({
   selector: 'eci-admin-materias-tutores',
@@ -24,6 +22,7 @@ interface MateriaBasica {
     PageHeaderComponent,
     CardComponent,
     ButtonComponent,
+    IconComponent,
     SelectComponent,
   ],
   templateUrl: './admin-materias-tutores.html',
@@ -37,7 +36,7 @@ export class AdminMateriasTutoresComponent implements OnInit {
   protected readonly tutors = signal<UsuarioBasico[]>([]);
   protected readonly allMaterias = signal<{ id: string; codigo: string; nombre: string; activa: boolean }[]>([]);
   protected readonly selectedTutorId = signal<string>('');
-  protected readonly tutorMaterias = signal<MateriaBasica[]>([]);
+  protected readonly tutorMaterias = signal<MateriaDelTutorDto[]>([]);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly loadingMaterias = signal(false);
 
@@ -116,6 +115,21 @@ export class AdminMateriasTutoresComponent implements OnInit {
     }
     this.errorKey.set(null);
     this.tutoringApi.removerMateria(tutorId, materiaId).subscribe({
+      next: () => this.reloadTutorMaterias(tutorId),
+      error: () => this.errorKey.set('admin.materiasTutores.error'),
+    });
+  }
+
+  toggleAutorizacion(materia: MateriaDelTutorDto): void {
+    const tutorId = this.selectedTutorId();
+    if (!tutorId) {
+      return;
+    }
+    this.errorKey.set(null);
+    const request$ = materia.autorizada
+      ? this.tutoringApi.desautorizarMateriaTutor(materia.tutorMateriaId)
+      : this.tutoringApi.autorizarMateriaTutor(materia.tutorMateriaId);
+    request$.subscribe({
       next: () => this.reloadTutorMaterias(tutorId),
       error: () => this.errorKey.set('admin.materiasTutores.error'),
     });

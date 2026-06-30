@@ -1,30 +1,31 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
-import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
-import { TutoringRequestsService } from '../requests.service';
-import { TutoringRequest } from '../tutor.models';
+import { TutorSessionsService } from '../tutor-sessions.service';
 
-/** Solicitudes de tutoría de los estudiantes con aceptar/rechazar. */
+/** Participantes con reserva activa en las próximas sesiones del tutor (lectura). */
 @Component({
   selector: 'eci-tutor-requests',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, TranslatePipe, PageHeaderComponent, CardComponent, ButtonComponent, IconComponent],
+  imports: [DatePipe, TranslatePipe, PageHeaderComponent, CardComponent, IconComponent],
   templateUrl: './requests.html',
   styleUrl: './requests.css',
 })
-export class TutorRequestsComponent {
-  private readonly service = inject(TutoringRequestsService);
-  protected readonly requests = this.service.requests;
+export class TutorRequestsComponent implements OnInit {
+  private readonly sessions = inject(TutorSessionsService);
 
-  accept(req: TutoringRequest): void {
-    this.service.accept(req.id);
+  protected readonly participants = this.sessions.upcomingParticipants;
+  protected readonly loading = this.sessions.loading;
+  protected readonly error = this.sessions.error;
+
+  ngOnInit(): void {
+    this.sessions.load();
   }
 
-  reject(req: TutoringRequest): void {
-    this.service.reject(req.id);
+  modeKey(modalidad: 'VIRTUAL' | 'PRESENCIAL'): string {
+    return modalidad === 'VIRTUAL' ? 'tutoring.modes.virtual' : 'tutoring.modes.presential';
   }
 }

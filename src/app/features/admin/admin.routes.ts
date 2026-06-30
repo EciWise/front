@@ -63,6 +63,10 @@ export const ADMIN_ROUTES: Routes = [
     loadComponent: () => import('./salas/admin-salas').then((m) => m.AdminSalasComponent),
   },
   {
+    path: 'franjas',
+    loadComponent: () => import('./franjas/admin-franjas').then((m) => m.AdminFranjasComponent),
+  },
+  {
     path: 'profile',
     loadComponent: () => import('../student/profile/profile').then((m) => m.ProfileComponent),
   },

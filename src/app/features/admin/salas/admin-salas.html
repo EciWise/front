@@ -11,49 +11,42 @@
 </div>
 
 @if (salas().length > 0) {
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>{{ 'admin.salas.colCodigo' | translate }}</th>
-          <th>{{ 'admin.salas.colEdificio' | translate }}</th>
-          <th>{{ 'admin.salas.colEstado' | translate }}</th>
-          <th>{{ 'fields.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (s of salas(); track s.id) {
-          <tr [class.mat-row--inactive]="!s.activa">
-            <td class="mat-code">{{ s.codigo }}</td>
-            <td>{{ s.edificio ?? '–' }}</td>
-            <td>
-              <span class="mat-badge" [class.mat-badge--active]="s.activa">
-                {{ (s.activa ? 'admin.salas.activa' : 'admin.salas.inactiva') | translate }}
-              </span>
-            </td>
-            <td class="mat-actions">
-              <eci-button variant="ghost" (click)="openEdit(s)">
-                <eci-icon name="edit" [size]="15" />
-                {{ 'admin.salas.edit' | translate }}
-              </eci-button>
-              <eci-button variant="ghost" (click)="toggleActiva(s)">
-                <eci-icon [name]="s.activa ? 'eye-off' : 'eye'" [size]="15" />
-                {{ (s.activa ? 'admin.salas.deactivate' : 'admin.salas.activate') | translate }}
-              </eci-button>
-              @if (!s.activa) {
-                <eci-button variant="ghost" (click)="remove(s)">
-                  <eci-icon name="trash" [size]="15" />
-                  {{ 'admin.salas.delete' | translate }}
-                </eci-button>
-              }
-              @if (actionErrorId() === s.id) {
-                <span class="mat__error">{{ 'admin.salas.actionError' | translate }}</span>
-              }
-            </td>
-          </tr>
+  <div class="card-grid">
+    @for (s of salas(); track s.id) {
+      <article class="list-card" [class.list-card--inactive]="!s.activa">
+        <header class="list-card__head">
+          <span class="list-card__title list-card__title--code">{{ s.codigo }}</span>
+          <span class="list-badge" [class.list-badge--on]="s.activa">
+            {{ (s.activa ? 'admin.salas.activa' : 'admin.salas.inactiva') | translate }}
+          </span>
+        </header>
+
+        <div class="list-card__body">
+          <p class="list-card__meta">{{ s.edificio ?? '–' }}</p>
+        </div>
+
+        <footer class="list-card__actions">
+          <eci-button variant="ghost" (click)="openEdit(s)">
+            <eci-icon name="edit" [size]="15" />
+            {{ 'admin.salas.edit' | translate }}
+          </eci-button>
+          <eci-button variant="ghost" (click)="toggleActiva(s)">
+            <eci-icon [name]="s.activa ? 'eye-off' : 'eye'" [size]="15" />
+            {{ (s.activa ? 'admin.salas.deactivate' : 'admin.salas.activate') | translate }}
+          </eci-button>
+          @if (!s.activa) {
+            <eci-button variant="ghost" (click)="remove(s)">
+              <eci-icon name="trash" [size]="15" />
+              {{ 'admin.salas.delete' | translate }}
+            </eci-button>
+          }
+        </footer>
+
+        @if (actionErrorId() === s.id) {
+          <p class="list-card__error" role="alert">{{ 'admin.salas.actionError' | translate }}</p>
         }
-      </tbody>
-    </table>
+      </article>
+    }
   </div>
 } @else {
   <p class="admin__empty">{{ 'admin.salas.empty' | translate }}</p>

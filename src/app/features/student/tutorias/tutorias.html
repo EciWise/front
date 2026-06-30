@@ -92,34 +92,7 @@
                         <h2 class="tutoring-card__title">{{ slot.subject.name }}</h2>
                         <p class="tutoring-card__meta">
                           <span>{{ 'fields.tutor' | translate }}: {{ slot.tutor.name }}</span>
-                          <span>{{ slot.tutor.career }}</span>
                         </p>
-                        @if (slot.tutor.reputation.averageRating > 0) {
-                          <dl class="metrics">
-                            <div>
-                              <dt>{{ 'tutorias.reputation.rating' | translate }}</dt>
-                              <dd>{{ slot.tutor.reputation.averageRating | number: '1.1-1' }}</dd>
-                            </div>
-                            <div>
-                              <dt>{{ 'tutorias.reputation.sessions' | translate }}</dt>
-                              <dd>{{ slot.tutor.reputation.completedSessions }}</dd>
-                            </div>
-                            <div>
-                              <dt>{{ 'tutorias.reputation.attendance' | translate }}</dt>
-                              <dd>{{ slot.tutor.reputation.attendanceRate }}%</dd>
-                            </div>
-                          </dl>
-                        }
-                        @if (slot.tutor.reputation.comments.length > 0) {
-                          <div class="comments">
-                            <p class="comments__title">{{ 'tutorias.reputation.comments' | translate }}</p>
-                            <ul>
-                              @for (comment of slot.tutor.reputation.comments.slice(0, 2); track comment) {
-                                <li>{{ comment }}</li>
-                              }
-                            </ul>
-                          </div>
-                        }
                       </div>
                       <div class="tutoring-card__aside">
                         <span class="seats">
@@ -186,6 +159,10 @@
                         <span class="status" [attr.data-status]="r.estadoAsistencia.toLowerCase()">
                           {{ r.estadoAsistencia }}
                         </span>
+                        <eci-button variant="secondary" (buttonClick)="openReschedule(r)">
+                          <eci-icon name="repeat" [size]="16" />
+                          {{ 'tutorias.reservations.reschedule' | translate }}
+                        </eci-button>
                         <eci-button variant="ghost" (buttonClick)="openCancel(r)">
                           <eci-icon name="close" [size]="16" />
                           {{ 'tutorias.reservations.cancel' | translate }}
@@ -194,58 +171,6 @@
                     </article>
                   </eci-card>
                 </li>
-              }
-            </ul>
-          }
-        </div>
-      }
-
-      @case ('recommendations') {
-        <div class="eci-section-enter tutorias-stack">
-          @if (recommendations().length === 0) {
-            <eci-card>
-              <p class="empty">{{ 'tutorias.recommendations.empty' | translate }}</p>
-            </eci-card>
-          } @else {
-            <ul class="tutoria-list">
-              @for (recommendation of recommendations(); track recommendation.id) {
-                @if (slotById(recommendation.availabilityId); as slot) {
-                  <li>
-                    <eci-card>
-                      <article class="tutoring-card">
-                        <div class="tutoring-card__main">
-                          <div class="tutoring-card__eyebrow">
-                            <span class="pill">{{ 'tutorias.recommendations.score' | translate: { score: recommendation.score } }}</span>
-                            <span>{{ recommendation.reasonKey | translate }}</span>
-                          </div>
-                          <h2 class="tutoring-card__title">{{ slot.subject.name }}</h2>
-                          <p class="tutoring-card__meta">
-                            <span>{{ slot.tutor.name }}</span>
-                            <span>{{ slot.availability.date | date: 'mediumDate' }}</span>
-                            <span>{{ slot.availability.startTime }} - {{ slot.availability.endTime }}</span>
-                          </p>
-                          <ul class="topics">
-                            @for (topic of recommendation.relatedTopics; track topic) {
-                              <li>{{ topic }}</li>
-                            }
-                          </ul>
-                        </div>
-                        <div class="tutoring-card__aside">
-                          @if (reservedIds().has(slot.availability.id)) {
-                            <span class="status" data-status="requested">
-                              {{ 'tutorias.requested' | translate }}
-                            </span>
-                          } @else {
-                            <eci-button (buttonClick)="openReserve(slot)">
-                              <eci-icon name="plus" [size]="16" />
-                              {{ 'tutorias.request' | translate }}
-                            </eci-button>
-                          }
-                        </div>
-                      </article>
-                    </eci-card>
-                  </li>
-                }
               }
             </ul>
           }
@@ -276,13 +201,8 @@
                           <span>{{ r.tutorNombre ?? '-' }}</span>
                           <span>{{ r.temaEspecifico }}</span>
                         </p>
-                      </div>
-                      <div class="history-card__action">
-                        @if (r.estadoAsistencia === 'ASISTIDA') {
-                          <eci-button (buttonClick)="openRate(r)">
-                            <eci-icon name="star" [size]="16" />
-                            {{ 'tutorias.history.rate' | translate }}
-                          </eci-button>
+                        @if (r.motivoCancelacion) {
+                          <p class="history-card__reason">{{ r.motivoCancelacion }}</p>
                         }
                       </div>
                     </article>
@@ -392,51 +312,46 @@
   </form>
 </eci-modal>
 
-<eci-modal [(open)]="rateOpen" titleKey="tutorias.rating.title" size="wide">
-  <form class="modal-form" (submit)="submitRating($event)">
+<eci-modal [(open)]="rescheduleOpen" titleKey="tutorias.reschedule.title">
+  <form class="modal-form" (submit)="submitReschedule($event)">
     @if (actionError()) {
       <p class="form-error" role="alert">{{ actionError() }}</p>
     }
 
-    <fieldset class="rating-fields">
-      <legend>{{ 'tutorias.rating.legend' | translate }}</legend>
-      @for (field of ratingFields; track field) {
-        <fieldset class="rating-field">
-          <legend>{{ 'tutorias.rating.' + field | translate }}</legend>
-          <div class="stars">
-            @for (star of stars; track star) {
-              <button
-                type="button"
-                class="star-button"
-                [class.star-button--active]="ratingModel()[field] >= star"
-                [attr.aria-label]="'tutorias.rating.starLabel' | translate: { count: star }"
-                (click)="setRating(field, star)"
-              >
-                <eci-icon name="star" [size]="18" />
-              </button>
-            }
-          </div>
-        </fieldset>
-      }
-    </fieldset>
+    <p class="modal-hint">{{ 'tutorias.reschedule.hint' | translate }}</p>
 
-    @if (ratingForm.topicMastery().touched() && ratingForm.topicMastery().invalid()) {
-      <p class="form-error">{{ 'tutorias.validation.rating' | translate }}</p>
-    }
+    <div class="field">
+      <span>{{ 'tutorias.reschedule.target' | translate }}</span>
+      <eci-select
+        [value]="rescheduleModel().destinoId"
+        [options]="rescheduleOptions()"
+        [placeholder]="'tutorias.reschedule.targetPlaceholder' | translate"
+        [ariaLabel]="'tutorias.reschedule.target' | translate"
+        (valueChange)="setRescheduleTarget($event)"
+      />
+      @if (rescheduleOptions().length === 0) {
+        <span class="form-hint">{{ 'tutorias.reschedule.noTargets' | translate }}</span>
+      }
+      @if (rescheduleForm.destinoId().touched() && rescheduleForm.destinoId().invalid()) {
+        <span class="form-error">{{ 'tutorias.validation.rescheduleTarget' | translate }}</span>
+      }
+    </div>
 
     <label class="field">
-      <span>{{ 'tutorias.rating.comment' | translate }}</span>
-      <textarea rows="4" [formField]="ratingForm.comment"></textarea>
-      @if (ratingForm.comment().touched() && ratingForm.comment().invalid()) {
-        <span class="form-error">{{ 'tutorias.validation.comment' | translate }}</span>
+      <span>{{ 'tutorias.reschedule.reason' | translate }}</span>
+      <textarea rows="3" [formField]="rescheduleForm.reason"></textarea>
+      @if (rescheduleForm.reason().touched() && rescheduleForm.reason().invalid()) {
+        <span class="form-error">{{ 'tutorias.validation.cancelReason' | translate }}</span>
       }
     </label>
 
     <div class="modal-actions">
-      <eci-button variant="ghost" type="button" (buttonClick)="rateOpen.set(false)">
+      <eci-button variant="ghost" type="button" (buttonClick)="rescheduleOpen.set(false)">
         {{ 'common.cancel' | translate }}
       </eci-button>
-      <eci-button type="submit">{{ 'tutorias.rating.submit' | translate }}</eci-button>
+      <eci-button type="submit" [disabled]="busy() || rescheduleOptions().length === 0">
+        {{ 'tutorias.reschedule.submit' | translate }}
+      </eci-button>
     </div>
   </form>
 </eci-modal>

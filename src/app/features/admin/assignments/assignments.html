@@ -27,28 +27,27 @@
 </p>
 
 @if (assignments().length > 0) {
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>{{ 'admin.assignments.tutor' | translate }}</th>
-          <th>{{ 'admin.assignments.student' | translate }}</th>
-          <th>{{ 'fields.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (a of assignments(); track a.id) {
-          <tr>
-            <td>{{ a.tutor.nombre }} {{ a.tutor.apellido }}</td>
-            <td>{{ a.estudiante.nombre }} {{ a.estudiante.apellido }}</td>
-            <td>
-              <eci-button variant="ghost" (click)="remove(a.id)">
-                {{ 'admin.assignments.remove' | translate }}
-              </eci-button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <div class="card-grid">
+    @for (a of assignments(); track a.id) {
+      <article class="list-card">
+        <header class="list-card__head">
+          <span class="list-card__title">{{ a.tutor.nombre }} {{ a.tutor.apellido }}</span>
+        </header>
+
+        <div class="list-card__body">
+          <p class="list-card__meta">
+            <eci-icon name="arrow-right" [size]="14" />
+            {{ a.estudiante.nombre }} {{ a.estudiante.apellido }}
+          </p>
+        </div>
+
+        <footer class="list-card__actions">
+          <eci-button variant="ghost" (click)="remove(a.id)">
+            <eci-icon name="trash" [size]="15" />
+            {{ 'admin.assignments.remove' | translate }}
+          </eci-button>
+        </footer>
+      </article>
+    }
   </div>
 }

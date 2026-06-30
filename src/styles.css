@@ -907,6 +907,112 @@ input[type='radio'] {
   color: var(--text-muted);
 }
 
+/* ── Tarjetas de listado (gestión admin) ──────────────────────────────
+   Rejilla de tarjetas con "encabezado destacado". Fuente única de estilo
+   reutilizada por salas, materias, usuarios, asignaciones, etc. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-4);
+}
+
+.list-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-fast, 0.15s ease),
+    box-shadow var(--transition-base, 0.2s ease),
+    border-color 0.2s ease;
+}
+
+.list-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.list-card--inactive {
+  opacity: 0.7;
+}
+
+.list-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.list-card--inactive .list-card__head {
+  background: var(--surface-2);
+}
+
+.list-card__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.list-card__title--code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.list-card--inactive .list-card__title--code {
+  color: var(--text-muted);
+}
+
+.list-card__body {
+  flex: 1;
+  padding: var(--space-4);
+}
+
+.list-card__meta {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.list-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+.list-badge {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.list-badge--on {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.list-card__error {
+  margin: 0 var(--space-4) var(--space-3);
+  color: var(--danger);
+  font-size: 0.8125rem;
+}
+
 /* Indicador de pasos del asistente (registro y campos de IA). */
 .auth__step,
 .dia__step {

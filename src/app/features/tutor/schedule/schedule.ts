@@ -1,22 +1,20 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
 import { ModalComponent } from '../../../shared/ui/modal/modal';
-import {
-  TutorSesionParticipanteDto,
-  TutoringApiService,
-} from '../../../core/tutoring/tutoring-api.service';
+import { TutorSesionParticipanteDto } from '../../../core/tutoring/tutoring-api.service';
+import { TutorSessionsService } from '../tutor-sessions.service';
 
-interface ObservationFormModel {
-  observation: string;
+interface CancelFormModel {
+  reason: string;
 }
 
-/** Agenda operativa del tutor: próximas sesiones y sesiones cerradas. */
+/** Agenda operativa del tutor: próximas sesiones, sesiones cerradas y cancelación. */
 @Component({
   selector: 'eci-tutor-schedule',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,52 +32,61 @@ interface ObservationFormModel {
   styleUrl: './schedule.css',
 })
 export class TutorScheduleComponent implements OnInit {
-  private readonly api = inject(TutoringApiService);
-  private readonly i18n = inject(TranslateService);
+  private readonly sessions = inject(TutorSessionsService);
 
-  private readonly _sesiones = signal<TutorSesionParticipanteDto[]>([]);
-
-  protected readonly upcomingReservations = computed(() =>
-    this._sesiones().filter((s) => s.estadoAsistencia === 'CONFIRMADA'),
-  );
-  protected readonly closedReservations = computed(() =>
-    this._sesiones().filter((s) => s.estadoAsistencia !== 'CONFIRMADA'),
-  );
+  protected readonly loading = this.sessions.loading;
+  protected readonly upcomingReservations = this.sessions.upcomingParticipants;
+  protected readonly closedReservations = this.sessions.pastSessions;
 
   protected readonly selectedReservation = signal<TutorSesionParticipanteDto | null>(null);
-  protected readonly observationOpen = signal(false);
+  protected readonly cancelOpen = signal(false);
+  protected readonly busy = signal(false);
   protected readonly actionError = signal('');
   protected readonly actionSuccess = signal('');
 
-  protected readonly observationModel = signal<ObservationFormModel>({ observation: '' });
-  protected readonly observationForm = form(this.observationModel, (schema) => {
-    required(schema.observation, { message: 'tutor.schedule.validation.observation' });
+  protected readonly loadError = computed(() => this.sessions.error());
+
+  protected readonly cancelModel = signal<CancelFormModel>({ reason: '' });
+  protected readonly cancelForm = form(this.cancelModel, (schema) => {
+    required(schema.reason, { message: 'tutor.schedule.validation.cancelReason' });
   });
 
   ngOnInit(): void {
-    this.api.listarMisSesiones().subscribe({
-      next: (data) => this._sesiones.set(data),
-      error: () => this.actionError.set(this.i18n.instant('tutoring.errors.generic')),
-    });
+    this.sessions.load();
   }
 
-  openObservation(reservation: TutorSesionParticipanteDto): void {
+  openCancel(reservation: TutorSesionParticipanteDto): void {
     this.selectedReservation.set(reservation);
-    this.observationModel.set({ observation: '' });
+    this.cancelModel.set({ reason: '' });
     this.actionError.set('');
-    this.observationOpen.set(true);
+    this.actionSuccess.set('');
+    this.cancelOpen.set(true);
   }
 
-  submitObservation(event: Event): void {
+  submitCancel(event: Event): void {
     event.preventDefault();
-    if (this.observationForm().invalid()) {
-      this.actionError.set(this.i18n.instant('tutor.schedule.validation.observation'));
+    if (this.cancelForm().invalid()) {
+      this.actionError.set('tutor.schedule.validation.cancelReason');
       return;
     }
-    // TODO: endpoint de observación del tutor (fase posterior)
+    const reservation = this.selectedReservation();
+    if (!reservation) {
+      return;
+    }
+    this.busy.set(true);
     this.actionError.set('');
-    this.actionSuccess.set('tutor.schedule.feedback.observation');
-    this.observationOpen.set(false);
+    this.sessions.cancelarTutoria(reservation.tutoriaId, this.cancelModel().reason).subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.cancelOpen.set(false);
+        this.actionSuccess.set('tutor.schedule.feedback.cancelled');
+      },
+      error: (err: unknown) => {
+        this.busy.set(false);
+        const backendMsg = (err as { error?: { message?: string } })?.error?.message;
+        this.actionError.set(backendMsg ?? 'tutoring.errors.generic');
+      },
+    });
   }
 
   modeKey(modalidad: 'VIRTUAL' | 'PRESENCIAL'): string {
