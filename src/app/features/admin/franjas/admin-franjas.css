@@ -33,6 +33,12 @@
   min-width: 22rem;
 }
 
+.mat-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
 .mat-field {
   display: flex;
   flex-direction: column;

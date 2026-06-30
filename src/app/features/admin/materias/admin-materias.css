@@ -18,37 +18,8 @@
   text-align: center;
 }
 
-.mat-code {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.875rem;
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.mat-badge {
-  display: inline-block;
-  padding: 0.125rem 0.625rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8125rem;
-  background: var(--surface-2);
-  color: var(--text-muted);
-}
-
-.mat-badge--active {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
-}
-
-.mat-row--inactive td {
-  opacity: 0.55;
-}
-
-.mat-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  flex-wrap: wrap;
-}
+/* Las tarjetas de listado usan las primitivas compartidas (.card-grid,
+   .list-card*) definidas en styles.css. */
 
 .mat__error {
   color: var(--danger);

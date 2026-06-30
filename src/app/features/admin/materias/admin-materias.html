@@ -11,49 +11,42 @@
 </div>
 
 @if (materias().length > 0) {
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>{{ 'admin.materias.colCodigo' | translate }}</th>
-          <th>{{ 'admin.materias.colNombre' | translate }}</th>
-          <th>{{ 'admin.materias.colEstado' | translate }}</th>
-          <th>{{ 'fields.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (m of materias(); track m.id) {
-          <tr [class.mat-row--inactive]="!m.activa">
-            <td class="mat-code">{{ m.codigo }}</td>
-            <td>{{ m.nombre }}</td>
-            <td>
-              <span class="mat-badge" [class.mat-badge--active]="m.activa">
-                {{ (m.activa ? 'admin.materias.activa' : 'admin.materias.inactiva') | translate }}
-              </span>
-            </td>
-            <td class="mat-actions">
-              <eci-button variant="ghost" (click)="openEdit(m)">
-                <eci-icon name="edit" [size]="15" />
-                {{ 'admin.materias.edit' | translate }}
-              </eci-button>
-              <eci-button variant="ghost" (click)="toggleActiva(m)">
-                <eci-icon [name]="m.activa ? 'eye-off' : 'eye'" [size]="15" />
-                {{ (m.activa ? 'admin.materias.deactivate' : 'admin.materias.activate') | translate }}
-              </eci-button>
-              @if (!m.activa) {
-                <eci-button variant="ghost" (click)="remove(m)">
-                  <eci-icon name="trash" [size]="15" />
-                  {{ 'admin.materias.delete' | translate }}
-                </eci-button>
-              }
-              @if (actionErrorId() === m.id) {
-                <span class="mat__error">{{ 'admin.materias.actionError' | translate }}</span>
-              }
-            </td>
-          </tr>
+  <div class="card-grid">
+    @for (m of materias(); track m.id) {
+      <article class="list-card" [class.list-card--inactive]="!m.activa">
+        <header class="list-card__head">
+          <span class="list-card__title list-card__title--code">{{ m.codigo }}</span>
+          <span class="list-badge" [class.list-badge--on]="m.activa">
+            {{ (m.activa ? 'admin.materias.activa' : 'admin.materias.inactiva') | translate }}
+          </span>
+        </header>
+
+        <div class="list-card__body">
+          <h3 class="list-card__title">{{ m.nombre }}</h3>
+        </div>
+
+        <footer class="list-card__actions">
+          <eci-button variant="ghost" (click)="openEdit(m)">
+            <eci-icon name="edit" [size]="15" />
+            {{ 'admin.materias.edit' | translate }}
+          </eci-button>
+          <eci-button variant="ghost" (click)="toggleActiva(m)">
+            <eci-icon [name]="m.activa ? 'eye-off' : 'eye'" [size]="15" />
+            {{ (m.activa ? 'admin.materias.deactivate' : 'admin.materias.activate') | translate }}
+          </eci-button>
+          @if (!m.activa) {
+            <eci-button variant="ghost" (click)="remove(m)">
+              <eci-icon name="trash" [size]="15" />
+              {{ 'admin.materias.delete' | translate }}
+            </eci-button>
+          }
+        </footer>
+
+        @if (actionErrorId() === m.id) {
+          <p class="list-card__error" role="alert">{{ 'admin.materias.actionError' | translate }}</p>
         }
-      </tbody>
-    </table>
+      </article>
+    }
   </div>
 } @else {
   <p class="admin__empty">{{ 'admin.materias.empty' | translate }}</p>

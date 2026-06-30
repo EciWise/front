@@ -3,7 +3,15 @@
 
   <div class="eci-fit__body">
     <div class="hist-stack eci-section-enter">
-      @if (entries().length === 0) {
+      @if (error()) {
+        <eci-card>
+          <p class="empty" role="alert">{{ error() | translate }}</p>
+        </eci-card>
+      } @else if (loading() && entries().length === 0) {
+        <eci-card>
+          <p class="empty">{{ 'common.loading' | translate }}</p>
+        </eci-card>
+      } @else if (entries().length === 0) {
         <eci-card>
           <p class="empty">{{ 'tutor.history.empty' | translate }}</p>
         </eci-card>
@@ -15,31 +23,26 @@
                 <article class="hist-card">
                   <div class="hist-card__main">
                     <div class="hist-card__eyebrow">
-                      <span class="status" [attr.data-status]="entry.status">
-                        {{ 'tutoring.status.' + entry.status | translate }}
+                      <span class="status" [attr.data-status]="statusCssValue(entry.estadoAsistencia)">
+                        {{ statusKey(entry.estadoAsistencia) | translate }}
                       </span>
-                      <span>{{ entry.datetime | date: 'mediumDate' }}</span>
-                      @if (entry.mode) {
-                        <span>{{ 'tutoring.modes.' + entry.mode | translate }}</span>
-                      }
+                      <span>{{ entry.sesion.fecha | date: 'mediumDate' }}</span>
+                      <span>{{ modeKey(entry.sesion.modalidad) | translate }}</span>
                     </div>
-                    <h2 class="hist-card__title">{{ entry.subject }}</h2>
+                    <h2 class="hist-card__title">{{ entry.sesion.materiaNombre }}</h2>
                     <p class="hist-card__meta">
-                      <span>{{ entry.student }}</span>
-                      @if (entry.topic) {
-                        <span>{{ entry.topic }}</span>
+                      <span>
+                        <eci-icon name="profile" [size]="16" />
+                        {{ entry.estudianteNombre ?? '-' }}
+                      </span>
+                      @if (entry.temaEspecifico) {
+                        <span>{{ entry.temaEspecifico }}</span>
                       }
                     </p>
+                    @if (entry.motivoCancelacion) {
+                      <p class="hist-card__reason">{{ entry.motivoCancelacion }}</p>
+                    }
                   </div>
-
-                  @if (entry.rating) {
-                    <div class="hist-card__aside">
-                      <span class="rating-summary">
-                        <eci-icon name="star" [size]="16" [filled]="true" />
-                        {{ entry.rating | number: '1.1-1' }}
-                      </span>
-                    </div>
-                  }
                 </article>
               </eci-card>
             </li>

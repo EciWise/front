@@ -52,6 +52,7 @@ const ADMIN_NAV: readonly NavItem[] = [
   { labelKey: 'nav.materiasTutores', route: '/admin/materias-tutores', icon: 'study', descKey: 'nav.desc.materiasTutores' },
   { labelKey: 'nav.materias', route: '/admin/materias', icon: 'file', descKey: 'nav.desc.materias' },
   { labelKey: 'nav.salas', route: '/admin/salas', icon: 'schedule', descKey: 'nav.desc.salas' },
+  { labelKey: 'nav.franjas', route: '/admin/franjas', icon: 'clock', descKey: 'nav.desc.franjas' },
   { labelKey: 'nav.aprendizaje', route: '/admin/aprendizaje', icon: 'aprendizaje' },
   { labelKey: 'nav.practica', route: '/admin/practica', icon: 'quiz' },
 ];
@@ -133,8 +134,8 @@ const ADMIN_SUBSECTIONS: readonly SearchEntry[] = [
   { labelKey: 'admin.statistics.tabSummary',     route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
   { labelKey: 'admin.statistics.tabPlatform',    route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
   { labelKey: 'admin.statistics.tabIa',          route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
-  { labelKey: 'admin.statistics.tabTutoring',    route: '/admin/estadisticas',      icon: 'trophy',      parentLabelKey: 'nav.statistics' },
   { labelKey: 'admin.monitorias.title',          route: '/admin/monitorias',        icon: 'tutorias',    parentLabelKey: 'nav.monitorias' },
+  { labelKey: 'admin.franjas.title',             route: '/admin/franjas',           icon: 'clock',       parentLabelKey: 'nav.franjas' },
   { labelKey: 'admin.materiales.title',          route: '/admin/materiales',        icon: 'materials',   parentLabelKey: 'nav.materiales' },
   { labelKey: 'admin.materiasTutores.title',     route: '/admin/materias-tutores',  icon: 'study',       parentLabelKey: 'nav.materiasTutores' },
   { labelKey: 'admin.materias.title',            route: '/admin/materias',          icon: 'file',        parentLabelKey: 'nav.materias' },

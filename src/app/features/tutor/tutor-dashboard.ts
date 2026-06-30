@@ -5,9 +5,7 @@ import { Role } from '../../core/models/role.enum';
 import { DashboardGridComponent } from '../../shared/layout/dashboard-grid/dashboard-grid';
 import { IconComponent } from '../../shared/ui/icon/icon';
 import { navItemsFor } from '../../shared/layout/nav-items';
-import { TutorScheduleService } from './schedule.service';
-import { AvailabilityService } from './availability.service';
-import { TutoringRequestsService } from './requests.service';
+import { TutorSessionsService } from './tutor-sessions.service';
 import { AuthService } from '../../core/auth/auth.service';
 
 /** Centro de control del tutor: resumen de planeación y accesos. */
@@ -20,17 +18,15 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class TutorDashboardComponent {
   private readonly auth = inject(AuthService);
-  private readonly schedule = inject(TutorScheduleService);
-  private readonly availability = inject(AvailabilityService);
-  private readonly requests = inject(TutoringRequestsService);
+  private readonly sessions = inject(TutorSessionsService);
 
   protected readonly user = this.auth.user;
 
   protected readonly items = navItemsFor(Role.Tutor).filter((i) => !i.exact);
 
   protected readonly stats = [
-    { labelKey: 'tutor.control.upcoming', icon: 'schedule' as const, route: '/tutor/schedule', value: this.schedule.upcomingCount },
-    { labelKey: 'tutor.control.pending', icon: 'requests' as const, route: '/tutor/requests', value: this.requests.pendingCount },
-    { labelKey: 'tutor.control.slots', icon: 'availability' as const, route: '/tutor/availability', value: this.availability.count },
+    { labelKey: 'tutor.control.upcoming', icon: 'schedule' as const, route: '/tutor/schedule', value: this.sessions.upcomingCount },
+    { labelKey: 'tutor.control.pending', icon: 'requests' as const, route: '/tutor/requests', value: this.sessions.participantsCount },
+    { labelKey: 'tutor.control.slots', icon: 'availability' as const, route: '/tutor/availability', value: this.sessions.activeSlotsCount },
   ];
 }

@@ -8,7 +8,11 @@
   }
 
   @if (actionError()) {
-    <p class="notice notice--error eci-fit__chrome" role="alert">{{ actionError() }}</p>
+    <p class="notice notice--error eci-fit__chrome" role="alert">{{ actionError() | translate }}</p>
+  }
+
+  @if (loadError()) {
+    <p class="notice notice--error eci-fit__chrome" role="alert">{{ loadError() | translate }}</p>
   }
 
   <div class="eci-fit__body">
@@ -37,7 +41,7 @@
                       </div>
                       <h3>{{ r.sesion.materiaNombre }}</h3>
                       <p class="session-card__meta">
-                        <span>{{ 'tutor.requests.student' | translate }}: {{ r.estudianteNombre ?? '-' }}</span>
+                        <span>{{ 'tutor.schedule.student' | translate }}: {{ r.estudianteNombre ?? '-' }}</span>
                         @if (r.temaEspecifico) {
                           <span>{{ r.temaEspecifico }}</span>
                         }
@@ -58,9 +62,9 @@
                     </div>
 
                     <div class="session-card__actions">
-                      <eci-button variant="ghost" (buttonClick)="openObservation(r)">
-                        <eci-icon name="edit" [size]="16" />
-                        {{ 'tutor.schedule.observations' | translate }}
+                      <eci-button variant="ghost" (buttonClick)="openCancel(r)">
+                        <eci-icon name="close" [size]="16" />
+                        {{ 'tutor.schedule.cancelSession' | translate }}
                       </eci-button>
                     </div>
                   </article>
@@ -102,12 +106,6 @@
                         <p class="observation">{{ r.motivoCancelacion }}</p>
                       }
                     </div>
-                    <div class="session-card__actions">
-                      <eci-button variant="secondary" (buttonClick)="openObservation(r)">
-                        <eci-icon name="edit" [size]="16" />
-                        {{ 'tutor.schedule.observations' | translate }}
-                      </eci-button>
-                    </div>
                   </article>
                 </eci-card>
               </li>
@@ -119,25 +117,29 @@
   </div>
 </div>
 
-<eci-modal [(open)]="observationOpen" titleKey="tutor.schedule.observations">
-  <form class="modal-form" (submit)="submitObservation($event)">
+<eci-modal [(open)]="cancelOpen" titleKey="tutor.schedule.cancelSession">
+  <form class="modal-form" (submit)="submitCancel($event)">
     @if (actionError()) {
-      <p class="form-error" role="alert">{{ actionError() }}</p>
+      <p class="form-error" role="alert">{{ actionError() | translate }}</p>
     }
 
+    <p class="modal-hint">{{ 'tutor.schedule.cancelHint' | translate }}</p>
+
     <label class="field">
-      <span>{{ 'tutor.schedule.observationLabel' | translate }}</span>
-      <textarea rows="5" [formField]="observationForm.observation"></textarea>
-      @if (observationForm.observation().touched() && observationForm.observation().invalid()) {
-        <span class="form-error">{{ 'tutor.schedule.validation.observation' | translate }}</span>
+      <span>{{ 'tutor.schedule.cancelReasonLabel' | translate }}</span>
+      <textarea rows="4" [formField]="cancelForm.reason"></textarea>
+      @if (cancelForm.reason().touched() && cancelForm.reason().invalid()) {
+        <span class="form-error">{{ 'tutor.schedule.validation.cancelReason' | translate }}</span>
       }
     </label>
 
     <div class="modal-actions">
-      <eci-button variant="ghost" type="button" (buttonClick)="observationOpen.set(false)">
+      <eci-button variant="ghost" type="button" (buttonClick)="cancelOpen.set(false)">
         {{ 'common.cancel' | translate }}
       </eci-button>
-      <eci-button type="submit">{{ 'common.save' | translate }}</eci-button>
+      <eci-button type="submit" [disabled]="busy()">
+        {{ 'tutor.schedule.confirmCancel' | translate }}
+      </eci-button>
     </div>
   </form>
 </eci-modal>

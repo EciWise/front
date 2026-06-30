@@ -80,25 +80,14 @@
   color: var(--text-muted);
 }
 
-/* `.admin-table*` (envoltorio, tabla, celdas, email) se definen en
-   "Primitivas compartidas" (styles.css). Aquí solo el select compacto propio. */
-.admin-table eci-select {
+/* Las tarjetas de listado usan las primitivas compartidas (.card-grid,
+   .list-card*) de styles.css. El cuerpo apila email + selector de rol. */
+.usr-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.usr-card__body eci-select {
   min-width: 8.5rem;
-}
-
-.admin-status {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 0.15rem 0.6rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: color-mix(in srgb, var(--danger) 16%, transparent);
-  color: var(--danger);
-}
-
-.admin-status--on {
-  background: color-mix(in srgb, var(--success) 18%, transparent);
-  color: var(--success);
 }

@@ -12,45 +12,34 @@
           @if (users().length === 0) {
             <eci-card><p class="admin__empty">{{ 'admin.users.empty' | translate }}</p></eci-card>
           } @else {
-            <div class="admin-table-wrap">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th>{{ 'common.name' | translate }}</th>
-                    <th>{{ 'common.email' | translate }}</th>
-                    <th>{{ 'profile.role' | translate }}</th>
-                    <th>{{ 'fields.status' | translate }}</th>
-                    <th>{{ 'fields.actions' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (user of users(); track user.id) {
-                    <tr>
-                      <td>{{ user.name }}</td>
-                      <td class="admin-table__email">{{ user.email }}</td>
-                      <td>
-                        <eci-select
-                          [value]="user.role"
-                          (valueChange)="changeRole(user, $event)"
-                          [ariaLabel]="'admin.users.changeRole' | translate"
-                          [options]="roleOptions"
-                          [compact]="true"
-                        />
-                      </td>
-                      <td>
-                        <span class="admin-status" [class.admin-status--on]="user.active">
-                          {{ (user.active ? 'admin.users.active' : 'admin.users.inactive') | translate }}
-                        </span>
-                      </td>
-                      <td>
-                        <eci-button variant="ghost" (click)="toggleActive(user)">
-                          {{ (user.active ? 'admin.users.deactivate' : 'admin.users.activate') | translate }}
-                        </eci-button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
+            <div class="card-grid">
+              @for (user of users(); track user.id) {
+                <article class="list-card" [class.list-card--inactive]="!user.active">
+                  <header class="list-card__head">
+                    <span class="list-card__title">{{ user.name }}</span>
+                    <span class="list-badge" [class.list-badge--on]="user.active">
+                      {{ (user.active ? 'admin.users.active' : 'admin.users.inactive') | translate }}
+                    </span>
+                  </header>
+
+                  <div class="list-card__body usr-card__body">
+                    <p class="list-card__meta">{{ user.email }}</p>
+                    <eci-select
+                      [value]="user.role"
+                      (valueChange)="changeRole(user, $event)"
+                      [ariaLabel]="'admin.users.changeRole' | translate"
+                      [options]="roleOptions"
+                      [compact]="true"
+                    />
+                  </div>
+
+                  <footer class="list-card__actions">
+                    <eci-button variant="ghost" (click)="toggleActive(user)">
+                      {{ (user.active ? 'admin.users.deactivate' : 'admin.users.activate') | translate }}
+                    </eci-button>
+                  </footer>
+                </article>
+              }
             </div>
           }
         </div>

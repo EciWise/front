@@ -5,6 +5,7 @@ import { forkJoin } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
+import { IconComponent } from '../../../shared/ui/icon/icon';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select/select';
 import { Asignacion, IaAdminService, UsuarioBasico } from '../../../core/ia/ia-admin.service';
 
@@ -18,6 +19,7 @@ import { Asignacion, IaAdminService, UsuarioBasico } from '../../../core/ia/ia-a
     PageHeaderComponent,
     CardComponent,
     ButtonComponent,
+    IconComponent,
     SelectComponent,
   ],
   templateUrl: './assignments.html',

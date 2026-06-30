@@ -20,16 +20,101 @@
   text-align: center;
 }
 
-.mon-badge {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8125rem;
-  background: var(--surface-2);
+/* ── Rejilla semanal ─────────────────────────────────────────────────── */
+.mon-grid-wrap {
+  overflow-x: auto;
+}
+
+.mon-grid {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 48rem;
+  align-items: stretch;
+}
+
+.mon-day,
+.mon-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--text-muted);
 }
 
-.mon-badge--virtual {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
+.mon-day {
+  padding: var(--space-2) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mon-time {
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  text-align: right;
+}
+
+.mon-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 3.8rem;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+}
+
+.mon-cell--empty {
+  border-style: dashed;
+  background: var(--surface-2);
+}
+
+.mon-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 0.45rem;
+}
+
+.mon-chip__code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.mon-chip__tutor {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.mon-chip__meta {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.1;
+}
+
+/* Responsive: en pantallas estrechas la rejilla hace scroll horizontal y se
+   compacta; se oculta el meta para mantener la lectura de materia y tutor. */
+@media (max-width: 48rem) {
+  .mon-grid {
+    min-width: 36rem;
+    gap: 0.3rem;
+  }
+
+  .mon-day,
+  .mon-time {
+    font-size: 0.7rem;
+  }
+
+  .mon-chip__meta {
+    display: none;
+  }
 }

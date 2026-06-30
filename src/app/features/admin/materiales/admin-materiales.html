@@ -15,43 +15,36 @@
 }
 
 @if (items().length > 0) {
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>{{ 'admin.materiales.nombre' | translate }}</th>
-          <th>{{ 'admin.materiales.materia' | translate }}</th>
-          <th>{{ 'admin.materiales.tipo' | translate }}</th>
-          <th>{{ 'fields.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (m of items(); track m.id) {
-          <tr>
-            <td>{{ m.title }}</td>
-            <td>{{ m.subject || '—' }}</td>
-            <td>
-              <span class="mat-type mat-type--{{ m.type }}">{{ m.type }}</span>
-            </td>
-            <td class="mat-actions">
-              <a [href]="downloadUrl(m.id)" target="_blank" rel="noopener">
-                <eci-button variant="ghost">
-                  <eci-icon name="eye" [size]="15" />
-                  {{ 'admin.materiales.view' | translate }}
-                </eci-button>
-              </a>
-              <eci-button variant="ghost" (click)="remove(m.id)">
-                <eci-icon name="trash" [size]="15" />
-                {{ 'admin.materiales.delete' | translate }}
-              </eci-button>
-              @if (deleteErrorId() === m.id) {
-                <span class="mat__error">{{ 'admin.materiales.deleteError' | translate }}</span>
-              }
-            </td>
-          </tr>
+  <div class="card-grid">
+    @for (m of items(); track m.id) {
+      <article class="list-card">
+        <header class="list-card__head">
+          <span class="list-card__title">{{ m.title }}</span>
+          <span class="mat-type mat-type--{{ m.type }}">{{ m.type }}</span>
+        </header>
+
+        <div class="list-card__body">
+          <p class="list-card__meta">{{ m.subject || '—' }}</p>
+        </div>
+
+        <footer class="list-card__actions">
+          <a [href]="downloadUrl(m.id)" target="_blank" rel="noopener">
+            <eci-button variant="ghost">
+              <eci-icon name="eye" [size]="15" />
+              {{ 'admin.materiales.view' | translate }}
+            </eci-button>
+          </a>
+          <eci-button variant="ghost" (click)="remove(m.id)">
+            <eci-icon name="trash" [size]="15" />
+            {{ 'admin.materiales.delete' | translate }}
+          </eci-button>
+        </footer>
+
+        @if (deleteErrorId() === m.id) {
+          <p class="list-card__error" role="alert">{{ 'admin.materiales.deleteError' | translate }}</p>
         }
-      </tbody>
-    </table>
+      </article>
+    }
   </div>
 } @else {
   <p class="admin__empty">{{ 'admin.materiales.empty' | translate }}</p>

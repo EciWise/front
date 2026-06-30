@@ -150,6 +150,37 @@ export interface ActualizarMateriaPayload {
   readonly activa?: boolean;
 }
 
+export interface TutoriaDetalleDto extends TutoriaResumenDto {
+  readonly estado: 'PROGRAMADA' | 'REALIZADA' | 'CANCELADA';
+  readonly temaGeneral: string | null;
+}
+
+export interface CancelarTutoriaPayload {
+  readonly tutoriaId: string;
+  readonly motivo: string;
+}
+
+export interface ResultadoCancelacionTutoria {
+  readonly tutoriaId: string;
+  readonly participantesLiberados: number;
+}
+
+export interface CrearFranjaPayload {
+  readonly diaSemana: number;
+  readonly horaInicio: string;
+  readonly horaFin: string;
+  readonly orden: number;
+}
+
+/** Materia asignada a un tutor, con datos de la relación para autorizar/desautorizar. */
+export interface MateriaDelTutorDto {
+  readonly id: string;
+  readonly codigo: string;
+  readonly nombre: string;
+  readonly tutorMateriaId: string;
+  readonly autorizada: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TutoringApiService {
   private readonly http = inject(HttpClient);
@@ -183,12 +214,27 @@ export class TutoringApiService {
     return this.http.post(`${this.base}/reservas/reprogramar`, payload);
   }
 
+  cancelarTutoria(payload: CancelarTutoriaPayload): Observable<ResultadoCancelacionTutoria> {
+    return this.http.post<ResultadoCancelacionTutoria>(
+      `${this.base}/reservas/cancelacion-tutoria`,
+      payload,
+    );
+  }
+
+  obtenerTutoria(id: string): Observable<TutoriaDetalleDto> {
+    return this.http.get<TutoriaDetalleDto>(`${this.base}/tutorias/${id}`);
+  }
+
   listarDisponibilidades(): Observable<DisponibilidadDto[]> {
     return this.http.get<DisponibilidadDto[]>(`${this.base}/disponibilidad`);
   }
 
   listarFranjas(): Observable<FranjaDto[]> {
     return this.http.get<FranjaDto[]>(`${this.base}/catalogos/franjas`);
+  }
+
+  crearFranja(payload: CrearFranjaPayload): Observable<FranjaDto> {
+    return this.http.post<FranjaDto>(`${this.base}/catalogos/franjas`, payload);
   }
 
   materializarAhora(): Observable<{ creadas: number; omitidas: number }> {
@@ -250,14 +296,22 @@ export class TutoringApiService {
     return this.http.patch<MateriaDto>(`${this.base}/catalogos/materias/${id}`, payload);
   }
 
+  activarMateria(id: string): Observable<MateriaDto> {
+    return this.http.patch<MateriaDto>(`${this.base}/catalogos/materias/${id}/activar`, {});
+  }
+
+  desactivarMateria(id: string): Observable<MateriaDto> {
+    return this.http.patch<MateriaDto>(`${this.base}/catalogos/materias/${id}/desactivar`, {});
+  }
+
   eliminarMateria(id: string): Observable<unknown> {
     return this.http.delete(`${this.base}/catalogos/materias/${id}`);
   }
 
   // ── Gestión de materias por tutor (admin) ──────────────────────────────────
 
-  listarMateriasDelTutor(tutorId: string): Observable<{ id: string; codigo: string; nombre: string }[]> {
-    return this.http.get<{ id: string; codigo: string; nombre: string }[]>(
+  listarMateriasDelTutor(tutorId: string): Observable<MateriaDelTutorDto[]> {
+    return this.http.get<MateriaDelTutorDto[]>(
       `${this.base}/catalogos/tutor-materias`,
       { params: { tutorUserId: tutorId } },
     );
@@ -274,5 +328,16 @@ export class TutoringApiService {
     return this.http.delete(`${this.base}/catalogos/tutor-materias`, {
       params: { tutorUserId: tutorId, materiaId },
     });
+  }
+
+  autorizarMateriaTutor(tutorMateriaId: string): Observable<unknown> {
+    return this.http.patch(`${this.base}/catalogos/tutor-materias/${tutorMateriaId}/autorizar`, {});
+  }
+
+  desautorizarMateriaTutor(tutorMateriaId: string): Observable<unknown> {
+    return this.http.patch(
+      `${this.base}/catalogos/tutor-materias/${tutorMateriaId}/desautorizar`,
+      {},
+    );
   }
 }

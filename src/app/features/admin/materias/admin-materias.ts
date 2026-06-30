@@ -84,7 +84,10 @@ export class AdminMateriasComponent implements OnInit {
 
   toggleActiva(materia: MateriaDto): void {
     this.actionErrorId.set(null);
-    this.api.actualizarMateria(materia.id, { activa: !materia.activa }).subscribe({
+    const request$ = materia.activa
+      ? this.api.desactivarMateria(materia.id)
+      : this.api.activarMateria(materia.id);
+    request$.subscribe({
       next: () => this.load(),
       error: () => this.actionErrorId.set(materia.id),
     });

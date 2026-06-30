@@ -7,7 +7,6 @@ import {
 } from '../../../core/tutoring/tutoring-api.service';
 import {
   AcademicSubject,
-  Recommendation,
   ReserveTutoringPayload,
   TutorProfile,
   TutoringActionResult,
@@ -26,19 +25,11 @@ function dtoToSlot(dto: TutoriaResumenDto, seatsAdjust = 0): TutoringSlot {
     endTime: dto.horaFin,
     mode: dto.modalidad === 'VIRTUAL' ? 'virtual' : 'presential',
     capacity: dto.cuposMaximos,
-    status: 'active',
     ...(dto.enlaceVirtual ? { virtualUrl: dto.enlaceVirtual } : {}),
     ...(dto.salaCodigo ? { room: dto.salaCodigo } : {}),
   };
   const subject: AcademicSubject = { id: dto.materiaId, name: dto.materiaNombre };
-  const tutor: TutorProfile = {
-    id: dto.tutorUserId,
-    name: dto.tutorNombre ?? 'Monitor',
-    career: '',
-    authorized: true,
-    subjectIds: [dto.materiaId],
-    reputation: { averageRating: 0, completedSessions: 0, attendanceRate: 0, comments: [] },
-  };
+  const tutor: TutorProfile = { id: dto.tutorUserId, name: dto.tutorNombre ?? 'Monitor' };
   const availableSeats = Math.max(0, dto.cuposDisponibles - seatsAdjust);
   return {
     availability,
@@ -107,32 +98,11 @@ export class TutoringSearchService {
     for (const dto of this._dtos()) {
       if (!seen.has(dto.tutorUserId)) {
         seen.add(dto.tutorUserId);
-        result.push({
-          id: dto.tutorUserId,
-          name: dto.tutorNombre ?? 'Monitor',
-          career: '',
-          authorized: true,
-          subjectIds: [],
-          reputation: { averageRating: 0, completedSessions: 0, attendanceRate: 0, comments: [] },
-        });
+        result.push({ id: dto.tutorUserId, name: dto.tutorNombre ?? 'Monitor' });
       }
     }
     return result;
   });
-
-  readonly recommendations = computed<Recommendation[]>(() =>
-    this.slots()
-      .slice(0, 3)
-      .map((slot, i) => ({
-        id: `rec-${slot.availability.id}`,
-        availabilityId: slot.availability.id,
-        tutorId: slot.tutor.id,
-        subjectId: slot.subject.id,
-        score: Math.round((3 - i) * 33.3),
-        reasonKey: 'tutorias.recommendations.reasonRating',
-        relatedTopics: [] as readonly string[],
-      })),
-  );
 
   searchSlots(filters: TutoringSearchFilters): TutoringSlot[] {
     return this.slots().filter((slot) => {
@@ -145,10 +115,6 @@ export class TutoringSearchService {
         (!filters.time || (a.startTime <= filters.time && a.endTime > filters.time))
       );
     });
-  }
-
-  slotById(availabilityId: string): TutoringSlot | null {
-    return this.slots().find((s) => s.availability.id === availabilityId) ?? null;
   }
 
   reserve(slot: TutoringSlot, payload: ReserveTutoringPayload): Observable<TutoringActionResult> {

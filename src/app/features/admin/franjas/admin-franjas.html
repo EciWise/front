@@ -1,0 +1,89 @@
+<eci-page-header titleKey="admin.franjas.title" icon="clock" />
+
+<div class="mat-header-row">
+  <p class="admin__count">
+    {{ 'admin.franjas.count' | translate: { count: franjas().length } }}
+  </p>
+  <eci-button (click)="openCreate()">
+    <eci-icon name="plus" [size]="16" />
+    {{ 'admin.franjas.create' | translate }}
+  </eci-button>
+</div>
+
+@if (sortedFranjas().length > 0) {
+  <div class="card-grid">
+    @for (f of sortedFranjas(); track f.id) {
+      <article class="list-card" [class.list-card--inactive]="!f.activa">
+        <header class="list-card__head">
+          <span class="list-card__title list-card__title--code">{{ dayLabelKey(f.diaSemana) | translate }}</span>
+          <span class="list-badge" [class.list-badge--on]="f.activa">
+            {{ 'admin.franjas.orden' | translate: { orden: f.orden } }}
+          </span>
+        </header>
+
+        <div class="list-card__body">
+          <p class="list-card__meta">
+            <eci-icon name="clock" [size]="15" />
+            {{ f.horaInicio }} – {{ f.horaFin }}
+          </p>
+        </div>
+      </article>
+    }
+  </div>
+} @else {
+  <p class="admin__empty">{{ 'admin.franjas.empty' | translate }}</p>
+}
+
+<eci-modal [(open)]="modalOpen" titleKey="admin.franjas.createTitle">
+  <form class="mat-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mat-field">
+      <span class="mat-label">{{ 'admin.franjas.day' | translate }}</span>
+      <eci-select
+        [value]="form.controls.diaSemana.value + ''"
+        [options]="dayOptions"
+        [ariaLabel]="'admin.franjas.day' | translate"
+        (valueChange)="setDay($event)"
+      />
+    </div>
+
+    <div class="mat-grid-2">
+      <div class="mat-field">
+        <label class="mat-label" for="franja-inicio">{{ 'admin.franjas.start' | translate }}</label>
+        <input id="franja-inicio" class="mat-input" type="time" formControlName="horaInicio" />
+      </div>
+      <div class="mat-field">
+        <label class="mat-label" for="franja-fin">{{ 'admin.franjas.end' | translate }}</label>
+        <input id="franja-fin" class="mat-input" type="time" formControlName="horaFin" />
+      </div>
+    </div>
+
+    <div class="mat-field">
+      <label class="mat-label" for="franja-orden">{{ 'admin.franjas.block' | translate }}</label>
+      <input
+        id="franja-orden"
+        class="mat-input"
+        type="number"
+        min="1"
+        max="8"
+        formControlName="orden"
+      />
+      @if (form.controls.orden.invalid && form.controls.orden.touched) {
+        <span class="mat__error">{{ 'admin.franjas.blockRange' | translate }}</span>
+      }
+    </div>
+
+    @if (errorKey(); as err) {
+      <p class="mat__error" role="alert">{{ err | translate }}</p>
+    }
+
+    <div class="mat-actions-row">
+      <eci-button type="submit" [disabled]="saving()">
+        @if (saving()) {
+          {{ 'admin.franjas.saving' | translate }}
+        } @else {
+          {{ 'admin.franjas.create' | translate }}
+        }
+      </eci-button>
+    </div>
+  </form>
+</eci-modal>

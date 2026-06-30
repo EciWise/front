@@ -3,42 +3,44 @@
 
   <div class="eci-fit__body">
     <div class="req-stack eci-section-enter">
-      @if (requests().length === 0) {
+      @if (error()) {
+        <eci-card>
+          <p class="empty" role="alert">{{ error() | translate }}</p>
+        </eci-card>
+      } @else if (loading() && participants().length === 0) {
+        <eci-card>
+          <p class="empty">{{ 'common.loading' | translate }}</p>
+        </eci-card>
+      } @else if (participants().length === 0) {
         <eci-card>
           <p class="empty">{{ 'tutor.requests.empty' | translate }}</p>
         </eci-card>
       } @else {
         <ul class="req-list">
-          @for (req of requests(); track req.id) {
+          @for (p of participants(); track p.id) {
             <li>
               <eci-card>
                 <article class="req-card">
                   <div class="req-card__main">
                     <div class="req-card__eyebrow">
-                      <span class="status" [attr.data-status]="req.status">
-                        {{ 'tutor.requests.' + req.status | translate }}
-                      </span>
-                      <span>{{ req.datetime | date: 'mediumDate' }}</span>
-                      <span>{{ req.datetime | date: 'shortTime' }}</span>
+                      <span class="pill">{{ modeKey(p.sesion.modalidad) | translate }}</span>
+                      <span>{{ p.sesion.fecha | date: 'mediumDate' }}</span>
+                      <span>{{ p.sesion.horaInicio }} - {{ p.sesion.horaFin }}</span>
                     </div>
-                    <h2 class="req-card__title">{{ req.subject }}</h2>
+                    <h2 class="req-card__title">{{ p.sesion.materiaNombre }}</h2>
                     <p class="req-card__meta">
-                      <span>{{ 'tutor.requests.student' | translate }}: {{ req.student }}</span>
+                      <span>
+                        <eci-icon name="profile" [size]="16" />
+                        {{ 'tutor.requests.student' | translate }}: {{ p.estudianteNombre ?? '-' }}
+                      </span>
+                      @if (p.temaEspecifico) {
+                        <span>{{ p.temaEspecifico }}</span>
+                      }
                     </p>
+                    @if (p.descripcionDudas) {
+                      <p class="req-card__desc">{{ p.descripcionDudas }}</p>
+                    }
                   </div>
-
-                  @if (req.status === 'pending') {
-                    <div class="req-card__actions">
-                      <eci-button variant="ghost" (buttonClick)="reject(req)">
-                        <eci-icon name="close" [size]="16" />
-                        {{ 'tutor.requests.reject' | translate }}
-                      </eci-button>
-                      <eci-button (buttonClick)="accept(req)">
-                        <eci-icon name="check" [size]="16" />
-                        {{ 'tutor.requests.accept' | translate }}
-                      </eci-button>
-                    </div>
-                  }
                 </article>
               </eci-card>
             </li>

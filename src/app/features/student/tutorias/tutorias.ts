@@ -1,6 +1,6 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormField, form, max, min, required } from '@angular/forms/signals';
+import { FormField, form, required } from '@angular/forms/signals';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
@@ -30,15 +30,10 @@ interface CancelFormModel {
   reason: string;
 }
 
-interface TutorRatingFormModel {
-  topicMastery: number;
-  clarity: number;
-  usefulness: number;
-  punctuality: number;
-  comment: string;
+interface RescheduleFormModel {
+  destinoId: string;
+  reason: string;
 }
-
-type RatingField = keyof Omit<TutorRatingFormModel, 'comment'>;
 
 /** Listado funcional de tutorias academicas para estudiantes. */
 @Component({
@@ -46,7 +41,6 @@ type RatingField = keyof Omit<TutorRatingFormModel, 'comment'>;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
-    DecimalPipe,
     FormField,
     TranslatePipe,
     PageHeaderComponent,
@@ -70,11 +64,9 @@ export class TutoriasComponent implements OnInit {
   protected readonly sections: readonly SectionTab[] = [
     { id: 'search', labelKey: 'tutorias.tabs.search', icon: 'search' },
     { id: 'reservations', labelKey: 'tutorias.tabs.reservations', icon: 'calendar' },
-    { id: 'recommendations', labelKey: 'tutorias.tabs.recommendations', icon: 'assistant' },
     { id: 'history', labelKey: 'tutorias.tabs.history', icon: 'history' },
   ];
   protected readonly section = signal('search');
-  protected readonly recommendations = this.search.recommendations;
   protected readonly subjectOptions = computed<readonly SelectOption[]>(() => [
     { value: '', labelKey: 'tutorias.filters.allSubjects' },
     ...this.search.subjects().map((s) => ({ value: s.id, label: s.name })),
@@ -87,22 +79,6 @@ export class TutoriasComponent implements OnInit {
     { value: '', labelKey: 'tutorias.filters.allModes' },
     { value: 'virtual', labelKey: 'tutoring.modes.virtual' },
     { value: 'presential', labelKey: 'tutoring.modes.presential' },
-  ];
-  protected readonly reserveModeOptions = computed<readonly SelectOption[]>(() => {
-    const mode = this.selectedSlot()?.availability.mode;
-    return mode
-      ? [{ value: mode, labelKey: `tutoring.modes.${mode}` }]
-      : [
-          { value: 'virtual', labelKey: 'tutoring.modes.virtual' },
-          { value: 'presential', labelKey: 'tutoring.modes.presential' },
-        ];
-  });
-  protected readonly stars = [1, 2, 3, 4, 5] as const;
-  protected readonly ratingFields: readonly RatingField[] = [
-    'topicMastery',
-    'clarity',
-    'usefulness',
-    'punctuality',
   ];
   protected readonly actionError = signal('');
   protected readonly actionSuccess = signal('');
@@ -126,9 +102,30 @@ export class TutoriasComponent implements OnInit {
 
   protected readonly reserveOpen = signal(false);
   protected readonly cancelOpen = signal(false);
-  protected readonly rateOpen = signal(false);
+  protected readonly rescheduleOpen = signal(false);
+  protected readonly busy = signal(false);
   protected readonly selectedSlot = signal<TutoringSlot | null>(null);
   protected readonly selectedReservation = signal<ReservaEstudianteDto | null>(null);
+
+  /** Slots disponibles de la misma materia para reprogramar (excluye el origen). */
+  protected readonly rescheduleOptions = computed<readonly SelectOption[]>(() => {
+    const origin = this.selectedReservation();
+    if (!origin) {
+      return [];
+    }
+    return this.search
+      .slots()
+      .filter(
+        (slot) =>
+          slot.subject.id === origin.tutoria.materiaId &&
+          slot.availability.id !== origin.tutoriaId &&
+          slot.availableSeats > 0,
+      )
+      .map((slot) => ({
+        value: slot.availability.id,
+        label: `${slot.subject.name} · ${slot.availability.date} ${slot.availability.startTime} · ${slot.tutor.name}`,
+      }));
+  });
 
   protected readonly reserveModel = signal<ReserveFormModel>({
     specificTopic: '',
@@ -146,23 +143,10 @@ export class TutoriasComponent implements OnInit {
     required(schema.reason, { message: 'tutorias.validation.cancelReason' });
   });
 
-  protected readonly ratingModel = signal<TutorRatingFormModel>({
-    topicMastery: 0,
-    clarity: 0,
-    usefulness: 0,
-    punctuality: 0,
-    comment: '',
-  });
-  protected readonly ratingForm = form(this.ratingModel, (schema) => {
-    min(schema.topicMastery, 1, { message: 'tutorias.validation.rating' });
-    max(schema.topicMastery, 5);
-    min(schema.clarity, 1, { message: 'tutorias.validation.rating' });
-    max(schema.clarity, 5);
-    min(schema.usefulness, 1, { message: 'tutorias.validation.rating' });
-    max(schema.usefulness, 5);
-    min(schema.punctuality, 1, { message: 'tutorias.validation.rating' });
-    max(schema.punctuality, 5);
-    required(schema.comment, { message: 'tutorias.validation.comment' });
+  protected readonly rescheduleModel = signal<RescheduleFormModel>({ destinoId: '', reason: '' });
+  protected readonly rescheduleForm = form(this.rescheduleModel, (schema) => {
+    required(schema.destinoId, { message: 'tutorias.validation.rescheduleTarget' });
+    required(schema.reason, { message: 'tutorias.validation.cancelReason' });
   });
 
   ngOnInit(): void {
@@ -215,7 +199,9 @@ export class TutoriasComponent implements OnInit {
     if (!slot) {
       return;
     }
+    this.busy.set(true);
     this.search.reserve(slot, this.reserveModel()).subscribe((result) => {
+      this.busy.set(false);
       if (!result.ok) {
         this.actionError.set(result.errorKey ?? this.err('tutoring.errors.generic'));
         return;
@@ -243,34 +229,71 @@ export class TutoriasComponent implements OnInit {
     if (!reservation) {
       return;
     }
+    this.busy.set(true);
     this.api.cancelarReserva(reservation.tutoriaId, { motivo: this.cancelModel().reason }).subscribe({
       next: () => {
+        this.busy.set(false);
         this.recargarReservas();
         this.actionSuccess.set('tutorias.feedback.cancelled');
         this.cancelOpen.set(false);
       },
       error: (err: unknown) => {
+        this.busy.set(false);
         const backendMsg = (err as { error?: { message?: string } })?.error?.message;
         this.actionError.set(backendMsg ?? this.err('tutoring.errors.generic'));
       },
     });
   }
 
-  openRate(reservation: ReservaEstudianteDto): void {
+  openReschedule(reservation: ReservaEstudianteDto): void {
     this.actionError.set('');
+    this.actionSuccess.set('');
     this.selectedReservation.set(reservation);
-    this.ratingModel.set({
-      topicMastery: 0,
-      clarity: 0,
-      usefulness: 0,
-      punctuality: 0,
-      comment: '',
-    });
-    this.rateOpen.set(true);
+    this.rescheduleModel.set({ destinoId: '', reason: '' });
+    this.rescheduleOpen.set(true);
   }
 
-  setRating(field: RatingField, value: number): void {
-    this.ratingModel.update((rating) => ({ ...rating, [field]: value }));
+  setRescheduleTarget(value: SelectValue): void {
+    this.rescheduleModel.update((model) => ({
+      ...model,
+      destinoId: value === null ? '' : String(value),
+    }));
+  }
+
+  submitReschedule(event: Event): void {
+    event.preventDefault();
+    if (this.rescheduleForm().invalid()) {
+      this.actionError.set(this.err('tutorias.validation.rescheduleTarget'));
+      return;
+    }
+    const reservation = this.selectedReservation();
+    const { destinoId, reason } = this.rescheduleModel();
+    if (!reservation || !destinoId) {
+      return;
+    }
+    this.busy.set(true);
+    this.api
+      .reprogramar({
+        tutoriaOrigenId: reservation.tutoriaId,
+        tutoriaDestinoId: destinoId,
+        motivo: reason,
+        temaEspecifico: reservation.temaEspecifico ?? '',
+        descripcionDudas: reservation.descripcionDudas ?? '',
+      })
+      .subscribe({
+        next: () => {
+          this.busy.set(false);
+          this.recargarReservas();
+          this.search.reload();
+          this.actionSuccess.set('tutorias.feedback.rescheduled');
+          this.rescheduleOpen.set(false);
+        },
+        error: (err: unknown) => {
+          this.busy.set(false);
+          const backendMsg = (err as { error?: { message?: string } })?.error?.message;
+          this.actionError.set(backendMsg ?? this.err('tutoring.errors.generic'));
+        },
+      });
   }
 
   setReserveMode(value: SelectValue): void {
@@ -279,25 +302,10 @@ export class TutoriasComponent implements OnInit {
     }
   }
 
-  submitRating(event: Event): void {
-    event.preventDefault();
-    if (this.ratingForm().invalid()) {
-      this.actionError.set(this.err('tutorias.validation.rating'));
-      return;
-    }
-    // Rating submission is a future feature; close modal optimistically
-    this.actionSuccess.set('tutorias.feedback.rated');
-    this.rateOpen.set(false);
-  }
-
   eventValue(event: Event): string {
     return event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement
       ? event.target.value
       : '';
-  }
-
-  slotById(availabilityId: string): TutoringSlot | null {
-    return this.search.slotById(availabilityId);
   }
 
   modeKey(mode: TutoringMode): string {
