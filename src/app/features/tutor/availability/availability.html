@@ -1,178 +1,217 @@
-<div class="eci-fit availability-page">
-  <eci-page-header titleKey="tutor.availability.title" icon="availability" />
+<div class="avail-page">
 
-  @if (actionSuccess()) {
-    <output class="notice notice--success eci-fit__chrome" aria-live="polite">
-      {{ actionSuccess() | translate }}
-    </output>
+  <!-- ── Banner de error ───────────────────────────────────────────────── -->
+  @if (error()) {
+    <div class="avail-error" role="alert">
+      <eci-icon name="info" [size]="16" />
+      <span>{{ error()! | translate }}</span>
+      <button type="button" class="avail-error__close" (click)="error.set(null)">
+        <eci-icon name="close" [size]="14" />
+      </button>
+    </div>
   }
 
-  <eci-card class="eci-fit__chrome">
-    <form class="availability-form" (submit)="submitAvailability($event)">
-      <div class="availability-form__head">
-        <div>
-          <h2>{{ (selected() ? 'tutor.availability.editTitle' : 'tutor.availability.createTitle') | translate }}</h2>
-          <p>{{ 'tutor.availability.hint' | translate }}</p>
-        </div>
-        @if (selected()) {
-          <eci-button variant="ghost" type="button" (buttonClick)="resetForm()">
-            {{ 'tutor.availability.new' | translate }}
-          </eci-button>
-        }
-      </div>
-
-      @if (actionError()) {
-        <p class="form-error" role="alert">{{ actionError() | translate }}</p>
-      }
-
-      <div class="availability-form__grid">
-        <div class="field">
-          <span>{{ 'fields.subject' | translate }}</span>
-          <eci-select
-            [value]="model().subjectId"
-            [options]="subjectOptions()"
-            [placeholder]="'fields.subject' | translate"
-            [ariaLabel]="'fields.subject' | translate"
-            (valueChange)="setSubject($event)"
-          />
-        </div>
-
-        <label class="field">
-          <span>{{ 'tutorias.fields.date' | translate }}</span>
-          <input type="date" [formField]="availabilityForm.date" />
-        </label>
-
-        <label class="field">
-          <span>{{ 'tutor.availability.startTime' | translate }}</span>
-          <input type="time" [formField]="availabilityForm.startTime" />
-        </label>
-
-        <label class="field">
-          <span>{{ 'tutor.availability.endTime' | translate }}</span>
-          <input type="time" [formField]="availabilityForm.endTime" />
-        </label>
-
-        <div class="field">
-          <span>{{ 'tutorias.fields.mode' | translate }}</span>
-          <eci-select
-            [value]="model().mode"
-            [options]="modeOptions"
-            [placeholder]="'tutorias.fields.mode' | translate"
-            [ariaLabel]="'tutorias.fields.mode' | translate"
-            (valueChange)="setMode($event)"
-          />
-        </div>
-
-        <label class="field">
-          <span>{{ 'tutor.schedule.seats' | translate }}</span>
-          <input type="number" [formField]="availabilityForm.capacity" />
-        </label>
-
-        @if (model().mode === 'presential') {
-          <label class="field availability-form__room">
-            <span>{{ 'tutor.availability.room' | translate }}</span>
-            <input type="text" [formField]="availabilityForm.room" />
-          </label>
-        }
-      </div>
-
-      @if (availabilityForm.capacity().touched() && availabilityForm.capacity().invalid()) {
-        <p class="form-error">{{ 'tutor.availability.validation.capacity' | translate }}</p>
-      }
-
-      <div class="availability-form__actions">
-        <eci-button type="submit">
-          <eci-icon [name]="selected() ? 'edit' : 'plus'" [size]="16" />
-          {{ (selected() ? 'tutor.availability.update' : 'tutor.availability.create') | translate }}
-        </eci-button>
-      </div>
-    </form>
-  </eci-card>
-
-  <div class="eci-fit__body">
-    @if (availabilities().length === 0) {
-      <eci-card>
-        <p class="empty">{{ 'tutor.availability.empty' | translate }}</p>
-      </eci-card>
-    } @else {
-      <ul class="availability-list">
-        @for (availability of availabilities(); track availability.id) {
-          <li>
-            <eci-card>
-              <article class="availability-item">
-                <div class="availability-item__main">
-                  <div class="availability-item__eyebrow">
-                    <span class="status" [attr.data-status]="availability.status">
-                      {{ 'tutor.availability.status.' + availability.status | translate }}
-                    </span>
-                    <span>{{ modeKey(availability.mode) | translate }}</span>
-                    <span>{{ availability.date | date: 'mediumDate' }}</span>
-                  </div>
-                  <h2>{{ subjectName(availability.subjectId) }}</h2>
-                  <p>
-                    <span>{{ availability.startTime }} - {{ availability.endTime }}</span>
-                    <span>{{ 'tutorias.seatsAvailable' | translate: { count: availableSeats(availability), total: availability.capacity } }}</span>
-                    <span>{{ 'tutor.availability.reserved' | translate: { count: reservationCount(availability) } }}</span>
-                  </p>
-                  @if (availability.mode === 'presential') {
-                    <p class="availability-item__location">{{ availability.room }}</p>
-                  } @else {
-                    <p class="availability-item__location">{{ availability.virtualUrl }}</p>
-                  }
-                </div>
-
-                <div class="availability-item__actions">
-                  <eci-button
-                    variant="secondary"
-                    [disabled]="!canModify(availability)"
-                    (buttonClick)="edit(availability)"
-                  >
-                    <eci-icon name="edit" [size]="16" />
-                    {{ 'common.edit' | translate }}
-                  </eci-button>
-                  <eci-button
-                    variant="ghost"
-                    [disabled]="!canModify(availability)"
-                    (buttonClick)="remove(availability)"
-                  >
-                    <eci-icon name="trash" [size]="16" />
-                    {{ 'common.delete' | translate }}
-                  </eci-button>
-                  @if (availability.status === 'active') {
-                    <eci-button variant="ghost" (buttonClick)="openCancel(availability)">
-                      <eci-icon name="close" [size]="16" />
-                      {{ 'tutor.availability.cancelPublished' | translate }}
-                    </eci-button>
-                  }
-                </div>
-              </article>
-            </eci-card>
-          </li>
-        }
-      </ul>
-    }
+  <!-- ── Cabecera ──────────────────────────────────────────────────────── -->
+  <div class="avail-header">
+    <div>
+      <h1>{{ 'tutor.availability.title' | translate }}</h1>
+      <p>{{ 'tutor.availability.hint' | translate }}</p>
+    </div>
+    <eci-button variant="ghost" type="button" (buttonClick)="openClear()">
+      <eci-icon name="trash" [size]="14" />
+      {{ 'tutor.availability.clearWeek' | translate }}
+    </eci-button>
   </div>
+
+  <!-- ── Estadísticas ───────────────────────────────────────────────────── -->
+  <div class="avail-stats">
+    <div class="stat-card">
+      <div class="stat-card__value stat-card__value--accent">{{ activeSlots() }}</div>
+      <div class="stat-card__label">{{ 'tutor.availability.stats.activeSlots' | translate }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__value">{{ totalSeats() }}</div>
+      <div class="stat-card__label">{{ 'tutor.availability.stats.totalSeats' | translate }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__value">{{ subjectsCovered() }}</div>
+      <div class="stat-card__label">{{ 'tutor.availability.stats.subjectsCovered' | translate }}</div>
+    </div>
+  </div>
+
+  <!-- ── Barra de pincel ───────────────────────────────────────────────── -->
+  <div class="brush-toolbar">
+    <div class="brush-group brush-group--subjects">
+      <span class="brush-label">{{ 'tutor.availability.brushSubject' | translate }}</span>
+      <div class="brush-subjects">
+        @for (b of brushSubjects(); track b.id) {
+          <button
+            type="button"
+            class="subject-pill"
+            [class.subject-pill--active]="b.active"
+            [style.--pill-color]="b.color"
+            [style.--pill-soft]="b.soft"
+            (click)="pickMateria(b.id)"
+          >
+            <span class="subject-pill__dot" [style.background]="b.color"></span>
+            {{ b.nombre }}
+          </button>
+        }
+        @if (brushSubjects().length === 0) {
+          <span class="brush-empty">{{ 'tutor.availability.noSubjects' | translate }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="brush-group">
+      <span class="brush-label">{{ 'tutorias.fields.mode' | translate }}</span>
+      <div class="mode-toggle">
+        <button
+          type="button"
+          class="mode-btn"
+          [class.mode-btn--active]="brushMode() === 'VIRTUAL'"
+          (click)="setMode('VIRTUAL')"
+        >
+          {{ 'tutoring.modes.virtual' | translate }}
+        </button>
+        <button
+          type="button"
+          class="mode-btn"
+          [class.mode-btn--active]="brushMode() === 'PRESENCIAL'"
+          (click)="setMode('PRESENCIAL')"
+        >
+          {{ 'tutoring.modes.presential' | translate }}
+        </button>
+      </div>
+    </div>
+
+    @if (brushMode() === 'PRESENCIAL') {
+      <div class="brush-group">
+        <span class="brush-label">{{ 'tutor.availability.brushSala' | translate }}</span>
+        <eci-select
+          [value]="brushSalaId()"
+          [options]="salaOptions()"
+          [placeholder]="'tutor.availability.brushSala' | translate"
+          [ariaLabel]="'tutor.availability.brushSala' | translate"
+          (valueChange)="setSala($event)"
+        />
+      </div>
+    }
+
+    <div class="brush-group">
+      <span class="brush-label">{{ 'tutor.availability.brushCap' | translate }}</span>
+      <div class="cap-stepper">
+        <button type="button" class="cap-btn" (click)="decCap()" [disabled]="brushCap() <= 1">−</button>
+        <span class="cap-val">{{ brushCap() }}</span>
+        <button type="button" class="cap-btn" (click)="incCap()">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Rejilla semanal ───────────────────────────────────────────────── -->
+  <div class="grid-wrap">
+    <div class="avail-grid" [style.grid-template-columns]="'5.5rem repeat(' + weekDays().length + ', minmax(6.5rem, 1fr))'">
+
+      <!-- Cabeceras de días -->
+      <div class="avail-grid__corner"></div>
+      @for (day of weekDays(); track day.label) {
+        <div class="avail-day">
+          <div class="avail-day__name">{{ day.label }}</div>
+          <div class="avail-day__date">{{ day.date }}</div>
+        </div>
+      }
+
+      <!-- Filas de tiempo -->
+      @for (row of gridRows(); track row.blockLabel) {
+        <div class="avail-time">{{ row.blockLabel }}</div>
+        @for (cell of row.cells; track cell.diaSemana) {
+          @if (cell.franjaId) {
+            <button
+              type="button"
+              class="avail-cell"
+              [class.avail-cell--filled]="cell.filled"
+              [style.background]="cell.filled ? cell.soft : null"
+              [style.border-color]="cell.filled ? cell.color : null"
+              (click)="clickCell(cell)"
+              [attr.aria-pressed]="cell.filled"
+            >
+              @if (cell.filled) {
+                <span class="avail-cell__x" aria-hidden="true">✕</span>
+                <span class="avail-cell__abbr" [style.color]="cell.color">{{ cell.abbr }}</span>
+                <span class="avail-cell__meta">{{ cell.meta }}</span>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M8 3.2v9.6M3.2 8h9.6"/>
+                </svg>
+              }
+            </button>
+          } @else {
+            <div class="avail-cell avail-cell--unavailable" aria-hidden="true"></div>
+          }
+        }
+      }
+    </div>
+  </div>
+
+  <!-- ── Resumen por materia ───────────────────────────────────────────── -->
+  @if (hasAvail()) {
+    <div class="avail-cards">
+      <h2 class="avail-cards__title">{{ 'tutor.availability.summaryTitle' | translate }}</h2>
+      <div class="avail-cards__grid">
+        @for (card of availCards(); track card.materiaId) {
+          <div class="summary-card">
+            <div class="summary-card__bar" [style.background]="card.color"></div>
+            <div class="summary-card__body">
+              <div class="summary-card__head">
+                <h3>{{ card.subjectName }}</h3>
+                <button
+                  type="button"
+                  class="summary-card__close"
+                  (click)="removeCard(card.materiaId)"
+                  aria-label="Eliminar materia"
+                >✕</button>
+              </div>
+              <div class="summary-card__meta">
+                <span class="summary-card__mode">{{ card.modeLabel }}</span>
+                <span class="summary-card__count">{{ card.countLabel }}</span>
+                <span class="summary-card__sep" aria-hidden="true">·</span>
+                <span class="summary-card__seats">{{ card.seats }} cupos</span>
+              </div>
+              <div class="summary-card__chips">
+                @for (chip of card.chips; track chip.franjaId) {
+                  <span class="chip" [style.--chip-color]="card.color" [style.--chip-soft]="card.soft">
+                    {{ chip.label }}
+                    <button
+                      type="button"
+                      class="chip__remove"
+                      (click)="removeChip(chip.franjaId, card.materiaId)"
+                      aria-label="Eliminar franja"
+                    >✕</button>
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="avail-empty">
+      <p>{{ 'tutor.availability.emptyGrid' | translate }}</p>
+    </div>
+  }
+
 </div>
 
-<eci-modal [(open)]="cancelOpen" titleKey="tutor.availability.cancelTitle">
-  <form class="modal-form" (submit)="submitCancel($event)">
-    @if (actionError()) {
-      <p class="form-error" role="alert">{{ actionError() | translate }}</p>
-    }
-
-    <label class="field">
-      <span>{{ 'tutor.availability.cancelReason' | translate }}</span>
-      <textarea rows="4" [formField]="cancelForm.reason"></textarea>
-      @if (cancelForm.reason().touched() && cancelForm.reason().invalid()) {
-        <span class="form-error">{{ 'tutor.availability.validation.cancelReason' | translate }}</span>
-      }
-    </label>
-
-    <div class="modal-actions">
-      <eci-button variant="ghost" type="button" (buttonClick)="cancelOpen.set(false)">
-        {{ 'common.cancel' | translate }}
-      </eci-button>
-      <eci-button type="submit">{{ 'tutor.availability.confirmCancel' | translate }}</eci-button>
-    </div>
-  </form>
+<!-- ── Modal confirmación limpiar semana ─────────────────────────────── -->
+<eci-modal [(open)]="clearOpen" titleKey="tutor.availability.clearTitle">
+  <p>{{ 'tutor.availability.clearConfirm' | translate }}</p>
+  <div class="modal-actions">
+    <eci-button variant="ghost" type="button" (buttonClick)="clearOpen.set(false)">
+      {{ 'common.cancel' | translate }}
+    </eci-button>
+    <eci-button [disabled]="busy()" (buttonClick)="confirmClear()">
+      {{ 'tutor.availability.clearConfirmBtn' | translate }}
+    </eci-button>
+  </div>
 </eci-modal>

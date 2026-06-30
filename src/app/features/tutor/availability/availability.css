@@ -1,211 +1,564 @@
-.availability-page {
-  min-width: 0;
-}
-
-.notice {
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  font-size: 0.9rem;
-}
-
-.notice--success {
-  border-color: color-mix(in srgb, var(--success) 38%, var(--border));
-  color: var(--success);
-}
-
-.availability-form,
-.modal-form {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.availability-form__head {
+/* ── Página ──────────────────────────────────────────────────────────── */
+.avail-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 1.2rem;
+  min-width: 0;
 }
 
-.availability-form__head h2 {
-  margin: 0 0 var(--space-1);
-  font-size: 1.05rem;
-}
-
-.availability-form__head p,
-.empty {
-  margin: 0;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.availability-form__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-.field {
+/* ── Banner de error ─────────────────────────────────────────────────── */
+.avail-error {
   display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-size: 0.88rem;
-  font-weight: 800;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  background: #fbeae9;
+  border: 1px solid #f5b4b0;
+  border-radius: 0.5rem;
+  color: #9b1c1c;
+  font-size: 0.875rem;
 }
 
-.field input,
-.field textarea {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
+.avail-error span {
+  flex: 1;
+}
+
+.avail-error__close {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9b1c1c;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ── Cabecera ────────────────────────────────────────────────────────── */
+.avail-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.avail-header h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
   color: var(--text);
-  font: inherit;
+}
+
+.avail-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
-.field textarea {
-  resize: vertical;
+/* ── Estadísticas ────────────────────────────────────────────────────── */
+.avail-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.85rem;
 }
 
-.availability-form__actions,
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.95rem 1.1rem;
+  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.05);
+}
+
+.stat-card__value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.stat-card__value--accent {
+  color: var(--danger);
+}
+
+.stat-card__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+/* ── Barra de pincel ─────────────────────────────────────────────────── */
+.brush-toolbar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.2rem;
+}
+
+.brush-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brush-group--subjects {
+  flex: 1;
+  min-width: 14rem;
+}
+
+.brush-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: none;
+}
+
+.brush-subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.brush-empty {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Pill de materia */
+.subject-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.subject-pill--active {
+  background: var(--pill-soft);
+  border-color: var(--pill-color);
+  color: var(--pill-color);
+}
+
+.subject-pill__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* Toggle de modalidad */
+.mode-toggle {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.2rem;
+  gap: 0.15rem;
+  min-width: 13rem;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, box-shadow 0.12s;
+}
+
+.mode-btn--active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.12);
+}
+
+/* Contador de cupos */
+.cap-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  height: 2.55rem;
+}
+
+.cap-btn {
+  width: 2.4rem;
+  height: 100%;
+  border: none;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.cap-btn:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.cap-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cap-val {
+  width: 2.6rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* ── Contenedor de la rejilla ────────────────────────────────────────── */
+.grid-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.05);
+  overflow-x: auto;
+}
+
+/* ── Rejilla semanal ─────────────────────────────────────────────────── */
+.avail-grid {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 44rem;
+}
+
+.avail-grid__corner {
+  /* Celda vacía esquina superior-izquierda */
+}
+
+.avail-day {
+  text-align: center;
+  padding-bottom: 0.4rem;
+}
+
+.avail-day__name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.avail-day__date {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.avail-time {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: right;
+  line-height: 1.2;
+}
+
+/* ── Celdas de la rejilla ────────────────────────────────────────────── */
+.avail-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.8rem;
+  border: 1px dashed var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 0.4rem;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.12s ease,
+    border-color 0.12s ease;
+  overflow: hidden;
+}
+
+.avail-cell:not(.avail-cell--filled):not(.avail-cell--unavailable):hover {
+  background: #f4eef0;
+  border-color: #d9b9c2;
+  color: #c8102e;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(20, 20, 30, 0.1);
+}
+
+.avail-cell--filled {
+  border-style: solid;
+  cursor: pointer;
+}
+
+.avail-cell--filled:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(20, 20, 30, 0.12);
+}
+
+.avail-cell--unavailable {
+  background: transparent;
+  border: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* "×" que aparece al hacer hover en celdas llenas */
+.avail-cell__x {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.avail-cell--filled:hover .avail-cell__x {
+  opacity: 1;
+}
+
+.avail-cell__abbr {
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.avail-cell__meta {
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.1;
+  text-align: center;
+  margin-top: 0.15rem;
+}
+
+/* ── Tarjetas de resumen por materia ─────────────────────────────────── */
+.avail-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.avail-cards__title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.avail-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0.85rem;
+}
+
+.summary-card {
+  display: flex;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.1rem;
+  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.05);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.summary-card:hover {
+  box-shadow: 0 8px 26px rgba(20, 20, 30, 0.1);
+  transform: translateY(-2px);
+  border-color: var(--text-muted);
+}
+
+.summary-card__bar {
+  width: 4px;
+  border-radius: 9999px;
+  flex: none;
+  align-self: stretch;
+}
+
+.summary-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.summary-card__head h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.summary-card__close {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  flex: none;
+  line-height: 1;
+  opacity: 0.55;
+  transition: opacity 0.12s;
+  padding: 0;
+}
+
+.summary-card__close:hover {
+  opacity: 1;
+}
+
+.summary-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.summary-card__mode {
+  padding: 0.2rem 0.55rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--text-muted);
+}
+
+.summary-card__count,
+.summary-card__seats {
+  color: var(--text-muted);
+}
+
+.summary-card__sep {
+  color: var(--border);
+}
+
+.summary-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* Chips de franja horaria */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.5rem 0.22rem 0.65rem;
+  background: var(--chip-soft);
+  border: 1px solid var(--chip-color);
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--chip-color);
+}
+
+.chip__remove {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.68rem;
+  padding: 0;
+  opacity: 0.65;
+  transition: opacity 0.12s;
+  line-height: 1;
+}
+
+.chip__remove:hover {
+  opacity: 1;
+}
+
+/* ── Estado vacío ────────────────────────────────────────────────────── */
+.avail-empty {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.avail-empty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ── Acciones del modal ──────────────────────────────────────────────── */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-2);
+  gap: 0.5rem;
+  margin-top: var(--space-3, 0.75rem);
 }
 
-.availability-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.availability-item {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.availability-item__main {
-  min-width: 0;
-}
-
-.availability-item__eyebrow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.availability-item h2 {
-  margin: 0 0 var(--space-2);
-  font-size: 1.05rem;
-}
-
-.availability-item p {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.availability-item__location {
-  margin-top: var(--space-3) !important;
-  word-break: break-word;
-}
-
-.availability-item__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.75rem;
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--success) 14%, transparent);
-  color: var(--success);
-  font-size: 0.78rem;
-  font-weight: 900;
-}
-
-.status[data-status='cancelled'] {
-  background: color-mix(in srgb, var(--danger) 14%, transparent);
-  color: var(--danger);
-}
-
-.form-error {
-  margin: 0;
-  color: var(--danger);
-  font-size: 0.85rem;
-  font-weight: 800;
-}
-
-@media (min-width: 44rem) {
-  .availability-form__head,
-  .availability-item {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .availability-form__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .availability-form__room {
-    grid-column: 1 / -1;
-  }
-
-  .availability-item__actions {
-    flex: none;
-    justify-content: flex-end;
-    max-width: 22rem;
-  }
-}
-
-@media (min-width: 64rem) {
-  .availability-form__grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    align-items: end;
-  }
-
-  .availability-form__room {
-    grid-column: span 2;
-  }
-}
-
-/* Móvil: la rejilla semanal aprovecha todo el ancho, con la columna de horas
-   más estrecha, separación y celdas más compactas para que las 5 columnas de
-   día quepan sin desbordarse en pantallas pequeñas. */
+/* ── Responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 30rem) {
-  .avail__grid {
-    grid-template-columns: 2.75rem repeat(5, 1fr);
-    gap: var(--space-1);
+  .avail-grid {
+    grid-template-columns: 2.75rem repeat(5, 1fr) !important;
+    gap: 0.25rem;
+    min-width: 0;
   }
-  .avail__day,
-  .avail__time {
+
+  .avail-day__name,
+  .avail-time {
     font-size: 0.7rem;
   }
-  .avail__cell {
-    height: 2.25rem;
+
+  .avail-cell {
+    min-height: 2.5rem;
+    padding: 0.25rem;
+  }
+
+  .avail-cell__abbr {
+    font-size: 0.7rem;
+  }
+
+  .avail-cell__meta {
+    display: none;
   }
 }

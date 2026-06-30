@@ -1,0 +1,66 @@
+<eci-page-header titleKey="admin.materiasTutores.title" icon="study" />
+
+<eci-card>
+  <h2 class="admin__heading">{{ 'admin.materiasTutores.selectTutor' | translate }}</h2>
+  <eci-select
+    [options]="tutorOptions()"
+    [placeholder]="'admin.materiasTutores.selectTutor' | translate"
+    [ariaLabel]="'admin.materiasTutores.selectTutor' | translate"
+    (valueChange)="setTutor($event)"
+  />
+</eci-card>
+
+@if (selectedTutorId()) {
+  <eci-card>
+    <h2 class="admin__heading">{{ 'admin.materiasTutores.assign' | translate }}</h2>
+    <form class="admin-form" [formGroup]="assignForm" (ngSubmit)="assign()">
+      <eci-select
+        formControlName="materiaId"
+        [options]="availableMateriaOptions()"
+        [placeholder]="'admin.materiasTutores.selectMateria' | translate"
+        [ariaLabel]="'admin.materiasTutores.selectMateria' | translate"
+      />
+      <eci-button type="submit" [disabled]="availableMateriaOptions().length === 0">
+        {{ 'admin.materiasTutores.assign' | translate }}
+      </eci-button>
+    </form>
+    @if (errorKey(); as err) {
+      <p class="admin__error" role="alert">{{ err | translate }}</p>
+    }
+  </eci-card>
+
+  <h3 class="mt-section">{{ 'admin.materiasTutores.assigned' | translate }}</h3>
+
+  @if (loadingMaterias()) {
+    <p class="admin__empty">…</p>
+  } @else if (tutorMaterias().length > 0) {
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>{{ 'admin.materiasTutores.colCodigo' | translate }}</th>
+            <th>{{ 'admin.materiasTutores.colNombre' | translate }}</th>
+            <th>{{ 'fields.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of tutorMaterias(); track m.id) {
+            <tr>
+              <td>{{ m.codigo }}</td>
+              <td>{{ m.nombre }}</td>
+              <td>
+                <eci-button variant="ghost" (click)="remove(m.id)">
+                  {{ 'admin.materiasTutores.remove' | translate }}
+                </eci-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="admin__empty">{{ 'admin.materiasTutores.empty' | translate }}</p>
+  }
+} @else {
+  <p class="admin__empty">{{ 'admin.materiasTutores.noTutor' | translate }}</p>
+}

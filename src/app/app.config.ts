@@ -21,6 +21,10 @@ import { STUDY_CONFIG } from './core/study/study.config';
 import { TALK_CONFIG } from './core/talk/talk.config';
 import { TODO_CONFIG } from './core/todo/todo.config';
 import { GAME_CONFIG } from './core/game/game.config';
+import { NOTIFICATIONS_CONFIG } from './core/notifications/notifications.config';
+import { MATERIALS_CONFIG } from './features/student/materials/materials.config';
+import { TUTORING_CONFIG } from './core/tutoring/tutoring.config';
+import { GAMIFICATION_CONFIG } from './core/gamification/gamification.config';
 import { EnvService } from './core/config/env.service';
 import { normalizeServiceUrl } from './core/config/url.util';
 
@@ -78,6 +82,34 @@ export const appConfig: ApplicationConfig = {
       provide: GAME_CONFIG,
       useFactory: (env: EnvService) => ({
         gameWsUrl: env.get('gameWsUrl', 'ws://localhost:3002/ws/game'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: NOTIFICATIONS_CONFIG,
+      useFactory: (env: EnvService) => ({
+        notificationsApiUrl: env.get('notificationsApiUrl', 'http://localhost:3004'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: MATERIALS_CONFIG,
+      useFactory: (env: EnvService) => ({
+        materialsApiUrl: env.get('materialsApiUrl', 'http://localhost:3005'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: TUTORING_CONFIG,
+      useFactory: (env: EnvService) => ({
+        tutoringApiUrl: env.get('tutoringApiUrl', 'http://localhost:3006'),
+      }),
+      deps: [EnvService],
+    },
+    {
+      provide: GAMIFICATION_CONFIG,
+      useFactory: (env: EnvService) => ({
+        gamificationApiUrl: env.get('gamificationApiUrl', 'http://localhost:8084'),
       }),
       deps: [EnvService],
     },

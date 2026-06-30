@@ -1,4 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { AuthService } from '../../core/auth/auth.service';
 import { NotificationsService } from '../../core/notifications/notifications.service';
 import {
   AcademicSubject,
@@ -291,6 +292,7 @@ function participationAverage(rating: StudentParticipationRating): number {
 
 @Injectable({ providedIn: 'root' })
 export class TutoringMockService {
+  private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationsService);
 
   private readonly _subjects = signal<readonly AcademicSubject[]>(SUBJECTS);
@@ -300,8 +302,8 @@ export class TutoringMockService {
   private readonly _reservations = signal<readonly TutoringReservation[]>(RESERVATIONS);
   private readonly _legacyHistory = signal<readonly HistoryEntry[]>([]);
 
-  readonly currentStudentId = CURRENT_STUDENT_ID;
-  readonly currentTutorId = CURRENT_TUTOR_ID;
+  readonly currentStudentId = computed(() => this.auth.user()?.id ?? CURRENT_STUDENT_ID);
+  readonly currentTutorId = computed(() => this.auth.user()?.id ?? CURRENT_TUTOR_ID);
   readonly subjects = this._subjects.asReadonly();
   readonly tutors = this._tutors.asReadonly();
   readonly students = this._students.asReadonly();
@@ -318,7 +320,7 @@ export class TutoringMockService {
 
   readonly studentReservations = computed(() =>
     this._reservations()
-      .filter((reservation) => reservation.studentId === CURRENT_STUDENT_ID)
+      .filter((reservation) => reservation.studentId === this.currentStudentId())
       .sort((a, b) =>
         this.availabilityStart(b.availabilityId).localeCompare(
           this.availabilityStart(a.availabilityId),
@@ -332,7 +334,7 @@ export class TutoringMockService {
 
   readonly tutorAvailabilities = computed(() =>
     this._availabilities()
-      .filter((availability) => availability.tutorId === CURRENT_TUTOR_ID)
+      .filter((availability) => availability.tutorId === this.currentTutorId())
       .sort((a, b) => startIso(a).localeCompare(startIso(b))),
   );
 
@@ -441,7 +443,7 @@ export class TutoringMockService {
   }
 
   createAvailability(payload: CreateAvailabilityPayload): TutoringActionResult<TutoringAvailability> {
-    const tutor = this.tutorById(CURRENT_TUTOR_ID);
+    const tutor = this.tutorById(this.currentTutorId());
     const validation = this.validateAvailabilityPayload(payload, tutor);
     if (validation) {
       return { ok: false, errorKey: validation };
@@ -449,7 +451,7 @@ export class TutoringMockService {
 
     const availability: TutoringAvailability = {
       id: `av-${Date.now()}`,
-      tutorId: CURRENT_TUTOR_ID,
+      tutorId: this.currentTutorId(),
       subjectId: payload.subjectId,
       date: payload.date,
       startTime: payload.startTime,
@@ -477,7 +479,7 @@ export class TutoringMockService {
     payload: CreateAvailabilityPayload,
   ): TutoringActionResult<TutoringAvailability> {
     const current = this.availabilityById(id);
-    const tutor = this.tutorById(CURRENT_TUTOR_ID);
+    const tutor = this.tutorById(this.currentTutorId());
     if (!current) {
       return { ok: false, errorKey: 'tutor.availability.errors.notFound' };
     }
@@ -556,7 +558,7 @@ export class TutoringMockService {
     payload: ReserveTutoringPayload,
   ): TutoringActionResult<TutoringReservation> {
     const availability = this.availabilityById(availabilityId);
-    const student = this.studentById(CURRENT_STUDENT_ID);
+    const student = this.studentById(this.currentStudentId());
     if (!student?.active) {
       return { ok: false, errorKey: 'tutoring.errors.inactiveStudent' };
     }
@@ -579,7 +581,7 @@ export class TutoringMockService {
     const reservation: TutoringReservation = {
       id: `res-${Date.now()}`,
       availabilityId,
-      studentId: CURRENT_STUDENT_ID,
+      studentId: this.currentStudentId(),
       subjectId: availability.subjectId,
       specificTopic: payload.specificTopic.trim(),
       description: payload.description.trim(),
@@ -826,7 +828,7 @@ export class TutoringMockService {
     const userReservation = this._reservations().find(
       (reservation) =>
         reservation.availabilityId === availability.id &&
-        reservation.studentId === CURRENT_STUDENT_ID &&
+        reservation.studentId === this.currentStudentId() &&
         reservation.status === 'confirmed',
     );
     const reservedSeats = this.activeReservationCount(availability.id);
@@ -876,7 +878,7 @@ export class TutoringMockService {
     return this._reservations().some((reservation) => {
       if (
         reservation.id === ignoreReservationId ||
-        reservation.studentId !== CURRENT_STUDENT_ID ||
+        reservation.studentId !== this.currentStudentId() ||
         reservation.status !== 'confirmed'
       ) {
         return false;

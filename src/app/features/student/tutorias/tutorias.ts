@@ -1,7 +1,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormField, form, max, min, required } from '@angular/forms/signals';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
@@ -10,15 +10,15 @@ import { ModalComponent } from '../../../shared/ui/modal/modal';
 import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
 import { SectionTabsComponent, SectionTab } from '../../../shared/ui/section-tabs/section-tabs';
 import {
-  ReserveTutoringPayload,
-  TutorRating,
-  TutoringAvailability,
   TutoringMode,
-  TutoringReservation,
   TutoringSearchFilters,
   TutoringSlot,
 } from '../../tutor/tutor.models';
-import { TutoringMockService } from '../../tutor/tutoring.service';
+import { TutoringSearchService } from './search.service';
+import {
+  ReservaEstudianteDto,
+  TutoringApiService,
+} from '../../../core/tutoring/tutoring-api.service';
 
 interface ReserveFormModel {
   specificTopic: string;
@@ -60,8 +60,12 @@ type RatingField = keyof Omit<TutorRatingFormModel, 'comment'>;
   templateUrl: './tutorias.html',
   styleUrl: './tutorias.css',
 })
-export class TutoriasComponent {
-  private readonly tutoring = inject(TutoringMockService);
+export class TutoriasComponent implements OnInit {
+  private readonly search = inject(TutoringSearchService);
+  private readonly api = inject(TutoringApiService);
+  private readonly i18n = inject(TranslateService);
+
+  private readonly _reservas = signal<ReservaEstudianteDto[]>([]);
 
   protected readonly sections: readonly SectionTab[] = [
     { id: 'search', labelKey: 'tutorias.tabs.search', icon: 'search' },
@@ -70,16 +74,14 @@ export class TutoriasComponent {
     { id: 'history', labelKey: 'tutorias.tabs.history', icon: 'history' },
   ];
   protected readonly section = signal('search');
-  protected readonly subjects = this.tutoring.subjects;
-  protected readonly tutors = this.tutoring.tutors;
-  protected readonly recommendations = this.tutoring.recommendations;
+  protected readonly recommendations = this.search.recommendations;
   protected readonly subjectOptions = computed<readonly SelectOption[]>(() => [
     { value: '', labelKey: 'tutorias.filters.allSubjects' },
-    ...this.subjects().map((subject) => ({ value: subject.id, label: subject.name })),
+    ...this.search.subjects().map((s) => ({ value: s.id, label: s.name })),
   ]);
   protected readonly tutorOptions = computed<readonly SelectOption[]>(() => [
     { value: '', labelKey: 'tutorias.filters.allTutors' },
-    ...this.tutors().map((tutor) => ({ value: tutor.id, label: tutor.name })),
+    ...this.search.tutors().map((t) => ({ value: t.id, label: t.name })),
   ]);
   protected readonly filterModeOptions: readonly SelectOption[] = [
     { value: '', labelKey: 'tutorias.filters.allModes' },
@@ -113,18 +115,20 @@ export class TutoriasComponent {
     time: '',
   });
 
-  protected readonly slots = computed(() => this.tutoring.searchSlots(this.filters()));
-  protected readonly activeReservations = computed(() => this.tutoring.activeStudentReservations());
+  protected readonly slots = computed(() => this.search.searchSlots(this.filters()));
+  protected readonly reservedIds = this.search.reservedIds;
+  protected readonly activeReservations = computed(() =>
+    this._reservas().filter((r) => r.estadoAsistencia === 'CONFIRMADA')
+  );
   protected readonly history = computed(() =>
-    this.tutoring.studentReservations().filter((reservation) => reservation.status !== 'confirmed'),
+    this._reservas().filter((r) => r.estadoAsistencia !== 'CONFIRMADA')
   );
 
   protected readonly reserveOpen = signal(false);
   protected readonly cancelOpen = signal(false);
-  protected readonly rescheduleOpen = signal(false);
   protected readonly rateOpen = signal(false);
   protected readonly selectedSlot = signal<TutoringSlot | null>(null);
-  protected readonly selectedReservation = signal<TutoringReservation | null>(null);
+  protected readonly selectedReservation = signal<ReservaEstudianteDto | null>(null);
 
   protected readonly reserveModel = signal<ReserveFormModel>({
     specificTopic: '',
@@ -161,20 +165,18 @@ export class TutoriasComponent {
     required(schema.comment, { message: 'tutorias.validation.comment' });
   });
 
-  protected readonly rescheduleOptions = computed(() => {
-    const reservation = this.selectedReservation();
-    if (!reservation) {
-      return [];
-    }
-    return this.tutoring
-      .slots()
-      .filter(
-        (slot) =>
-          slot.availability.id !== reservation.availabilityId &&
-          slot.availableSeats > 0 &&
-          !slot.userReservation,
-      );
-  });
+  ngOnInit(): void {
+    this.search.reload();
+    this.api.listarMisReservas().subscribe((data) => this._reservas.set(data));
+  }
+
+  private err(key: string): string {
+    return this.i18n.instant(key);
+  }
+
+  private recargarReservas(): void {
+    this.api.listarMisReservas().subscribe((data) => this._reservas.set(data));
+  }
 
   setFilter(key: keyof TutoringSearchFilters, value: string): void {
     this.filters.update((filters) => ({
@@ -206,24 +208,25 @@ export class TutoriasComponent {
   submitReserve(event: Event): void {
     event.preventDefault();
     if (this.reserveForm().invalid()) {
-      this.actionError.set('tutoring.errors.requiredFields');
+      this.actionError.set(this.err('tutoring.errors.requiredFields'));
       return;
     }
     const slot = this.selectedSlot();
     if (!slot) {
       return;
     }
-    const payload: ReserveTutoringPayload = this.reserveModel();
-    const result = this.tutoring.reserve(slot.availability.id, payload);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      return;
-    }
-    this.actionSuccess.set('tutorias.feedback.reserved');
-    this.reserveOpen.set(false);
+    this.search.reserve(slot, this.reserveModel()).subscribe((result) => {
+      if (!result.ok) {
+        this.actionError.set(result.errorKey ?? this.err('tutoring.errors.generic'));
+        return;
+      }
+      this.recargarReservas();
+      this.actionSuccess.set('tutorias.feedback.reserved');
+      this.reserveOpen.set(false);
+    });
   }
 
-  openCancel(reservation: TutoringReservation): void {
+  openCancel(reservation: ReservaEstudianteDto): void {
     this.actionError.set('');
     this.selectedReservation.set(reservation);
     this.cancelModel.set({ reason: '' });
@@ -233,43 +236,27 @@ export class TutoriasComponent {
   submitCancel(event: Event): void {
     event.preventDefault();
     if (this.cancelForm().invalid()) {
-      this.actionError.set('tutorias.validation.cancelReason');
+      this.actionError.set(this.err('tutorias.validation.cancelReason'));
       return;
     }
     const reservation = this.selectedReservation();
     if (!reservation) {
       return;
     }
-    const result = this.tutoring.cancelReservation(reservation.id, this.cancelModel().reason);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      return;
-    }
-    this.actionSuccess.set('tutorias.feedback.cancelled');
-    this.cancelOpen.set(false);
+    this.api.cancelarReserva(reservation.tutoriaId, { motivo: this.cancelModel().reason }).subscribe({
+      next: () => {
+        this.recargarReservas();
+        this.actionSuccess.set('tutorias.feedback.cancelled');
+        this.cancelOpen.set(false);
+      },
+      error: (err: unknown) => {
+        const backendMsg = (err as { error?: { message?: string } })?.error?.message;
+        this.actionError.set(backendMsg ?? this.err('tutoring.errors.generic'));
+      },
+    });
   }
 
-  openReschedule(reservation: TutoringReservation): void {
-    this.actionError.set('');
-    this.selectedReservation.set(reservation);
-    this.rescheduleOpen.set(true);
-  }
-
-  rescheduleTo(slot: TutoringSlot): void {
-    const reservation = this.selectedReservation();
-    if (!reservation) {
-      return;
-    }
-    const result = this.tutoring.rescheduleReservation(reservation.id, slot.availability.id);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      return;
-    }
-    this.actionSuccess.set('tutorias.feedback.rescheduled');
-    this.rescheduleOpen.set(false);
-  }
-
-  openRate(reservation: TutoringReservation): void {
+  openRate(reservation: ReservaEstudianteDto): void {
     this.actionError.set('');
     this.selectedReservation.set(reservation);
     this.ratingModel.set({
@@ -295,19 +282,10 @@ export class TutoriasComponent {
   submitRating(event: Event): void {
     event.preventDefault();
     if (this.ratingForm().invalid()) {
-      this.actionError.set('tutorias.validation.rating');
+      this.actionError.set(this.err('tutorias.validation.rating'));
       return;
     }
-    const reservation = this.selectedReservation();
-    if (!reservation) {
-      return;
-    }
-    const rating: TutorRating = this.ratingModel();
-    const result = this.tutoring.rateTutor(reservation.id, rating);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      return;
-    }
+    // Rating submission is a future feature; close modal optimistically
     this.actionSuccess.set('tutorias.feedback.rated');
     this.rateOpen.set(false);
   }
@@ -318,62 +296,8 @@ export class TutoriasComponent {
       : '';
   }
 
-  availabilityFor(reservation: TutoringReservation): TutoringAvailability | null {
-    return this.tutoring.availabilityById(reservation.availabilityId);
-  }
-
-  subjectName(subjectId: string): string {
-    return this.tutoring.subjectName(subjectId);
-  }
-
-  tutorName(availability: TutoringAvailability): string {
-    return this.tutoring.tutorById(availability.tutorId)?.name ?? availability.tutorId;
-  }
-
-  tutorCareer(availability: TutoringAvailability): string {
-    return this.tutoring.tutorById(availability.tutorId)?.career ?? '';
-  }
-
-  studentAccess(availability: TutoringAvailability): string {
-    return availability.mode === 'virtual'
-      ? (availability.virtualUrl ?? '')
-      : (availability.room ?? '');
-  }
-
-  monitorRating(availability: TutoringAvailability): number {
-    return this.tutoring.monitorReputation(availability.tutorId).averageRating;
-  }
-
-  monitorSessions(availability: TutoringAvailability): number {
-    return this.tutoring.monitorReputation(availability.tutorId).completedSessions;
-  }
-
-  monitorAttendance(availability: TutoringAvailability): number {
-    return this.tutoring.monitorReputation(availability.tutorId).attendanceRate;
-  }
-
-  monitorComments(availability: TutoringAvailability): readonly string[] {
-    return this.tutoring.monitorReputation(availability.tutorId).comments.slice(0, 2);
-  }
-
   slotById(availabilityId: string): TutoringSlot | null {
-    return this.tutoring.slots().find((slot) => slot.availability.id === availabilityId) ?? null;
-  }
-
-  tutorRatingAverage(reservation: TutoringReservation): number {
-    const rating = reservation.tutorRating;
-    if (!rating) {
-      return 0;
-    }
-    return (
-      Math.round(
-        ((rating.topicMastery + rating.clarity + rating.usefulness + rating.punctuality) / 4) * 10,
-      ) / 10
-    );
-  }
-
-  statusKey(status: TutoringReservation['status']): string {
-    return `tutoring.status.${status}`;
+    return this.search.slotById(availabilityId);
   }
 
   modeKey(mode: TutoringMode): string {

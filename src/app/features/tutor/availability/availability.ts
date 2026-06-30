@@ -1,235 +1,408 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormField, form, min, required } from '@angular/forms/signals';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
-import { CardComponent } from '../../../shared/ui/card/card';
+import { forkJoin } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
+import {
+  DisponibilidadDto,
+  FranjaDto,
+  SalaDto,
+  TutoringApiService,
+} from '../../../core/tutoring/tutoring-api.service';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { IconComponent } from '../../../shared/ui/icon/icon';
 import { ModalComponent } from '../../../shared/ui/modal/modal';
 import { SelectComponent, SelectOption, SelectValue } from '../../../shared/ui/select/select';
-import {
-  CreateAvailabilityPayload,
-  TutoringAvailability,
-  TutoringMode,
-} from '../tutor.models';
-import { TutoringMockService } from '../tutoring.service';
 
-interface AvailabilityFormModel {
-  subjectId: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  mode: TutoringMode;
-  capacity: number;
-  room: string;
+const PALETTE = [
+  { color: '#c8102e', soft: '#fbeae9' },
+  { color: '#1b873f', soft: '#e6f4ea' },
+  { color: '#1d4ed8', soft: '#e8edfc' },
+  { color: '#7c3aed', soft: '#ede9fb' },
+  { color: '#b45309', soft: '#fef3e2' },
+  { color: '#0e7490', soft: '#e0f5f9' },
+] as const;
+
+const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
+
+function toISODate(d: Date): string {
+  return d.toISOString().split('T')[0];
 }
 
-interface CancelAvailabilityModel {
-  reason: string;
+function sixMonthsFromNow(): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 6);
+  return toISODate(d);
 }
 
-/** Publicacion y gestion de disponibilidad del monitor. */
+function timeLabel(horaInicio: string, horaFin: string): string {
+  const fmt = (t: string) => t.replace(/^0/, '').replace(':00', '');
+  return `${fmt(horaInicio)}–${fmt(horaFin)}`;
+}
+
+export interface GridCell {
+  readonly franjaId: string;
+  readonly diaSemana: number;
+  readonly filled: boolean;
+  readonly disponibilidadId: string | null;
+  readonly materiaId: string | null;
+  readonly modalidad: 'VIRTUAL' | 'PRESENCIAL' | null;
+  readonly cuposMaximos: number | null;
+  readonly abbr: string;
+  readonly meta: string;
+  readonly color: string;
+  readonly soft: string;
+}
+
+export interface GridRow {
+  readonly blockLabel: string;
+  readonly cells: readonly GridCell[];
+}
+
+export interface SubjectCard {
+  readonly materiaId: string;
+  readonly subjectName: string;
+  readonly color: string;
+  readonly soft: string;
+  readonly modeLabel: string;
+  readonly countLabel: string;
+  readonly seats: number;
+  readonly chips: readonly { readonly franjaId: string; readonly label: string }[];
+}
+
 @Component({
   selector: 'eci-tutor-availability',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DatePipe,
-    FormField,
-    TranslatePipe,
-    PageHeaderComponent,
-    CardComponent,
-    ButtonComponent,
-    IconComponent,
-    ModalComponent,
-    SelectComponent,
-  ],
+  imports: [TranslatePipe, ButtonComponent, IconComponent, ModalComponent, SelectComponent],
   templateUrl: './availability.html',
   styleUrl: './availability.css',
 })
-export class TutorAvailabilityComponent {
-  private readonly tutoring = inject(TutoringMockService);
+export class TutorAvailabilityComponent implements OnInit {
+  private readonly api = inject(TutoringApiService);
+  private readonly auth = inject(AuthService);
 
-  protected readonly availabilities = this.tutoring.tutorAvailabilities;
-  protected readonly currentTutor = computed(() => this.tutoring.tutorById(this.tutoring.currentTutorId));
-  protected readonly tutorSubjects = computed(() => {
-    const tutor = this.currentTutor();
-    return this.tutoring.subjects().filter((subject) => tutor?.subjectIds.includes(subject.id));
-  });
-  protected readonly subjectOptions = computed<readonly SelectOption[]>(() =>
-    this.tutorSubjects().map((subject) => ({ value: subject.id, label: subject.name })),
+  protected readonly materias = signal<readonly { id: string; codigo: string; nombre: string }[]>([]);
+  protected readonly franjas = signal<readonly FranjaDto[]>([]);
+  protected readonly disponibilidades = signal<readonly DisponibilidadDto[]>([]);
+  protected readonly salas = signal<readonly SalaDto[]>([]);
+
+  protected readonly brushMateriaId = signal('');
+  protected readonly brushMode = signal<'VIRTUAL' | 'PRESENCIAL'>('VIRTUAL');
+  protected readonly brushSalaId = signal('');
+  protected readonly brushCap = signal(4);
+  private capVirtual = 4;
+  private capPresencial = 4;
+  protected readonly busy = signal(false);
+  protected readonly clearOpen = signal(false);
+  protected readonly error = signal<string | null>(null);
+
+  protected readonly brushSubjects = computed(() =>
+    this.materias().map((m, i) => {
+      const p = PALETTE[i % PALETTE.length];
+      return {
+        id: m.id,
+        nombre: m.nombre,
+        abbr: m.codigo.slice(0, 4).toUpperCase(),
+        color: p.color,
+        soft: p.soft,
+        active: m.id === this.brushMateriaId(),
+      };
+    }),
   );
-  protected readonly modeOptions: readonly SelectOption[] = [
-    { value: 'virtual', labelKey: 'tutoring.modes.virtual' },
-    { value: 'presential', labelKey: 'tutoring.modes.presential' },
-  ];
-  protected readonly selected = signal<TutoringAvailability | null>(null);
-  protected readonly cancelTarget = signal<TutoringAvailability | null>(null);
-  protected readonly cancelOpen = signal(false);
-  protected readonly actionError = signal('');
-  protected readonly actionSuccess = signal('');
 
-  protected readonly model = signal<AvailabilityFormModel>({
-    subjectId: 'calc',
-    date: '2026-06-24',
-    startTime: '10:00',
-    endTime: '11:30',
-    mode: 'virtual',
-    capacity: 4,
-    room: '',
-  });
-  protected readonly availabilityForm = form(this.model, (schema) => {
-    required(schema.subjectId, { message: 'tutor.availability.validation.subject' });
-    required(schema.date, { message: 'tutor.availability.validation.date' });
-    required(schema.startTime, { message: 'tutor.availability.validation.start' });
-    required(schema.endTime, { message: 'tutor.availability.validation.end' });
-    required(schema.mode, { message: 'tutor.availability.validation.mode' });
-    min(schema.capacity, 1, { message: 'tutor.availability.validation.capacity' });
-  });
+  private readonly activeDisps = computed(() => this.disponibilidades().filter((d) => d.activa));
+  protected readonly activeSlots = computed(() => this.activeDisps().length);
+  protected readonly totalSeats = computed(() =>
+    this.activeDisps().reduce((s, d) => s + d.cuposMaximos, 0),
+  );
+  protected readonly subjectsCovered = computed(
+    () => new Set(this.activeDisps().map((d) => d.materiaId)).size,
+  );
+  protected readonly hasAvail = computed(() => this.activeSlots() > 0);
 
-  protected readonly cancelModel = signal<CancelAvailabilityModel>({ reason: '' });
-  protected readonly cancelForm = form(this.cancelModel, (schema) => {
-    required(schema.reason, { message: 'tutor.availability.validation.cancelReason' });
+  protected readonly salaOptions = computed<readonly SelectOption[]>(() =>
+    this.salas()
+      .filter((s) => s.activa)
+      .map((s) => ({
+        value: s.id,
+        label: s.edificio ? `${s.codigo} – ${s.edificio}` : s.codigo,
+      })),
+  );
+
+  protected readonly weekDays = computed(() => {
+    const today = new Date();
+    const mon = new Date(today);
+    mon.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    return DAY_LABELS.map((label, i) => {
+      const d = new Date(mon);
+      d.setDate(mon.getDate() + i);
+      return { label, date: d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' }) };
+    });
   });
 
-  submitAvailability(event: Event): void {
-    event.preventDefault();
-    if (this.availabilityForm().invalid()) {
-      this.actionError.set('tutoring.errors.requiredFields');
-      this.actionSuccess.set('');
+  protected readonly gridRows = computed<readonly GridRow[]>(() => {
+    const franjas = this.franjas().filter((f) => f.activa);
+    const disps = this.activeDisps();
+    const materias = this.materias();
+
+    const seen = new Set<string>();
+    const blocks: { horaInicio: string; horaFin: string; orden: number }[] = [];
+    for (const f of franjas) {
+      const key = `${f.horaInicio}-${f.horaFin}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        blocks.push({ horaInicio: f.horaInicio, horaFin: f.horaFin, orden: f.orden });
+      }
+    }
+    blocks.sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+    return blocks.map((block) => {
+      const cells: GridCell[] = [1, 2, 3, 4, 5].map((dia) => {
+        const franja = franjas.find(
+          (f) =>
+            f.diaSemana === dia &&
+            f.horaInicio === block.horaInicio &&
+            f.horaFin === block.horaFin,
+        );
+        if (!franja) {
+          return {
+            franjaId: '',
+            diaSemana: dia,
+            filled: false,
+            disponibilidadId: null,
+            materiaId: null,
+            modalidad: null,
+            cuposMaximos: null,
+            abbr: '',
+            meta: '',
+            color: '',
+            soft: '',
+          };
+        }
+        const disp = disps.find((d) => d.franjaId === franja.id);
+        if (!disp) {
+          return {
+            franjaId: franja.id,
+            diaSemana: dia,
+            filled: false,
+            disponibilidadId: null,
+            materiaId: null,
+            modalidad: null,
+            cuposMaximos: null,
+            abbr: '',
+            meta: '',
+            color: '',
+            soft: '',
+          };
+        }
+        const mIdx = materias.findIndex((m) => m.id === disp.materiaId);
+        const p = PALETTE[(mIdx >= 0 ? mIdx : 0) % PALETTE.length];
+        const materia = materias[mIdx];
+        return {
+          franjaId: franja.id,
+          diaSemana: dia,
+          filled: true,
+          disponibilidadId: disp.id,
+          materiaId: disp.materiaId,
+          modalidad: disp.modalidad,
+          cuposMaximos: disp.cuposMaximos,
+          abbr: materia ? materia.codigo.slice(0, 4).toUpperCase() : '??',
+          meta: `${disp.modalidad === 'VIRTUAL' ? 'Virtual' : 'Presencial'} · ${disp.cuposMaximos}`,
+          color: p.color,
+          soft: p.soft,
+        };
+      });
+      return { blockLabel: timeLabel(block.horaInicio, block.horaFin), cells };
+    });
+  });
+
+  protected readonly availCards = computed<readonly SubjectCard[]>(() => {
+    const disps = this.activeDisps();
+    const materias = this.materias();
+    const franjas = this.franjas();
+
+    const byMateria = new Map<string, DisponibilidadDto[]>();
+    for (const d of disps) {
+      const arr = byMateria.get(d.materiaId) ?? [];
+      arr.push(d as DisponibilidadDto);
+      byMateria.set(d.materiaId, arr);
+    }
+
+    return [...byMateria.entries()].map(([materiaId, group]) => {
+      const mIdx = materias.findIndex((m) => m.id === materiaId);
+      const materia = materias[mIdx];
+      const p = PALETTE[(mIdx >= 0 ? mIdx : 0) % PALETTE.length];
+      const modes = new Set(group.map((d) => d.modalidad));
+      const modeLabel =
+        modes.has('VIRTUAL') && modes.has('PRESENCIAL')
+          ? 'Virtual + Presencial'
+          : modes.has('VIRTUAL')
+            ? 'Virtual'
+            : 'Presencial';
+
+      return {
+        materiaId,
+        subjectName: materia ? `${materia.codigo} – ${materia.nombre}` : materiaId,
+        color: p.color,
+        soft: p.soft,
+        modeLabel,
+        countLabel: `${group.length} franja${group.length !== 1 ? 's' : ''}`,
+        seats: group.reduce((s, d) => s + d.cuposMaximos, 0),
+        chips: group.map((d) => {
+          const f = franjas.find((fr) => fr.id === d.franjaId);
+          const label = f
+            ? `${DAY_LABELS[f.diaSemana - 1]} ${timeLabel(f.horaInicio, f.horaFin)}`
+            : '–';
+          return { franjaId: d.franjaId, label };
+        }),
+      };
+    });
+  });
+
+  ngOnInit(): void {
+    this.loadAll();
+  }
+
+  protected pickMateria(id: string): void {
+    this.brushMateriaId.set(id);
+  }
+
+  protected setMode(mode: 'VIRTUAL' | 'PRESENCIAL'): void {
+    if (this.brushMode() === 'VIRTUAL') {
+      this.capVirtual = this.brushCap();
+    } else {
+      this.capPresencial = this.brushCap();
+    }
+    this.brushMode.set(mode);
+    this.brushCap.set(mode === 'PRESENCIAL' ? this.capPresencial : this.capVirtual);
+    if (mode === 'VIRTUAL') {
+      this.brushSalaId.set('');
+    }
+  }
+
+  protected setSala(value: SelectValue): void {
+    this.brushSalaId.set(value === null ? '' : String(value));
+  }
+
+  protected decCap(): void {
+    if (this.brushCap() > 1) this.brushCap.update((v) => v - 1);
+  }
+
+  protected incCap(): void {
+    this.brushCap.update((v) => v + 1);
+  }
+
+  protected clickCell(cell: GridCell): void {
+    if (!cell.franjaId) return;
+    this.error.set(null);
+    if (cell.filled) {
+      this.deactivate(cell.disponibilidadId!);
+    } else {
+      const brushMateria = this.brushMateriaId();
+      if (!brushMateria) return;
+      this.publish(cell.franjaId, brushMateria);
+    }
+  }
+
+  protected openClear(): void {
+    if (this.activeSlots() > 0) this.clearOpen.set(true);
+  }
+
+  protected confirmClear(): void {
+    const active = this.activeDisps();
+    if (active.length === 0) {
+      this.clearOpen.set(false);
       return;
     }
-    const payload = this.payload();
-    const selected = this.selected();
-    const result = selected
-      ? this.tutoring.updateAvailability(selected.id, payload)
-      : this.tutoring.createAvailability(payload);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      this.actionSuccess.set('');
-      return;
-    }
-    this.actionError.set('');
-    this.actionSuccess.set(
-      selected ? 'tutor.availability.feedback.updated' : 'tutor.availability.feedback.created',
+    this.busy.set(true);
+    forkJoin(active.map((d) => this.api.desactivarDisponibilidad(d.id))).subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.clearOpen.set(false);
+        this.reload();
+      },
+      error: () => {
+        this.busy.set(false);
+        this.clearOpen.set(false);
+        this.error.set('tutor.availability.errors.generic');
+      },
+    });
+  }
+
+  protected removeCard(materiaId: string): void {
+    const toRemove = this.activeDisps().filter((d) => d.materiaId === materiaId);
+    if (toRemove.length === 0) return;
+    forkJoin(toRemove.map((d) => this.api.desactivarDisponibilidad(d.id))).subscribe({
+      next: () => this.reload(),
+      error: () => this.error.set('tutor.availability.errors.generic'),
+    });
+  }
+
+  protected removeChip(franjaId: string, materiaId: string): void {
+    const disp = this.activeDisps().find(
+      (d) => d.franjaId === franjaId && d.materiaId === materiaId,
     );
-    this.resetForm();
+    if (disp) this.deactivate(disp.id);
   }
 
-  edit(availability: TutoringAvailability): void {
-    if (!this.canModify(availability)) {
-      this.actionError.set('tutor.availability.errors.reserved');
-      return;
-    }
-    this.selected.set(availability);
-    this.actionError.set('');
-    this.model.set({
-      subjectId: availability.subjectId,
-      date: availability.date,
-      startTime: availability.startTime,
-      endTime: availability.endTime,
-      mode: availability.mode,
-      capacity: availability.capacity,
-      room: availability.room ?? '',
+  private deactivate(id: string): void {
+    this.api.desactivarDisponibilidad(id).subscribe({
+      next: () => this.reload(),
+      error: () => this.error.set('tutor.availability.errors.generic'),
     });
   }
 
-  remove(availability: TutoringAvailability): void {
-    const result = this.tutoring.deleteAvailability(availability.id);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
+  private publish(franjaId: string, materiaId: string): void {
+    const mode = this.brushMode();
+    const salaId = this.brushSalaId();
+    if (mode === 'PRESENCIAL' && !salaId) {
+      this.error.set('tutor.availability.errors.salaRequired');
       return;
     }
-    this.actionError.set('');
-    this.actionSuccess.set('tutor.availability.feedback.deleted');
-    if (this.selected()?.id === availability.id) {
-      this.resetForm();
-    }
+    this.api
+      .publicarDisponibilidad({
+        franjaId,
+        materiaId,
+        ...(mode === 'PRESENCIAL' ? { salaId } : {}),
+        modalidad: mode,
+        cuposMaximos: this.brushCap(),
+        vigenciaDesde: toISODate(new Date()),
+        vigenciaHasta: sixMonthsFromNow(),
+      })
+      .subscribe({
+        next: () => this.reload(),
+        error: () => this.error.set('tutor.availability.errors.generic'),
+      });
   }
 
-  openCancel(availability: TutoringAvailability): void {
-    this.cancelTarget.set(availability);
-    this.cancelModel.set({ reason: '' });
-    this.actionError.set('');
-    this.cancelOpen.set(true);
-  }
-
-  submitCancel(event: Event): void {
-    event.preventDefault();
-    if (this.cancelForm().invalid()) {
-      this.actionError.set('tutor.availability.validation.cancelReason');
-      return;
-    }
-    const target = this.cancelTarget();
-    if (!target) {
-      return;
-    }
-    const result = this.tutoring.cancelAvailability(target.id, this.cancelModel().reason);
-    if (!result.ok) {
-      this.actionError.set(result.errorKey ?? 'tutoring.errors.generic');
-      return;
-    }
-    this.actionError.set('');
-    this.actionSuccess.set('tutor.availability.feedback.cancelled');
-    this.cancelOpen.set(false);
-    if (this.selected()?.id === target.id) {
-      this.resetForm();
-    }
-  }
-
-  resetForm(): void {
-    this.selected.set(null);
-    this.model.set({
-      subjectId: this.tutorSubjects()[0]?.id ?? '',
-      date: '2026-06-24',
-      startTime: '10:00',
-      endTime: '11:30',
-      mode: 'virtual',
-      capacity: 4,
-      room: '',
+  private loadAll(): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) return;
+    forkJoin({
+      materias: this.api.listarMateriasDelTutor(userId),
+      franjas: this.api.listarFranjas(),
+      disponibilidades: this.api.listarDisponibilidades(),
+      salas: this.api.listarSalas(),
+    }).subscribe({
+      next: ({ materias, franjas, disponibilidades, salas }) => {
+        this.materias.set(materias);
+        this.franjas.set(franjas);
+        this.disponibilidades.set(disponibilidades);
+        this.salas.set(salas);
+        if (materias.length > 0 && !this.brushMateriaId()) {
+          this.brushMateriaId.set(materias[0].id);
+        }
+      },
     });
   }
 
-  canModify(availability: TutoringAvailability): boolean {
-    return availability.status === 'active' && this.tutoring.activeReservationCount(availability.id) === 0;
-  }
-
-  reservationCount(availability: TutoringAvailability): number {
-    return this.tutoring.activeReservationCount(availability.id);
-  }
-
-  availableSeats(availability: TutoringAvailability): number {
-    return this.tutoring.availableSeats(availability.id);
-  }
-
-  subjectName(subjectId: string): string {
-    return this.tutoring.subjectName(subjectId);
-  }
-
-  modeKey(mode: TutoringMode): string {
-    return `tutoring.modes.${mode}`;
-  }
-
-  setSubject(value: SelectValue): void {
-    this.model.update((model) => ({ ...model, subjectId: value === null ? '' : String(value) }));
-  }
-
-  setMode(value: SelectValue): void {
-    if (value === 'virtual' || value === 'presential') {
-      this.model.update((model) => ({ ...model, mode: value }));
-    }
-  }
-
-  private payload(): CreateAvailabilityPayload {
-    const value = this.model();
-    return {
-      subjectId: value.subjectId,
-      date: value.date,
-      startTime: value.startTime,
-      endTime: value.endTime,
-      mode: value.mode,
-      capacity: Number(value.capacity),
-      ...(value.room.trim() ? { room: value.room.trim() } : {}),
-    };
+  private reload(): void {
+    this.api.listarDisponibilidades().subscribe({ next: (data) => this.disponibilidades.set(data) });
   }
 }

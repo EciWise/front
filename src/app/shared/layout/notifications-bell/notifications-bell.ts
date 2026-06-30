@@ -15,6 +15,10 @@ export class NotificationsBellComponent {
   protected readonly notifications = inject(NotificationsService);
   protected readonly open = signal(false);
 
+  constructor() {
+    this.notifications.load();
+  }
+
   toggle(): void {
     this.open.update((v) => !v);
   }

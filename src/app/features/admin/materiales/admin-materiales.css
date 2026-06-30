@@ -1,0 +1,104 @@
+.mat-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.admin__count {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.admin__empty {
+  margin: var(--space-6) 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.mat__success {
+  margin: 0 0 var(--space-4);
+  color: var(--success, var(--accent));
+  font-size: 0.875rem;
+}
+
+.mat__error {
+  color: var(--danger);
+  font-size: 0.8125rem;
+}
+
+/* Tipo chip */
+.mat-type {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mat-type--pdf    { background: color-mix(in srgb, #ef4444 12%, transparent); color: #ef4444; }
+.mat-type--video  { background: color-mix(in srgb, #8b5cf6 12%, transparent); color: #8b5cf6; }
+.mat-type--slides { background: color-mix(in srgb, #f59e0b 12%, transparent); color: #f59e0b; }
+.mat-type--link   { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+
+.mat-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Formulario dentro del modal */
+.mat-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.mat-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.mat-input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9375rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mat-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.mat-input--area {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.mat-file {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.mat-actions-row {
+  display: flex;
+  justify-content: flex-end;
+}

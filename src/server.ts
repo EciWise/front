@@ -18,29 +18,20 @@ const angularApp = new AngularNodeAppEngine();
 // Expose runtime env for the browser to consume.
 app.get('/assets/env.json', (req, res) => {
   res.json({
-    apiBaseUrl: normalizeServiceUrl(process.env['AUTH_SERVICE'], 'http://localhost:3001'),
-    studyApiUrl: normalizeServiceUrl(process.env['STUDY_SERVICE'], 'http://localhost:8082'),
-    talkApiUrl: normalizeServiceUrl(process.env['TALK_SERVICE'], 'http://localhost:3003'),
-    talkWsUrl: normalizeServiceUrl(process.env['TALK_WS'], 'ws://localhost:3003/ws/chat'),
-    todoApiUrl: normalizeServiceUrl(process.env['TODO_SERVICE'], 'http://localhost:8083'),
-    gameWsUrl: normalizeServiceUrl(process.env['GAME_WS'], 'ws://localhost:3002/ws/game'),
-    performanceApiUrl: normalizeServiceUrl(
-      process.env['PERFORMANCE_SERVICE'],
-      'http://localhost:8001',
-    ),
-    dropoutApiUrl: normalizeServiceUrl(process.env['DROPOUT_SERVICE'], 'http://localhost:8002'),
-    aiApiUrl: normalizeServiceUrl(process.env['AI_SERVICE'], 'http://localhost:3008'),
-    communityApiUrl: normalizeServiceUrl(process.env['COMMUNITY_SERVICE'], 'http://localhost:3004'),
-    materialsApiUrl: normalizeServiceUrl(process.env['MATERIALS_SERVICE'], 'http://localhost:3005'),
-    notificationsApiUrl: normalizeServiceUrl(
-      process.env['NOTIFICATIONS_SERVICE'],
-      'http://localhost:3006',
-    ),
-    tutoringApiUrl: normalizeServiceUrl(process.env['TUTORING_SERVICE'], 'http://localhost:3007'),
-    gamificationApiUrl: normalizeServiceUrl(
-      process.env['GAMIFICATION_SERVICE'],
-      'http://localhost:5027',
-    ),
+    apiBaseUrl:          normalizeServiceUrl(process.env['AUTH_SERVICE'],          'http://localhost:3001'),
+    studyApiUrl:         normalizeServiceUrl(process.env['STUDY_SERVICE'],         'http://localhost:8082'),
+    talkApiUrl:          normalizeServiceUrl(process.env['TALK_SERVICE'],          'http://localhost:3003'),
+    talkWsUrl:           normalizeServiceUrl(process.env['TALK_WS'],               'ws://localhost:3003/ws/chat'),
+    todoApiUrl:          normalizeServiceUrl(process.env['TODO_SERVICE'],           'http://localhost:8083'),
+    gameWsUrl:           normalizeServiceUrl(process.env['GAME_WS'],               'ws://localhost:3002/ws/game'),
+    performanceApiUrl:   normalizeServiceUrl(process.env['PERFORMANCE_SERVICE'],   'http://localhost:8001'),
+    dropoutApiUrl:       normalizeServiceUrl(process.env['DROPOUT_SERVICE'],       'http://localhost:8002'),
+    aiApiUrl:            normalizeServiceUrl(process.env['AI_SERVICE'],            'http://localhost:3008'),
+    communityApiUrl:     normalizeServiceUrl(process.env['COMMUNITY_SERVICE'],     'http://localhost:3009'),
+    notificationsApiUrl: normalizeServiceUrl(process.env['NOTIFICATIONS_SERVICE'], 'http://localhost:3004'),
+    materialsApiUrl:     normalizeServiceUrl(process.env['MATERIALS_SERVICE'],     'http://localhost:3005'),
+    tutoringApiUrl:      normalizeServiceUrl(process.env['TUTORING_SERVICE'],      'http://localhost:3006'),
+    gamificationApiUrl:  normalizeServiceUrl(process.env['GAMIFICATION_SERVICE'],  'http://localhost:8084'),
   });
 });
 
