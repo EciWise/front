@@ -57,8 +57,9 @@ export const STUDENT_ROUTES: Routes = [
     loadComponent: () => import('./tasks/tasks').then((m) => m.TasksComponent),
   },
   {
-    path: 'logros',
-    loadComponent: () => import('./achievements/achievements').then((m) => m.AchievementsComponent),
+    path: 'gamificacion',
+    loadComponent: () =>
+      import('../gamification/gamification').then((m) => m.GamificationComponent),
   },
   {
     path: 'foros',

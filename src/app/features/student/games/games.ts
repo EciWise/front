@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/ui/page-header/page-header';
 import { IconComponent, IconName } from '../../../shared/ui/icon/icon';
 import { GameMode } from '../../../core/game/asclepio.protocol';
+import { AuthService } from '../../../core/auth/auth.service';
+import { GamificationService } from '../../../core/gamification/gamification.service';
+import { AchievementToastService } from '../../../core/gamification/achievement-toast.service';
 
 interface ModeOption {
   readonly id: GameMode;
@@ -31,6 +34,10 @@ interface MiniGame {
   styleUrl: './games.css',
 })
 export class GamesComponent {
+  private readonly auth = inject(AuthService);
+  private readonly gamification = inject(GamificationService);
+  private readonly toasts = inject(AchievementToastService);
+
   protected readonly modes: readonly ModeOption[] = [
     { id: 'classic', icon: 'games', nameKey: 'games.modes.classic', descKey: 'games.modes.classicDesc' },
     { id: 'pomodoro', icon: 'timer', nameKey: 'games.modes.pomodoro', descKey: 'games.modes.pomodoroDesc' },
@@ -80,4 +87,23 @@ export class GamesComponent {
       accentColor: '#10b981',
     },
   ];
+
+  /**
+   * Registra la jugada en gamificación. El backend otorga 10 puntos y desbloquea
+   * "Buscador de aventuras" solo la primera vez (idempotente: las siguientes
+   * jugadas devuelven `unlockedAchievements` vacío, así que no molesta). La
+   * navegación (routerLink) sigue su curso: esto es un efecto secundario.
+   */
+  protected play(gameId: string): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return;
+    }
+    this.gamification.registerGamePlayed(userId, gameId).subscribe({
+      next: (res) => this.toasts.push(res.unlockedAchievements),
+      error: () => {
+        // Silencioso: no queremos romper la entrada al juego si gamificación falla.
+      },
+    });
+  }
 }

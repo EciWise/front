@@ -2,6 +2,54 @@
   position: relative;
 }
 
+/* Campana con actividad: pulso sutil del anillo cuando hay no leídas. */
+.icon-button--active {
+  position: relative;
+  color: var(--accent);
+}
+
+.icon-button--active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  border: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  animation: bell-ring-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bell-ring-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/* Badge con gradiente de marca y pequeño "pop" al aparecer. */
+.icon-button__badge {
+  background: linear-gradient(135deg, var(--brand-red-soft), var(--brand-red));
+  color: #fff;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-red) 45%, transparent);
+  animation: badge-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badge-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .bell__backdrop {
   position: fixed;
   inset: 0;
@@ -17,7 +65,7 @@
   inset: auto 0 auto auto;
   top: calc(100% + 0.5rem);
   z-index: var(--z-nav);
-  width: min(20rem, 90vw);
+  width: min(22rem, 92vw);
   max-width: none;
   max-height: none;
   margin: 0;
@@ -29,78 +77,319 @@
   color: var(--text);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  transform-origin: top right;
+  animation: panel-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .bell__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2);
+  /* Si el título + acciones no caben, las acciones bajan a otra línea en vez de
+     solaparse con el texto. */
+  flex-wrap: wrap;
+  row-gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
+  /* Sutil realce de marca en la cabecera para dar vida sin saturar. */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 8%, transparent),
+    transparent
+  );
+}
+
+.bell__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .bell__title {
   margin: 0;
   font-size: 0.95rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bell__count {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-red-soft), var(--brand-red));
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--brand-red) 40%, transparent);
+  white-space: nowrap;
+}
+
+.bell__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
 }
 
 .bell__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
   border: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--accent);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
 }
 
+.bell__link:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.bell__link:active {
+  transform: scale(0.96);
+}
+
+.bell__link--danger {
+  color: var(--danger);
+}
+
+.bell__link--danger:hover {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+/* ── Estado vacío ───────────────────────────────────────────────────────── */
 .bell__empty {
-  padding: var(--space-6);
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-6);
   text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
 }
 
+.bell__empty-icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  animation: empty-float 3s ease-in-out infinite;
+}
+
+@keyframes empty-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.25rem);
+  }
+}
+
+.bell__empty-text {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.bell__empty-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Lista ──────────────────────────────────────────────────────────────── */
 .bell__list {
   list-style: none;
   margin: 0;
-  padding: 0;
-  max-height: 20rem;
+  padding: var(--space-1);
+  max-height: 22rem;
   overflow-y: auto;
 }
 
 .bell__item {
+  --kind-color: var(--info);
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
+  align-items: stretch;
+  gap: var(--space-1);
+  border-radius: var(--radius-md);
+  animation: item-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
 }
 
-.bell__item--unread {
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
+.bell__item[data-kind='success'] {
+  --kind-color: var(--success);
 }
 
-.bell__dot {
-  width: 0.5rem;
-  height: 0.5rem;
+.bell__item[data-kind='warning'] {
+  --kind-color: var(--warning);
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.bell__item + .bell__item {
+  margin-top: 0.1rem;
+}
+
+.bell__item-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.bell__item-main:hover {
+  background: var(--surface-2);
+}
+
+.bell__item-main:active {
+  background: color-mix(in srgb, var(--kind-color) 12%, var(--surface-2));
+}
+
+/* No leídas: fondo tintado + barra de acento a la izquierda. */
+.bell__item--unread .bell__item-main {
+  background: color-mix(in srgb, var(--kind-color) 8%, transparent);
+}
+
+.bell__item--unread::before {
+  content: '';
+  position: absolute;
+  top: var(--space-2);
+  bottom: var(--space-2);
+  left: 0;
+  width: 3px;
   border-radius: var(--radius-full);
-  margin-top: 0.4rem;
+  background: var(--kind-color);
+}
+
+.bell__avatar {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
   flex-shrink: 0;
-  background: var(--info);
-}
-
-.bell__dot[data-kind='success'] {
-  background: var(--success);
-}
-
-.bell__dot[data-kind='warning'] {
-  background: var(--warning);
+  border-radius: var(--radius-full);
+  color: var(--kind-color);
+  background: color-mix(in srgb, var(--kind-color) 15%, transparent);
 }
 
 .bell__body {
   margin: 0;
+  min-width: 0;
   font-size: 0.875rem;
   line-height: 1.4;
+}
+
+.bell__item--unread .bell__body {
+  font-weight: 600;
+}
+
+.bell__unread-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--kind-color);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--kind-color) 60%, transparent);
+  animation: dot-pulse 2s ease-out infinite;
+}
+
+@keyframes dot-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--kind-color) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 0.35rem transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Botón de descartar: discreto, aparece al enfocar/hover de la fila. */
+.bell__dismiss {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  flex-shrink: 0;
+  margin: var(--space-1) var(--space-1) var(--space-1) 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.bell__item:hover .bell__dismiss,
+.bell__item:focus-within .bell__dismiss {
+  opacity: 1;
+}
+
+.bell__dismiss:hover {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+/* En dispositivos táctiles no hay hover: el descartar siempre visible. */
+@media (hover: none) {
+  .bell__dismiss {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 40rem) {
@@ -119,5 +408,17 @@
     flex: 1;
     min-height: 0;
     max-height: none;
+  }
+}
+
+/* Accesibilidad: sin animaciones cuando el usuario lo pide. */
+@media (prefers-reduced-motion: reduce) {
+  .icon-button--active::after,
+  .icon-button__badge,
+  .bell__panel,
+  .bell__empty-icon,
+  .bell__item,
+  .bell__unread-dot {
+    animation: none;
   }
 }

@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { StaticTranslateLoader } from '../../../core/i18n/static-translate.loader';
+import { AuthService } from '../../../core/auth/auth.service';
+import { GamificationService } from '../../../core/gamification/gamification.service';
+import { AchievementToastService } from '../../../core/gamification/achievement-toast.service';
 import { AprendizajeService } from '../aprendizaje.service';
 import { Collection, ReviewGrade, StudyCard } from '../study.models';
 import { StudySessionComponent } from './study-session';
@@ -122,6 +125,14 @@ describe('StudySessionComponent', () => {
             review,
           },
         },
+        { provide: AuthService, useValue: { user: () => ({ id: 'u1' }) } },
+        {
+          provide: GamificationService,
+          useValue: {
+            registerStudyCompleted: vi.fn(() => of({ rewarded: false, unlockedAchievements: [] })),
+          },
+        },
+        { provide: AchievementToastService, useValue: { push: vi.fn() } },
       ],
     }).compileComponents();
 

@@ -48,11 +48,10 @@ describe('auth guards', () => {
     });
   }
 
-  it('authGuard redirige al login cuando no hay sesión', () => {
+  it('authGuard redirige a la landing cuando no hay sesión', () => {
     const result = runAuthGuard('/student');
     expect(result).toBeInstanceOf(UrlTree);
-    expect((result as UrlTree).toString()).toContain('/auth/login');
-    expect((result as UrlTree).toString()).toContain('redirect');
+    expect((result as UrlTree).toString()).toBe('/');
   });
 
   it('authGuard permite el acceso con sesión activa', () => {

@@ -8,15 +8,11 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./features/landing/landing').then((m) => m.LandingComponent),
   },
-  {
-    path: 'auth/login',
-    loadComponent: () => import('./features/auth/login/login').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'auth/register',
-    loadComponent: () =>
-      import('./features/auth/register/register').then((m) => m.RegisterComponent),
-  },
+  // El inicio de sesión y el registro ahora viven en la landing (`''`).
+  // Conservamos estas rutas como redirecciones para no romper enlaces o
+  // marcadores antiguos.
+  { path: 'auth/login', redirectTo: '', pathMatch: 'full' },
+  { path: 'auth/register', redirectTo: '', pathMatch: 'full' },
   {
     path: 'auth/callback',
     loadComponent: () =>

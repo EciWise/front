@@ -22,6 +22,7 @@
                 [routerLink]="['/student/games/asclepio']"
                 [queryParams]="{ mode: m.id }"
                 [title]="m.descKey | translate"
+                (click)="play('asclepio')"
               >
                 <span class="mode__icon"><eci-icon [name]="m.icon" [size]="22" /></span>
                 <span class="mode__text">
@@ -47,6 +48,7 @@
             [style.--mg-accent]="g.accentColor"
             [title]="g.taglineKey | translate"
             [attr.aria-label]="(g.nameKey | translate) + ' — ' + (g.taglineKey | translate)"
+            (click)="play(g.id)"
           >
             <span class="minigame__header">
               <span class="minigame__icon"><eci-icon [name]="g.icon" [size]="28" /></span>

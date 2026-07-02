@@ -37,10 +37,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         auth.sessionExpired()
       ) {
         auth.logout();
-        const current = router.url;
-        router.navigate(['/auth/login'], {
-          queryParams: current && current !== '/' ? { redirect: current } : {},
-        });
+        // Sesión caduca: volvemos a la landing, que aloja el nuevo login.
+        router.navigate(['/']);
       }
       return throwError(() => new AppError(httpErrorToKey(err)));
     }),

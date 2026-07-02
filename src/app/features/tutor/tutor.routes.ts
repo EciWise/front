@@ -40,6 +40,11 @@ export const TUTOR_ROUTES: Routes = [
     loadComponent: () => import('../practica/practica').then((m) => m.PracticaComponent),
   },
   {
+    path: 'gamificacion',
+    loadComponent: () =>
+      import('../gamification/gamification').then((m) => m.GamificationComponent),
+  },
+  {
     path: 'profile',
     loadComponent: () => import('../student/profile/profile').then((m) => m.ProfileComponent),
   },

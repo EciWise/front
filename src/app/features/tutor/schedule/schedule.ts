@@ -89,6 +89,24 @@ export class TutorScheduleComponent implements OnInit {
     });
   }
 
+  /** Marca la tutoría como REALIZADA; dispara puntos de gamificación. */
+  finalizar(reservation: TutorSesionParticipanteDto): void {
+    this.busy.set(true);
+    this.actionError.set('');
+    this.actionSuccess.set('');
+    this.sessions.finalizarTutoria(reservation.tutoriaId).subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.actionSuccess.set('tutor.schedule.feedback.finalized');
+      },
+      error: (err: unknown) => {
+        this.busy.set(false);
+        const backendMsg = (err as { error?: { message?: string } })?.error?.message;
+        this.actionError.set(backendMsg ?? 'tutoring.errors.generic');
+      },
+    });
+  }
+
   modeKey(modalidad: 'VIRTUAL' | 'PRESENCIAL'): string {
     return modalidad === 'VIRTUAL' ? 'tutoring.modes.virtual' : 'tutoring.modes.presential';
   }

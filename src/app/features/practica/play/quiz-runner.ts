@@ -16,6 +16,9 @@ import { IconComponent } from '../../../shared/ui/icon/icon';
 import { ConfettiComponent } from '../../../shared/ui/confetti/confetti';
 import { PracticaService } from '../practica.service';
 import { AnswerRequest, AnswerResult, SessionResponse, SessionSummary } from '../practica.models';
+import { AuthService } from '../../../core/auth/auth.service';
+import { GamificationService } from '../../../core/gamification/gamification.service';
+import { AchievementToastService } from '../../../core/gamification/achievement-toast.service';
 
 /** Bucle de juego: sirve preguntas, registra respuestas y muestra el resumen final. */
 @Component({
@@ -34,6 +37,9 @@ import { AnswerRequest, AnswerResult, SessionResponse, SessionSummary } from '..
 })
 export class QuizRunnerComponent {
   private readonly service = inject(PracticaService);
+  private readonly auth = inject(AuthService);
+  private readonly gamification = inject(GamificationService);
+  private readonly toasts = inject(AchievementToastService);
 
   readonly session = input.required<SessionResponse>();
   readonly finished = output<void>();
@@ -171,8 +177,26 @@ export class QuizRunnerComponent {
       next: (summary) => {
         this.summary.set(summary);
         this.finishing.set(false);
+        this.rewardPractice();
       },
       error: () => this.finishing.set(false),
+    });
+  }
+
+  /**
+   * Otorga puntos de gamificación por completar el quiz y muestra un toast por
+   * cada logro desbloqueado. Tolerante a fallos: no afecta al flujo de práctica.
+   */
+  private rewardPractice(): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return;
+    }
+    this.gamification.registerPracticeCompleted(userId).subscribe({
+      next: (res) => this.toasts.push(res.unlockedAchievements),
+      error: () => {
+        // Best-effort: si la gamificación falla, la práctica sigue igual.
+      },
     });
   }
 }
