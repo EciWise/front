@@ -62,10 +62,20 @@
                     </div>
 
                     <div class="session-card__actions">
-                      <eci-button variant="ghost" (buttonClick)="openCancel(r)">
-                        <eci-icon name="close" [size]="16" />
-                        {{ 'tutor.schedule.cancelSession' | translate }}
-                      </eci-button>
+                      @if (r.sesion.estado === 'PROGRAMADA') {
+                        <eci-button variant="primary" [disabled]="busy()" (buttonClick)="finalizar(r)">
+                          <eci-icon name="check" [size]="16" />
+                          {{ 'tutor.schedule.finalize' | translate }}
+                        </eci-button>
+                        <eci-button variant="ghost" (buttonClick)="openCancel(r)">
+                          <eci-icon name="close" [size]="16" />
+                          {{ 'tutor.schedule.cancelSession' | translate }}
+                        </eci-button>
+                      } @else if (r.sesion.estado === 'REALIZADA') {
+                        <span class="status" data-status="completed">
+                          {{ 'tutoring.status.completed' | translate }}
+                        </span>
+                      }
                     </div>
                   </article>
                 </eci-card>

@@ -1,6 +1,8 @@
 import { computed, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { AuthService } from '../../../core/auth/auth.service';
 import { StaticTranslateLoader } from '../../../core/i18n/static-translate.loader';
 import { AppNotification } from '../../../core/notifications/notification.model';
 import { NotificationsService } from '../../../core/notifications/notifications.service';
@@ -12,6 +14,7 @@ const makeItems = (): AppNotification[] => [
     titleKey: 'notifications.title',
     body: 'Tutoria aceptada',
     kind: 'success',
+    category: 'tutoring',
     createdAt: '2026-06-01T08:00:00Z',
     read: false,
   },
@@ -20,6 +23,7 @@ const makeItems = (): AppNotification[] => [
     titleKey: 'notifications.title',
     body: 'Material nuevo',
     kind: 'info',
+    category: 'material',
     createdAt: '2026-06-02T08:00:00Z',
     read: false,
   },
@@ -41,17 +45,24 @@ describe('NotificationsBellComponent', () => {
     await TestBed.configureTestingModule({
       imports: [NotificationsBellComponent],
       providers: [
+        provideRouter([]),
         provideTranslateService({
           loader: { provide: TranslateLoader, useClass: StaticTranslateLoader },
           fallbackLang: 'es',
           lang: 'es',
         }),
+        { provide: AuthService, useValue: { role: () => null } },
         {
           provide: NotificationsService,
           useValue: {
             items: items.asReadonly(),
             unreadCount: computed(() => items().filter((item) => !item.read).length),
             markAllRead,
+            markRead: vi.fn(),
+            delete: vi.fn(),
+            deleteAll: vi.fn(),
+            startPolling: vi.fn(),
+            stopPolling: vi.fn(),
             load: vi.fn(),
           },
         },

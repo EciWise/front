@@ -26,8 +26,8 @@ const STUDENT_NAV: readonly NavItem[] = [
   { labelKey: 'nav.practica', route: '/student/practica', icon: 'quiz' },
   { labelKey: 'nav.aprendizaje', route: '/student/aprendizaje', icon: 'aprendizaje' },
   { labelKey: 'nav.tasks', route: '/student/tasks', icon: 'tasks' },
-  { labelKey: 'nav.achievements', route: '/student/logros', icon: 'trophy' },
   { labelKey: 'nav.forums', route: '/student/foros', icon: 'chat' },
+  { labelKey: 'nav.gamification', route: '/student/gamificacion', icon: 'star' },
 ];
 
 const TUTOR_NAV: readonly NavItem[] = [
@@ -39,6 +39,7 @@ const TUTOR_NAV: readonly NavItem[] = [
   { labelKey: 'nav.history', route: '/tutor/history', icon: 'history' },
   { labelKey: 'nav.aprendizaje', route: '/tutor/aprendizaje', icon: 'aprendizaje' },
   { labelKey: 'nav.practica', route: '/tutor/practica', icon: 'quiz' },
+  { labelKey: 'nav.gamification', route: '/tutor/gamificacion', icon: 'star' },
 ];
 
 const ADMIN_NAV: readonly NavItem[] = [
@@ -69,14 +70,14 @@ const STUDENT_GROUPS: readonly NavGroup[] = [
   { labelKey: 'nav.grp.principal', items: [STUDENT_NAV[0]] },
   { labelKey: 'nav.grp.learn', items: [STUDENT_NAV[4], STUDENT_NAV[5], STUDENT_NAV[2], STUDENT_NAV[3]] },
   { labelKey: 'nav.grp.accompany', items: [STUDENT_NAV[1]] },
-  { labelKey: 'nav.grp.community', items: [STUDENT_NAV[8], STUDENT_NAV[6], STUDENT_NAV[7]] },
+  { labelKey: 'nav.grp.community', items: [STUDENT_NAV[7], STUDENT_NAV[6], STUDENT_NAV[8]] },
 ];
 
 const TUTOR_GROUPS: readonly NavGroup[] = [
   { labelKey: 'nav.grp.principal', items: [TUTOR_NAV[0]] },
   { labelKey: 'nav.grp.students', items: [TUTOR_NAV[1]] },
   { labelKey: 'nav.grp.tutorias', items: [TUTOR_NAV[2], TUTOR_NAV[3], TUTOR_NAV[4], TUTOR_NAV[5]] },
-  { labelKey: 'nav.grp.content', items: [TUTOR_NAV[6], TUTOR_NAV[7]] },
+  { labelKey: 'nav.grp.content', items: [TUTOR_NAV[6], TUTOR_NAV[7], TUTOR_NAV[8]] },
 ];
 
 const ADMIN_GROUPS: readonly NavGroup[] = [

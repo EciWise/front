@@ -1,0 +1,117 @@
+<div class="eci-fit">
+  <eci-page-header titleKey="gamification.title" icon="trophy" />
+
+  <div class="eci-fit__body gami">
+    @if (loading()) {
+      <eci-card>
+        <p class="gami__muted">{{ 'common.loading' | translate }}</p>
+      </eci-card>
+    } @else {
+      <!-- HÉROE: insignia de nivel + progreso -->
+      <eci-card>
+        <div class="gami-hero">
+          <div class="gami-hero__badge" [style.background]="badge().gradient">
+            <eci-icon [name]="badge().icon" [size]="44" />
+          </div>
+
+          <div class="gami-hero__body">
+            <span class="gami-hero__eyebrow">{{ 'gamification.currentLevel' | translate }}</span>
+            <h2 class="gami-hero__level">{{ summary()?.levelName ?? 'Inicial' }}</h2>
+
+            <div class="gami-hero__stats">
+              <span class="gami-chip">
+                <eci-icon name="star" [size]="16" />
+                {{ summary()?.totalPoints ?? 0 }} {{ 'gamification.points' | translate }}
+              </span>
+              @if (ranking(); as r) {
+                <span class="gami-chip">
+                  <eci-icon name="chart" [size]="16" />
+                  #{{ r.position }}
+                </span>
+              }
+              <span class="gami-chip">
+                <eci-icon name="flame" [size]="16" />
+                {{ summary()?.reputationScore ?? 0 }} {{ 'gamification.reputation' | translate }}
+              </span>
+            </div>
+
+            <!-- Barra de progreso al siguiente nivel -->
+            <div class="gami-progress">
+              <div
+                class="gami-progress__track"
+                role="progressbar"
+                [attr.aria-valuenow]="progress()"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <span class="gami-progress__fill" [style.width.%]="progress()"></span>
+              </div>
+              <p class="gami-progress__label">
+                @if (isMaxLevel()) {
+                  <eci-icon name="trophy" [size]="16" />
+                  {{ 'gamification.maxLevel' | translate }}
+                } @else {
+                  {{ 'gamification.toNext' | translate: { points: pointsToNext(), level: summary()?.nextLevelName } }}
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </eci-card>
+
+      <!-- ESCALERA DE INSIGNIAS -->
+      @if (ladder().length > 0) {
+        <eci-card>
+          <div class="gami-section-head">
+            <eci-icon name="target" [size]="20" />
+            <h3>{{ 'gamification.ladder' | translate }}</h3>
+          </div>
+          <ul class="gami-ladder">
+            @for (item of ladder(); track item.name) {
+              <li
+                class="gami-ladder__item"
+                [class.gami-ladder__item--locked]="!item.unlocked"
+                [class.gami-ladder__item--current]="item.current"
+              >
+                <span class="gami-ladder__badge" [style.background]="item.unlocked ? item.badge.gradient : ''">
+                  <eci-icon [name]="item.badge.icon" [size]="24" />
+                </span>
+                <strong class="gami-ladder__name">{{ item.name }}</strong>
+                <span class="gami-ladder__pts">{{ item.minPoints }} {{ 'gamification.pts' | translate }}</span>
+                @if (item.unlocked) {
+                  <span class="gami-ladder__check"><eci-icon name="circle-check" [size]="16" /></span>
+                }
+              </li>
+            }
+          </ul>
+        </eci-card>
+      }
+
+      <!-- LOGROS -->
+      <eci-card>
+        <div class="gami-section-head">
+          <eci-icon name="trophy" [size]="20" />
+          <h3>{{ 'gamification.achievements' | translate }}</h3>
+          <span class="gami-count">{{ achievements().length }}</span>
+        </div>
+
+        @if (achievements().length === 0) {
+          <p class="gami__muted">{{ 'gamification.empty' | translate }}</p>
+        } @else {
+          <ul class="gami-achievements">
+            @for (a of achievements(); track a.id) {
+              <li class="gami-achievement">
+                <span class="gami-achievement__badge"><eci-icon name="star" [size]="20" /></span>
+                <div class="gami-achievement__body">
+                  <strong>{{ a.name }}</strong>
+                  <span>{{ a.description }}</span>
+                  <span class="gami-achievement__date">{{ a.unlockedAt | date: 'mediumDate' }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </eci-card>
+    }
+  </div>
+</div>

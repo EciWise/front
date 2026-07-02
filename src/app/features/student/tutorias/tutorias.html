@@ -159,14 +159,35 @@
                         <span class="status" [attr.data-status]="r.estadoAsistencia.toLowerCase()">
                           {{ r.estadoAsistencia }}
                         </span>
-                        <eci-button variant="secondary" (buttonClick)="openReschedule(r)">
-                          <eci-icon name="repeat" [size]="16" />
-                          {{ 'tutorias.reservations.reschedule' | translate }}
-                        </eci-button>
-                        <eci-button variant="ghost" (buttonClick)="openCancel(r)">
-                          <eci-icon name="close" [size]="16" />
-                          {{ 'tutorias.reservations.cancel' | translate }}
-                        </eci-button>
+                        @if (r.tutoria.estado === 'PROGRAMADA') {
+                          <eci-button variant="secondary" (buttonClick)="openReschedule(r)">
+                            <eci-icon name="repeat" [size]="16" />
+                            {{ 'tutorias.reservations.reschedule' | translate }}
+                          </eci-button>
+                          <eci-button variant="ghost" (buttonClick)="openCancel(r)">
+                            <eci-icon name="close" [size]="16" />
+                            {{ 'tutorias.reservations.cancel' | translate }}
+                          </eci-button>
+                        } @else if (r.tutoria.estado === 'REALIZADA') {
+                          @if (isRated(r.tutoriaId)) {
+                            <span class="rated">{{ 'tutorias.reservations.rated' | translate }}</span>
+                          } @else {
+                            <div class="rate-stars" role="group" [attr.aria-label]="'tutorias.reservations.rate' | translate">
+                              <span>{{ 'tutorias.reservations.rate' | translate }}:</span>
+                              @for (n of stars; track n) {
+                                <button
+                                  type="button"
+                                  class="star-btn"
+                                  [disabled]="busy()"
+                                  [attr.aria-label]="n"
+                                  (click)="calificar(r, n)"
+                                >
+                                  <eci-icon name="star" [size]="18" />
+                                </button>
+                              }
+                            </div>
+                          }
+                        }
                       </div>
                     </article>
                   </eci-card>

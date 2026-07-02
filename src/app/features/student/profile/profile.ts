@@ -13,6 +13,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
+import { AchievementToastService } from '../../../core/gamification/achievement-toast.service';
+import { GamificationService } from '../../../core/gamification/gamification.service';
 import { DatosIa } from '../../../core/ia/ia.model';
 import { IaDataService } from '../../../core/ia/ia-data.service';
 import { IaProfileStatusService } from '../../../core/ia/ia-profile-status.service';
@@ -107,6 +109,8 @@ export class ProfileComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly dataService = inject(IaDataService);
+  private readonly gamification = inject(GamificationService);
+  private readonly toasts = inject(AchievementToastService);
   protected readonly status = inject(IaProfileStatusService);
   private readonly route = inject(ActivatedRoute);
   private readonly host = inject(ElementRef<HTMLElement>);
@@ -292,11 +296,33 @@ export class ProfileComponent {
         this.aiSaved.set(true);
         this.aiExpanded.set(false);
         this.status.load();
+        this.rewardAiProfileCompleted();
       },
       error: () => {
         this.aiSaving.set(false);
         this.aiError.set(true);
       },
     });
+  }
+
+  /**
+   * Otorga los 10 puntos de gamificación por completar el perfil de IA y muestra
+   * un toast por cada logro desbloqueado. Tolerante a fallos e idempotente en el
+   * backend: no afecta al guardado del perfil si la gamificación falla.
+   */
+  private rewardAiProfileCompleted(): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return;
+    }
+    this.gamification
+      .registerAiProfileCompleted(userId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.toasts.push(res.unlockedAchievements),
+        error: () => {
+          // La gamificación es best-effort: si falla, el perfil ya quedó guardado.
+        },
+      });
   }
 }

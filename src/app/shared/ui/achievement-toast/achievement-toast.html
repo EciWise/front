@@ -1,0 +1,24 @@
+@if (service.toasts().length) {
+  <div class="ach-toasts" role="status" aria-live="polite">
+    @for (t of service.toasts(); track t.id) {
+      <div class="ach-toast" [style.--ach-accent]="t.visual.color">
+        <span class="ach-toast__icon">
+          <eci-icon [name]="t.visual.icon" [size]="26" />
+        </span>
+        <div class="ach-toast__body">
+          <p class="ach-toast__title">{{ 'achievements.toastTitle' | translate }}</p>
+          <p class="ach-toast__name">{{ t.name }}</p>
+          <p class="ach-toast__desc">{{ t.description }}</p>
+        </div>
+        <button
+          type="button"
+          class="ach-toast__close"
+          [attr.aria-label]="'achievements.toastDismiss' | translate"
+          (click)="service.dismiss(t.id)"
+        >
+          <eci-icon name="close" [size]="16" />
+        </button>
+      </div>
+    }
+  </div>
+}

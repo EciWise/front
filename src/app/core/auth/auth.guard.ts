@@ -3,16 +3,14 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { Role, ROLE_HOME } from '../models/role.enum';
 
-/** Exige sesión activa; redirige al login conservando la URL destino. */
-export const authGuard: CanActivateFn = (_route, state) => {
+/** Exige sesión activa; si no la hay, redirige a la landing con el login. */
+export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   if (auth.isAuthenticated()) {
     return true;
   }
-  return router.createUrlTree(['/auth/login'], {
-    queryParams: { redirect: state.url },
-  });
+  return router.createUrlTree(['/']);
 };
 
 /**
@@ -25,7 +23,7 @@ export const roleGuard: CanActivateFn = (route) => {
   const required = route.data['role'] as Role | undefined;
 
   if (!auth.isAuthenticated()) {
-    return router.createUrlTree(['/auth/login']);
+    return router.createUrlTree(['/']);
   }
   const role = auth.role();
   if (required && role !== required) {

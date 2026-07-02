@@ -72,4 +72,9 @@ export class TutorSessionsService {
   cancelarTutoria(tutoriaId: string, motivo: string): Observable<ResultadoCancelacionTutoria> {
     return this.api.cancelarTutoria({ tutoriaId, motivo }).pipe(tap(() => this.load()));
   }
+
+  /** Marca una tutoría como REALIZADA (dispara puntos de gamificación) y recarga. */
+  finalizarTutoria(tutoriaId: string): Observable<unknown> {
+    return this.api.finalizarTutoria(tutoriaId).pipe(tap(() => this.load()));
+  }
 }

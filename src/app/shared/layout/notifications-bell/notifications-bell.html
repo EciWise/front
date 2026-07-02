@@ -2,13 +2,16 @@
   <button
     type="button"
     class="icon-button"
+    [class.icon-button--active]="notifications.unreadCount() > 0"
     (click)="toggle()"
     [attr.aria-label]="'notifications.title' | translate"
     [attr.aria-expanded]="open()"
   >
-    <svg lucideBell [size]="20" aria-hidden="true"></svg>
     @if (notifications.unreadCount() > 0) {
+      <svg lucideBellRing [size]="20" aria-hidden="true"></svg>
       <span class="icon-button__badge" aria-hidden="true">{{ notifications.unreadCount() }}</span>
+    } @else {
+      <svg lucideBell [size]="20" aria-hidden="true"></svg>
     }
   </button>
 
@@ -21,26 +24,90 @@
     ></button>
     <dialog class="bell__panel" open [attr.aria-label]="'notifications.title' | translate">
       <header class="bell__header">
-        <h2 class="bell__title">{{ 'notifications.title' | translate }}</h2>
-        <button type="button" class="bell__link" (click)="markAllRead()">
-          {{ 'notifications.markAllRead' | translate }}
-        </button>
+        <div class="bell__heading">
+          <h2 class="bell__title">{{ 'notifications.title' | translate }}</h2>
+          @if (notifications.unreadCount() > 0) {
+            <span class="bell__count">{{
+              'notifications.unread' | translate: { count: notifications.unreadCount() }
+            }}</span>
+          }
+        </div>
+        <div class="bell__actions">
+          @if (notifications.unreadCount() > 0) {
+            <button
+              type="button"
+              class="bell__link"
+              (click)="markAllRead()"
+              [attr.title]="'notifications.markAllRead' | translate"
+            >
+              <svg lucideCheckCheck [size]="15" aria-hidden="true"></svg>
+              {{ 'notifications.markAllRead' | translate }}
+            </button>
+          }
+          @if (notifications.items().length > 0) {
+            <button
+              type="button"
+              class="bell__link bell__link--danger"
+              (click)="deleteAll()"
+              [attr.aria-label]="'notifications.clearAll' | translate"
+              [attr.title]="'notifications.clearAll' | translate"
+            >
+              <svg lucideTrash2 [size]="15" aria-hidden="true"></svg>
+            </button>
+          }
+        </div>
       </header>
 
       @if (notifications.items().length === 0) {
-        <p class="bell__empty">{{ 'notifications.empty' | translate }}</p>
+        <div class="bell__empty">
+          <span class="bell__empty-icon" aria-hidden="true">
+            <svg lucideSparkles [size]="22"></svg>
+          </span>
+          <p class="bell__empty-text">{{ 'notifications.empty' | translate }}</p>
+          <p class="bell__empty-hint">{{ 'notifications.emptyHint' | translate }}</p>
+        </div>
       } @else {
         <ul class="bell__list">
-          @for (item of notifications.items(); track item.id) {
-            <li class="bell__item" [class.bell__item--unread]="!item.read">
-              <span class="bell__dot" [attr.data-kind]="item.kind" aria-hidden="true"></span>
-              <p class="bell__body">
-                @if (item.bodyKey; as bodyKey) {
-                  {{ bodyKey | translate: item.bodyParams }}
-                } @else {
-                  {{ item.body }}
+          @for (item of notifications.items(); track item.id; let i = $index) {
+            <li
+              class="bell__item"
+              [class.bell__item--unread]="!item.read"
+              [attr.data-kind]="item.kind"
+              [style.--i]="i"
+            >
+              <button type="button" class="bell__item-main" (click)="select(item)">
+                <span class="bell__avatar" aria-hidden="true">
+                  @switch (item.kind) {
+                    @case ('success') {
+                      <svg lucideCircleCheck [size]="18"></svg>
+                    }
+                    @case ('warning') {
+                      <svg lucideTriangleAlert [size]="18"></svg>
+                    }
+                    @default {
+                      <svg lucideInfo [size]="18"></svg>
+                    }
+                  }
+                </span>
+                <span class="bell__body">
+                  @if (item.bodyKey; as bodyKey) {
+                    {{ bodyKey | translate: item.bodyParams }}
+                  } @else {
+                    {{ item.body }}
+                  }
+                </span>
+                @if (!item.read) {
+                  <span class="bell__unread-dot" aria-hidden="true"></span>
                 }
-              </p>
+              </button>
+              <button
+                type="button"
+                class="bell__dismiss"
+                (click)="dismiss(item.id, $event)"
+                [attr.aria-label]="'a11y.dismissNotification' | translate"
+              >
+                <svg lucideX [size]="15" aria-hidden="true"></svg>
+              </button>
             </li>
           }
         </ul>

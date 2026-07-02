@@ -84,6 +84,7 @@ export interface ReservaEstudianteDto {
     readonly horaInicio: string;
     readonly horaFin: string;
     readonly modalidad: 'VIRTUAL' | 'PRESENCIAL';
+    readonly estado: 'PROGRAMADA' | 'REALIZADA' | 'CANCELADA';
     readonly materiaId: string;
     readonly materiaCodigo: string;
     readonly materiaNombre: string;
@@ -108,6 +109,7 @@ export interface TutorSesionParticipanteDto {
     readonly horaInicio: string;
     readonly horaFin: string;
     readonly modalidad: 'VIRTUAL' | 'PRESENCIAL';
+    readonly estado: 'PROGRAMADA' | 'REALIZADA' | 'CANCELADA';
     readonly materiaId: string;
     readonly materiaCodigo: string;
     readonly materiaNombre: string;
@@ -208,6 +210,19 @@ export class TutoringApiService {
 
   cancelarReserva(tutoriaId: string, payload: CancelarReservaPayload): Observable<unknown> {
     return this.http.post(`${this.base}/reservas/${tutoriaId}/cancelar`, payload);
+  }
+
+  /** El tutor marca la tutoría como REALIZADA (dispara puntos de gamificación). */
+  finalizarTutoria(tutoriaId: string): Observable<unknown> {
+    return this.http.post(`${this.base}/reservas/${tutoriaId}/finalizar`, {});
+  }
+
+  /** El estudiante califica (1-5) una tutoría REALIZADA. */
+  calificarTutoria(
+    tutoriaId: string,
+    payload: { calificacion: number; comentario?: string },
+  ): Observable<unknown> {
+    return this.http.post(`${this.base}/reservas/${tutoriaId}/calificar`, payload);
   }
 
   reprogramar(payload: ReprogramarPayload): Observable<unknown> {

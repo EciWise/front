@@ -9,6 +9,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LucideChevronDown } from '@lucide/angular';
+import { AuthService } from '../../core/auth/auth.service';
+import { AchievementToastService } from '../../core/gamification/achievement-toast.service';
+import { GamificationService } from '../../core/gamification/gamification.service';
 import { CardComponent } from '../../shared/ui/card/card';
 import { PageHeaderComponent } from '../../shared/ui/page-header/page-header';
 import { IconComponent, IconName } from '../../shared/ui/icon/icon';
@@ -46,6 +49,12 @@ const faq = (base: string): HelpItem => ({ q: `${base}Q`, a: `${base}A` });
 })
 export class HelpComponent {
   private readonly translate = inject(TranslateService);
+  private readonly auth = inject(AuthService);
+  private readonly gamification = inject(GamificationService);
+  private readonly toasts = inject(AchievementToastService);
+  private readonly destroyRef = inject(DestroyRef);
+  /** Evita repetir la llamada de gamificación en cada apertura de la sesión. */
+  private helpAchievementRequested = false;
 
   protected readonly query = signal('');
   /** Se incrementa al cambiar de idioma para recalcular el filtro traducido. */
@@ -110,7 +119,7 @@ export class HelpComponent {
 
   constructor() {
     this.translate.onLangChange
-      .pipe(takeUntilDestroyed(inject(DestroyRef)))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.langTick.update((n) => n + 1));
   }
 
@@ -129,12 +138,45 @@ export class HelpComponent {
 
   protected toggle(catId: string, q: string): void {
     const key = this.key(catId, q);
+    let opened = false;
     this.openItems.update((set) => {
       const next = new Set(set);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+        opened = true;
+      }
       return next;
     });
+    if (opened) {
+      this.rewardHelpExploration();
+    }
+  }
+
+  /**
+   * Desbloquea el logro "Perdidasss, andamos perdidasss!" la primera vez que se
+   * abre una pregunta del Centro de Ayuda y muestra un toast. Tolerante a fallos
+   * e idempotente en el backend; solo se intenta una vez por sesión de la vista.
+   */
+  private rewardHelpExploration(): void {
+    if (this.helpAchievementRequested) {
+      return;
+    }
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return;
+    }
+    this.helpAchievementRequested = true;
+    this.gamification
+      .registerHelpQuestionOpened(userId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.toasts.push(res.unlockedAchievements),
+        error: () => {
+          // La gamificación es best-effort: si falla, la ayuda funciona igual.
+        },
+      });
   }
 
   private key(catId: string, q: string): string {

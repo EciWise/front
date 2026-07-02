@@ -83,7 +83,7 @@ describe('errorInterceptor', () => {
     }
 
     expect(auth.isAuthenticated()).toBe(false);
-    expect(navigate).toHaveBeenCalledWith(['/auth/login'], expect.anything());
+    expect(navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('NO cierra sesión ante un 403 con token válido (denegación de permiso)', async () => {

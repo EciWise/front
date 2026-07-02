@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CardComponent } from '../../../shared/ui/card/card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
@@ -7,6 +7,9 @@ import { InfoTooltipComponent } from '../../../shared/ui/tooltip/tooltip';
 import { ConfettiComponent } from '../../../shared/ui/confetti/confetti';
 import { AprendizajeService } from '../aprendizaje.service';
 import { Collection, ReviewGrade, StudyCard } from '../study.models';
+import { AuthService } from '../../../core/auth/auth.service';
+import { GamificationService } from '../../../core/gamification/gamification.service';
+import { AchievementToastService } from '../../../core/gamification/achievement-toast.service';
 
 /** Distancia (px) que hay que arrastrar para calificar al soltar. */
 const DRAG_THRESHOLD = 90;
@@ -51,6 +54,29 @@ function dragScale(distance: number): number {
 })
 export class StudySessionComponent {
   private readonly service = inject(AprendizajeService);
+  private readonly auth = inject(AuthService);
+  private readonly gamification = inject(GamificationService);
+  private readonly toasts = inject(AchievementToastService);
+
+  /** Evita recompensar dos veces la misma cola mientras `finished` sigue en true. */
+  private studyRewarded = false;
+
+  /**
+   * Otorga puntos por completar la sesión de estudio y muestra un toast por cada
+   * logro desbloqueado. Tolerante a fallos: no afecta al flujo de estudio.
+   */
+  private rewardStudy(): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return;
+    }
+    this.gamification.registerStudyCompleted(userId).subscribe({
+      next: (res) => this.toasts.push(res.unlockedAchievements),
+      error: () => {
+        // Best-effort: si la gamificación falla, la sesión de estudio sigue igual.
+      },
+    });
+  }
 
   protected readonly collections = signal<Collection[]>([]);
   /** Solo las colecciones fijadas con estrella: son las que se pueden estudiar. */
@@ -119,6 +145,19 @@ export class StudySessionComponent {
 
   constructor() {
     this.service.collections().subscribe((cols) => this.collections.set(cols));
+
+    // Al completar una sesión de estudio (cola agotada) otorgamos puntos una vez.
+    // Al empezar otra sesión, `finished` vuelve a false y se rearma el premio.
+    effect(() => {
+      if (this.finished()) {
+        if (!this.studyRewarded) {
+          this.studyRewarded = true;
+          this.rewardStudy();
+        }
+      } else {
+        this.studyRewarded = false;
+      }
+    });
   }
 
   protected select(id: number): void {

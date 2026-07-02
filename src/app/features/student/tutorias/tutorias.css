@@ -480,3 +480,34 @@
     grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
   }
 }
+
+/* Calificación inline de tutorías realizadas */
+.rate-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.rate-stars > span {
+  font-size: 0.85rem;
+  color: var(--eci-text-muted, #64748b);
+}
+.star-btn {
+  display: inline-flex;
+  padding: 0.15rem;
+  border: none;
+  background: transparent;
+  color: var(--eci-warning, #d9a300);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.star-btn:hover:not(:disabled) {
+  background: rgba(217, 163, 0, 0.12);
+}
+.star-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.rated {
+  font-size: 0.85rem;
+  color: var(--eci-success, #16a34a);
+}

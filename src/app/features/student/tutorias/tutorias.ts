@@ -162,6 +162,36 @@ export class TutoriasComponent implements OnInit {
     this.api.listarMisReservas().subscribe((data) => this._reservas.set(data));
   }
 
+  /** Estrellas para calificar una tutoría REALIZADA (1-5). */
+  protected readonly stars = [1, 2, 3, 4, 5] as const;
+  private readonly _ratedIds = signal<ReadonlySet<string>>(new Set());
+
+  isRated(tutoriaId: string): boolean {
+    return this._ratedIds().has(tutoriaId);
+  }
+
+  /** El estudiante califica la tutoría; dispara puntos de gamificación al tutor. */
+  calificar(reservation: ReservaEstudianteDto, estrellas: number): void {
+    this.actionError.set('');
+    this.actionSuccess.set('');
+    this.busy.set(true);
+    this.api
+      .calificarTutoria(reservation.tutoriaId, { calificacion: estrellas })
+      .subscribe({
+        next: () => {
+          this.busy.set(false);
+          this._ratedIds.update((s) => new Set(s).add(reservation.tutoriaId));
+          this.actionSuccess.set('tutorias.feedback.rated');
+        },
+        error: (err: unknown) => {
+          this.busy.set(false);
+          const backendMsg = (err as { error?: { message?: string } })?.error
+            ?.message;
+          this.actionError.set(backendMsg ?? this.err('tutoring.errors.generic'));
+        },
+      });
+  }
+
   setFilter(key: keyof TutoringSearchFilters, value: string): void {
     this.filters.update((filters) => ({
       ...filters,

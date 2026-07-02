@@ -1,0 +1,301 @@
+.gami {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.gami__muted {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ── Héroe ─────────────────────────────────────────────────────────────── */
+.gami-hero {
+  display: flex;
+  gap: var(--space-5);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.gami-hero__badge {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-full);
+  color: #fff;
+  box-shadow: var(--shadow-md), inset 0 2px 6px rgba(255, 255, 255, 0.35);
+  animation: gami-pop 320ms ease-out;
+}
+
+.gami-hero__badge::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-full);
+  border: 3px solid color-mix(in srgb, var(--brand-red) 30%, transparent);
+  animation: gami-halo 2.6s ease-in-out infinite;
+}
+.gami-hero__badge {
+  position: relative;
+}
+
+.gami-hero__body {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.gami-hero__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.gami-hero__level {
+  font-family: var(--font-field);
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  margin: 0.15rem 0 var(--space-3);
+  background: linear-gradient(120deg, var(--brand-red), var(--brand-wine));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gami-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.gami-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── Barra de progreso ─────────────────────────────────────────────────── */
+.gami-progress__track {
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.gami-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fbbf24, var(--brand-red));
+  background-size: 200% 100%;
+  transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: gami-shimmer 2.4s linear infinite;
+}
+
+.gami-progress__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ── Escalera de insignias ─────────────────────────────────────────────── */
+.gami-section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--text);
+}
+.gami-section-head h3 {
+  font-family: var(--font-field);
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin: 0;
+}
+.gami-count {
+  margin-left: auto;
+  min-width: 1.5rem;
+  text-align: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.gami-ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-3);
+}
+
+.gami-ladder__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.gami-ladder__item--current {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-red) 35%, transparent);
+}
+.gami-ladder__item--locked {
+  opacity: 0.55;
+  filter: grayscale(0.7);
+}
+.gami-ladder__item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.gami-ladder__badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  color: #fff;
+  background: var(--surface-3);
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.gami-ladder__name {
+  font-family: var(--font-field);
+  font-weight: 700;
+  color: var(--text);
+}
+.gami-ladder__pts {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.gami-ladder__check {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  color: var(--success);
+}
+
+/* ── Logros ────────────────────────────────────────────────────────────── */
+.gami-achievements {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.gami-achievement {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  animation: gami-rise 380ms ease-out both;
+}
+
+.gami-achievement__badge {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #fcd34d, #f97316);
+  color: #fff;
+}
+
+.gami-achievement__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.gami-achievement__body strong {
+  font-weight: 700;
+  color: var(--text);
+}
+.gami-achievement__body span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.gami-achievement__date {
+  font-size: 0.78rem !important;
+}
+
+/* ── Animaciones (respetan reduced-motion) ─────────────────────────────── */
+@keyframes gami-pop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes gami-halo {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.35;
+  }
+}
+@keyframes gami-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes gami-rise {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gami-hero__badge,
+  .gami-hero__badge::after,
+  .gami-progress__fill,
+  .gami-achievement {
+    animation: none;
+  }
+  .gami-progress__fill {
+    transition: none;
+  }
+}
